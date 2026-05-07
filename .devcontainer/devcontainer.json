@@ -14,7 +14,8 @@
 						"path": "/bin/zsh"
 					}
 				},
-				"remote.autoForwardPorts": false
+				"remote.autoForwardPorts": false,
+				"editor.defaultFormatter": "esbenp.prettier-vscode"
 			},
 			"extensions": [
 				"dbaeumer.vscode-eslint",
@@ -23,9 +24,6 @@
 			]
 		}
 	},
-	"runArgs": [
-		"--net=bridge",
-		"-p=5173:5173"
-	],
+	"runArgs": ["--net=bridge", "-p=5173:5173"],
 	"postCreateCommand": "chsh -s $(which zsh); if [ -f './package.json' ]; then npm install; fi"
 }
