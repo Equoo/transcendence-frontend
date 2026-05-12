@@ -15,7 +15,8 @@
 					}
 				},
 				"remote.autoForwardPorts": false,
-				"editor.defaultFormatter": "esbenp.prettier-vscode"
+				"editor.defaultFormatter": "esbenp.prettier-vscode",
+				"typescript.tsdk": "node_modules/typescript/lib"
 			},
 			"extensions": [
 				"dbaeumer.vscode-eslint",
