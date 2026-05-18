@@ -1,0 +1,10 @@
+#!/bin/env /bin/bash
+
+# If there are whitespace errors, print the offending file names and fail.
+npm run lint
+
+status=$?
+
+if [ $status -ne 0 ]; then echo "there are still lint errors, fix it before committing u moron"; fi
+
+exit $status
