@@ -7,14 +7,14 @@ on:
             - "ci/**"
 
 env:
-    REGISTRY: "forgejo.asventi.net"
-    IMAGE_NAME: "transcendance/frontend"
+    REGISTRY: forgejo.asventi.net
+    IMAGE_NAME: transcendance/frontend
 
 jobs:
     build-and-push:
         runs-on: docker
         container:
-            images: ghcr.io/catthehacker/ubuntu:act-latest
+            image: ghcr.io/catthehacker/ubuntu:act-latest
         steps:
             - name: Code Checkout
               uses: actions/checkout@v4
