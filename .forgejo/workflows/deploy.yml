@@ -44,7 +44,7 @@ jobs:
         needs: build-and-push
         runs-on: docker
         steps:
-            - name: SSH to VPS and deploy
+            - name: SSH inside VPS and deploy
               uses: appleboy/ssh-action@v1.0.3
               with:
                   host: ${{ secrets.SSH_HOST }}
