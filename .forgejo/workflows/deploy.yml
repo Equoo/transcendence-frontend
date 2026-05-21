@@ -13,6 +13,8 @@ env:
 jobs:
     build-and-push:
         runs-on: docker
+        container:
+            images: ghcr.io/catthehacker/ubuntu:act-latest
         steps:
             - name: Code Checkout
               uses: actions/checkout@v4
