@@ -43,9 +43,9 @@ jobs:
     deploy:
         needs: build-and-push
         runs-on: docker
-        container:
-            image: debian:stable-slim
         steps:
+            - name: Install system dependencies
+              run: apk add --no-cache git curl ssh
             - name: SSH to VPS and deploy
               uses: https://github.com/appleboy/ssh-action@v1.2.5
               with:
