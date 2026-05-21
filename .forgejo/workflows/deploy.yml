@@ -45,7 +45,7 @@ jobs:
         runs-on: docker
         steps:
             - name: Install system dependencies
-              run: apk add --no-cache git curl ssh
+              run: apk add --no-cache git curl
             - name: SSH to VPS and deploy
               uses: https://github.com/appleboy/ssh-action@v1.2.5
               with:
