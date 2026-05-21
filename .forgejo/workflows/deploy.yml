@@ -45,7 +45,7 @@ jobs:
         runs-on: docker
         steps:
             - name: SSH to VPS and deploy
-              uses: appleboy/ssh-action@v1.0.3
+              uses: https://github.com/appleboy/ssh-action@v1.2.5
               with:
                   host: ${{ secrets.SSH_HOST }}
                   username: ${{ secrets.SSH_USER }}
