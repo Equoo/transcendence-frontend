@@ -2,7 +2,9 @@
 	"name": "TS",
 	"remoteUser": "root",
 	"updateRemoteUserUID": true,
-	"image": "mcr.microsoft.com/devcontainers/typescript-node",
+	"build": {
+		"dockerfile": "./Dockerfile"
+	},
 	"features": {},
 	"customizations": {
 		"vscode": {
@@ -26,5 +28,5 @@
 		}
 	},
 	"runArgs": ["--net=bridge", "-p=5173:5173"],
-	"postCreateCommand": "chsh -s $(which zsh); if [ -f './package.json' ]; then npm install; fi"
+	"postCreateCommand": "if [ -f './package.json' ]; then npm install; fi"
 }
