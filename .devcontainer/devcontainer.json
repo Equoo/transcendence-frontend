@@ -28,5 +28,5 @@
 		}
 	},
 	"runArgs": ["--net=bridge", "-p=5173:5173"],
-	"postCreateCommand": "if [ -f './package.json' ]; then npm install; fi"
+	"postCreateCommand": "hooks/install-hooks.sh; if [ -f './package.json' ]; then npm install; fi"
 }
