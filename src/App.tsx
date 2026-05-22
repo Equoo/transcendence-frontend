@@ -28,7 +28,7 @@ function App(): JSX.Element {
 				<div>
 					<h1>Get started</h1>
 					<p>
-						Edit <code>src/App.tsx</code> and save to test{" "}
+						Edit <code>src/App.tsx</code> and save to test, coucou{" "}
 						<code>HMR</code>
 					</p>
 				</div>
