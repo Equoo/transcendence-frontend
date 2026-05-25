@@ -24,10 +24,16 @@ export default defineConfig([
 			},
 		},
 		rules: {
+			"sort-keys": "off",
 			"max-lines-per-function": "off",
+			"one-var": "off",
 			"func-style": "off",
+			"no-ternary": "off",
+			"no-nested-ternary": "off",
 			"@typescript-eslint/naming-convention": "off",
 			"@typescript-eslint/no-magic-numbers": "off",
+			"@typescript-eslint/no-unsafe-return": "off",
+			"@typescript-eslint/prefer-readonly-parameter-types": "off",
 		},
 	},
 ]);

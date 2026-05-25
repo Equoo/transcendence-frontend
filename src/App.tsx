@@ -2,9 +2,15 @@ import "./App.css";
 import { type JSX, useState } from "react";
 import heroImg from "./assets/hero.png";
 import reactLogo from "./assets/react.svg";
+import { useQuery } from "@tanstack/react-query";
 import viteLogo from "./assets/vite.svg";
 
 function App(): JSX.Element {
+	const { isPending, error, data } = useQuery({
+		queryKey: ["testApi"],
+		queryFn: async (): Promise<string> =>
+			fetch(import.meta.env.VITE_API_URL).then(async (res) => res.text()),
+	});
 	const [count, setCount] = useState(0);
 
 	return (
@@ -26,6 +32,10 @@ function App(): JSX.Element {
 					<img src={viteLogo} className="vite" alt="Vite logo" />
 				</div>
 				<div>
+					<p>
+						Test call API:{" "}
+						{isPending ? "loading" : error ? "error" : data}
+					</p>
 					<h1>Get started</h1>
 					<p>
 						Edit <code>src/App.tsx</code> and save to test, coucou{" "}
