@@ -27,6 +27,7 @@
 			]
 		}
 	},
-	"runArgs": ["--net=bridge", "-p=5173:5173"],
-	"postCreateCommand": "hooks/install-hooks.sh; if [ -f './package.json' ]; then npm install; fi"
+	"runArgs": ["--network=bridge", "-p=5173:5173"],
+	"postCreateCommand": "hooks/install-hook.sh; if [ -f './package.json' ]; then npm install; fi",
+	"initializeCommand": "echo \"BACKEND_IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' keepgrouped-backend-dev)\" > .env.development"
 }
