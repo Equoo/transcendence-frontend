@@ -47,7 +47,7 @@ function App(): JSX.Element {
 					type="button"
 					className="counter"
 					onClick={() => {
-						setCount(count + 1);
+						setCount(count + 50);
 					}}
 				>
 					Count is {count}

@@ -27,7 +27,12 @@
 			]
 		}
 	},
-	"runArgs": ["--network=bridge", "-p=5173:5173"],
+	
+	"runArgs": [
+		"--network=keepgrouped-net",
+		"-p=5173:5173",
+		"--name=keepgrouped-front-dev"
+	],
 	"postCreateCommand": "hooks/install-hook.sh; if [ -f './package.json' ]; then npm install; fi",
-	"initializeCommand": "echo \"BACKEND_IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' keepgrouped-backend-dev)\" > .env.development"
+	"initializeCommand": "docker network create -d bridge keepgrouped-net || true"
 }
