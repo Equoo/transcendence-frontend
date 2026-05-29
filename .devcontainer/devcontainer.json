@@ -23,11 +23,12 @@
 			"extensions": [
 				"dbaeumer.vscode-eslint",
 				"esbenp.prettier-vscode",
-				"dsznajder.es7-react-js-snippets"
+				"dsznajder.es7-react-js-snippets",
+				"bradlc.vscode-tailwindcss"
 			]
 		}
 	},
-	
+
 	"runArgs": [
 		"--network=keepgrouped-net",
 		"-p=5173:5173",
