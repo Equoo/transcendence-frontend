@@ -16,7 +16,7 @@ FROM nginx:alpine AS runner
 
 COPY --from=builder /build/dist /app
 
-COPY conf/nginx.conf /etc/nginx/conf.d/default.conf
+COPY conf/nginx.conf.template /etc/nginx/templates/default.conf.template
 
 EXPOSE 80
 

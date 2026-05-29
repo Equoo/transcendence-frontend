@@ -1,5 +1,6 @@
 import "./App.css";
 import { type JSX, useState } from "react";
+import { API_PATH } from "./constants";
 import heroImg from "./assets/hero.png";
 import reactLogo from "./assets/react.svg";
 import { useQuery } from "@tanstack/react-query";
@@ -9,7 +10,7 @@ function App(): JSX.Element {
 	const { isPending, error, data } = useQuery({
 		queryKey: ["testApi"],
 		queryFn: async (): Promise<string> =>
-			fetch(import.meta.env.VITE_API_URL).then(async (res) => res.text()),
+			fetch(API_PATH).then(async (res) => res.text()),
 	});
 	const [count, setCount] = useState(0);
 
@@ -46,7 +47,7 @@ function App(): JSX.Element {
 					type="button"
 					className="counter"
 					onClick={() => {
-						setCount(count + 1);
+						setCount(count + 50);
 					}}
 				>
 					Count is {count}

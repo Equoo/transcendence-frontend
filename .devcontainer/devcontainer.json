@@ -27,6 +27,12 @@
 			]
 		}
 	},
-	"runArgs": ["--net=bridge", "-p=5173:5173"],
-	"postCreateCommand": "hooks/install-hooks.sh; if [ -f './package.json' ]; then npm install; fi"
+	
+	"runArgs": [
+		"--network=keepgrouped-net",
+		"-p=5173:5173",
+		"--name=keepgrouped-front-dev"
+	],
+	"postCreateCommand": "hooks/install-hook.sh; if [ -f './package.json' ]; then npm install; fi",
+	"initializeCommand": "docker network create -d bridge keepgrouped-net || true"
 }
