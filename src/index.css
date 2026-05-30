@@ -1,1 +1,29 @@
+@import url("https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Figtree:ital,wght@0,300..900;1,300..900&display=swap");
 @import "tailwindcss";
+@source "../node_modules/flowbite";
+@plugin "flowbite/plugin";
+@import "flowbite/src/themes/default";
+
+/* Color palette */
+@theme {
+	--color-back: #f7f1e7;
+	--color-back2: #f0e7d8;
+	--color-surface: #fffdf8;
+	--color-surface2: #faf4ea;
+	--color-hover: #f3ecdf;
+	--color-text: #2c2820;
+	--color-text2: #716856;
+	--color-muted: #9c9384;
+	--color-border: #ece1cf;
+	--color-border2: #e1d4bd;
+	--color-accent: #e8743c;
+	--color-accent-text: #fffaf6;
+	--color-accent-soft: color-mix(accent 15%, surface);
+	--color-good: #3f9e6b;
+	--color-good-soft: #e2f0e6;
+
+	--font-*: initial;
+	--font-head: "Bricolage Grotesque", system-ui, sans-serif;
+	--font-main: "Figtree", system-ui, sans-serif;
+	--font-sans: "Figtree", system-ui, sans-serif;
+}

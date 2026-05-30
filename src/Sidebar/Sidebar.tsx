@@ -1,0 +1,63 @@
+import type { JSX } from "react";
+import ItemCategorie from "./ItemCategorie";
+import { PiBookOpen, PiCalendarBlank, PiChat, PiHouse } from "react-icons/pi";
+import { HiMenuAlt2 } from "react-icons/hi";
+
+function Sidebar(): JSX.Element {
+	return (
+		<>
+			<button
+				data-drawer-target="sidebar"
+				data-drawer-toggle="sidebar"
+				aria-controls="sidebar"
+				type="button"
+				className="text-heading bg-transparent box-border border border-transparent hover:bg-back2
+				focus:ring-4 focus:ring-border2 font-medium leading-5 rounded-xl ms-3 mt-3 text-sm p-2
+				focus:outline-none inline-flex sm:hidden h-fit"
+			>
+				<span className="sr-only">Open sidebar</span>
+				<HiMenuAlt2 size={25} />
+			</button>
+
+			<aside
+				id="sidebar"
+				className="fixed top-0 left-0 z-40 w-64 h-full transition-transform -translate-x-full sm:translate-x-0
+				bg-back2"
+				aria-label="Sidebar"
+			>
+				<div className="h-full px-3 py-4 overflow-y-auto border-e border-border">
+					<a
+						href="https://flowbite.com/"
+						className="flex items-center ps-1 mb-5"
+					>
+						<img
+							src="/logo/icon-tile.svg"
+							className="h-10 me-3"
+							alt="Flowbite Logo"
+						/>
+						<div className="flex flex-col self-center">
+							<span className="text-text font-head font-semibold text-[17px]">
+								Keep Grouped
+							</span>
+							<span className="text-muted font-main font-normal text-sm">
+								Transcendance Team
+							</span>
+						</div>
+					</a>
+					<ul className="space-y-3 font-main font-medium text-muted text-[14.5px]">
+						<ItemCategorie icon={PiHouse}>Home</ItemCategorie>
+						<ItemCategorie icon={PiCalendarBlank}>
+							Calendar
+						</ItemCategorie>
+						<ItemCategorie icon={PiBookOpen}>
+							Knowledge
+						</ItemCategorie>
+						<ItemCategorie icon={PiChat}>Messages</ItemCategorie>
+					</ul>
+				</div>
+			</aside>
+		</>
+	);
+}
+
+export default Sidebar;
