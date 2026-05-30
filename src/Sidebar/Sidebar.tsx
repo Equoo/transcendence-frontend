@@ -1,7 +1,7 @@
-import type { JSX } from "react";
-import ItemCategorie from "./ItemCategorie";
 import { PiBookOpen, PiCalendarBlank, PiChat, PiHouse } from "react-icons/pi";
 import { HiMenuAlt2 } from "react-icons/hi";
+import ItemCategorie from "./ItemCategorie";
+import type { JSX } from "react";
 
 function Sidebar(): JSX.Element {
 	return (
