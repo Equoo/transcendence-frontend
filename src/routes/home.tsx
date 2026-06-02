@@ -2,7 +2,7 @@ import type { JSX } from "react";
 
 export default function Home(): JSX.Element {
 	return (
-		<div className="bg-surface block max-w-sm p-6 border border-border rounded-base shadow-main">
+		<div className="bg-surface flex flex-col max-w-lg gap-4 p-8 border border-border rounded-3xl shadow-main">
 			<h5 className="mb-3 text-2xl font-semibold tracking-tight text-heading leading-8">
 				Tactical Strike
 			</h5>
@@ -10,29 +10,22 @@ export default function Home(): JSX.Element {
 				Here are the biggest technology acquisitions of 2025 so far, in
 				reverse chronological order.
 			</p>
-			<a
-				href="#"
-				className="inline-flex items-center text-white bg-accent box-border border border-transparent hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none"
-			>
-				Read more
-				<svg
-					className="w-4 h-4 ms-1.5 rtl:rotate-180 -me-0.5"
-					aria-hidden="true"
-					xmlns="http://www.w3.org/2000/svg"
-					width="24"
-					height="24"
-					fill="none"
-					viewBox="0 0 24 24"
+			<div className="inline-flex flex-row gap-2.5">
+				<a
+					href="#"
+					className="inline-flex items-center text-accent-text bg-accent box-border border border-transparent
+					hover:brightness-110 focus:ring-4 focus:ring-brand-mediumshadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none"
 				>
-					<path
-						stroke="currentColor"
-						strokeLinecap="round"
-						strokeLinejoin="round"
-						strokeWidth="2"
-						d="M19 12H5m14 0-4 4m4-4-4-4"
-					/>
-				</svg>
-			</a>
+					I'm here
+				</a>
+				<a
+					href="#"
+					className="inline-flex items-center text-text bg-surface box-border border border-transparent
+					hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none"
+				>
+					Maybe
+				</a>
+			</div>
 		</div>
 	);
 }

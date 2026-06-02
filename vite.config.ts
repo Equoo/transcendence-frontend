@@ -8,6 +8,9 @@ export default defineConfig(() => {
 	return {
 		plugins: [reactRouter(), tailwindcss()],
 		server: {
+			watch: {
+				usePolling: true,
+			},
 			allowedHosts: true,
 			proxy: {
 				"/api": {

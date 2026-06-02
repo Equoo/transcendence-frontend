@@ -42,5 +42,8 @@
 	"prettier": {
 		"tabWidth": 4,
 		"useTabs": true
+	},
+	"allowScripts": {
+		"esbuild@0.27.7": true
 	}
 }
