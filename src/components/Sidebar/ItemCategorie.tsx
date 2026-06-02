@@ -1,4 +1,4 @@
-import { type JSX, type ReactNode, useState } from "react";
+import type { JSX, ReactNode } from "react";
 import type { IconType } from "react-icons";
 import { NavLink } from "react-router";
 

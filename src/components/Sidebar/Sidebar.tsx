@@ -1,9 +1,8 @@
-import { useEffect } from "react";
+import { type JSX, useEffect } from "react";
 import { PiBookOpen, PiCalendarBlank, PiChat, PiHouse } from "react-icons/pi";
 import { HiMenuAlt2 } from "react-icons/hi";
-import { initDrawers } from "flowbite";
 import ItemCategorie from "./ItemCategorie";
-import type { JSX } from "react";
+import { initDrawers } from "flowbite";
 
 function Sidebar(): JSX.Element {
 	useEffect(() => {
