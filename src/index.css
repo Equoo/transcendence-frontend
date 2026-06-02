@@ -18,7 +18,7 @@
 	--color-border2: #e1d4bd;
 	--color-accent: #e8743c;
 	--color-accent-text: #fffaf6;
-	--color-accent-soft: color-mix(accent 15%, surface);
+	--color-accent-soft: color-mix(#e8743c 15%, #fffdf8);
 	--color-good: #3f9e6b;
 	--color-good-soft: #e2f0e6;
 

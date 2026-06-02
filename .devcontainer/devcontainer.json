@@ -33,6 +33,7 @@
 	"runArgs": [
 		"--network=keepgrouped-net",
 		"-p=5173:5173",
+		"-p=12049:12049",
 		"--name=keepgrouped-front-dev"
 	],
 	"postCreateCommand": "hooks/install-hook.sh; if [ -f './package.json' ]; then npm install; fi",

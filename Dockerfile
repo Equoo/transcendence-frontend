@@ -14,7 +14,7 @@ RUN npm run build
 
 FROM nginx:alpine AS runner
 
-COPY --from=builder /build/dist /app
+COPY --from=builder /build/build/client /app
 
 COPY conf/nginx.conf.template /etc/nginx/templates/default.conf.template
 

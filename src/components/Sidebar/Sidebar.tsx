@@ -1,9 +1,14 @@
+import { useEffect } from "react";
 import { PiBookOpen, PiCalendarBlank, PiChat, PiHouse } from "react-icons/pi";
 import { HiMenuAlt2 } from "react-icons/hi";
+import { initDrawers } from "flowbite";
 import ItemCategorie from "./ItemCategorie";
 import type { JSX } from "react";
 
 function Sidebar(): JSX.Element {
+	useEffect(() => {
+		initDrawers();
+	}, []);
 	return (
 		<>
 			<button
@@ -45,14 +50,18 @@ function Sidebar(): JSX.Element {
 						</div>
 					</a>
 					<ul className="space-y-3 font-main font-medium text-muted text-[14.5px]">
-						<ItemCategorie icon={PiHouse}>Home</ItemCategorie>
-						<ItemCategorie icon={PiCalendarBlank}>
+						<ItemCategorie to="/" icon={PiHouse}>
+							Home
+						</ItemCategorie>
+						<ItemCategorie to="/calendar" icon={PiCalendarBlank}>
 							Calendar
 						</ItemCategorie>
-						<ItemCategorie icon={PiBookOpen}>
+						<ItemCategorie to="/knowledge" icon={PiBookOpen}>
 							Knowledge
 						</ItemCategorie>
-						<ItemCategorie icon={PiChat}>Messages</ItemCategorie>
+						<ItemCategorie to="/messages" icon={PiChat}>
+							Messages
+						</ItemCategorie>
 					</ul>
 				</div>
 			</aside>
