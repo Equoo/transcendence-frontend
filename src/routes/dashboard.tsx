@@ -10,7 +10,9 @@ export default function Dashboard(): JSX.Element {
 		<QueryClientProvider client={queryClient}>
 			<div className="flex flex-row w-screen h-screen bg-back">
 				<Sidebar />
-				<Outlet />
+				<div className="flex-1 flex flex-col justify-around items-center sm:ml-64">
+					<Outlet />
+				</div>
 			</div>
 		</QueryClientProvider>
 	);

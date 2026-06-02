@@ -3,11 +3,30 @@ import { PiBookOpen, PiCalendarBlank, PiChat, PiHouse } from "react-icons/pi";
 import { HiMenuAlt2 } from "react-icons/hi";
 import ItemCategorie from "./ItemCategorie";
 import { initDrawers } from "flowbite";
+import { useLocation } from "react-router";
 
 function Sidebar(): JSX.Element {
+	const location = useLocation();
+
 	useEffect(() => {
 		initDrawers();
 	}, []);
+
+	useEffect(() => {
+		const isMobile = window.matchMedia("(max-width: 639px)").matches;
+		if (!isMobile) {
+			return;
+		}
+		const sidebar = document.getElementById("sidebar");
+
+		const toggleButton = document.querySelector<HTMLButtonElement>(
+			'button[data-drawer-target="sidebar"]',
+		);
+		if (sidebar?.classList.contains("transform-none") ?? false) {
+			toggleButton?.click();
+		}
+	}, [location.pathname]);
+
 	return (
 		<>
 			<button
@@ -15,9 +34,9 @@ function Sidebar(): JSX.Element {
 				data-drawer-toggle="sidebar"
 				aria-controls="sidebar"
 				type="button"
-				className="text-heading bg-transparent box-border border border-transparent hover:bg-back2
-				focus:ring-4 focus:ring-border2 font-medium leading-5 rounded-xl ms-3 mt-3 text-sm p-2
-				focus:outline-none inline-flex sm:hidden h-fit"
+				className="fixed z-39 text-heading bg-transparent box-border border border-transparent hover:bg-back2
+				focus:ring-4 focus:ring-border2 font-medium leading-5 rounded-xl top-3 left-3 text-sm p-2
+				focus:outline-none inline-flex sm:hidden"
 			>
 				<span className="sr-only">Open sidebar</span>
 				<HiMenuAlt2 size={25} />

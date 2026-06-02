@@ -26,4 +26,7 @@
 	--font-head: "Bricolage Grotesque", system-ui, sans-serif;
 	--font-main: "Figtree", system-ui, sans-serif;
 	--font-sans: "Figtree", system-ui, sans-serif;
+
+	--shadow-main:
+		0 2px 6px rgba(125, 95, 55, 0.06), 0 12px 30px rgba(125, 95, 55, 0.09);
 }
