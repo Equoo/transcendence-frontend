@@ -8,10 +8,12 @@ const queryClient = new QueryClient();
 export default function Dashboard(): JSX.Element {
 	return (
 		<QueryClientProvider client={queryClient}>
-			<div className="flex flex-row w-screen h-screen bg-back">
+			<div className="relative w-full h-full overflow-hidden bg-back">
 				<Sidebar />
-				<div className="flex-1 flex flex-col justify-around items-center sm:ml-64">
-					<Outlet />
+				<div className="h-full sm:pl-64">
+					<div className="flex h-full min-w-0 min-h-0 items-center justify-center overflow-hidden p-6">
+						<Outlet />
+					</div>
 				</div>
 			</div>
 		</QueryClientProvider>
