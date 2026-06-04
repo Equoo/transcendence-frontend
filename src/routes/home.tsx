@@ -1,10 +1,16 @@
-import { PiCheckFatFill, PiClockCountdownLight } from "react-icons/pi";
+import { type JSX, useState } from "react";
 import CheckButton from "../components/Sidebar/CheckButton";
 import EventBadge from "../components/Sidebar/EventBadge";
 import { GoDotFill } from "react-icons/go";
-import type { JSX } from "react";
+import { PiClockCountdownLight } from "react-icons/pi";
 
 export default function Home(): JSX.Element {
+	const [presence, setPresence] = useState<"here" | "maybe" | "">();
+
+	function handlePresence(btn: string): void {
+		btn === presence ? setPresence("") : setPresence(btn);
+	}
+
 	return (
 		<div className="bg-surface flex max-w-3xl max-h-full flex-col gap-4 overflow-hidden border border-border rounded-3xl p-6 shadow-main sm:p-8">
 			<div className="flex flex-nowrap items-center gap-2.5 overflow-auto whitespace-nowrap scrollbar-thin pb-1">
@@ -21,10 +27,22 @@ export default function Home(): JSX.Element {
 				Tactical Strike -- Stanton
 			</h2>
 			<div className="flex flex-wrap gap-2.5 items-center whitespace">
-				<CheckButton active>
-					<PiCheckFatFill /> I'm here
+				<CheckButton
+					active={presence === "here"}
+					onClick={() => {
+						handlePresence("here");
+					}}
+				>
+					I'm here
 				</CheckButton>
-				<CheckButton>Maybe</CheckButton>
+				<CheckButton
+					active={presence === "maybe"}
+					onClick={() => {
+						handlePresence("maybe");
+					}}
+				>
+					Maybe
+				</CheckButton>
 				<CheckButton discrete>Details</CheckButton>
 			</div>
 		</div>

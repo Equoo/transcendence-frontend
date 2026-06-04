@@ -30,6 +30,7 @@ export default defineConfig([
 			"func-style": "off",
 			"no-ternary": "off",
 			"no-nested-ternary": "off",
+			"@typescript-eslint/no-unused-expressions": "off",
 			"@typescript-eslint/naming-convention": "off",
 			"@typescript-eslint/no-magic-numbers": "off",
 			"@typescript-eslint/no-unsafe-return": "off",
