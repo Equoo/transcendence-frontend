@@ -1,30 +1,49 @@
-import type { JSX } from "react";
+import { type JSX, useState } from "react";
+import CheckButton from "../components/Sidebar/CheckButton";
+import EventBadge from "../components/Sidebar/EventBadge";
+import { GoDotFill } from "react-icons/go";
+import { PiClockCountdownLight } from "react-icons/pi";
 
 export default function Home(): JSX.Element {
+	const [presence, setPresence] = useState<"here" | "maybe" | "">();
+
+	function handlePresence(btn: string): void {
+		btn === presence ? setPresence("") : setPresence(btn);
+	}
+
 	return (
-		<div className="bg-surface flex flex-col max-w-lg gap-4 p-8 border border-border rounded-3xl shadow-main">
-			<h5 className="mb-3 text-2xl font-semibold tracking-tight text-heading leading-8">
-				Tactical Strike
-			</h5>
-			<p className="text-body mb-6">
-				Here are the biggest technology acquisitions of 2025 so far, in
-				reverse chronological order.
-			</p>
-			<div className="inline-flex flex-row gap-2.5">
-				<a
-					href="#"
-					className="inline-flex items-center text-accent-text bg-accent box-border border border-transparent
-					hover:brightness-110 focus:ring-4 focus:ring-brand-mediumshadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none"
+		<div className="bg-surface flex max-w-3xl max-h-full flex-col gap-4 overflow-hidden border border-border rounded-3xl p-6 shadow-main sm:p-8">
+			<div className="flex flex-nowrap items-center gap-2.5 overflow-auto whitespace-nowrap scrollbar-thin pb-1">
+				<EventBadge>
+					<GoDotFill size={12} color="#e8743c" />
+					PvP
+				</EventBadge>
+				<EventBadge>
+					<PiClockCountdownLight size={16} />
+					Ce Soir | 20:30
+				</EventBadge>
+			</div>
+			<h2 className="mb-3 text-3xl font-semibold font-head leading-8 text-text">
+				Tactical Strike -- Stanton
+			</h2>
+			<div className="flex flex-wrap gap-2.5 items-center whitespace">
+				<CheckButton
+					active={presence === "here"}
+					onClick={() => {
+						handlePresence("here");
+					}}
 				>
 					I'm here
-				</a>
-				<a
-					href="#"
-					className="inline-flex items-center text-text bg-surface box-border border border-transparent
-					hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none"
+				</CheckButton>
+				<CheckButton
+					active={presence === "maybe"}
+					onClick={() => {
+						handlePresence("maybe");
+					}}
 				>
 					Maybe
-				</a>
+				</CheckButton>
+				<CheckButton discrete>Details</CheckButton>
 			</div>
 		</div>
 	);
