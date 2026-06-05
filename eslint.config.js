@@ -6,7 +6,7 @@ import eslintReact from "@eslint-react/eslint-plugin";
 import { defineConfig, globalIgnores } from "eslint/config";
 
 export default defineConfig([
-	globalIgnores(["dist", ".react-router/*"]),
+	globalIgnores(["dist", ".react-router/*", "node_modules"]),
 	{
 		files: ["**/*.{ts,tsx}"],
 		extends: [
