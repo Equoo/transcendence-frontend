@@ -14,7 +14,7 @@ export default function EventCard(): JSX.Element {
 	}
 
 	return (
-		<div className="bg-surface flex max-w-xl w-fit h-fit flex-col gap-4 overflow-hidden border border-border rounded-3xl p-6 shadow-main sm:p-8">
+		<div className="bg-surface flex min-w-md h-fit flex-col gap-4 overflow-hidden border border-border rounded-3xl p-6 shadow-main sm:p-8">
 			<div className="flex flex-nowrap items-center gap-2.5 overflow-auto whitespace-nowrap scrollbar-thin pb-1">
 				<EventBadge>
 					<GoDotFill size={12} color="#e8743c" />
