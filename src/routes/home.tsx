@@ -5,7 +5,7 @@ export default function Home(): JSX.Element {
 	return (
 		<>
 			<div></div>
-			<div className="flex gap-3">
+			<div className="w-full flex px-4 py-8 gap-8 flex-nowrap overflow-auto">
 				<EventCard />
 				<EventCard />
 			</div>
