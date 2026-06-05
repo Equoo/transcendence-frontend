@@ -11,7 +11,7 @@ export default function Dashboard(): JSX.Element {
 			<div className="relative w-full h-full overflow-hidden bg-back">
 				<Sidebar />
 				<div className="h-full sm:pl-64">
-					<div className="flex h-full min-w-0 min-h-0 items-center justify-center overflow-hidden p-6">
+					<div className="flex flex-col h-full min-w-0 min-h-0 items-center p-6">
 						<Outlet />
 					</div>
 				</div>
