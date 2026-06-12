@@ -5,11 +5,13 @@ export default function CheckButton({
 	children,
 	active = false,
 	discrete = false,
+	activeCheck = true,
 	onClick,
 }: {
 	children: ReactNode;
 	active?: boolean;
 	discrete?: boolean;
+	activeCheck?: boolean;
 	onClick?: () => void;
 }): JSX.Element {
 	const activeStyle =
@@ -26,7 +28,7 @@ export default function CheckButton({
 			className={`inline-flex items-center font-semibold duration-150 py-2 px-4 gap-2 rounded-full cursor-pointer 
 				${active ? activeStyle : discrete ? discreteStyle : unactiveStyle}`}
 		>
-			{active ? <PiCheckFatFill /> : null}
+			{active && activeCheck ? <PiCheckFatFill /> : null}
 			{children}
 		</button>
 	);
