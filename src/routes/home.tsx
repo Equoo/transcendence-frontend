@@ -96,6 +96,7 @@ export default function Home(): JSX.Element {
 							placeholder="Event Description"
 						/>
 					</div>
+					<CheckButton active>Ok</CheckButton>
 				</form>
 			</Modal>
 		</>
