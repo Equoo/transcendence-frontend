@@ -60,7 +60,7 @@ export default function EventCard({
 	}, [event.date]);
 
 	return (
-		<div className="bg-surface flex min-w-md h-fit flex-col gap-4 overflow-hidden border border-border rounded-3xl p-6 shadow-main sm:p-8">
+		<div className="bg-surface flex max-w-lg grow sm:min-w-md min-w-sm h-fit flex-col gap-4 overflow-hidden border border-border rounded-3xl p-6 shadow-main sm:p-8">
 			<div className="flex flex-nowrap items-center gap-2.5 overflow-auto whitespace-nowrap scrollbar-thin pb-1">
 				{event.tags.map((tag) => (
 					<EventBadge key={tag}>{tag}</EventBadge>
@@ -73,7 +73,7 @@ export default function EventCard({
 				<IoLocationOutline />
 				<span>{event.location}</span>
 			</div>
-			<div className="flex items-center gap-3">
+			<div className="flex gap-3 justify-between items-end">
 				<div
 					id="countdown"
 					className="flex flex-col font-head font-bold text-3xl"
@@ -105,9 +105,11 @@ export default function EventCard({
 				>
 					Maybe
 				</CheckButton>
-				<CheckButton discrete>
-					Details <FiChevronRight />
-				</CheckButton>
+				<div className="ml-auto">
+					<CheckButton discrete>
+						Details <FiChevronRight />
+					</CheckButton>
+				</div>
 			</div>
 		</div>
 	);
