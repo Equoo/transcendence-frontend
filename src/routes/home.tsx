@@ -44,7 +44,7 @@ export default function Home({
 					Event
 				</CheckButton>
 			</div>
-			<div className="w-full flex px-4 py-8 gap-8 flex-nowrap overflow-auto">
+			<div className="w-full flex px-4 py-8 gap-8 flex-nowrap overflow-auto items-center">
 				{events.map((event) => (
 					<EventCard key={event.id} event={event} />
 				))}
