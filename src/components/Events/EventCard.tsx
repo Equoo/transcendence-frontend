@@ -1,10 +1,10 @@
-import { GoPeople } from "react-icons/go";
 import { type JSX, useState } from "react";
 import CheckButton from "../CheckButton";
 import EventBadge from "./EventBadge";
+import type { EventData } from "../../lib/events";
 import { FiChevronRight } from "react-icons/fi";
 import { IoLocationOutline } from "react-icons/io5";
-import type { EventData } from "../../lib/events";
+import { GoPeople } from "react-icons/go";
 
 export default function EventCard({
 	event,

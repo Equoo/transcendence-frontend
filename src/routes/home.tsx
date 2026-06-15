@@ -1,19 +1,24 @@
 import EventCard from "../components/Events/EventCard";
 import EventForm from "../components/Events/EventForm";
 import CheckButton from "../components/CheckButton";
-import { createEvent, fetchEvents, type EventData } from "../lib/events";
+import {
+	createEvent,
+	fetchEvents,
+	type EventActionResult,
+	type EventData,
+} from "../lib/events";
 import { useState, type JSX } from "react";
 import { PiPlusBold } from "react-icons/pi";
 import { isRouteErrorResponse, useRouteError } from "react-router";
 import type { Route } from "./+types/home";
 
-export async function clientLoader({}: Route.ClientLoaderArgs): Promise<
-	EventData[]
-> {
+export async function clientLoader(): Promise<EventData[]> {
 	return fetchEvents();
 }
 
-export async function clientAction({ request }: Route.ClientActionArgs) {
+export async function clientAction({
+	request,
+}: Route.ClientActionArgs): Promise<EventActionResult> {
 	return createEvent(await request.formData());
 }
 
@@ -70,7 +75,7 @@ export function ErrorBoundary(): JSX.Element {
 
 	return (
 		<div className="w-full p-6 text-red-500 font-main">
-			Impossible de charger les événements.
+			Server error during page loading
 		</div>
 	);
 }

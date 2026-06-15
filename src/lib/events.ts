@@ -22,7 +22,7 @@ export type EventActionResult =
 	| { ok: false; error: string };
 
 function splitTags(tags: string): string[] {
-	if (!tags?.trim()) {
+	if (!tags.trim()) {
 		return [];
 	}
 	return tags.trim().split(/\s+/u);
@@ -32,7 +32,7 @@ function toObject(formData: FormData): EventInput {
 	return {
 		name: formData.get("name") as string,
 		date: formData.get("date") as string,
-		size: Number(formData.get("size") as string),
+		size: Number(formData.get("size")),
 		location: formData.get("location") as string,
 		tags: splitTags(formData.get("tags") as string),
 		description: formData.get("description") as string,
@@ -64,7 +64,7 @@ export async function createEvent(
 	if (!response.ok) {
 		return {
 			ok: false,
-			error: "La création de l'événement a échoué.",
+			error: "Event creation failed.",
 		};
 	}
 

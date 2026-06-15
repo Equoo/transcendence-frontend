@@ -24,6 +24,8 @@ export default defineConfig([
 			},
 		},
 		rules: {
+			"react-refresh/only-export-components": "off",
+			"sort-imports": "off",
 			"sort-keys": "off",
 			"no-void": "off",
 			"max-statements": "off",

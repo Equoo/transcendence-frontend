@@ -49,10 +49,7 @@ function Sidebar(): JSX.Element {
 				aria-label="Sidebar"
 			>
 				<div className="h-full px-3 py-4 overflow-y-auto border-e border-border">
-					<a
-						href="https://flowbite.com/"
-						className="flex items-center ps-1 mb-5"
-					>
+					<a href="#" className="flex items-center ps-1 mb-5">
 						<img
 							src="/logo/icon-tile.svg"
 							className="h-10 me-3"

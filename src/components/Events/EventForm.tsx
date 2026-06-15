@@ -2,7 +2,7 @@ import { useEffect, type JSX } from "react";
 import { useFetcher } from "react-router";
 import CheckButton from "../CheckButton";
 import Modal from "../Modal";
-import { type EventActionResult } from "../../lib/events";
+import type { EventActionResult } from "../../lib/events";
 
 export default function EventForm({
 	isOpen,
@@ -14,7 +14,7 @@ export default function EventForm({
 	const fetcher = useFetcher<EventActionResult>();
 
 	useEffect(() => {
-		if (fetcher.state === "idle" && fetcher.data?.ok) {
+		if (fetcher.state === "idle" && (fetcher.data?.ok ?? false)) {
 			onClose();
 		}
 	}, [fetcher.data, fetcher.state, onClose]);
