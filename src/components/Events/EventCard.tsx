@@ -1,12 +1,16 @@
-import { GoDotFill, GoPeople } from "react-icons/go";
+import { GoPeople } from "react-icons/go";
 import { type JSX, useState } from "react";
-import CheckButton from "./CheckButton";
+import CheckButton from "../CheckButton";
 import EventBadge from "./EventBadge";
 import { FiChevronRight } from "react-icons/fi";
 import { IoLocationOutline } from "react-icons/io5";
-import { PiClockCountdownLight } from "react-icons/pi";
+import type { EventData } from "../../lib/events";
 
-export default function EventCard(): JSX.Element {
+export default function EventCard({
+	event,
+}: {
+	event: EventData;
+}): JSX.Element {
 	const [presence, setPresence] = useState<"here" | "maybe" | "">();
 
 	function handlePresence(btn: "here" | "maybe" | ""): void {
@@ -16,21 +20,20 @@ export default function EventCard(): JSX.Element {
 	return (
 		<div className="bg-surface flex min-w-md h-fit flex-col gap-4 overflow-hidden border border-border rounded-3xl p-6 shadow-main sm:p-8">
 			<div className="flex flex-nowrap items-center gap-2.5 overflow-auto whitespace-nowrap scrollbar-thin pb-1">
-				<EventBadge>
-					<GoDotFill size={12} color="#e8743c" />
-					PvP
-				</EventBadge>
-				<EventBadge>
+				{event.tags.map((tag) => (
+					<EventBadge key={tag}>{tag}</EventBadge>
+				))}
+				{/* <EventBadge>
 					<PiClockCountdownLight size={16} />
 					Ce Soir | 20:30
-				</EventBadge>
+				</EventBadge> */}
 			</div>
 			<h2 className=" text-3xl font-semibold font-head leading-8 text-text tracking-tight">
-				Tactical Strike -- Stanton
+				{event.name}
 			</h2>
 			<div className="inline-flex items-center text-text2 text-sm gap-2">
 				<IoLocationOutline />
-				<span>Seraphim Station</span>
+				<span>{event.location}</span>
 			</div>
 			<div className="flex items-center gap-3">
 				<div
@@ -44,7 +47,7 @@ export default function EventCard(): JSX.Element {
 				</div>
 				<EventBadge border="" bg="bg-good-soft" text="text-good">
 					<GoPeople />
-					21/30 Registered
+					21/{event.size} Registered
 				</EventBadge>
 			</div>
 			<div className="flex flex-wrap gap-2.5 items-center whitespace">
