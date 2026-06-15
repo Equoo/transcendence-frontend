@@ -1,12 +1,8 @@
 import "./index.css";
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router";
-import type { JSX } from "react";
+import type { JSX, ReactNode } from "react";
 
-export function Layout({
-	children,
-}: {
-	children: React.ReactNode;
-}): JSX.Element {
+export function Layout({ children }: { children: ReactNode }): JSX.Element {
 	return (
 		<html lang="en">
 			<head>

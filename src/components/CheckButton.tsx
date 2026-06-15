@@ -1,19 +1,26 @@
 import type { JSX, ReactNode } from "react";
 import { PiCheckFatFill } from "react-icons/pi";
+import { useFormStatus } from "react-dom";
 
 export default function CheckButton({
 	children,
 	active = false,
 	discrete = false,
 	activeCheck = true,
+	type = "button",
+	pending: pendingOverride,
 	onClick,
 }: {
 	children: ReactNode;
 	active?: boolean;
 	discrete?: boolean;
 	activeCheck?: boolean;
+	type?: "button" | "submit" | "reset" | undefined;
+	pending?: boolean;
 	onClick?: () => void;
 }): JSX.Element {
+	const { pending: formPending } = useFormStatus();
+	const pending = pendingOverride ?? formPending;
 	const activeStyle =
 		"text-accent-text bg-accent hover:brightness-110 rounded-full border border-accent shadow-accent hover:shadow-xs";
 	const unactiveStyle =
@@ -22,14 +29,14 @@ export default function CheckButton({
 		"text-text2 hover:bg-border border border-surface hover:border-border";
 	return (
 		<button
-			type="button"
+			type={type}
 			onClick={onClick}
 			aria-pressed={active}
 			className={`inline-flex items-center font-semibold duration-150 py-2 px-4 gap-2 rounded-full cursor-pointer 
 				${active ? activeStyle : discrete ? discreteStyle : unactiveStyle}`}
 		>
-			{active && activeCheck ? <PiCheckFatFill /> : null}
-			{children}
+			{active && activeCheck && !pending ? <PiCheckFatFill /> : null}
+			{pending ? "..." : children}
 		</button>
 	);
 }

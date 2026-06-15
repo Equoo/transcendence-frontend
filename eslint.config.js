@@ -25,6 +25,8 @@ export default defineConfig([
 		},
 		rules: {
 			"sort-keys": "off",
+			"no-void": "off",
+			"max-statements": "off",
 			"max-lines-per-function": "off",
 			"one-var": "off",
 			"func-style": "off",
@@ -34,6 +36,7 @@ export default defineConfig([
 			"@typescript-eslint/naming-convention": "off",
 			"@typescript-eslint/no-magic-numbers": "off",
 			"@typescript-eslint/no-unsafe-return": "off",
+			"@typescript-eslint/no-unsafe-type-assertion": "off",
 			"@typescript-eslint/no-unsafe-call": "off",
 			"@typescript-eslint/prefer-readonly-parameter-types": "off",
 		},
