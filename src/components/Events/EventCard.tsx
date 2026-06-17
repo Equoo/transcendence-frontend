@@ -5,6 +5,7 @@ import type { EventData } from "../../lib/events";
 import { FiChevronRight } from "react-icons/fi";
 import { IoLocationOutline } from "react-icons/io5";
 import { GoPeople } from "react-icons/go";
+import { PiClock } from "react-icons/pi";
 
 interface Countdown {
 	days: number;
@@ -60,20 +61,45 @@ export default function EventCard({
 			window.clearInterval(intervalId);
 		};
 	}, [event.date]);
-
+	// {event.tags.length > 0 && (
+	// 			<div className="flex flex-nowrap items-center gap-2.5 overflow-auto whitespace-nowrap scrollbar-thin pb-1">
+	// 				{event.tags.map((tag) => (
+	// 					<EventBadge key={tag}>{tag}</EventBadge>
+	// 				))}
+	// 			</div>
+	// 		)}
 	return (
 		<div className="bg-surface flex max-w-lg grow sm:min-w-md min-w-sm h-fit flex-col gap-4 overflow-hidden border border-border rounded-3xl p-6 shadow-main sm:p-8">
-			<div className="flex flex-nowrap items-center gap-2.5 overflow-auto whitespace-nowrap scrollbar-thin pb-1">
-				{event.tags.map((tag) => (
-					<EventBadge key={tag}>{tag}</EventBadge>
-				))}
-			</div>
 			<h2 className=" text-3xl font-semibold font-head leading-8 text-text tracking-tight">
 				{event.name}
 			</h2>
-			<div className="inline-flex items-center text-text2 text-sm gap-2">
-				<IoLocationOutline />
-				<span>{event.location}</span>
+			<div className="inline-flex min-h-9 text-text2 text-sm gap-6 justify-between items-start">
+				<div className="flex flex-col gap-2">
+					<div className="inline-flex items-center gap-2">
+						<IoLocationOutline />
+						<span>{event.location}</span>
+					</div>
+					<div className="inline-flex items-center gap-2 text-nowrap">
+						<PiClock />
+						<span>
+							{new Date(event.date).toLocaleString([], {
+								hour: "2-digit",
+								minute: "2-digit",
+								month: "short",
+								day: "2-digit",
+								year: "numeric",
+							})}
+						</span>
+					</div>
+				</div>
+
+				{event.tags.length > 0 && (
+					<div className="flex flex-nowrap items-center gap-2.5 overflow-auto whitespace-nowrap scrollbar-thin pb-1.5">
+						{event.tags.map((tag) => (
+							<EventBadge key={tag}>{tag}</EventBadge>
+						))}
+					</div>
+				)}
 			</div>
 			<div className="flex gap-3 justify-between items-end">
 				<div

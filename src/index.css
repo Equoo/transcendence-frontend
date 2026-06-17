@@ -84,6 +84,6 @@ body,
 
 /* Firefox */
 * {
-	scrollbar-width: normal;
+	scrollbar-width: thin;
 	scrollbar-color: var(--color-muted) transparent;
 }
