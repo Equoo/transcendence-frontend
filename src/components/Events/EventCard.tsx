@@ -29,7 +29,9 @@ function getCountdown(targetDate: string): Countdown {
 
 function formatCountdown(countdown: Countdown): string {
 	const pad = (value: number): string => String(value).padStart(2, "0");
-
+	if (countdown.totalMs === 0) {
+		return "Running";
+	}
 	if (countdown.days > 0) {
 		return `${countdown.days}d ${pad(countdown.hours)}:${pad(countdown.minutes)}:${pad(countdown.seconds)}`;
 	}
