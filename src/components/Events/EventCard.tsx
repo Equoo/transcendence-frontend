@@ -45,12 +45,8 @@ export default function EventCard({
 }: {
 	event: EventData;
 }): JSX.Element {
-	const [presence, setPresence] = useState<"here" | "maybe" | "">();
+	const [presence, setPresence] = useState(false);
 	const [countdown, setCountdown] = useState(() => getCountdown(event.date));
-
-	function handlePresence(btn: "here" | "maybe" | ""): void {
-		btn === presence ? setPresence("") : setPresence(btn);
-	}
 
 	useEffect(() => {
 		const intervalId = window.setInterval(() => {
@@ -118,20 +114,12 @@ export default function EventCard({
 			</div>
 			<div className="flex flex-wrap gap-2.5 items-center whitespace">
 				<CheckButton
-					active={presence === "here"}
+					active={presence}
 					onClick={() => {
-						handlePresence("here");
+						setPresence(!presence);
 					}}
 				>
 					I'm here
-				</CheckButton>
-				<CheckButton
-					active={presence === "maybe"}
-					onClick={() => {
-						handlePresence("maybe");
-					}}
-				>
-					Maybe
 				</CheckButton>
 				<div className="ml-auto">
 					<CheckButton discrete>
