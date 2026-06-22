@@ -28,7 +28,7 @@ function splitTags(tags: string): string[] {
 	return tags.trim().split(/\s+/u);
 }
 
-function toObject(formData: FormData): EventInput {
+function toEventInput(formData: FormData): EventInput {
 	return {
 		name: formData.get("name") as string,
 		date: formData.get("date") as string,
@@ -51,7 +51,7 @@ export async function fetchEvents(): Promise<EventData[]> {
 export async function createEvent(
 	formData: FormData,
 ): Promise<EventActionResult> {
-	const object = toObject(formData);
+	const object = toEventInput(formData);
 
 	const response = await fetch("/api/events", {
 		method: "POST",
