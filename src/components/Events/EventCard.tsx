@@ -65,7 +65,7 @@ export default function EventCard({
 	// 			</div>
 	// 		)}
 	return (
-		<div className="bg-surface flex max-w-lg grow sm:min-w-md min-w-sm h-fit flex-col gap-4 overflow-hidden border border-border rounded-3xl p-6 shadow-main sm:p-8">
+		<div className="bg-surface flex max-w-lg grow sm:w-md w-sm h-fit flex-col gap-4 overflow-hidden border border-border rounded-3xl p-6 shadow-main sm:p-8">
 			<h2 className=" text-3xl font-semibold font-head leading-8 text-text tracking-tight">
 				{event.name}
 			</h2>
