@@ -65,7 +65,7 @@ export default function EventCard({
 	// 			</div>
 	// 		)}
 	return (
-		<div className="bg-surface flex max-w-lg grow sm:w-md w-sm h-fit flex-col gap-4 overflow-hidden border border-border rounded-3xl p-6 shadow-main sm:p-8">
+		<div className="bg-surface flex max-w-lg grow sm:min-w-md min-w-sm h-fit flex-col gap-4 overflow-hidden border border-border rounded-3xl p-6 shadow-main sm:p-8">
 			<h2 className=" text-3xl font-semibold font-head leading-8 text-text tracking-tight">
 				{event.name}
 			</h2>
@@ -97,7 +97,7 @@ export default function EventCard({
 					</div>
 				)}
 			</div>
-			<div className="flex gap-3 justify-between items-end">
+			<div className="flex gap-3 items-end">
 				<div
 					id="countdown"
 					className="flex flex-col font-head font-bold text-3xl"
@@ -107,10 +107,12 @@ export default function EventCard({
 						BEFORE START
 					</small>
 				</div>
-				<EventBadge border="" bg="bg-good-soft" text="text-good">
-					<GoPeople />
-					21/{event.size} Registered
-				</EventBadge>
+				<div className="ml-auto">
+					<EventBadge border="" bg="bg-good-soft" text="text-good">
+						<GoPeople />
+						21/{event.size} Registered
+					</EventBadge>
+				</div>
 			</div>
 			<div className="flex flex-wrap gap-2.5 items-center whitespace">
 				<CheckButton
