@@ -75,7 +75,7 @@ export default function EventCard({
 }): JSX.Element {
 	const fetcher = useFetcher<RegistrationActionResult>();
 	const isRegistered = event.registrations.some(
-		(reg) => reg.user.userName !== "asventi",
+		(reg) => reg.user.userName === "asventi",
 	);
 
 	const presence =
