@@ -2,7 +2,7 @@ import type { JSX } from "react";
 import { useFetcher } from "react-router";
 import CheckButton from "../CheckButton";
 import Modal from "../Modal";
-import type { EventActionResult } from "../../lib/events";
+import type { EventActionResult } from "../../models/events";
 
 export default function EventForm(): JSX.Element {
 	const fetcher = useFetcher<EventActionResult>();

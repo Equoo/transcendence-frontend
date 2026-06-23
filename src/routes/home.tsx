@@ -5,7 +5,7 @@ import {
 	fetchEvents,
 	type EventActionResult,
 	type EventData,
-} from "../lib/events";
+} from "../models/events";
 import type { JSX } from "react";
 import { PiPlusBold } from "react-icons/pi";
 import {

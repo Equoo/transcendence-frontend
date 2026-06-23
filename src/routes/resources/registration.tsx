@@ -2,7 +2,7 @@ import {
 	registerToEvent,
 	unregisterToEvent,
 	type RegistrationActionResult,
-} from "../../lib/registrations";
+} from "../../models/registrations";
 import type { Route } from "./+types/registration";
 
 export async function clientAction({
