@@ -1,26 +1,14 @@
-import { useEffect, type JSX } from "react";
+import type { JSX } from "react";
 import { useFetcher } from "react-router";
 import CheckButton from "../CheckButton";
 import Modal from "../Modal";
 import type { EventActionResult } from "../../lib/events";
 
-export default function EventForm({
-	isOpen,
-	onClose,
-}: {
-	isOpen: boolean;
-	onClose: () => void;
-}): JSX.Element {
+export default function EventForm(): JSX.Element {
 	const fetcher = useFetcher<EventActionResult>();
 
-	useEffect(() => {
-		if (fetcher.state === "idle" && (fetcher.data?.ok ?? false)) {
-			onClose();
-		}
-	}, [fetcher.data, fetcher.state, onClose]);
-
 	return (
-		<Modal title="Create An Event" isOpen={isOpen} onClose={onClose}>
+		<Modal title="Create An Event">
 			<p className="text-muted font-main font-light w-4/5 text-sm">
 				You will be automatically registered to the event and set as the
 				Organizer. You can still unregister after the creation.

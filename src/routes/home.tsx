@@ -1,4 +1,3 @@
-import EventCard from "../components/Events/EventCard";
 import EventForm from "../components/Events/EventForm";
 import CheckButton from "../components/CheckButton";
 import {
@@ -7,10 +6,17 @@ import {
 	type EventActionResult,
 	type EventData,
 } from "../lib/events";
-import { useState, type JSX } from "react";
+import type { JSX } from "react";
 import { PiPlusBold } from "react-icons/pi";
-import { isRouteErrorResponse, useRouteError } from "react-router";
+import {
+	isRouteErrorResponse,
+	useRouteError,
+	useSearchParams,
+	Form,
+	redirect,
+} from "react-router";
 import type { Route } from "./+types/home";
+import EventList from "../components/Events/EventList";
 
 export async function clientLoader(): Promise<EventData[]> {
 	return fetchEvents();
@@ -18,14 +24,20 @@ export async function clientLoader(): Promise<EventData[]> {
 
 export async function clientAction({
 	request,
-}: Route.ClientActionArgs): Promise<EventActionResult> {
-	return createEvent(await request.formData());
+}: Route.ClientActionArgs): Promise<EventActionResult | Response> {
+	const res = await createEvent(await request.formData());
+
+	if (!res.ok) {
+		return res;
+	}
+	return redirect("/");
 }
 
 export default function Home({
 	loaderData: events,
 }: Route.ComponentProps): JSX.Element {
-	const [showEventForm, setShowEventForm] = useState(false);
+	const [searchParams] = useSearchParams();
+	const showEventForm = searchParams.get("eventForm");
 
 	return (
 		<>
@@ -33,31 +45,20 @@ export default function Home({
 				<h1 className="font-semibold tracking-tight text-xl">
 					Accueil
 				</h1>
-				<CheckButton
-					active
-					activeCheck={false}
-					onClick={() => {
-						setShowEventForm(true);
-					}}
-				>
-					<PiPlusBold />
-					Event
-				</CheckButton>
+				<Form>
+					<CheckButton
+						type="submit"
+						active
+						activeCheck={false}
+						name="eventForm"
+					>
+						<PiPlusBold />
+						Event
+					</CheckButton>
+				</Form>
 			</div>
-			<div className="w-full flex px-4 py-8 gap-8 flex-nowrap overflow-auto items-center justify-center-safe">
-				{events.map((event) => (
-					<EventCard key={event.id} event={event} />
-				))}
-			</div>
-
-			{showEventForm ? (
-				<EventForm
-					isOpen={showEventForm}
-					onClose={() => {
-						setShowEventForm(false);
-					}}
-				/>
-			) : null}
+			<EventList events={events} />
+			{showEventForm === null ? null : <EventForm />}
 		</>
 	);
 }

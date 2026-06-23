@@ -1,6 +1,13 @@
-import type { JSX, ReactNode } from "react";
+import type { ComponentProps, JSX } from "react";
 import { PiCheckFatFill } from "react-icons/pi";
-import { useFormStatus } from "react-dom";
+import { TbLoader2 } from "react-icons/tb";
+
+type Props = ComponentProps<"button"> & {
+	active?: boolean;
+	discrete?: boolean;
+	activeCheck?: boolean;
+	pending?: boolean;
+};
 
 export default function CheckButton({
 	children,
@@ -8,19 +15,9 @@ export default function CheckButton({
 	discrete = false,
 	activeCheck = true,
 	type = "button",
-	pending: pendingOverride,
-	onClick,
-}: {
-	children: ReactNode;
-	active?: boolean;
-	discrete?: boolean;
-	activeCheck?: boolean;
-	type?: "button" | "submit" | "reset" | undefined;
-	pending?: boolean;
-	onClick?: () => void;
-}): JSX.Element {
-	const { pending: formPending } = useFormStatus();
-	const pending = pendingOverride ?? formPending;
+	pending = false,
+	...rest
+}: Props): JSX.Element {
 	const activeStyle =
 		"text-accent-text bg-accent hover:brightness-110 rounded-full border border-accent shadow-accent hover:shadow-xs";
 	const unactiveStyle =
@@ -30,13 +27,14 @@ export default function CheckButton({
 	return (
 		<button
 			type={type}
-			onClick={onClick}
+			{...rest}
 			aria-pressed={active}
-			className={`inline-flex items-center font-semibold duration-150 py-2 px-4 gap-2 rounded-full cursor-pointer 
+			className={`inline-flex items-center font-semibold duration-150 py-2 px-4 gap-2 rounded-full cursor-pointer
 				${active ? activeStyle : discrete ? discreteStyle : unactiveStyle}`}
 		>
-			{active && activeCheck && !pending ? <PiCheckFatFill /> : null}
-			{pending ? "..." : children}
+			{pending && <TbLoader2 className="animate-spin" />}
+			{active && activeCheck && !pending && <PiCheckFatFill />}
+			{children}
 		</button>
 	);
 }

@@ -1,3 +1,5 @@
+import type { Registration } from "./registrations";
+
 export interface EventData {
 	id: string;
 	name: string;
@@ -5,7 +7,8 @@ export interface EventData {
 	size: number;
 	location: string;
 	tags: string[];
-	description?: string;
+	description: string;
+	registrations: Registration[];
 }
 
 export interface EventInput {
@@ -14,7 +17,7 @@ export interface EventInput {
 	size: number;
 	location: string;
 	tags: string[];
-	description?: string;
+	description: string;
 }
 
 export type EventActionResult =
@@ -64,7 +67,7 @@ export async function createEvent(
 	if (!response.ok) {
 		return {
 			ok: false,
-			error: "Event creation failed.",
+			error: await response.text(),
 		};
 	}
 

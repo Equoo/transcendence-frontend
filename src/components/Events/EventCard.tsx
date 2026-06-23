@@ -6,6 +6,8 @@ import { FiChevronRight } from "react-icons/fi";
 import { IoLocationOutline } from "react-icons/io5";
 import { GoPeople } from "react-icons/go";
 import { PiClock } from "react-icons/pi";
+import type { RegistrationActionResult } from "../../lib/registrations";
+import { useFetcher } from "react-router";
 
 interface Countdown {
 	days: number;
@@ -15,8 +17,8 @@ interface Countdown {
 	totalMs: number;
 }
 
-function getCountdown(targetDate: string): Countdown {
-	const diff = new Date(targetDate).getTime() - Date.now();
+function getCountdown(targetDate: Date): Countdown {
+	const diff = targetDate.getTime() - Date.now();
 	const totalMs = Math.max(diff, 0);
 
 	const totalSeconds = Math.floor(totalMs / 1000);
@@ -40,30 +42,45 @@ function formatCountdown(countdown: Countdown): string {
 	return `${pad(countdown.hours)}:${pad(countdown.minutes)}:${pad(countdown.seconds)}`;
 }
 
-export default function EventCard({
-	event,
-}: {
-	event: EventData;
-}): JSX.Element {
-	const [presence, setPresence] = useState(false);
-	const [countdown, setCountdown] = useState(() => getCountdown(event.date));
+function Cooldown({ date }: { date: Date }): JSX.Element {
+	const [countdown, setCountdown] = useState(() => getCountdown(date));
 
 	useEffect(() => {
 		const intervalId = window.setInterval(() => {
-			setCountdown(getCountdown(event.date));
+			setCountdown(getCountdown(date));
 		}, 1000);
 
 		return (): void => {
 			window.clearInterval(intervalId);
 		};
-	}, [event.date]);
-	// {event.tags.length > 0 && (
-	// 			<div className="flex flex-nowrap items-center gap-2.5 overflow-auto whitespace-nowrap scrollbar-thin pb-1">
-	// 				{event.tags.map((tag) => (
-	// 					<EventBadge key={tag}>{tag}</EventBadge>
-	// 				))}
-	// 			</div>
-	// 		)}
+	}, [date]);
+
+	return (
+		<div
+			id="countdown"
+			className="flex flex-col font-head font-bold text-3xl"
+		>
+			{formatCountdown(countdown)}
+			<small className="text-muted font-semibold text-xs tracking-wider">
+				BEFORE START
+			</small>
+		</div>
+	);
+}
+
+export default function EventCard({
+	event,
+}: {
+	event: EventData;
+}): JSX.Element {
+	const fetcher = useFetcher<RegistrationActionResult>();
+	const isRegistered = event.registrations.some(
+		(reg) => reg.user.userName !== "asventi",
+	);
+
+	const presence =
+		fetcher.state === "idle" ? isRegistered : fetcher.formMethod === "POST";
+
 	return (
 		<div className="bg-surface flex max-w-lg grow sm:min-w-md min-w-sm h-fit flex-col gap-4 overflow-hidden border border-border rounded-3xl p-6 shadow-main sm:p-8">
 			<h2 className=" text-3xl font-semibold font-head leading-8 text-text tracking-tight">
@@ -98,31 +115,33 @@ export default function EventCard({
 				)}
 			</div>
 			<div className="flex gap-3 items-end">
-				<div
-					id="countdown"
-					className="flex flex-col font-head font-bold text-3xl"
-				>
-					{formatCountdown(countdown)}
-					<small className="text-muted font-semibold text-xs tracking-wider">
-						BEFORE START
-					</small>
-				</div>
+				<Cooldown date={new Date(event.date)} />
 				<div className="ml-auto">
 					<EventBadge border="" bg="bg-good-soft" text="text-good">
 						<GoPeople />
-						21/{event.size} Registered
+						{event.registrations.length}/{event.size} Registered
 					</EventBadge>
 				</div>
 			</div>
-			<div className="flex flex-wrap gap-2.5 items-center whitespace">
-				<CheckButton
-					active={presence}
-					onClick={() => {
-						setPresence(!presence);
-					}}
+			<div className="flex gap-2.5 items-center whitespace-nowrap">
+				<fetcher.Form
+					action={`/events/${event.id}/registration`}
+					method={isRegistered ? "DELETE" : "POST"}
 				>
-					I'm here
-				</CheckButton>
+					<CheckButton
+						type="submit"
+						active={presence}
+						pending={fetcher.state !== "idle"}
+						className=""
+					>
+						I'm here
+					</CheckButton>
+				</fetcher.Form>
+				{fetcher.data?.ok === false && (
+					<div className="overflow-x-scroll text-error font-main font-light text-sm">
+						{fetcher.data.error}
+					</div>
+				)}
 				<div className="ml-auto">
 					<CheckButton discrete>
 						Details <FiChevronRight />
