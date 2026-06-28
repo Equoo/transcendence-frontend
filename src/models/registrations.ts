@@ -1,3 +1,4 @@
+import type { ProblemDetail } from "./problem_detail";
 import type { User } from "./users";
 
 export interface Registration {
@@ -13,7 +14,7 @@ export interface RegistrationInput {
 
 export type RegistrationActionResult =
 	| { ok: true }
-	| { ok: false; error: string };
+	| { ok: false; error: ProblemDetail };
 
 export async function registerToEvent(
 	reg: RegistrationInput,
@@ -23,7 +24,7 @@ export async function registerToEvent(
 	});
 
 	if (!res.ok) {
-		return { ok: false, error: (await res.text()) };
+		return { ok: false, error: (await res.json()) as ProblemDetail };
 	}
 	return { ok: true };
 }
@@ -36,7 +37,7 @@ export async function unregisterToEvent(
 	});
 
 	if (!res.ok) {
-		return { ok: false, error: await res.text() };
+		return { ok: false, error: (await res.json()) as ProblemDetail };
 	}
 	return { ok: true };
 }

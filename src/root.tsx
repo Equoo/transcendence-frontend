@@ -1,6 +1,16 @@
 import "./index.css";
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router";
 import type { JSX, ReactNode } from "react";
+import { ToastContainer } from "react-toastify";
+
+const alertStyle = {
+	success: "bg-good-soft text-good",
+	error: "bg-error-soft text-error",
+	info: "",
+	warning: "",
+	dark: "",
+	default: "bg-bg",
+};
 
 export function Layout({ children }: { children: ReactNode }): JSX.Element {
 	return (
@@ -17,6 +27,16 @@ export function Layout({ children }: { children: ReactNode }): JSX.Element {
 				<Links />
 			</head>
 			<body>
+				<ToastContainer
+					position="top-center"
+					newestOnTop
+					pauseOnHover
+					toastClassName={(context) =>
+						`${
+							alertStyle[context?.type ?? "default"]
+						} relative flex px-4 gap-1 py-2 min-h-10 rounded-lg justify-between overflow-hidden cursor-pointer`
+					}
+				/>
 				{children}
 				<ScrollRestoration />
 				<Scripts />
@@ -26,5 +46,9 @@ export function Layout({ children }: { children: ReactNode }): JSX.Element {
 }
 
 export default function App(): JSX.Element {
-	return <Outlet />;
+	return (
+		<>
+			<Outlet />
+		</>
+	);
 }

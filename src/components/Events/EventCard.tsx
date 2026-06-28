@@ -6,8 +6,8 @@ import { FiChevronRight } from "react-icons/fi";
 import { IoLocationOutline } from "react-icons/io5";
 import { GoPeople } from "react-icons/go";
 import { PiClock } from "react-icons/pi";
-import type { RegistrationActionResult } from "../../models/registrations";
-import { useFetcher } from "react-router";
+import { Link } from "react-router";
+import EventRegisterBtn from "./EventRegisterBtn";
 
 interface Countdown {
 	days: number;
@@ -73,14 +73,6 @@ export default function EventCard({
 }: {
 	event: EventData;
 }): JSX.Element {
-	const fetcher = useFetcher<RegistrationActionResult>();
-	const isRegistered = event.registrations.some(
-		(reg) => reg.user.userName === "asventi",
-	);
-
-	const presence =
-		fetcher.state === "idle" ? isRegistered : fetcher.formMethod === "POST";
-
 	return (
 		<div className="bg-surface flex max-w-lg grow sm:min-w-md min-w-sm h-fit flex-col gap-4 overflow-hidden border border-border rounded-3xl p-6 shadow-main sm:p-8">
 			<h2 className=" text-3xl font-semibold font-head leading-8 text-text tracking-tight">
@@ -124,28 +116,13 @@ export default function EventCard({
 				</div>
 			</div>
 			<div className="flex gap-2.5 items-center whitespace-nowrap">
-				<fetcher.Form
-					action={`/events/${event.id}/registration`}
-					method={isRegistered ? "DELETE" : "POST"}
-				>
-					<CheckButton
-						type="submit"
-						active={presence}
-						pending={fetcher.state !== "idle"}
-						className=""
-					>
-						I'm here
-					</CheckButton>
-				</fetcher.Form>
-				{fetcher.data?.ok === false && (
-					<div className="overflow-x-scroll text-error font-main font-light text-sm">
-						{fetcher.data.error}
-					</div>
-				)}
+				<EventRegisterBtn event={event} />
 				<div className="ml-auto">
-					<CheckButton discrete>
-						Details <FiChevronRight />
-					</CheckButton>
+					<Link to={`/calendar/${event.id}`}>
+						<CheckButton discrete>
+							Details <FiChevronRight />
+						</CheckButton>
+					</Link>
 				</div>
 			</div>
 		</div>

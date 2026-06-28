@@ -95,11 +95,6 @@ export default function EventForm(): JSX.Element {
 						placeholder="Event Description"
 					/>
 				</div>
-				{fetcher.data && !fetcher.data.ok ? (
-					<p className="w-full text-sm text-red-500 font-main text-center">
-						{fetcher.data.error}
-					</p>
-				) : null}
 				<CheckButton
 					active
 					type="submit"

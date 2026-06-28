@@ -9,6 +9,7 @@ export default [
 	layout("routes/dashboard.tsx", [
 		index("routes/home.tsx"),
 		route("calendar", "routes/calendar.tsx"),
+		route("calendar/:eventId", "routes/event_details.tsx"),
 		route("knowledge", "routes/knowledge.tsx"),
 		route("messages", "routes/messages.tsx"),
 	]),

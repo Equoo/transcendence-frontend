@@ -17,6 +17,8 @@ import {
 } from "react-router";
 import type { Route } from "./+types/home";
 import EventList from "../components/Events/EventList";
+import { toast } from "react-toastify";
+import Alert from "../components/Alert";
 
 export async function clientLoader(): Promise<EventData[]> {
 	return fetchEvents();
@@ -28,8 +30,12 @@ export async function clientAction({
 	const res = await createEvent(await request.formData());
 
 	if (!res.ok) {
+		toast.error(Alert, { data: { ...res.error } });
 		return res;
 	}
+	toast.success(Alert, {
+		data: { title: "Event successfully created" },
+	});
 	return redirect("/");
 }
 

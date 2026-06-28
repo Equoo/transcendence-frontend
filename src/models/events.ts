@@ -1,3 +1,4 @@
+import type { ProblemDetail } from "./problem_detail";
 import type { Registration } from "./registrations";
 import type { User } from "./users";
 
@@ -8,7 +9,7 @@ export interface EventData {
 	size: number;
 	location: string;
 	tags: string[];
-	description: string;
+	description?: string;
 	organizer: User;
 	registrations: Registration[];
 }
@@ -24,7 +25,7 @@ export interface EventInput {
 
 export type EventActionResult =
 	| { ok: true; event: EventData }
-	| { ok: false; error: string };
+	| { ok: false; error: ProblemDetail };
 
 function splitTags(tags: string): string[] {
 	if (!tags.trim()) {
@@ -53,6 +54,17 @@ export async function fetchEvents(): Promise<EventData[]> {
 	return (await response.json()) as EventData[];
 }
 
+export async function fetchEvent(id: string): Promise<EventActionResult> {
+	const response = await fetch(`/api/events/${id}`);
+	if (!response.ok) {
+		return { ok: false, error: (await response.json()) as ProblemDetail };
+	}
+	return {
+		ok: true,
+		event: (await response.json()) as EventData,
+	};
+}
+
 export async function createEvent(
 	formData: FormData,
 ): Promise<EventActionResult> {
@@ -69,7 +81,7 @@ export async function createEvent(
 	if (!response.ok) {
 		return {
 			ok: false,
-			error: await response.text(),
+			error: (await response.json()) as ProblemDetail,
 		};
 	}
 
