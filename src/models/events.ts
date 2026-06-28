@@ -1,4 +1,5 @@
 import type { Registration } from "./registrations";
+import type { User } from "./users";
 
 export interface EventData {
 	id: string;
@@ -8,6 +9,7 @@ export interface EventData {
 	location: string;
 	tags: string[];
 	description: string;
+	organizer: User;
 	registrations: Registration[];
 }
 
