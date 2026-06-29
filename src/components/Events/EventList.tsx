@@ -7,6 +7,9 @@ export default function EventList({
 }: {
 	events: EventData[];
 }): JSX.Element {
+	const sortedEvents = events;
+	sortedEvents.sort((evA, evB) => Number(evA.date > evB.date));
+
 	return (
 		<div className="w-full flex px-4 py-8 gap-6 flex-nowrap overflow-auto items-center justify-center-safe">
 			{events.map((event) => (

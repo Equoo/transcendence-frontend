@@ -7,6 +7,7 @@ import EventRegisterBtn from "../components/Events/EventRegisterBtn";
 import { toast } from "react-toastify";
 import Alert from "../components/Alert";
 import ProfilePic from "../components/ProfilePic";
+import EventBadge from "../components/Events/EventBadge";
 
 export async function clientLoader({
 	params,
@@ -67,6 +68,18 @@ export default function EventDetails({
 							</span>
 						</>
 					)}
+					{event.tags.length > 0 && (
+						<>
+							<span className="font-bold text-muted text-xs tracking-wider mt-4">
+								TAGS
+							</span>
+							<div className="flex flex-wrap gap-1">
+								{event.tags.map((tag) => (
+									<EventBadge key={tag}>{tag}</EventBadge>
+								))}
+							</div>
+						</>
+					)}
 					<span className="font-bold text-muted text-xs tracking-wider mt-4">
 						PARTICIPANTS - {event.registrations.length}/{event.size}
 					</span>
@@ -88,6 +101,10 @@ export default function EventDetails({
 							{event.organizer.userName}
 						</span>
 					</div>
+					<span className="font-bold text-muted text-xs tracking-wider mt-4">
+						RESOURCES
+					</span>
+					<div className="flex mt-1 items-center gap-3"></div>
 				</div>
 				<div className=""></div>
 			</div>

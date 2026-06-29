@@ -46,14 +46,15 @@ function Cooldown({ date }: { date: Date }): JSX.Element {
 	const [countdown, setCountdown] = useState(() => getCountdown(date));
 
 	useEffect(() => {
-		const intervalId = window.setInterval(() => {
+		const intervalId = setInterval(() => {
 			setCountdown(getCountdown(date));
 		}, 1000);
 
 		return (): void => {
-			window.clearInterval(intervalId);
+			clearInterval(intervalId);
 		};
-	}, [date]);
+		// eslint-disable-next-line @eslint-react/exhaustive-deps
+	}, []);
 
 	return (
 		<div
@@ -107,7 +108,7 @@ export default function EventCard({
 				)}
 			</div>
 			<div className="flex gap-3 items-end">
-				<Cooldown date={new Date(event.date)} />
+				<Cooldown key={event.id} date={new Date(event.date)} />
 				<div className="ml-auto">
 					<EventBadge border="" bg="bg-good-soft" text="text-good">
 						<GoPeople />
