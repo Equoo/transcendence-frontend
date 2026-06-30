@@ -16,6 +16,7 @@ export default function EventRegisterBtn({
 	const isRegistered = event.registrations.some(
 		(reg) => reg.user.userName === "asventi",
 	);
+	const isFull = event.size === event.registrations.length;
 	const presence =
 		fetcher.state === "idle" ? isRegistered : fetcher.formMethod === "POST";
 
@@ -35,9 +36,11 @@ export default function EventRegisterBtn({
 				<CheckButton
 					type="submit"
 					active={presence}
+					discrete={isFull}
+					disabled={isFull}
 					pending={fetcher.state !== "idle"}
 				>
-					I'm here
+					{isRegistered ? "Registered" : isFull ? "Full" : "Register"}
 				</CheckButton>
 			</div>
 		</fetcher.Form>

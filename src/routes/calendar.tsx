@@ -101,7 +101,8 @@ export default function Calendar({
 										<Link
 											to={`/calendar/${ev.id}`}
 											key={ev.id}
-											className="text-xs px-1 w-full font-light bg-accent text-white rounded-xs hover:bg-accent/90"
+											className={`text-xs px-1 w-full font-light text-white rounded-xs hover:bg-accent/90
+												${ev.size === ev.registrations.length ? "bg-muted" : "bg-accent"}`}
 										>
 											{ev.name}
 										</Link>
