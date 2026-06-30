@@ -9,7 +9,7 @@ export default function ProfilePic({
 }): JSX.Element {
 	return (
 		<div
-			className={`z-${idx} place-content-center bg-accent border-2 rounded-full w-8 h-8 text-white font-semibold text-center`}
+			className={`z-${idx} place-content-center bg-accent border-2 rounded-full min-w-8 min-h-8 text-white font-semibold text-center`}
 		>
 			{name.at(0)?.toUpperCase()}
 		</div>

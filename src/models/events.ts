@@ -51,7 +51,9 @@ export async function fetchEvents(): Promise<EventData[]> {
 		throw new Error("Can't fetch events");
 	}
 
-	return (await response.json()) as EventData[];
+	const events = (await response.json()) as EventData[];
+	events.sort((evA, evB) => Number(evA.date > evB.date));
+	return events;
 }
 
 export async function fetchEvent(id: string): Promise<EventActionResult> {

@@ -1,50 +1,19 @@
 import EventForm from "../components/Events/EventForm";
 import CheckButton from "../components/CheckButton";
-import {
-	createEvent,
-	fetchEvents,
-	type EventActionResult,
-	type EventData,
-} from "../models/events";
+import { fetchEvents, type EventData } from "../models/events";
 import type { JSX } from "react";
 import { PiPlusBold } from "react-icons/pi";
-import {
-	isRouteErrorResponse,
-	useRouteError,
-	useSearchParams,
-	Form,
-	redirect,
-} from "react-router";
+import { isRouteErrorResponse, useRouteError, Form } from "react-router";
 import type { Route } from "./+types/home";
 import EventList from "../components/Events/EventList";
-import { toast } from "react-toastify";
-import Alert from "../components/Alert";
 
 export async function clientLoader(): Promise<EventData[]> {
 	return fetchEvents();
 }
 
-export async function clientAction({
-	request,
-}: Route.ClientActionArgs): Promise<EventActionResult | Response> {
-	const res = await createEvent(await request.formData());
-
-	if (!res.ok) {
-		toast.error(Alert, { data: { ...res.error } });
-		return res;
-	}
-	toast.success(Alert, {
-		data: { title: "Event successfully created" },
-	});
-	return redirect("/");
-}
-
 export default function Home({
 	loaderData: events,
 }: Route.ComponentProps): JSX.Element {
-	const [searchParams] = useSearchParams();
-	const showEventForm = searchParams.get("eventForm");
-
 	return (
 		<>
 			<div className="w-full flex flex-row px-6 py-4 justify-between items-center">
@@ -64,7 +33,7 @@ export default function Home({
 				</Form>
 			</div>
 			<EventList events={events} />
-			{showEventForm === null ? null : <EventForm />}
+			<EventForm />
 		</>
 	);
 }

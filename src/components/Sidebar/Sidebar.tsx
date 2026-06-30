@@ -35,7 +35,7 @@ function Sidebar(): JSX.Element {
 				aria-controls="sidebar"
 				type="button"
 				className="fixed z-39 text-heading bg-transparent box-border border border-transparent hover:bg-back2
-				focus:ring-4 focus:ring-border2 font-medium leading-5 rounded-xl top-3 left-3 text-sm p-2
+				focus:ring-4 focus:ring-border2 font-medium leading-5 rounded-xl top-0 left-0 text-sm p-1
 				focus:outline-none inline-flex sm:hidden"
 			>
 				<span className="sr-only">Open sidebar</span>

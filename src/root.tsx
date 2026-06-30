@@ -46,9 +46,5 @@ export function Layout({ children }: { children: ReactNode }): JSX.Element {
 }
 
 export default function App(): JSX.Element {
-	return (
-		<>
-			<Outlet />
-		</>
-	);
+	return <Outlet />;
 }

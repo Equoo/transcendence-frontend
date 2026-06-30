@@ -2,7 +2,7 @@ import type { JSX } from "react";
 import type { Route } from "./+types/event_details";
 import { fetchEvent, type EventData } from "../models/events";
 import { FiChevronLeft } from "react-icons/fi";
-import { Link, redirect } from "react-router";
+import { redirect, useNavigate } from "react-router";
 import EventRegisterBtn from "../components/Events/EventRegisterBtn";
 import { toast } from "react-toastify";
 import Alert from "../components/Alert";
@@ -31,13 +31,19 @@ export default function EventDetails({
 		day: "2-digit",
 		year: "numeric",
 	});
+	const navigate = useNavigate();
 
 	return (
 		<div className="flex flex-col w-full h-full">
 			<div className="flex px-4 py-4 gap-4 items-center border-b border-border">
-				<Link to="/calendar">
-					<FiChevronLeft size={25} color="#9c9384" />
-				</Link>
+				<FiChevronLeft
+					size={25}
+					color="#9c9384"
+					onClick={() => {
+						void navigate(-1);
+					}}
+					className="cursor-pointer"
+				/>
 				<div className="flex flex-col">
 					<div className="font-head text-text font-semibold text-lg">
 						{event.name}
@@ -46,7 +52,7 @@ export default function EventDetails({
 						{dateString}
 					</div>
 				</div>
-				<EventRegisterBtn event={event} className="ml-auto" />
+				<EventRegisterBtn event={event} className="ml-auto shrink-0" />
 			</div>
 			<div className="flex h-full">
 				<div className="flex flex-col gap-1 border-r border-border w-1/3 p-6">
@@ -95,7 +101,7 @@ export default function EventDetails({
 					<span className="font-bold text-muted text-xs tracking-wider mt-4">
 						ORGANIZED BY
 					</span>
-					<div className="flex mt-1 items-center gap-3">
+					<div className="flex mt-1 items-center gap-2">
 						<ProfilePic name={event.organizer.userName} />
 						<span className="text-lg font-medium text-text">
 							{event.organizer.userName}
