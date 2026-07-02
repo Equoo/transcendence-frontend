@@ -4,9 +4,11 @@ on:
     push:
         branches:
             - main
+            - develop
             - "ci/**"
     pull_request:
         branches:
+            - develop
             - main
 env:
     REGISTRY: forgejo.asventi.net
