@@ -3,11 +3,18 @@ import { useFetcher, useSearchParams } from "react-router";
 import CheckButton from "../CheckButton";
 import Modal from "../Modal";
 import type { EventActionResult } from "../../models/events";
+import MultipleInput from "../MultipleInput";
+import { getEventRoles } from "../../models/event_roles";
+import { useQuery } from "@tanstack/react-query";
 
 export default function EventForm(): JSX.Element {
 	const fetcher = useFetcher<EventActionResult>();
 	const [searchParams, setSearchParams] = useSearchParams();
 	const showEventForm = searchParams.get("eventForm");
+	const eventRoles = useQuery({
+		queryKey: ["eventRoles"],
+		queryFn: getEventRoles,
+	});
 
 	useEffect(() => {
 		if (fetcher.state === "idle" && (fetcher.data?.ok ?? false)) {
@@ -94,10 +101,23 @@ export default function EventForm(): JSX.Element {
 							<label className="text-text font-main font-medium">
 								Tags
 							</label>
-							<input
+							<MultipleInput
 								name="tags"
+								placeholder="Event Tags"
 								className="w-full bg-white border rounded-md border-border2 inset-shadow-xs px-2 py-1 font-main text-text"
-								placeholder="List of tags separated by a space"
+							/>
+						</div>
+						<div className="inline-flex flex-col w-full">
+							<label className="text-text font-main font-medium">
+								Roles
+							</label>
+							<MultipleInput
+								name="roles"
+								suggestions={eventRoles.data?.map(
+									(val) => val.name,
+								)}
+								placeholder="Event Roles"
+								className="w-full bg-white border rounded-md border-border2 inset-shadow-xs px-2 py-1 font-main text-text"
 							/>
 						</div>
 						<div className="inline-flex flex-col w-full">

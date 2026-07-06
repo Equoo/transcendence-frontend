@@ -1,3 +1,4 @@
+import { createEventRole, getEventRoles, type EventRole } from "./event_roles";
 import type { ProblemDetail } from "./problem_detail";
 import type { Registration } from "./registrations";
 import type { User } from "./users";
@@ -11,6 +12,7 @@ export interface EventData {
 	tags: string[];
 	description?: string;
 	organizer: User;
+	eventRoles: EventRole[];
 	registrations: Registration[];
 }
 
@@ -20,6 +22,7 @@ export interface EventInput {
 	size: number;
 	location: string;
 	tags: string[];
+	eventRolesId: string[];
 	description: string;
 }
 
@@ -27,11 +30,11 @@ export type EventActionResult =
 	| { ok: true; event: EventData }
 	| { ok: false; error: ProblemDetail };
 
-function splitTags(tags: string): string[] {
-	if (!tags.trim()) {
+function splitList(list: string): string[] {
+	if (!list.trim()) {
 		return [];
 	}
-	return tags.trim().split(/\s+/u);
+	return list.trim().split(/\s+/u);
 }
 
 function toEventInput(formData: FormData): EventInput {
@@ -40,7 +43,8 @@ function toEventInput(formData: FormData): EventInput {
 		date: formData.get("date") as string,
 		size: Number(formData.get("size")),
 		location: formData.get("location") as string,
-		tags: splitTags(formData.get("tags") as string),
+		tags: splitList(formData.get("tags") as string),
+		eventRolesId: splitList(formData.get("roles") as string),
 		description: formData.get("description") as string,
 	};
 }
@@ -71,7 +75,30 @@ export async function createEvent(
 	formData: FormData,
 ): Promise<EventActionResult> {
 	const object = toEventInput(formData);
+	const roles = await getEventRoles();
+	const rolesId = [];
 
+	const promises = [];
+	for (const el of object.eventRolesId) {
+		const role = roles.find((ro) => ro.name === el);
+
+		if (role) {
+			rolesId.push(role.id);
+		} else {
+			promises.push(createEventRole({ name: el }));
+		}
+	}
+	const results = await Promise.all(promises);
+	for (const res of results) {
+		if (!res.ok) {
+			return {
+				ok: false,
+				error: res.error,
+			};
+		}
+		rolesId.push(res.role.id);
+	}
+	object.eventRolesId = rolesId;
 	const response = await fetch("/api/events", {
 		method: "POST",
 		headers: {

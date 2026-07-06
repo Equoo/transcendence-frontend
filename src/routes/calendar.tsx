@@ -77,11 +77,11 @@ export default function Calendar({
 						</span>
 					))}
 				</div>
-				<div className="mt-1 grid w-full grid-cols-7 bg-border2 border-2 border-border2 gap-0.5 place-items-center">
+				<div className="mt-1 grid w-full grid-cols-7 bg-border2 border-3 border-border2 gap-0.75 rounded-md place-items-center">
 					{monthDays.map((day, idx) => (
 						<div
 							key={idx}
-							className="group flex pt-1 flex-col items-center w-full sm:h-26 h-22 bg-back cursor-pointer"
+							className="group flex pt-1 flex-col rounded-md items-center w-full sm:h-26 h-22 bg-surface cursor-pointer"
 							onClick={() => {
 								setSelectedDay(day);
 							}}

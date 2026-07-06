@@ -8,6 +8,7 @@ export async function clientAction({
 }: Route.ClientActionArgs): Promise<EventActionResult> {
 	const res = await createEvent(await request.formData());
 
+	
 	if (!res.ok) {
 		toast.error(Alert, { data: { ...res.error } });
 		return res;
