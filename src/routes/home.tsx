@@ -1,14 +1,19 @@
-import EventForm from "../components/Events/EventForm";
+import EventForm from "../events/components/EventForm";
 import CheckButton from "../components/CheckButton";
-import { fetchEvents, type EventData } from "../api/events";
+import { fetchEvents, type EventData } from "../events/api/events.api";
 import type { JSX } from "react";
 import { PiPlusBold } from "react-icons/pi";
 import { isRouteErrorResponse, useRouteError, Form } from "react-router";
 import type { Route } from "./+types/home";
-import EventList from "../components/Events/EventList";
+import EventList from "../events/components/EventList";
 
 export async function clientLoader(): Promise<EventData[]> {
-	return fetchEvents();
+	const res = await fetchEvents();
+
+	if (!res.ok) {
+		throw res.error;
+	}
+	return res.events;
 }
 
 export default function Home({

@@ -1,4 +1,4 @@
-import type { ProblemDetail } from "./problem_detail";
+import type { ProblemDetail } from "../../api/problem_detail";
 
 export interface EventRole {
 	id: string;

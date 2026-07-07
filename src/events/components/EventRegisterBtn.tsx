@@ -1,11 +1,9 @@
 import { useEffect, type ComponentProps, type JSX } from "react";
 import { useFetcher, useSearchParams } from "react-router";
-import type { EventData } from "../../api/events";
-import CheckButton from "../CheckButton";
-import { toast } from "react-toastify";
-import Alert from "../Alert";
-import Modal from "../Modal";
-import type { clientAction } from "../../routes/resources/registration";
+import type { EventData } from "../api/events.api";
+import CheckButton from "../../components/CheckButton";
+import Modal from "../../components/Modal";
+import type { clientAction as registerAction } from "../routes/registrations.route";
 
 export default function EventRegisterBtn({
 	event,
@@ -14,7 +12,7 @@ export default function EventRegisterBtn({
 	event: EventData;
 }): JSX.Element {
 	const [searchParams, setSearchParams] = useSearchParams();
-	const fetcher = useFetcher<typeof clientAction>();
+	const fetcher = useFetcher<typeof registerAction>();
 	const isRegistered = event.registrations.some(
 		(reg) => reg.user.userName === "asventi",
 	);
@@ -30,10 +28,6 @@ export default function EventRegisterBtn({
 				return sp;
 			});
 		}
-		if (fetcher.state === "idle" && fetcher.data?.ok === false) {
-			toast.error(Alert, { data: { ...fetcher.data.error } });
-		}
-		// eslint-disable-next-line @eslint-react/exhaustive-deps
 	}, [fetcher.state, fetcher.data]);
 
 	return (

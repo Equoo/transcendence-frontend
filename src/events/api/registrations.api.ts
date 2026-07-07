@@ -1,5 +1,5 @@
-import type { ProblemDetail } from "./problem_detail";
-import type { User } from "./users";
+import type { ProblemDetail } from "../../api/problem_detail";
+import type { User } from "../../api/users";
 
 export interface Registration {
 	user: User;

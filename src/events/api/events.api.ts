@@ -1,11 +1,7 @@
-import {
-	createEventRole,
-	fetchEventRoles,
-	type EventRole,
-} from "./event_roles";
-import type { ProblemDetail } from "./problem_detail";
-import type { Registration } from "./registrations";
-import type { User } from "./users";
+import type { EventRole } from "./event_roles.api";
+import type { ProblemDetail } from "../../api/problem_detail";
+import type { Registration } from "./registrations.api";
+import type { User } from "../../api/users";
 
 export interface EventData {
 	id: string;
@@ -30,11 +26,15 @@ export interface EventInput {
 	description: string;
 }
 
-export type EventActionResult =
+export type EventResult =
 	| { ok: true; event: EventData }
 	| { ok: false; error: ProblemDetail };
 
-function toEventInput(formData: FormData): EventInput {
+export type EventsResult =
+	| { ok: true; events: EventData[] }
+	| { ok: false; error: ProblemDetail };
+
+export function toEventInput(formData: FormData): EventInput {
 	return {
 		name: formData.get("name") as string,
 		date: formData.get("date") as string,
@@ -46,18 +46,18 @@ function toEventInput(formData: FormData): EventInput {
 	};
 }
 
-export async function fetchEvents(): Promise<EventData[]> {
+export async function fetchEvents(): Promise<EventsResult> {
 	const response = await fetch("/api/events");
 	if (!response.ok) {
-		throw new Error("Can't fetch events");
+		return { ok: false, error: (await response.json()) as ProblemDetail };
 	}
 
 	const events = (await response.json()) as EventData[];
 	events.sort((evA, evB) => evA.date.localeCompare(evB.date));
-	return events;
+	return { ok: true, events };
 }
 
-export async function fetchEvent(id: string): Promise<EventActionResult> {
+export async function fetchEvent(id: string): Promise<EventResult> {
 	const response = await fetch(`/api/events/${id}`);
 	if (!response.ok) {
 		return { ok: false, error: (await response.json()) as ProblemDetail };
@@ -68,46 +68,13 @@ export async function fetchEvent(id: string): Promise<EventActionResult> {
 	};
 }
 
-export async function createEvent(
-	formData: FormData,
-): Promise<EventActionResult> {
-	const object = toEventInput(formData);
-	const roles = await fetchEventRoles();
-	const rolesId = [];
-	const promises = [];
-
-	if (!roles.ok) {
-		return {
-			ok: false,
-			error: roles.error,
-		};
-	}
-	for (const el of object.eventRoleIds) {
-		const role = roles.roles.find((ro) => ro.name === el);
-
-		if (role) {
-			rolesId.push(role.id);
-		} else {
-			promises.push(createEventRole({ name: el }));
-		}
-	}
-	const results = await Promise.all(promises);
-	for (const res of results) {
-		if (!res.ok) {
-			return {
-				ok: false,
-				error: res.error,
-			};
-		}
-		rolesId.push(res.role.id);
-	}
-	object.eventRoleIds = rolesId;
+export async function createEvent(event: EventInput): Promise<EventResult> {
 	const response = await fetch("/api/events", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
 		},
-		body: JSON.stringify(object),
+		body: JSON.stringify(event),
 	});
 
 	if (!response.ok) {

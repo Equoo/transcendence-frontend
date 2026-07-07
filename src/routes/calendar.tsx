@@ -12,16 +12,21 @@ import {
 	isSameMonth,
 	isSameDay,
 } from "date-fns";
-import { fetchEvents, type EventData } from "../api/events";
+import { fetchEvents, type EventData } from "../events/api/events.api";
 import type { Route } from "./+types/calendar";
 import { Form, Link } from "react-router";
-import EventList from "../components/Events/EventList";
+import EventList from "../events/components/EventList";
 import CheckButton from "../components/CheckButton";
 import { PiPlusBold } from "react-icons/pi";
-import EventForm from "../components/Events/EventForm";
+import EventForm from "../events/components/EventForm";
 
 export async function clientLoader(): Promise<EventData[]> {
-	return fetchEvents();
+	const res = await fetchEvents();
+
+	if (!res.ok) {
+		throw res.error;
+	}
+	return res.events;
 }
 
 export default function Calendar({
@@ -77,11 +82,11 @@ export default function Calendar({
 						</span>
 					))}
 				</div>
-				<div className="mt-1 grid w-full grid-cols-7 bg-border2 border-3 border-border2 gap-0.75 rounded-md place-items-center">
+				<div className="mt-1 grid w-full grid-cols-7 bg-border2 border-2 border-border2 gap-0.5 place-items-center">
 					{monthDays.map((day) => (
 						<div
 							key={day.toString()}
-							className="group flex pt-1 flex-col rounded-md items-center w-full sm:h-26 h-22 bg-surface cursor-pointer"
+							className="group flex pt-1 flex-col items-center w-full sm:h-26 h-22 bg-surface cursor-pointer"
 							onClick={() => {
 								setSelectedDay(day);
 							}}

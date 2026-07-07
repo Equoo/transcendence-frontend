@@ -1,10 +1,10 @@
 import { useEffect, type JSX } from "react";
 import { useFetcher, useSearchParams } from "react-router";
-import CheckButton from "../CheckButton";
-import Modal from "../Modal";
-import MultipleInput from "../MultipleInput";
-import type { clientAction as eventAction } from "../../routes/resources/event";
-import type { clientLoader as eventRolesLoader } from "../../routes/resources/event_role";
+import CheckButton from "../../components/CheckButton";
+import Modal from "../../components/Modal";
+import MultipleInput from "../../components/MultipleInput";
+import type { clientAction as eventAction } from "../routes/events.route";
+import type { clientLoader as eventRolesLoader } from "../routes/event_roles.route";
 
 export default function EventForm(): JSX.Element {
 	const eventFetcher = useFetcher<typeof eventAction>();
@@ -17,14 +17,13 @@ export default function EventForm(): JSX.Element {
 		void eventRolesFetcher.load("/events/roles");
 	}, []);
 	useEffect(() => {
-		if (eventFetcher.state === "idle" && (eventFetcher.data?.ok ?? false)) {
+		if (eventFetcher.state === "idle" && eventFetcher.data) {
 			setSearchParams((sp) => {
 				sp.delete("eventForm");
 				return sp;
 			});
 		}
-		// eslint-disable-next-line @eslint-react/exhaustive-deps
-	}, [eventFetcher.data?.ok, eventFetcher.state]);
+	}, [eventFetcher.data, eventFetcher.state]);
 	return (
 		<>
 			{showEventForm === null ? null : (

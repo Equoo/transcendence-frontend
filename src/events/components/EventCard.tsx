@@ -1,7 +1,7 @@
 import { type JSX, useEffect, useState } from "react";
-import CheckButton from "../CheckButton";
-import EventBadge from "./EventBadge";
-import type { EventData } from "../../api/events";
+import CheckButton from "../../components/CheckButton";
+import EventBadge from "../../components/Badge";
+import type { EventData } from "../api/events.api";
 import { FiChevronRight } from "react-icons/fi";
 import { IoLocationOutline } from "react-icons/io5";
 import { GoPeople } from "react-icons/go";
@@ -53,7 +53,6 @@ function Countdown({ date }: { date: Date }): JSX.Element {
 		return (): void => {
 			clearInterval(intervalId);
 		};
-		// eslint-disable-next-line @eslint-react/exhaustive-deps
 	}, []);
 
 	return (

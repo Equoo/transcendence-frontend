@@ -1,6 +1,6 @@
 type ValidationErrors = Record<string, string[]>;
 
-export interface ProblemDetail {
+export interface ProblemDetail extends Error {
 	type: string;
 	title: string;
 	status: number;

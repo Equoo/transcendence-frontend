@@ -4,7 +4,7 @@ import {
 	type KeyboardEventHandler,
 	useState,
 } from "react";
-import EventBadge from "./Events/EventBadge";
+import EventBadge from "./Badge";
 
 const emptyArray: string[] = [];
 
