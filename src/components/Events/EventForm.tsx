@@ -2,41 +2,41 @@ import { useEffect, type JSX } from "react";
 import { useFetcher, useSearchParams } from "react-router";
 import CheckButton from "../CheckButton";
 import Modal from "../Modal";
-import type { EventActionResult } from "../../models/events";
 import MultipleInput from "../MultipleInput";
-import { getEventRoles } from "../../models/event_roles";
-import { useQuery } from "@tanstack/react-query";
+import type { clientAction as eventAction } from "../../routes/resources/event";
+import type { clientLoader as eventRolesLoader } from "../../routes/resources/event_role";
 
 export default function EventForm(): JSX.Element {
-	const fetcher = useFetcher<EventActionResult>();
+	const eventFetcher = useFetcher<typeof eventAction>();
+	const eventRolesFetcher = useFetcher<typeof eventRolesLoader>();
+
 	const [searchParams, setSearchParams] = useSearchParams();
 	const showEventForm = searchParams.get("eventForm");
-	const eventRoles = useQuery({
-		queryKey: ["eventRoles"],
-		queryFn: getEventRoles,
-	});
 
 	useEffect(() => {
-		if (fetcher.state === "idle" && (fetcher.data?.ok ?? false)) {
+		void eventRolesFetcher.load("/events/roles");
+	}, []);
+	useEffect(() => {
+		if (eventFetcher.state === "idle" && (eventFetcher.data?.ok ?? false)) {
 			setSearchParams((sp) => {
 				sp.delete("eventForm");
 				return sp;
 			});
 		}
 		// eslint-disable-next-line @eslint-react/exhaustive-deps
-	}, [fetcher.data?.ok, fetcher.state]);
+	}, [eventFetcher.data?.ok, eventFetcher.state]);
 	return (
 		<>
 			{showEventForm === null ? null : (
-				<Modal title="Create An Event">
+				<Modal name="eventForm" title="Create An Event">
 					<p className="text-muted font-main font-light w-4/5 text-sm">
 						You will be automatically registered to the event and
 						set as the Organizer. You can still unregister after the
 						creation.
 					</p>
-					<fetcher.Form
+					<eventFetcher.Form
 						action="/events"
-						method="post"
+						method="POST"
 						className="flex flex-col items-center w-4/5 gap-5 mb-4"
 					>
 						<div className="inline-flex flex-col w-full bg-sur">
@@ -113,7 +113,7 @@ export default function EventForm(): JSX.Element {
 							</label>
 							<MultipleInput
 								name="roles"
-								suggestions={eventRoles.data?.map(
+								suggestions={eventRolesFetcher.data?.map(
 									(val) => val.name,
 								)}
 								placeholder="Event Roles"
@@ -133,11 +133,11 @@ export default function EventForm(): JSX.Element {
 						<CheckButton
 							active
 							type="submit"
-							pending={fetcher.state !== "idle"}
+							pending={eventFetcher.state !== "idle"}
 						>
 							Ok
 						</CheckButton>
-					</fetcher.Form>
+					</eventFetcher.Form>
 				</Modal>
 			)}
 		</>

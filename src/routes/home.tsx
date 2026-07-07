@@ -1,6 +1,6 @@
 import EventForm from "../components/Events/EventForm";
 import CheckButton from "../components/CheckButton";
-import { fetchEvents, type EventData } from "../models/events";
+import { fetchEvents, type EventData } from "../api/events";
 import type { JSX } from "react";
 import { PiPlusBold } from "react-icons/pi";
 import { isRouteErrorResponse, useRouteError, Form } from "react-router";

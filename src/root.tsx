@@ -2,7 +2,6 @@ import "./index.css";
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router";
 import type { JSX, ReactNode } from "react";
 import { ToastContainer } from "react-toastify";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const alertStyle = {
 	success: "bg-good-soft text-good",
@@ -14,8 +13,6 @@ const alertStyle = {
 };
 
 export function Layout({ children }: { children: ReactNode }): JSX.Element {
-	const queryClient = new QueryClient();
-
 	return (
 		<html lang="en">
 			<head>
@@ -40,9 +37,7 @@ export function Layout({ children }: { children: ReactNode }): JSX.Element {
 						} relative flex px-4 gap-1 py-2 min-h-10 rounded-lg justify-between overflow-hidden cursor-pointer`
 					}
 				/>
-				<QueryClientProvider client={queryClient}>
-					{children}
-				</QueryClientProvider>
+				{children}
 				<ScrollRestoration />
 				<Scripts />
 			</body>

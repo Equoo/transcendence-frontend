@@ -1,8 +1,9 @@
 import {
 	registerToEvent,
-	unregisterToEvent,
+	toRegistrationInput,
+	unregisterFromEvent,
 	type RegistrationActionResult,
-} from "../../models/registrations";
+} from "../../api/registrations";
 import type { Route } from "./+types/registration";
 
 export async function clientAction({
@@ -10,7 +11,10 @@ export async function clientAction({
 	request,
 }: Route.ClientActionArgs): Promise<RegistrationActionResult> {
 	if (request.method === "POST") {
-		return registerToEvent({ eventId: params.eventId });
+		return registerToEvent(
+			params.eventId,
+			toRegistrationInput(await request.formData()),
+		);
 	}
-	return unregisterToEvent({ eventId: params.eventId });
+	return unregisterFromEvent(params.eventId);
 }

@@ -16,4 +16,5 @@ export default [
 	// Resources routes
 	route("/events/:eventId/registration", "routes/resources/registration.tsx"),
 	route("/events", "routes/resources/event.tsx"),
+	route("/events/roles", "routes/resources/event_role.tsx"),
 ] satisfies RouteConfig;

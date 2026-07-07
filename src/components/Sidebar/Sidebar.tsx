@@ -1,7 +1,7 @@
 import { type JSX, useEffect } from "react";
 import { PiBookOpen, PiCalendarBlank, PiChat, PiHouse } from "react-icons/pi";
 import { HiMenuAlt2 } from "react-icons/hi";
-import ItemCategorie from "./ItemCategorie";
+import ItemCategory from "./ItemCategorie";
 import { initDrawers } from "flowbite";
 import { useLocation } from "react-router";
 
@@ -65,18 +65,18 @@ function Sidebar(): JSX.Element {
 						</div>
 					</a>
 					<ul className="space-y-3 font-main font-medium text-muted text-[14.5px]">
-						<ItemCategorie to="/" icon={PiHouse}>
+						<ItemCategory to="/" icon={PiHouse}>
 							Home
-						</ItemCategorie>
-						<ItemCategorie to="/calendar" icon={PiCalendarBlank}>
+						</ItemCategory>
+						<ItemCategory to="/calendar" icon={PiCalendarBlank}>
 							Calendar
-						</ItemCategorie>
-						<ItemCategorie to="/knowledge" icon={PiBookOpen}>
+						</ItemCategory>
+						<ItemCategory to="/knowledge" icon={PiBookOpen}>
 							Knowledge
-						</ItemCategorie>
-						<ItemCategorie to="/messages" icon={PiChat}>
+						</ItemCategory>
+						<ItemCategory to="/messages" icon={PiChat}>
 							Messages
-						</ItemCategorie>
+						</ItemCategory>
 					</ul>
 				</div>
 			</aside>

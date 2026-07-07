@@ -6,8 +6,10 @@ import {
 } from "react";
 import EventBadge from "./Events/EventBadge";
 
+const emptyArray: string[] = [];
+
 export default function MultipleInput({
-	suggestions,
+	suggestions = emptyArray,
 	className,
 	name,
 	placeholder,
@@ -22,16 +24,16 @@ export default function MultipleInput({
 		setDraft("");
 	}
 
-	function getSuggestions(): string[] | undefined {
+	function getSuggestions(): string[] {
 		return suggestions
-			?.filter((el) => !values.includes(el))
-			.filter((el) => el.startsWith(draft));
+			.filter((el) => !values.includes(el))
+			.filter((el) => el.toLowerCase().startsWith(draft.toLowerCase()));
 	}
 
 	const inputType: KeyboardEventHandler<HTMLInputElement> = (ev) => {
 		const sugg = getSuggestions();
 
-		if (sugg && sugg.length > 0) {
+		if (sugg.length > 0) {
 			if (ev.key === "ArrowUp") {
 				ev.preventDefault();
 				if (selected === 0) {
@@ -57,7 +59,7 @@ export default function MultipleInput({
 		if (ev.key === "Backspace" && draft.length === 0) {
 			setValues((prev) => prev.slice(0, -1));
 		}
-		if (ev.key === " ") {
+		if (ev.key === "Enter") {
 			ev.preventDefault();
 			if (draft.length > 0) {
 				addValue(draft);
@@ -97,7 +99,7 @@ export default function MultipleInput({
 					className="absolute top-full left-0 w-full peer-focus:flex hidden flex-col
 				border-l border-r bg-surface2 border-border rounded-b-md"
 				>
-					{getSuggestions()?.map((val, idx) => (
+					{getSuggestions().map((val, idx) => (
 						<button
 							type="button"
 							key={val}
@@ -119,7 +121,9 @@ export default function MultipleInput({
 					))}
 				</div>
 			</div>
-			<input type="hidden" name={name} value={values.join(" ")} />
+			{values.map((val) => (
+				<input hidden key={val} name={name} value={val} readOnly />
+			))}
 		</>
 	);
 }

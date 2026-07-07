@@ -12,7 +12,7 @@ import {
 	isSameMonth,
 	isSameDay,
 } from "date-fns";
-import { fetchEvents, type EventData } from "../models/events";
+import { fetchEvents, type EventData } from "../api/events";
 import type { Route } from "./+types/calendar";
 import { Form, Link } from "react-router";
 import EventList from "../components/Events/EventList";
@@ -78,9 +78,9 @@ export default function Calendar({
 					))}
 				</div>
 				<div className="mt-1 grid w-full grid-cols-7 bg-border2 border-3 border-border2 gap-0.75 rounded-md place-items-center">
-					{monthDays.map((day, idx) => (
+					{monthDays.map((day) => (
 						<div
-							key={idx}
+							key={day.toString()}
 							className="group flex pt-1 flex-col rounded-md items-center w-full sm:h-26 h-22 bg-surface cursor-pointer"
 							onClick={() => {
 								setSelectedDay(day);

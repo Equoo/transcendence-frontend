@@ -2,7 +2,7 @@ import type { JSX, ReactNode } from "react";
 import type { IconType } from "react-icons";
 import { NavLink } from "react-router";
 
-function ItemCategorie({
+function ItemCategory({
 	children,
 	icon: Icon,
 	to,
@@ -36,4 +36,4 @@ function ItemCategorie({
 	);
 }
 
-export default ItemCategorie;
+export default ItemCategory;

@@ -1,6 +1,6 @@
 import type { JSX } from "react";
 import type { Route } from "./+types/event_details";
-import { fetchEvent, type EventData } from "../models/events";
+import { fetchEvent, type EventData } from "../api/events";
 import { FiChevronLeft } from "react-icons/fi";
 import { redirect, useNavigate } from "react-router";
 import EventRegisterBtn from "../components/Events/EventRegisterBtn";

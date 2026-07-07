@@ -13,6 +13,10 @@ export type EventRoleResult =
 	| { ok: true; role: EventRole }
 	| { ok: false; error: ProblemDetail };
 
+export type EventRolesResult =
+	| { ok: true; roles: EventRole[] }
+	| { ok: false; error: ProblemDetail };
+
 export async function createEventRole(
 	reg: EventRoleInput,
 ): Promise<EventRoleResult> {
@@ -30,8 +34,11 @@ export async function createEventRole(
 	return { ok: true, role: (await res.json()) as EventRole };
 }
 
-export async function getEventRoles(): Promise<EventRole[]> {
+export async function fetchEventRoles(): Promise<EventRolesResult> {
 	const res = await fetch(`/api/events/roles`);
 
-	return (await res.json()) as EventRole[];
+	if (!res.ok) {
+		return { ok: false, error: (await res.json()) as ProblemDetail };
+	}
+	return { ok: true, roles: (await res.json()) as EventRole[] };
 }

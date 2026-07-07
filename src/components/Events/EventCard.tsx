@@ -1,7 +1,7 @@
 import { type JSX, useEffect, useState } from "react";
 import CheckButton from "../CheckButton";
 import EventBadge from "./EventBadge";
-import type { EventData } from "../../models/events";
+import type { EventData } from "../../api/events";
 import { FiChevronRight } from "react-icons/fi";
 import { IoLocationOutline } from "react-icons/io5";
 import { GoPeople } from "react-icons/go";
@@ -9,7 +9,7 @@ import { PiClock } from "react-icons/pi";
 import { Link } from "react-router";
 import EventRegisterBtn from "./EventRegisterBtn";
 
-interface Countdown {
+interface CountdownType {
 	days: number;
 	hours: number;
 	minutes: number;
@@ -17,7 +17,7 @@ interface Countdown {
 	totalMs: number;
 }
 
-function getCountdown(targetDate: Date): Countdown {
+function getCountdown(targetDate: Date): CountdownType {
 	const diff = targetDate.getTime() - Date.now();
 	const totalMs = Math.max(diff, 0);
 
@@ -30,7 +30,7 @@ function getCountdown(targetDate: Date): Countdown {
 	return { days, hours, minutes, seconds, totalMs };
 }
 
-function formatCountdown(countdown: Countdown): string {
+function formatCountdown(countdown: CountdownType): string {
 	const pad = (value: number): string => String(value).padStart(2, "0");
 	if (countdown.totalMs === 0) {
 		return "Running";
@@ -42,7 +42,7 @@ function formatCountdown(countdown: Countdown): string {
 	return `${pad(countdown.hours)}:${pad(countdown.minutes)}:${pad(countdown.seconds)}`;
 }
 
-function Cooldown({ date }: { date: Date }): JSX.Element {
+function Countdown({ date }: { date: Date }): JSX.Element {
 	const [countdown, setCountdown] = useState(() => getCountdown(date));
 
 	useEffect(() => {
@@ -108,7 +108,7 @@ export default function EventCard({
 				)}
 			</div>
 			<div className="flex gap-3 items-end">
-				<Cooldown key={event.id} date={new Date(event.date)} />
+				<Countdown key={event.id} date={new Date(event.date)} />
 				<div className="ml-auto">
 					<EventBadge border="" bg="bg-good-soft" text="text-good">
 						<GoPeople />
