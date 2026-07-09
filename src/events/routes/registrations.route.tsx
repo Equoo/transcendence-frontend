@@ -6,6 +6,7 @@ import {
 	type RegistrationActionResult,
 } from "../api/registrations.api";
 import type { Route } from "./+types/registrations.route";
+import { APIError } from "../../api/problem_detail";
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
 export async function clientAction({
@@ -23,7 +24,7 @@ export async function clientAction({
 		res = await unregisterFromEvent(params.eventId);
 	}
 	if (!res.ok) {
-		throw res.error;
+		throw new APIError(res.error);
 	}
 	return data(null, { status: 201 });
 }

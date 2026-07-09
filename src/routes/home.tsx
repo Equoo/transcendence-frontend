@@ -3,7 +3,8 @@ import CheckButton from "../components/CheckButton";
 import { fetchEvents, type EventData } from "../events/api/events.api";
 import type { JSX } from "react";
 import { PiPlusBold } from "react-icons/pi";
-import { isRouteErrorResponse, useRouteError, Form } from "react-router";
+import { isRouteErrorResponse, Form } from "react-router";
+import { APIError } from "../api/problem_detail";
 import type { Route } from "./+types/home";
 import EventList from "../events/components/EventList";
 
@@ -11,7 +12,7 @@ export async function clientLoader(): Promise<EventData[]> {
 	const res = await fetchEvents();
 
 	if (!res.ok) {
-		throw res.error;
+		throw new APIError(res.error);
 	}
 	return res.events;
 }
@@ -43,17 +44,25 @@ export default function Home({
 	);
 }
 
-export function ErrorBoundary(): JSX.Element {
-	const error = useRouteError();
-
+export function ErrorBoundary({
+	error,
+}: Route.ErrorBoundaryProps): JSX.Element {
 	if (isRouteErrorResponse(error)) {
 		return (
 			<div className="w-full p-6 text-red-500 font-main">
 				{error.status} — {error.statusText}
 			</div>
 		);
+	} else if (error instanceof APIError) {
+		return (
+			<>
+				<h1>{error.name}</h1>
+				<div className="w-full p-6 text-red-500 font-main">
+					{error.message}
+				</div>
+			</>
+		);
 	}
-
 	return (
 		<div className="w-full p-6 text-red-500 font-main">
 			Server error during page loading

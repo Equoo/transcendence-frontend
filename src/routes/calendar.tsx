@@ -19,12 +19,13 @@ import EventList from "../events/components/EventList";
 import CheckButton from "../components/CheckButton";
 import { PiPlusBold } from "react-icons/pi";
 import EventForm from "../events/components/EventForm";
+import { APIError } from "../api/problem_detail";
 
 export async function clientLoader(): Promise<EventData[]> {
 	const res = await fetchEvents();
 
 	if (!res.ok) {
-		throw res.error;
+		throw new APIError(res.error);
 	}
 	return res.events;
 }

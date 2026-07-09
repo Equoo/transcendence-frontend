@@ -42,7 +42,7 @@ function formatCountdown(countdown: CountdownType): string {
 	return `${pad(countdown.hours)}:${pad(countdown.minutes)}:${pad(countdown.seconds)}`;
 }
 
-function Countdown({ date }: { date: Date }): JSX.Element {
+function Countdown({date}: {date: Date}): JSX.Element {
 	const [countdown, setCountdown] = useState(() => getCountdown(date));
 
 	useEffect(() => {

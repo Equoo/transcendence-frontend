@@ -17,7 +17,7 @@ export default function EventForm(): JSX.Element {
 		void eventRolesFetcher.load("/events/roles");
 	}, []);
 	useEffect(() => {
-		if (eventFetcher.state === "idle" && eventFetcher.data) {
+		if (eventFetcher.state === "idle" && (eventFetcher.data?.ok ?? false)) {
 			setSearchParams((sp) => {
 				sp.delete("eventForm");
 				return sp;
@@ -38,7 +38,7 @@ export default function EventForm(): JSX.Element {
 						method="POST"
 						className="flex flex-col items-center w-4/5 gap-5 mb-4"
 					>
-						<div className="inline-flex flex-col w-full bg-sur">
+						<div className="inline-flex flex-col w-full">
 							<div className="text-red-500">
 								<label className="text-text font-main font-medium">
 									Name
@@ -48,11 +48,11 @@ export default function EventForm(): JSX.Element {
 							<input
 								name="name"
 								required
-								className="w-full bg-white border rounded-md border-border2 inset-shadow-xs px-2 py-1 font-main text-text"
+								className="w-full outline-0 focus:border-accent bg-surface border rounded-md border-border2  px-2 py-1 font-main text-text"
 								placeholder="Event Name"
 							/>
 						</div>
-						<div className="inline-flex flex-col w-full bg-sur">
+						<div className="inline-flex flex-col w-full">
 							<div className="text-red-500">
 								<label className="text-text font-main font-medium">
 									Date
@@ -63,7 +63,7 @@ export default function EventForm(): JSX.Element {
 								type="datetime-local"
 								required
 								name="date"
-								className="w-full bg-white border rounded-md border-border2 inset-shadow-xs px-2 py-1 font-main text-text"
+								className="w-full bg-surface border rounded-md border-border2 px-2 py-1 font-main text-text"
 							/>
 						</div>
 						<div className="inline-flex flex-col w-full">
@@ -78,7 +78,7 @@ export default function EventForm(): JSX.Element {
 								type="number"
 								required
 								min="1"
-								className="w-full bg-white border rounded-md border-border2 inset-shadow-xs px-2 py-1 font-main text-text"
+								className="w-full bg-surface border rounded-md border-border2 px-2 py-1 font-main text-text"
 								placeholder="Max Registrations"
 							/>
 						</div>
@@ -92,7 +92,7 @@ export default function EventForm(): JSX.Element {
 							<input
 								name="location"
 								required
-								className="w-full bg-white border rounded-md border-border2 inset-shadow-xs px-2 py-1 font-main text-text"
+								className="w-full bg-surface border rounded-md border-border2  px-2 py-1 font-main text-text"
 								placeholder="Event Location"
 							/>
 						</div>
@@ -103,7 +103,7 @@ export default function EventForm(): JSX.Element {
 							<MultipleInput
 								name="tags"
 								placeholder="Event Tags"
-								className="w-full bg-white border rounded-md border-border2 inset-shadow-xs px-2 py-1 font-main text-text"
+								className="w-full bg-surface border rounded-md border-border2  px-2 py-1 font-main text-text"
 							/>
 						</div>
 						<div className="inline-flex flex-col w-full">
@@ -116,7 +116,7 @@ export default function EventForm(): JSX.Element {
 									(val) => val.name,
 								)}
 								placeholder="Event Roles"
-								className="w-full bg-white border rounded-md border-border2 inset-shadow-xs px-2 py-1 font-main text-text"
+								className="w-full bg-surface border rounded-md border-border2  px-2 py-1 font-main text-text"
 							/>
 						</div>
 						<div className="inline-flex flex-col w-full">
@@ -125,7 +125,7 @@ export default function EventForm(): JSX.Element {
 							</label>
 							<textarea
 								name="description"
-								className="w-full bg-white border rounded-md border-border2 inset-shadow-xs px-2 py-1 font-main text-text"
+								className="w-full bg-surface border rounded-md border-border2  px-2 py-1 font-main text-text"
 								placeholder="Event Description"
 							/>
 						</div>

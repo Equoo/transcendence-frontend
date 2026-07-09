@@ -1,3 +1,4 @@
+import { APIError } from "../../api/problem_detail";
 import { fetchEventRoles } from "../api/event_roles.api";
 import { data } from "react-router";
 
@@ -6,7 +7,7 @@ export async function clientLoader() {
 	const res = await fetchEventRoles();
 
 	if (!res.ok) {
-		throw res.error;
+		throw new APIError(res.error);
 	}
 	return data(res.roles);
 }
