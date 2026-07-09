@@ -25,9 +25,9 @@ export async function clientLoader(): Promise<EventData[]> {
 	const res = await fetchEvents();
 
 	if (!res.ok) {
-		throw new APIError(res.error);
+		throw new APIError(res.prob);
 	}
-	return res.events;
+	return res.res;
 }
 
 export default function Calendar({

@@ -1,4 +1,5 @@
 import type { ProblemDetail } from "../../api/problem_detail";
+import type { APIResult } from "../../api/results";
 
 export interface EventRole {
 	id: string;
@@ -9,17 +10,9 @@ export interface EventRoleInput {
 	name: string;
 }
 
-export type EventRoleResult =
-	| { ok: true; role: EventRole }
-	| { ok: false; error: ProblemDetail };
-
-export type EventRolesResult =
-	| { ok: true; roles: EventRole[] }
-	| { ok: false; error: ProblemDetail };
-
 export async function createEventRole(
 	reg: EventRoleInput,
-): Promise<EventRoleResult> {
+): Promise<APIResult<EventRole>> {
 	const res = await fetch(`/api/events/roles`, {
 		method: "POST",
 		body: JSON.stringify(reg),
@@ -29,16 +22,16 @@ export async function createEventRole(
 	});
 
 	if (!res.ok) {
-		return { ok: false, error: (await res.json()) as ProblemDetail };
+		return { ok: false, prob: (await res.json()) as ProblemDetail };
 	}
-	return { ok: true, role: (await res.json()) as EventRole };
+	return { ok: true, res: (await res.json()) as EventRole };
 }
 
-export async function fetchEventRoles(): Promise<EventRolesResult> {
+export async function fetchEventRoles(): Promise<APIResult<EventRole[]>> {
 	const res = await fetch(`/api/events/roles`);
 
 	if (!res.ok) {
-		return { ok: false, error: (await res.json()) as ProblemDetail };
+		return { ok: false, prob: (await res.json()) as ProblemDetail };
 	}
-	return { ok: true, roles: (await res.json()) as EventRole[] };
+	return { ok: true, res: (await res.json()) as EventRole[] };
 }
