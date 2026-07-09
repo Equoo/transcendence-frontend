@@ -1,5 +1,5 @@
-import type { ProblemDetail } from "./problem_detail";
-import type { User } from "./users";
+import type { ProblemDetail } from "../../api/problem_detail";
+import type { User } from "../../api/users";
 
 export interface Registration {
 	user: User;
@@ -8,19 +8,29 @@ export interface Registration {
 }
 
 export interface RegistrationInput {
-	eventId: string;
-	role?: string;
+	eventRoleId: string;
 }
 
 export type RegistrationActionResult =
 	| { ok: true }
 	| { ok: false; error: ProblemDetail };
 
+export function toRegistrationInput(formData: FormData): RegistrationInput {
+	return {
+		eventRoleId: formData.get("eventRoleId") as string,
+	};
+}
+
 export async function registerToEvent(
+	eventId: string,
 	reg: RegistrationInput,
 ): Promise<RegistrationActionResult> {
-	const res = await fetch(`/api/events/${reg.eventId}/registration`, {
+	const res = await fetch(`/api/events/${eventId}/registration`, {
 		method: "POST",
+		body: JSON.stringify(reg),
+		headers: {
+			"Content-Type": "application/json",
+		},
 	});
 
 	if (!res.ok) {
@@ -29,10 +39,10 @@ export async function registerToEvent(
 	return { ok: true };
 }
 
-export async function unregisterToEvent(
-	reg: RegistrationInput,
+export async function unregisterFromEvent(
+	eventId: string,
 ): Promise<RegistrationActionResult> {
-	const res = await fetch(`/api/events/${reg.eventId}/registration`, {
+	const res = await fetch(`/api/events/${eventId}/registration`, {
 		method: "DELETE",
 	});
 

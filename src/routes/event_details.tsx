@@ -1,13 +1,13 @@
 import type { JSX } from "react";
 import type { Route } from "./+types/event_details";
-import { fetchEvent, type EventData } from "../models/events";
+import { fetchEvent, type EventData } from "../events/api/events.api";
 import { FiChevronLeft } from "react-icons/fi";
 import { redirect, useNavigate } from "react-router";
-import EventRegisterBtn from "../components/Events/EventRegisterBtn";
+import EventRegisterBtn from "../events/components/EventRegisterBtn";
 import { toast } from "react-toastify";
 import Alert from "../components/Alert";
 import ProfilePic from "../components/ProfilePic";
-import EventBadge from "../components/Events/EventBadge";
+import EventBadge from "../components/Badge";
 
 export async function clientLoader({
 	params,

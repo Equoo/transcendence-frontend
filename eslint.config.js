@@ -41,6 +41,8 @@ export default defineConfig([
 			"@typescript-eslint/no-unsafe-type-assertion": "off",
 			"@typescript-eslint/no-unsafe-call": "off",
 			"@typescript-eslint/prefer-readonly-parameter-types": "off",
+			"@eslint-react/exhaustive-deps": "off",
+			"no-console": ["error", { allow: ["warn", "error"] }],
 		},
 	},
 ]);

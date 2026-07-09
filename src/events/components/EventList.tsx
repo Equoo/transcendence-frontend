@@ -1,6 +1,6 @@
 import type { JSX } from "react";
 import EventCard from "./EventCard";
-import type { EventData } from "../../models/events";
+import type { EventData } from "../api/events.api";
 
 export default function EventList({
 	events,
