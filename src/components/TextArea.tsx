@@ -32,6 +32,7 @@ export function TextArea({
 			>
 				{children}
 				<textarea
+					name={name}
 					className={`bg-transparent outline-0 ring-0 border-0 p-0 w-10 grow peer`}
 					{...rest}
 				/>
