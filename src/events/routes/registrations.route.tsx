@@ -3,17 +3,17 @@ import {
 	registerToEvent,
 	toRegistrationInput,
 	unregisterFromEvent,
-	type RegistrationActionResult,
 } from "../api/registrations.api";
 import type { Route } from "./+types/registrations.route";
 import { APIError } from "../../api/problem_detail";
+import type { APIResult } from "../../api/results";
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
 export async function clientAction({
 	params,
 	request,
 }: Route.ClientActionArgs) {
-	let res: RegistrationActionResult;
+	let res: APIResult<null>;
 
 	if (request.method === "POST") {
 		res = await registerToEvent(
@@ -24,7 +24,7 @@ export async function clientAction({
 		res = await unregisterFromEvent(params.eventId);
 	}
 	if (!res.ok) {
-		throw new APIError(res.error);
+		throw new APIError(res.prob);
 	}
-	return data(null, { status: 201 });
+	return data(res.res, { status: 201 });
 }

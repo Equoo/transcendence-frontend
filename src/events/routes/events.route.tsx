@@ -27,9 +27,9 @@ async function upsertRoleIds(
 	const results = await Promise.all(promises);
 	for (const res of results) {
 		if (!res.ok) {
-			throw new APIError(res.error);
+			throw new APIError(res.prob);
 		}
-		rolesId.push(res.role.id);
+		rolesId.push(res.res.id);
 	}
 	return rolesId;
 }
@@ -41,16 +41,16 @@ export async function clientAction({ request }: Route.ClientActionArgs) {
 	const roles = await rolesPromise;
 
 	if (!roles.ok) {
-		throw new APIError(roles.error);
+		throw new APIError(roles.prob);
 	}
-	event.eventRoleIds = await upsertRoleIds(roles.roles, event.eventRoleIds);
+	event.eventRoleIds = await upsertRoleIds(roles.res, event.eventRoleIds);
 	const res = await createEvent(event);
 
 	if (!res.ok) {
-		if (res.error.status === 400) {
+		if (res.prob.status === 400) {
 			return data(res, { status: 400 });
 		}
-		throw new APIError(res.error);
+		throw new APIError(res.prob);
 	}
 	return data(res, { status: 201 });
 }

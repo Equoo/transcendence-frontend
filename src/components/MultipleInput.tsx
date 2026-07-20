@@ -68,7 +68,9 @@ export default function MultipleInput({
 	};
 	return (
 		<>
-			<div className={`relative flex flex-wrap gap-1 ${className}`}>
+			<div
+				className={`relative flex flex-wrap gap-1 focus-within:border-accent ${className}`}
+			>
 				{values.map((value) => (
 					<EventBadge key={value}>
 						{value}
@@ -97,7 +99,7 @@ export default function MultipleInput({
 				/>
 				<div
 					className="absolute top-full left-0 w-full peer-focus:flex hidden flex-col
-				border-l border-r bg-surface2 border-border rounded-b-md"
+				border-l border-r bg-surface2 border-border rounded-b-md z-50"
 				>
 					{getSuggestions().map((val, idx) => (
 						<button

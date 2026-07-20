@@ -15,10 +15,10 @@ export async function clientLoader({
 	const res = await fetchEvent(params.eventId);
 
 	if (!res.ok) {
-		toast.error(Alert, { data: { ...res.error } });
+		toast.error(Alert, { data: { ...res.prob } });
 		return redirect("/");
 	}
-	return res.event;
+	return res.res;
 }
 
 export default function EventDetails({

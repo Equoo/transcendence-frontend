@@ -1,4 +1,6 @@
-type ValidationErrors = Record<string, string[]>;
+import type { APIResult } from "./results";
+
+export type ValidationErrors = Record<string, string[]>;
 
 export interface ProblemDetail {
 	type: string;
@@ -8,6 +10,13 @@ export interface ProblemDetail {
 	errors?: ValidationErrors;
 	errorCode: string;
 	traceId: string;
+}
+
+export function getValidationErrors<T>(
+	res?: APIResult<T>,
+): ValidationErrors | undefined {
+	// eslint-disable-next-line no-undefined
+	return res?.ok === false ? res.prob.errors : undefined;
 }
 
 export class APIError extends Error {

@@ -7,7 +7,7 @@ export async function clientLoader() {
 	const res = await fetchEventRoles();
 
 	if (!res.ok) {
-		throw new APIError(res.error);
+		throw new APIError(res.prob);
 	}
-	return data(res.roles);
+	return data(res.res);
 }
