@@ -1,24 +1,22 @@
+
 import type { JSX, ReactNode } from "react";
 import type { IconType } from "react-icons";
 import { NavLink } from "react-router";
+import type { Channel } from "../../models/chat"
 
-function ItemCategorie({
-	children,
-	icon: Icon,
-	to,
+function ItemChannel({
+	channel
 }: {
-	children: ReactNode;
-	icon: IconType;
-	to: string;
+	channel: Channel;
 }): JSX.Element {
 	return (
 		<li>
 			<NavLink
-				to={to}
-				end={to === "/"}
+				to={`/channels/${channel.id}`}
+				end={`/channels/${channel.id}/`}
 				className={({ isActive }) =>
 					[
-						"flex items-center px-2 py-1.5 text-[14.5px] rounded-base group duration-120",
+						"flex items-center px-2 py-1.5 text-[14px] rounded-base group duration-120",
 						isActive
 							? "bg-accent-soft text-text"
 							: "hover:bg-hover hover:text-text",
@@ -27,8 +25,8 @@ function ItemCategorie({
 			>
 				{({ isActive }) => (
 					<>
-						<Icon size={18} color={isActive ? "#e8743c" : ""} />
-						<span className="ms-3">{children}</span>
+						<span className="font-semibold" color={isActive ? "#e8743c" : ""}>#</span>
+						<span className="ms-3">{channel.name}</span>
 					</>
 				)}
 			</NavLink>
@@ -36,4 +34,4 @@ function ItemCategorie({
 	);
 }
 
-export default ItemCategorie;
+export default ItemChannel;

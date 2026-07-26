@@ -1,6 +1,7 @@
 import type { JSX } from "react";
 import { Outlet } from "react-router";
 import Sidebar from "../components/Sidebar/Sidebar";
+import ChannelForm from "../components/Chat/ChannelForm";
 
 export default function Dashboard(): JSX.Element {
 	return (
@@ -8,6 +9,7 @@ export default function Dashboard(): JSX.Element {
 			<Sidebar />
 			<div className="h-full sm:pl-64 flex flex-col w-full items-center overflow-y-scroll">
 				<Outlet />
+				<ChannelForm />
 			</div>
 		</div>
 	);

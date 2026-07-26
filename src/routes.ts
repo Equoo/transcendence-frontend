@@ -12,8 +12,10 @@ export default [
 		route("calendar/:eventId", "routes/event_details.tsx"),
 		route("knowledge", "routes/knowledge.tsx"),
 		route("messages", "routes/messages.tsx"),
+		route("channels/:channelId", "routes/channel.tsx"),
 	]),
 	// Resources routes
 	route("/events/:eventId/registration", "routes/resources/registration.tsx"),
 	route("/events", "routes/resources/event.tsx"),
+	route("/channels", "routes/resources/channel.tsx"),
 ] satisfies RouteConfig;
