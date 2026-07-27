@@ -5,10 +5,11 @@ import ItemCategorie from "./ItemCategorie";
 import ItemChannel from "./ItemChannel";
 import { initDrawers } from "flowbite";
 import { useLocation, Form } from "react-router";
-import { type Channel, useChannels } from "../../models/chat"
+import { type Channel, fetchChannels, useChannels } from "../../models/chat"
 
 function Sidebar(): JSX.Element {
 	const location = useLocation();
+	const channels = useChannels((state) => state.channels);
 
 	useEffect(() => {
 		initDrawers();
@@ -28,8 +29,6 @@ function Sidebar(): JSX.Element {
 			toggleButton?.click();
 		}
 	}, [location.pathname]);
-
-	const channels = useChannels((state) => state.channels);
 
 	return (
 		<>
