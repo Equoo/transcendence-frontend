@@ -12,8 +12,6 @@ export function toUserInput(formData: FormData): UserInput {
 }
 
 // Middlwear detect if user is already connect
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/no-unused-vars
-
 export async function loginUser(formData: FormData): Promise<UserResult> {
 	const object = toUserInput(formData);
 

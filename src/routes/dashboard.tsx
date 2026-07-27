@@ -4,7 +4,6 @@ import Sidebar from "../components/Sidebar/Sidebar";
 import { UserContext } from "../users/api/users.api";
 import type { Route } from "../+types/root";
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
 export const clientMiddleware: Route.MiddlewareFunction[] = [
 	// eslint-disable-next-line @typescript-eslint/consistent-return, @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
 	({ context }) => {

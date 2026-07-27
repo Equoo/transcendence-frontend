@@ -7,6 +7,7 @@ export interface User {
 	userName: string;
 }
 
+// eslint-disable-next-line @eslint-react/no-missing-context-display-name
 export const UserContext = createContext<User | null>(null);
 
 export async function userFetcher(): Promise<APIResult<User>> {
