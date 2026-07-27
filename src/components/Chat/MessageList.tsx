@@ -24,7 +24,6 @@ function MessageList({
 		bottomRef.current?.scrollIntoView({ behavior: "smooth" });
 	}, [msgs]);
 
-	const today = new Date();
 	let last_date = new Date("1970-01-01T00:00:00");
 	return (
 		<div className="flex flex-1 min-h-0 flex-col gap-[18px] overflow-y-auto px-[22px] pt-5">
@@ -32,20 +31,12 @@ function MessageList({
 			{msgs.map(m => {
 				const date = new Date(m.sentAt);
 				const notSameDay = !isSameDay(date, last_date);
-				const day = isSameDay(date, today) && "Today" // TODO: Localization
-					|| date.toLocaleDateString("en-EN", {
-						weekday: "long",
-						day: "numeric",
-						month: "long",
-					});
 				last_date = date;
 	
 				return (
 				<>
 					{notSameDay && (
-						<MessageDaySeparator>
-							<span>{day}</span>
-						</MessageDaySeparator>
+						<MessageDaySeparator date={date}/>
 					)}
 					<div className="flex items-start gap-3" key={m.id}>
 						<ProfilePic name={m.sender.userName} size={10} />
