@@ -1,4 +1,3 @@
-
 import type { JSX, ReactNode } from "react";
 import type { IconType } from "react-icons";
 import { NavLink } from "react-router";
@@ -25,7 +24,7 @@ function ItemChannel({
 			>
 				{({ isActive }) => (
 					<>
-						<span className="font-semibold" color={isActive ? "#e8743c" : ""}>#</span>
+						<span className={`font-semibold ${isActive ? "text-accent" : "text-muted"}`} >#</span>
 						<span className="ms-3">{channel.name}</span>
 					</>
 				)}

@@ -89,3 +89,11 @@ body,
 	scrollbar-width: thin;
 	scrollbar-color: var(--color-muted) transparent;
 }
+
+::selection {
+    background: var(--color-accent-soft);
+}
+
+::-moz-selection {
+    background: var(--color-accent-soft);
+}
