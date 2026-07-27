@@ -8,6 +8,7 @@ import type { Route } from "./+types/registrations.route";
 import { APIError } from "../../api/problem_detail";
 import type { APIResult } from "../../api/results";
 
+
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
 export async function clientAction({
 	params,

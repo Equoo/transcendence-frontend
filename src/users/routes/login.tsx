@@ -1,13 +1,8 @@
 import type { JSX } from "react";
 import { redirect, useFetcher } from "react-router";
-import type { Route } from "./+types/login";
 import type { UserInput, UserResult } from "./register";
-import {
-	AuthForm,
-	AuthLogo,
-	AuthTitle,
-} from "../components/Authenticate/AuthForm";
-
+import { AuthForm, AuthLogo, AuthTitle } from "../components/AuthForm";
+import type { Route } from "./+types/login";
 
 export function toUserInput(formData: FormData): UserInput {
 	return {
@@ -15,6 +10,9 @@ export function toUserInput(formData: FormData): UserInput {
 		password: formData.get("password") as string,
 	};
 }
+
+// Middlwear detect if user is already connect
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/no-unused-vars
 
 export async function loginUser(formData: FormData): Promise<UserResult> {
 	const object = toUserInput(formData);

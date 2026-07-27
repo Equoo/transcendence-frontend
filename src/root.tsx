@@ -1,7 +1,11 @@
 import "./index.css";
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router";
-import type { JSX, ReactNode } from "react";
 import { ToastContainer } from "react-toastify";
+import { UserContext, userFetcher } from "./users/api/users.api";
+import type { Route } from "./+types/root";
+import type { JSX, ReactNode } from "react";
+
+// eslint-disable-next-line @typescript-eslint/no-use-before-define
 
 const alertStyle = {
 	success: "bg-good-soft text-good",
@@ -11,6 +15,19 @@ const alertStyle = {
 	dark: "",
 	default: "bg-bg",
 };
+
+// eslint-disable-next-line @eslint-react/no-missing-context-display-name
+
+export const clientMiddleware: Route.ClientMiddlewareFunction[] = [
+	// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/no-unused-vars, @typescript-eslint/explicit-function-return-type
+	async ({ context }, next) => {
+		const res = await userFetcher();
+		if (res.ok) {
+			context.set(UserContext, res.res);
+		}
+		await next();
+	},
+];
 
 export function Layout({ children }: { children: ReactNode }): JSX.Element {
 	return (

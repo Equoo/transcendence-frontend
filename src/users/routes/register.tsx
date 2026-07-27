@@ -1,11 +1,7 @@
 import type { JSX } from "react";
 import { redirect, Form } from "react-router";
+import { AuthForm, AuthLogo, AuthTitle } from "../components/AuthForm";
 import type { Route } from "./+types/register";
-import {
-	AuthForm,
-	AuthLogo,
-	AuthTitle,
-} from "../components/Authenticate/AuthForm";
 
 export interface UserInput {
 	username: string;
