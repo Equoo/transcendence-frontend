@@ -49,10 +49,13 @@ export default function EventRegisterBtn({
 								action: `/events/${event.id}/registration`,
 							});
 						} else {
-							setSearchParams((prev) => {
-								prev.append("eventRegister", event.id);
-								return prev;
-							});
+							setSearchParams(
+								(prev) => {
+									prev.append("eventRegister", event.id);
+									return prev;
+								},
+								{ defaultShouldRevalidate: false },
+							);
 						}
 					}}
 				>

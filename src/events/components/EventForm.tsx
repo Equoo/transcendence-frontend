@@ -1,32 +1,24 @@
-import { useEffect, type JSX } from "react";
+import { use, useEffect, type JSX } from "react";
 import { useFetcher, useSearchParams } from "react-router";
 import CheckButton from "../../components/CheckButton";
 import Modal from "../../components/Modal";
 import MultipleInput from "../../components/MultipleInput";
 import type { clientAction as eventAction } from "../routes/events.route";
-import type { clientLoader as eventRolesLoader } from "../routes/event_roles.route";
 import { Input } from "../../components/Input";
 import { getValidationErrors } from "../../api/problem_detail";
 import { TextArea } from "../../components/TextArea";
+import type { EventRole } from "../api/event_roles.api";
 
-export default function EventForm(): JSX.Element {
+export default function EventForm({
+	rolesPromise,
+}: {
+	rolesPromise: Promise<EventRole[]>;
+}): JSX.Element {
 	const eventFetcher = useFetcher<typeof eventAction>();
-	const eventRolesFetcher = useFetcher<typeof eventRolesLoader>();
 
-	const [searchParams, setSearchParams] = useSearchParams();
+	const [searchParams] = useSearchParams();
 	const showEventForm = searchParams.get("eventForm");
-
-	useEffect(() => {
-		void eventRolesFetcher.load("/events/roles");
-	}, []);
-	useEffect(() => {
-		if (eventFetcher.state === "idle" && (eventFetcher.data?.ok ?? false)) {
-			setSearchParams((sp) => {
-				sp.delete("eventForm");
-				return sp;
-			});
-		}
-	}, [eventFetcher.data, eventFetcher.state]);
+	const roles = use(rolesPromise);
 	return (
 		<>
 			{showEventForm === null ? null : (
@@ -84,9 +76,7 @@ export default function EventForm(): JSX.Element {
 							</label>
 							<MultipleInput
 								name="Roles"
-								suggestions={eventRolesFetcher.data?.map(
-									(val) => val.name,
-								)}
+								suggestions={roles.map((val) => val.name)}
 								placeholder="Event Roles"
 								className="w-full bg-surface border rounded-md border-border2  px-2 py-1 font-main text-text"
 							/>

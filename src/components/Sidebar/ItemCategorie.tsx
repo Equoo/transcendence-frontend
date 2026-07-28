@@ -1,6 +1,7 @@
 import type { JSX, ReactNode } from "react";
 import type { IconType } from "react-icons";
-import { NavLink } from "react-router";
+import { TbLoader2 } from "react-icons/tb";
+import { NavLink, useNavigation } from "react-router";
 
 function ItemCategory({
 	children,
@@ -11,6 +12,8 @@ function ItemCategory({
 	icon: IconType;
 	to: string;
 }): JSX.Element {
+	const navigation = useNavigation();
+
 	return (
 		<li>
 			<NavLink
@@ -27,7 +30,16 @@ function ItemCategory({
 			>
 				{({ isActive }) => (
 					<>
-						<Icon size={18} color={isActive ? "#e8743c" : ""} />
+						{navigation.location?.pathname === to &&
+						navigation.state === "loading" ? (
+							<TbLoader2 className="animate-spin min-w-5" />
+						) : (
+							<Icon
+								className="min-w-5"
+								size={18}
+								color={isActive ? "#e8743c" : ""}
+							/>
+						)}
 						<span className="ms-3">{children}</span>
 					</>
 				)}

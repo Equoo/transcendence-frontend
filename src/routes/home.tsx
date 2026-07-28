@@ -1,24 +1,24 @@
 import EventForm from "../events/components/EventForm";
 import CheckButton from "../components/CheckButton";
-import { fetchEvents } from "../events/api/events.api";
-import type { JSX } from "react";
+import { fetchEvents, type EventData } from "../events/api/events.api";
+import { Suspense, type JSX } from "react";
 import { PiPlusBold } from "react-icons/pi";
 import { isRouteErrorResponse, Form } from "react-router";
 import { APIError } from "../api/problem_detail";
 import type { Route } from "./+types/home";
 import EventList from "../events/components/EventList";
+import EventListSkeleton from "../events/components/EventListSkeleton";
+import { fetchEventRoles, type EventRole } from "../events/api/event_roles.api";
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
-export async function clientLoader() {
-	const res = await fetchEvents();
-	if (!res.ok) {
-		throw new APIError(res.prob);
-	}
-	return res.res;
+export function clientLoader(): {
+	events: Promise<EventData[]>;
+	eventRoles: Promise<EventRole[]>;
+} {
+	return { events: fetchEvents(), eventRoles: fetchEventRoles() };
 }
 
 export default function Home({
-	loaderData: events,
+	loaderData,
 }: Route.ComponentProps): JSX.Element {
 	return (
 		<>
@@ -26,7 +26,7 @@ export default function Home({
 				<h1 className="font-semibold tracking-tight text-xl">
 					Accueil
 				</h1>
-				<Form>
+				<Form defaultShouldRevalidate={false}>
 					<CheckButton
 						type="submit"
 						active
@@ -38,8 +38,12 @@ export default function Home({
 					</CheckButton>
 				</Form>
 			</div>
-			<EventList events={events} />
-			<EventForm />
+			<Suspense fallback={<EventListSkeleton />}>
+				<EventList eventsPromise={loaderData.events} />
+			</Suspense>
+			<Suspense fallback={null}>
+				<EventForm rolesPromise={loaderData.eventRoles} />
+			</Suspense>
 		</>
 	);
 }

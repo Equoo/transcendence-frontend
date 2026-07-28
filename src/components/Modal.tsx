@@ -22,10 +22,13 @@ export default function Modal({
 						type="button"
 						className="text-muted hover:text-text text-3xl cursor-pointer ml-auto"
 						onClick={() => {
-							setSearchParams((sp) => {
-								sp.delete(name);
-								return sp;
-							});
+							setSearchParams(
+								(sp) => {
+									sp.delete(name);
+									return sp;
+								},
+								{ defaultShouldRevalidate: false },
+							);
 						}}
 					>
 						×

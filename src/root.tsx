@@ -70,3 +70,7 @@ export function Layout({ children }: { children: ReactNode }): JSX.Element {
 export default function App(): JSX.Element {
 	return <Outlet />;
 }
+
+export function HydrateFallback(): JSX.Element {
+	return <div>hydrating</div>;
+}
