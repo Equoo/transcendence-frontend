@@ -4,6 +4,7 @@ import { NavLink } from "react-router";
 import type { Message } from "../../models/chat"
 import MessageDaySeparator from "./MessageDaySeparator"
 import ProfilePic from "../ProfilePic"
+import { toArray } from "react-emoji-render";
 
 function isSameDay(d1: Date, d2: Date): boolean {
 	return (
@@ -12,6 +13,36 @@ function isSameDay(d1: Date, d2: Date): boolean {
 		d1.getDate() === d2.getDate()
 	);
 }
+
+const segmenter = new Intl.Segmenter(undefined, {
+  granularity: "grapheme",
+});
+
+function isEmojiOnly(text) {
+	const graphemes = [
+		...segmenter.segment(text)
+	].map(x => x.segment);
+
+	if (graphemes.length > 25)
+		return false;
+
+	return graphemes.every((g) =>
+		/\p{Extended_Pictographic}/u.test(g)
+	);
+}
+
+const parseEmojis = value => {
+	const emojisArray = toArray(value);
+
+	const newValue = emojisArray.reduce((previous, current) => {
+		if (typeof current === "string") {
+			return previous + current;
+		}
+		return previous + current.props.children;
+	}, "");
+
+	return newValue;
+};
 
 function MessageList({
 	msgs
@@ -32,7 +63,7 @@ function MessageList({
 				const date = new Date(m.sentAt);
 				const notSameDay = !isSameDay(date, last_date);
 				last_date = date;
-	
+
 				return (
 				<>
 					{notSameDay && (
@@ -54,7 +85,11 @@ function MessageList({
 								}</span>
 							</div>
 							<div className="whitespace-pre-wrap text-[14.5px] leading-[1.5] text-text">
-								{m.content}
+								{
+									isEmojiOnly(m.content)
+										&& (<span className="text-4xl">{m.content}</span>)
+										|| parseEmojis(m.content)
+								}
 							</div>
 							{/* {m.react && ( */}
 							{/* 	<span className="mt-2 inline-flex items-center gap-[5px] rounded-full border border-border bg-surface px-[9px] py-[2px] text-[12px] font-semibold text-text-2"> */}

@@ -2,7 +2,7 @@ import { type JSX, useEffect, useState } from "react";
 import { Outlet } from "react-router";
 import Sidebar from "../components/Sidebar/Sidebar";
 import ChannelForm from "../components/Chat/ChannelForm";
-import { fetchChannels, useChannels } from "../models/chat"
+import { fetchChannels, useChat } from "../models/chat"
 
 export default function Dashboard(): JSX.Element {
 	const [ready, setReady] = useState(false);
@@ -10,7 +10,7 @@ export default function Dashboard(): JSX.Element {
 	useEffect(() => {
 		async function load_channels() {
 			try {
-				useChannels.getState().setChannels(await fetchChannels());
+				useChat.getState().setChannels(await fetchChannels());
 			} catch (err) {
 				console.error(err);
 			} finally {

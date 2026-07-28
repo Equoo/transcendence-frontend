@@ -21,7 +21,7 @@ export default function IconBtn({
 	...rest
 }: Props): JSX.Element {
 	const activeStyle =
-		"text-accent-text bg-accent hover:brightness-110  border border-accent shadow-accent hover:shadow-xs";
+		"text-accent-text bg-accent hover:brightness-110 active:translate-y-[1px] shadow-accent hover:shadow-xs disabled:bg-muted disabled:hover:brightness-100";
 	const unactiveStyle =
 		"text-text bg-surface border border-border hover:bg-border";
 	const discreteStyle =
