@@ -3,7 +3,7 @@ import { Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router";
 import { ToastContainer } from "react-toastify";
 import { UserContext, userFetcher } from "./users/api/users.api";
 import type { Route } from "./+types/root";
-import { useContext, type JSX, type ReactNode } from "react";
+import type { JSX, ReactNode } from "react";
 
 const alertStyle = {
 	success: "bg-good-soft text-good",
