@@ -1,6 +1,7 @@
 import type { Route } from "./+types/channel";
+import { redirect } from "react-router";
 import { toast } from "react-toastify";
-import { createChannel, useChannels, type ChannelActionResult } from "../../api/chat";
+import { createChannel, useChat, type ChannelActionResult } from "../../api/chat";
 import Alert from "../../components/Alert";
 
 export async function clientAction({
@@ -12,12 +13,8 @@ export async function clientAction({
 		toast.error(Alert, { data: { ...res.error } });	
 		return res;
 	}
-	toast.success(Alert, {
-		data: { title: "Channel successfully created" },
-	});
 
-	useChannels.getState().addChannel(res.channel);
+	useChat.getState().addChannel(res.channel);
 
-	console.log("Channels: ", useChannels.getState().channels);
-	return res;
+	return redirect(`/channels/${res.channel.id}`);
 }

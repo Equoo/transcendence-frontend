@@ -1,8 +1,9 @@
-import type { JSX } from "react";
+import { type JSX, useEffect, useState } from "react";
 import type { Route } from "./+types/channel";
-import { useChannels, fetchMessages, type Message, type Channel } from "../api/chat";
+import { useChat, fetchMessages, type Message, type Channel } from "../api/chat";
+import { useShallow } from "zustand/react/shallow";
 import { PiPushPin, PiUsers } from "react-icons/pi";
-import { redirect, useNavigate } from "react-router";
+import { redirect } from "react-router";
 import { toast } from "react-toastify";
 import Alert from "../components/Alert";
 import ProfilePic from "../components/ProfilePic";
@@ -10,23 +11,32 @@ import IconBtn from "../components/IconBtn";
 import MessageComposer from "../components/Chat/MessageComposer";
 import MessageList from "../components/Chat/MessageList";
 
-export async function clientLoader({
-	params,
-}: Route.ClientLoaderArgs): Promise<{messages: Message[], channelId: string} | Response> {
-	const res = await fetchMessages(params.channelId, 10, "");
-
-	if (!res.ok) {
-		toast.error(Alert, { data: { ...res.error } });
-		return redirect("/");
-	}
-	return { messages: res.messages, channelId: params.channelId };
-}
-
 export default function Channel({
-	loaderData: data,
+	params,
 }: Route.ComponentProps): JSX.Element {
-	const channel = useChannels((state) => state.channels).find(c => c.id == data.channelId);
-	const messages = data.messages;
+	const channels = useChat((state) => state.channels);
+	const channel = useChat((state) => state.channels[params.channelId]);
+	const messages = useChat(useShallow((state) => state.channels[params.channelId]?.messages ?? []));
+	
+	let free = true;
+	useEffect(() => {
+		async function load_messages() {
+			if (!free)
+				return;
+			try {
+				free = false;
+				useChat.getState().addMsgs(params.channelId, await fetchMessages(params.channelId, 10, ""));
+			} catch (err) {
+				console.error(err);
+			} finally {
+				free = true;
+			}
+		}
+		
+		if (messages.length == 0) {
+			load_messages();
+		}
+	}, [params.channelId]);
 
 	return (
 		<div className="flex flex-col w-full h-full">
@@ -49,7 +59,7 @@ export default function Channel({
 			<div className="flex min-h-0 flex-1">
 				<div className="flex min-w-0 flex-1 flex-col">
 					<MessageList msgs={messages} />
-					<MessageComposer placeholder={`Message to #${channel.name}...`} />
+					<MessageComposer placeholder={`Message to #${channel.name}...`} channelId={channel.id} />
 				</div>
 
 				{/* {thread && ( */}

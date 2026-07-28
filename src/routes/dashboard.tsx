@@ -4,7 +4,7 @@ import Sidebar from "../components/Sidebar/Sidebar";
 import { UserContext } from "../users/api/users.api";
 import type { Route } from "../+types/root";
 import ChannelForm from "../components/Chat/ChannelForm";
-import { fetchChannels, useChannels } from "../models/chat"
+import { fetchChannels, useChat } from "../models/chat"
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
 export function clientLoader({ context }: Route.LoaderArgs) {
@@ -18,7 +18,7 @@ export default function Dashboard(): JSX.Element {
 	useEffect(() => {
 		async function load_channels() {
 			try {
-				useChannels.getState().setChannels(await fetchChannels());
+				useChat.getState().setChannels(await fetchChannels());
 			} catch (err) {
 				console.error(err);
 			} finally {

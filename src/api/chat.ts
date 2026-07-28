@@ -3,62 +3,132 @@ import type { User } from "./users";
 import { useState } from 'react';
 import { create } from 'zustand';
 
-export const useChannels = create((set) => ({
-  channels: [],
-
-  addChannel: (item) =>
-    set((state) => ({ channels: [...state.channels, item] })),
-
-  removeChannel: (id) =>
-    set((state) => ({ channels: state.channels.filter((i) => i.id !== id) })),
-
-  updateChannel: (id, updates) =>
-    set((state) => ({
-      channels: state.channels.map((i) => (i.id === id ? { ...i, ...updates } : i)),
-    })),
-
-  clearChannels: () => set({ channels: [] }),
-
-  setChannels: (newchannels) => set({ channels: newchannels }),
-}));
+export interface Message {
+	id: string;
+	content: string;
+	sentAt: Date;
+	editAt?: Date;
+	messageReference?: string;
+	sender: User;
+	channel: {channelId: string};
+}
 
 export interface Channel {
 	id: string;
 	name: string;
 	topic: string;
-	createAt: string;
+	createAt: Date;
 	eventId?: string;
 	category?: string;
+	messages?: Message[];
 }
 
-export interface ReqNewChannel {
-	name: string;
-	topic: string;
-	eventId?: string;
-}
-function toReqNewChannel(formData: FormData): ReqNewChannel  {
-	return {
-		name: formData.get("name") as string,
-		topic: formData.get("topic") as string
-	};
-}
-
-export interface Message {
-	id: string;
-	content: string;
-	sentAt: string;
-	messageReference?: string;
-	sender: User;
-	channel: Channel;
+interface ChatState {
+	channels: Record<string, Channel>;
+	setChannel: (channels: Channel[]) => void;
+	addChannel: (channel: Channel) => void;
+	removeChannel: (id: string) => void;
+	updateChannel: (id: string, updates: any) => void;
+	setMsg: (channelId: string, messages: Message[]) => void;
+	appendMsgs: (channelId: string, messages: Message[]) => void;
+	addMsg: (channelId: string, message: Message) => void;
+	addMsgs: (channelId: string, messages: Message[]) => void;
+	removeMsg: (channelId: string, id: string) => void;
+	updateMsg: (channelId: string, id: string, updates: any) => void;
 }
 
-export type MessageActionResult =
-	| { ok: true; message: Message }
-	| { ok: false; error: ProblemDetail };
+export const useChat = create<ChatState>((set) => ({
+	channels: {},
 
-export type ChannelActionResult =
-	| { ok: true; channel: Channel }
-	| { ok: false; error: ProblemDetail };
+	setChannels: (channels) => set({ channels: Object.fromEntries(channels.map((c) => [c.id, c])) }),
+
+	addChannel: (channel) =>
+		set((state) => ({
+			channels: { ...state.channels, [channel.id]: channel },
+		})),
+  
+	removeChannel: (id) =>
+		set((state) => ({ channels: {
+				...state.channels,
+				[id]: null
+			}
+		})),
+
+	updateChannel: (id, updates) =>
+		set((state) => ({
+			channels: {
+				...state.channels,
+				[id]: {
+					...state.channels[id],
+					...updates
+				}
+			}
+		})),
+	
+	setMsgs: (channelId, messages) => set({ channels: {
+			...state.channels,
+			[channelId]: {
+				...state.channels[channelId],
+				messages: messages
+			}
+		}
+	}),
+
+	appendMsgs: (channelId, messages) =>
+		set((state) => ({
+			channels: {
+				...state.channels,
+				[channelId]: {
+					...state.channels[channelId],
+					messages: [...messages, ...state.channels[channelId].messages ?? []],
+				},
+			},
+		})),
+	
+	addMsg: (channelId, message) =>
+		set((state) => ({
+			channels: {
+				...state.channels,
+				[channelId]: {
+					...state.channels[channelId],
+					messages: [...state.channels[channelId].messages ?? [], message],
+				},
+			},
+		})),
+	
+	addMsgs: (channelId, messages) =>
+		set((state) => ({
+			channels: {
+				...state.channels,
+				[channelId]: {
+					...state.channels[channelId],
+					messages: [...state.channels[channelId].messages ?? [], ...messages],
+				},
+			},
+		})),
+	
+	removeMsg: (channelId, id) =>
+		set((state) => ({ channels: {
+				...state.channels,
+				[channelId]: {
+					...state.channels[channelId],
+					messages: state.channels[channelId].messages.filter(m => m.id != id)
+				}
+			}
+		})),
+
+	updateMsg: (channelId, id, updates) =>
+		set((state) => ({
+			channels: {
+				...state.channels,
+				[channelId]: {
+					...state.channels[channelId],
+					messages: state.channels[channelId].messages.map((i) => (i.id === id ? { ...i, ...updates } : i))
+				}
+			}
+		})),
+}));
+
 
 export async function fetchChannels(): Promise<Channel[]> {
 	const response = await fetch("/api/channels");
@@ -73,25 +143,33 @@ export async function fetchChannels(): Promise<Channel[]> {
 export async function fetchMessages(channelId: string, limit: number, before: string): Promise<Message[]> {
 	const response = await fetch(`/api/channels/${channelId}/messages`);
 	if (!response.ok) {
-		return { ok: false, error: (await response.json()) as ProblemDetail };
+		throw new Error("Can't fetch messages");
 	}
-	return {
-		ok: true,
-		messages: (await response.json()) as Message[],
-	};
+	const messages = (await response.json()) as Message[];
+	return messages;
 }
+
+
+export type ActionResult =
+	| { ok: true; data: Any }
+	| { ok: false; error: ProblemDetail };
+
+export type ChannelActionResult =
+	| { ok: true; channel: Channel }
+	| { ok: false; error: ProblemDetail };
 
 export async function createChannel(
 	formData: FormData,
 ): Promise<ChannelActionResult> {
-	const object = toReqNewChannel(formData);
-
 	const response = await fetch("/api/channels", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
 		},
-		body: JSON.stringify(object),
+		body: JSON.stringify({
+			name: formData.get("name") as string,
+			topic: formData.get("topic") as string
+		}),
 	});
 
 	if (!response.ok) {
@@ -104,5 +182,33 @@ export async function createChannel(
 	return {
 		ok: true,
 		channel: (await response.json()) as Channel,
+	};
+}
+
+
+export async function sendMessage(
+	channelId: string,
+	content: string
+): Promise<ActionResult> {
+	const response = await fetch(`/api/channels/${channelId}/messages`, {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify({
+			content: content
+		}),
+	});
+
+	if (!response.ok) {
+		return {
+			ok: false,
+			error: (await response.json()) as ProblemDetail,
+		};
+	}
+
+	return {
+		ok: true,
+		data: (await response.json()) as Message,
 	};
 }

@@ -6,11 +6,12 @@ import ItemChannel from "./ItemChannel";
 import { initDrawers } from "flowbite";
 import { useLocation, Form } from "react-router";
 import InvitationForm from "../../invitations/components/InvitationForm";
-import { type Channel, fetchChannels, useChannels } from "../../api/chat"
+import { type Channel, useChat } from "../../api/chat"
+import { useShallow } from "zustand/react/shallow";
 
 function Sidebar(): JSX.Element {
 	const location = useLocation();
-	const channels = useChannels((state) => state.channels);
+	const channels = useChat(useShallow((state) => Object.values(state.channels)));
 
 	useEffect(() => {
 		initDrawers();

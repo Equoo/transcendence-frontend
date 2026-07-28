@@ -19,7 +19,7 @@ export default function CheckButton({
 	...rest
 }: Props): JSX.Element {
 	const activeStyle =
-		"text-accent-text bg-accent hover:brightness-110 rounded-full border border-accent shadow-accent hover:shadow-xs";
+		"text-accent-text bg-accent hover:brightness-110 rounded-full active:translate-y-[1px] shadow-accent hover:shadow-xs disabled:bg-muted disabled:hover:brightness-100";
 	const unactiveStyle =
 		"text-text bg-surface border border-border hover:bg-border";
 	const discreteStyle =
