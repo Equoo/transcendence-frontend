@@ -12,6 +12,7 @@ function ItemCategory({
 	icon: IconType;
 	to: string;
 }): JSX.Element {
+
 	return (
 		<li>
 			<NavLink
