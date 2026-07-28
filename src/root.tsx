@@ -3,7 +3,7 @@ import { Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router";
 import { ToastContainer } from "react-toastify";
 import { UserContext, userFetcher } from "./users/api/users.api";
 import type { Route } from "./+types/root";
-import type { JSX, ReactNode } from "react";
+import { useContext, type JSX, type ReactNode } from "react";
 
 const alertStyle = {
 	success: "bg-good-soft text-good",
@@ -18,6 +18,7 @@ export const clientMiddleware: Route.ClientMiddlewareFunction[] = [
 	// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/explicit-function-return-type
 	async ({ context }, next) => {
 		const res = await userFetcher();
+
 		if (res.ok) {
 			context.set(UserContext, res.res);
 		}

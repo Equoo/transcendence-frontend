@@ -14,6 +14,11 @@ export async function userFetcher(): Promise<APIResult<User>> {
 	const res = await fetch("/api/me");
 
 	if (!res.ok) {
+		if (res.headers.get("Token-Expired") === "True") {
+			console.warn("Using RefreshToken...");
+			await fetch("/api/auth/refresh");
+			await userFetcher();
+		}
 		return { ok: false, prob: (await res.json()) as ProblemDetail };
 	}
 	return { ok: true, res: (await res.json()) as User };
