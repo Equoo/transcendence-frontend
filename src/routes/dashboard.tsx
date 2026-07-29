@@ -3,6 +3,7 @@ import { Outlet } from "react-router";
 import Sidebar from "../components/Sidebar/Sidebar";
 import { UserContext } from "../users/api/users.api";
 import type { Route } from "../+types/root";
+import ChannelForm from "../components/Chat/ChannelForm";
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
 export function clientLoader({ context }: Route.LoaderArgs) {
@@ -16,6 +17,7 @@ export default function Dashboard(): JSX.Element {
 			<Sidebar />
 			<div className="h-full sm:pl-64 flex flex-col w-full items-center overflow-y-scroll">
 				<Outlet />
+				<ChannelForm />
 			</div>
 		</div>
 	);

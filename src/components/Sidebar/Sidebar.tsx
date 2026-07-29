@@ -1,10 +1,12 @@
 import { type JSX, useEffect } from "react";
-import { PiBookOpen, PiCalendarBlank, PiChat, PiHouse } from "react-icons/pi";
+import { PiBookOpen, PiCalendarBlank, PiChat, PiHouse, PiPlus } from "react-icons/pi";
 import { HiMenuAlt2 } from "react-icons/hi";
-import ItemCategory from "./ItemCategorie";
+import ItemCategorie from "./ItemCategorie";
+import ItemChannel from "./ItemChannel";
 import { initDrawers } from "flowbite";
-import { useLocation } from "react-router";
+import { useLocation, Form } from "react-router";
 import InvitationForm from "../../invitations/components/InvitationForm";
+import { type Channel, useChannels } from "../../models/chat"
 
 function Sidebar(): JSX.Element {
 	const location = useLocation();
@@ -27,6 +29,8 @@ function Sidebar(): JSX.Element {
 			toggleButton?.click();
 		}
 	}, [location.pathname]);
+
+	const channels = useChannels((state) => state.channels);
 
 	return (
 		<>
@@ -66,7 +70,7 @@ function Sidebar(): JSX.Element {
 						</div>
 					</a>
 					<InvitationForm className=""></InvitationForm>
-					<ul className="mt-4 space-y-3 font-main font-medium text-muted text-[14.5px]">
+					<ul className="font-main font-medium text-text2">
 						<ItemCategory to="/" icon={PiHouse}>
 							Home
 						</ItemCategory>
@@ -79,7 +83,20 @@ function Sidebar(): JSX.Element {
 						<ItemCategory to="/messages" icon={PiChat}>
 							Messages
 						</ItemCategory>
+						<li className="flex justify-between items-center px-2 py-1.5 mt-3 text-[11px] text-muted font-bold tracking-wider uppercase group">Channels <Form><button className="cursor-pointer hover:text-text" type="submit" name="channelForm"><PiPlus size={14} /></button></Form></li>
+						{channels.map((channel) => (
+							<ItemChannel channel={channel}></ItemChannel>
+						))}
+						<li className="flex justify-between items-center px-2 py-1.5 mt-3 text-[11px] text-muted font-bold tracking-wider uppercase group">Upcoming</li>
 					</ul>
+
+					{ 
+						// NOTE: PLACEHOLDER 
+					}
+					<select name="user" id="user" onChange={(e) => document.cookie = "UserName=" + e.target.value}>
+						<option value="asventi">Asventi</option>
+						<option value="equo">Equo</option>
+					</select>
 				</div>
 			</aside>
 		</>
