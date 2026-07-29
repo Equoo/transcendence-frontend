@@ -40,10 +40,7 @@ export async function clientAction({ request }: Route.ClientActionArgs) {
 	const event = toEventInput(await request.formData());
 	const roles = await rolesPromise;
 
-	if (!roles.ok) {
-		throw new APIError(roles.prob);
-	}
-	event.eventRoleIds = await upsertRoleIds(roles.res, event.eventRoleIds);
+	event.eventRoleIds = await upsertRoleIds(roles, event.eventRoleIds);
 	const res = await createEvent(event);
 
 	if (!res.ok) {

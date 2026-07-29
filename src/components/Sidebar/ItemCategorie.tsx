@@ -31,7 +31,7 @@ function ItemCategory({
 				{({ isActive }) => (
 					<>
 						{navigation.location?.pathname === to &&
-						navigation.state === "loading" ? (
+						navigation.state !== "idle" ? (
 							<TbLoader2 className="animate-spin min-w-5" />
 						) : (
 							<Icon

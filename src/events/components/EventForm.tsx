@@ -1,4 +1,4 @@
-import { use, useEffect, type JSX } from "react";
+import { use, type JSX } from "react";
 import { useFetcher, useSearchParams } from "react-router";
 import CheckButton from "../../components/CheckButton";
 import Modal from "../../components/Modal";
@@ -10,15 +10,15 @@ import { TextArea } from "../../components/TextArea";
 import type { EventRole } from "../api/event_roles.api";
 
 export default function EventForm({
-	rolesPromise,
+	roles: rolesInput,
 }: {
-	rolesPromise: Promise<EventRole[]>;
+	roles: Promise<EventRole[]> | EventRole[];
 }): JSX.Element {
+	const roles = rolesInput instanceof Promise ? use(rolesInput) : rolesInput;
 	const eventFetcher = useFetcher<typeof eventAction>();
 
 	const [searchParams] = useSearchParams();
 	const showEventForm = searchParams.get("eventForm");
-	const roles = use(rolesPromise);
 	return (
 		<>
 			{showEventForm === null ? null : (

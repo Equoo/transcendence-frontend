@@ -3,11 +3,12 @@ import EventCard from "./EventCard";
 import type { EventData } from "../api/events.api";
 
 export default function EventList({
-	eventsPromise,
+	events: eventsInput,
 }: {
-	eventsPromise: Promise<EventData[]>;
+	events: Promise<EventData[]> | EventData[];
 }): JSX.Element {
-	const events = use(eventsPromise);
+	const events =
+		eventsInput instanceof Promise ? use(eventsInput) : eventsInput;
 	return (
 		<div className=" w-full flex shrink-0 px-4 py-6 gap-6 overflow-x-scroll items-center justify-center-safe">
 			{events.map((event) => (

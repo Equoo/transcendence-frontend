@@ -1,20 +1,16 @@
-import EventForm from "../events/components/EventForm";
-import CheckButton from "../components/CheckButton";
 import { fetchEvents, type EventData } from "../events/api/events.api";
 import { Suspense, type JSX } from "react";
-import { PiPlusBold } from "react-icons/pi";
-import { isRouteErrorResponse, Form } from "react-router";
+import { isRouteErrorResponse } from "react-router";
 import { APIError } from "../api/problem_detail";
 import type { Route } from "./+types/home";
 import EventList from "../events/components/EventList";
 import EventListSkeleton from "../events/components/EventListSkeleton";
-import { fetchEventRoles, type EventRole } from "../events/api/event_roles.api";
+import NewEvent from "../events/components/NewEvent";
 
 export function clientLoader(): {
 	events: Promise<EventData[]>;
-	eventRoles: Promise<EventRole[]>;
 } {
-	return { events: fetchEvents(), eventRoles: fetchEventRoles() };
+	return { events: fetchEvents() };
 }
 
 export default function Home({
@@ -26,23 +22,10 @@ export default function Home({
 				<h1 className="font-semibold tracking-tight text-xl">
 					Accueil
 				</h1>
-				<Form defaultShouldRevalidate={false}>
-					<CheckButton
-						type="submit"
-						active
-						activeCheck={false}
-						name="eventForm"
-					>
-						<PiPlusBold />
-						Event
-					</CheckButton>
-				</Form>
+				<NewEvent />
 			</div>
 			<Suspense fallback={<EventListSkeleton />}>
-				<EventList eventsPromise={loaderData.events} />
-			</Suspense>
-			<Suspense fallback={null}>
-				<EventForm rolesPromise={loaderData.eventRoles} />
+				<EventList events={loaderData.events} />
 			</Suspense>
 		</>
 	);

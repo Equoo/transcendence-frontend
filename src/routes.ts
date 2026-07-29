@@ -8,7 +8,7 @@ import {
 export default [
 	layout("routes/dashboard.tsx", [
 		index("routes/home.tsx"),
-		route("calendar", "routes/calendar.tsx"),
+		route("calendar", "routes/calendar_page.tsx"),
 		route("calendar/:eventId", "routes/event_details.tsx"),
 		route("knowledge", "routes/knowledge.tsx"),
 		route("messages", "routes/messages.tsx"),
@@ -21,5 +21,4 @@ export default [
 		"events/routes/registrations.route.tsx",
 	),
 	route("/events", "events/routes/events.route.tsx"),
-	route("/events/roles", "events/routes/event_roles.route.tsx"),
 ] satisfies RouteConfig;

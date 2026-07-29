@@ -41,7 +41,7 @@ export default function EventListSkeleton({
 			aria-live="polite"
 			aria-label="Chargement des évènements"
 		>
-			{Array.from({ length: count }, (_, index) => (
+			{Array.from({ length: count }, (___, index) => (
 				<EventCardSkeleton key={index} />
 			))}
 		</div>
