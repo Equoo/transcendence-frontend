@@ -9,8 +9,9 @@ import EventForm from "../events/components/EventForm";
 
 export function clientLoader(): {
 	events: Promise<EventData[]>;
+	roles: Promise<EventRole[]>;
 } {
-	return { events: fetchEvents() };
+	return { events: fetchEvents(), roles: fetchEvents() };
 }
 
 export default function Home({
@@ -22,7 +23,7 @@ export default function Home({
 				<h1 className="font-semibold tracking-tight text-xl">
 					Accueil
 				</h1>
-				<EventForm />
+				<EventForm roles={loaderData.events} />
 			</div>
 			<Suspense fallback={<EventListSkeleton />}>
 				<EventList events={loaderData.events} />
