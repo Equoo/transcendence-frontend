@@ -21,5 +21,4 @@ export default [
 		"events/routes/registrations.route.tsx",
 	),
 	route("/events", "events/routes/events.route.tsx"),
-	route("/events_roles", "events/routes/event_roles.route.tsx"),
 ] satisfies RouteConfig;
