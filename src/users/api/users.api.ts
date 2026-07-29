@@ -11,13 +11,14 @@ export interface User {
 export const UserContext = createContext<User | null>(null);
 
 export async function userFetcher(): Promise<APIResult<User>> {
-	const res = await fetch("/api/me");
+	let res = await fetch("/api/me");
 
 	if (!res.ok) {
 		if (res.headers.get("Token-Expired") === "True") {
 			console.warn("Using RefreshToken...");
 			await fetch("/api/auth/refresh");
-			await userFetcher();
+			res = await fetch("/api/me");
+			return { ok: true, res: (await res.json()) as User };
 		}
 		return { ok: false, prob: (await res.json()) as ProblemDetail };
 	}

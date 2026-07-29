@@ -18,7 +18,6 @@ export const clientMiddleware: Route.ClientMiddlewareFunction[] = [
 	// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/explicit-function-return-type
 	async ({ context }, next) => {
 		const res = await userFetcher();
-
 		if (res.ok) {
 			context.set(UserContext, res.res);
 		}
