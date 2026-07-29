@@ -14,7 +14,9 @@ export default function MultipleInput({
 	name,
 	placeholder,
 	...rest
-}: { suggestions?: string[] } & ComponentProps<"input">): JSX.Element {
+}: {
+	suggestions?: string[];
+} & ComponentProps<"input">): JSX.Element {
 	const [values, setValues] = useState<string[]>([]);
 	const [draft, setDraft] = useState("");
 	const [selected, setSelected] = useState(0);

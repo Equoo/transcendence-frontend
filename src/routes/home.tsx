@@ -5,7 +5,7 @@ import { APIError } from "../api/problem_detail";
 import type { Route } from "./+types/home";
 import EventList from "../events/components/EventList";
 import EventListSkeleton from "../events/components/EventListSkeleton";
-import NewEvent from "../events/components/NewEvent";
+import EventForm from "../events/components/EventForm";
 
 export function clientLoader(): {
 	events: Promise<EventData[]>;
@@ -22,7 +22,7 @@ export default function Home({
 				<h1 className="font-semibold tracking-tight text-xl">
 					Accueil
 				</h1>
-				<NewEvent />
+				<EventForm />
 			</div>
 			<Suspense fallback={<EventListSkeleton />}>
 				<EventList events={loaderData.events} />

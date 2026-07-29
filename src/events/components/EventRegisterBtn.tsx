@@ -1,5 +1,5 @@
-import { useEffect, type ComponentProps, type JSX } from "react";
-import { useFetcher, useRouteLoaderData, useSearchParams } from "react-router";
+import { useState, type ComponentProps, type JSX } from "react";
+import { useFetcher, useRouteLoaderData } from "react-router";
 import type { EventData } from "../api/events.api";
 import CheckButton from "../../components/CheckButton";
 import Modal from "../../components/Modal";
@@ -12,7 +12,7 @@ export default function EventRegisterBtn({
 }: ComponentProps<"form"> & {
 	event: EventData;
 }): JSX.Element {
-	const [searchParams, setSearchParams] = useSearchParams();
+	const [showRegister, setShowRegister] = useState(false);
 	const fetcher = useFetcher<typeof registerAction>();
 	const user = useRouteLoaderData<typeof userLoader>("routes/dashboard");
 
@@ -22,16 +22,6 @@ export default function EventRegisterBtn({
 	const isFull = event.size === event.registrations.length;
 	const presence =
 		fetcher.state === "idle" ? isRegistered : fetcher.formMethod === "POST";
-	const showRegister = searchParams.get("eventRegister");
-
-	useEffect(() => {
-		if (fetcher.state === "submitting") {
-			setSearchParams((sp) => {
-				sp.delete("eventRegister");
-				return sp;
-			});
-		}
-	}, [fetcher.state, fetcher.data]);
 
 	return (
 		<>
@@ -49,13 +39,7 @@ export default function EventRegisterBtn({
 								action: `/events/${event.id}/registration`,
 							});
 						} else {
-							setSearchParams(
-								(prev) => {
-									prev.append("eventRegister", event.id);
-									return prev;
-								},
-								{ defaultShouldRevalidate: false },
-							);
+							setShowRegister(true);
 						}
 					}}
 				>
@@ -67,8 +51,14 @@ export default function EventRegisterBtn({
 				method={"POST"}
 				className={rest.className}
 			>
-				{showRegister === event.id && (
-					<Modal name="eventRegister" title="Register">
+				{showRegister && (
+					<Modal
+						name="eventRegister"
+						title="Register"
+						onClose={() => {
+							setShowRegister(false);
+						}}
+					>
 						<p className="text-muted font-main text-wrap font-light w-4/5 text-sm">
 							Choose your preferred role for the event, an admin
 							may still change your role.

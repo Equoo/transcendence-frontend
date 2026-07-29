@@ -16,13 +16,15 @@ import { fetchEvents, type EventData } from "../events/api/events.api";
 import type { Route } from "./+types/calendar_page";
 import { Await, Link } from "react-router";
 import EventList from "../events/components/EventList";
-import NewEvent from "../events/components/NewEvent";
 import EventListSkeleton from "../events/components/EventListSkeleton";
+import EventForm from "../events/components/EventForm";
+import { fetchEventRoles, type EventRole } from "../events/api/event_roles.api";
 
 export function clientLoader(): {
 	events: Promise<EventData[]>;
+	roles: Promise<EventRole[]>;
 } {
-	return { events: fetchEvents() };
+	return { events: fetchEvents(), roles: fetchEventRoles() };
 }
 
 export default function Calendar({
@@ -39,8 +41,11 @@ export default function Calendar({
 
 	return (
 		<main className="flex flex-col w-full items-center h-full mt-2">
+			<EventForm
+				roles={loaderData.roles}
+				className="w-fit ml-auto mr-2 mt-2"
+			/>
 			<div className="xl:w-8/10 w-9/10 mt-2">
-				<NewEvent className="w-fit ml-auto" />
 				<div className="flex w-full items-center justify-between p-4">
 					<FiChevronLeft
 						size={21}

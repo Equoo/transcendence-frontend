@@ -1,5 +1,5 @@
-import { use, type JSX } from "react";
-import { useFetcher, useSearchParams } from "react-router";
+import { Suspense, useState, type JSX } from "react";
+import { Await, useFetcher } from "react-router";
 import CheckButton from "../../components/CheckButton";
 import Modal from "../../components/Modal";
 import MultipleInput from "../../components/MultipleInput";
@@ -7,26 +7,55 @@ import type { clientAction as eventAction } from "../routes/events.route";
 import { Input } from "../../components/Input";
 import { getValidationErrors } from "../../api/problem_detail";
 import { TextArea } from "../../components/TextArea";
+import { PiPlusBold } from "react-icons/pi";
 import type { EventRole } from "../api/event_roles.api";
 
 export default function EventForm({
-	roles: rolesInput,
+	className,
+	roles,
 }: {
-	roles: Promise<EventRole[]> | EventRole[];
+	className?: string;
+	roles: EventRole[] | Promise<EventRole[]>;
 }): JSX.Element {
-	const roles = rolesInput instanceof Promise ? use(rolesInput) : rolesInput;
 	const eventFetcher = useFetcher<typeof eventAction>();
+	const [showEventForm, setShowEventForm] = useState(false);
 
-	const [searchParams] = useSearchParams();
-	const showEventForm = searchParams.get("eventForm");
 	return (
-		<>
-			{showEventForm === null ? null : (
-				<Modal name="eventForm" title="Create An Event">
+		<Suspense
+			fallback={
+				<CheckButton
+					type="button"
+					className={className}
+					disabled
+					pending
+				>
+					Event
+				</CheckButton>
+			}
+		>
+			<CheckButton
+				type="button"
+				className={className}
+				active
+				activeCheck={false}
+				onClick={() => {
+					setShowEventForm(true);
+				}}
+			>
+				<PiPlusBold />
+				Event
+			</CheckButton>
+			{showEventForm && (
+				<Modal
+					name="eventForm"
+					title="Create An Event"
+					onClose={() => {
+						setShowEventForm(false);
+					}}
+				>
 					<p className="text-muted font-main font-light w-4/5 text-sm">
-						You will be automatically registered to the event and
-						set as the Organizer. You can still unregister after the
-						creation.
+						You will be automatically set as the Organizer. You can
+						still register and unregister after the creation.
 					</p>
 					<eventFetcher.Form
 						action="/events"
@@ -74,12 +103,27 @@ export default function EventForm({
 							<label className="text-text font-main font-medium">
 								Roles
 							</label>
-							<MultipleInput
-								name="Roles"
-								suggestions={roles.map((val) => val.name)}
-								placeholder="Event Roles"
-								className="w-full bg-surface border rounded-md border-border2  px-2 py-1 font-main text-text"
-							/>
+							{roles instanceof Promise ? (
+								<Await resolve={roles}>
+									{(value) => (
+										<MultipleInput
+											name="Roles"
+											suggestions={value.map(
+												(role) => role.name,
+											)}
+											placeholder="Event Roles"
+											className="w-full bg-surface border rounded-md border-border2  px-2 py-1 font-main text-text"
+										/>
+									)}
+								</Await>
+							) : (
+								<MultipleInput
+									name="Roles"
+									suggestions={roles.map((role) => role.name)}
+									placeholder="Event Roles"
+									className="w-full bg-surface border rounded-md border-border2  px-2 py-1 font-main text-text"
+								/>
+							)}
 						</div>
 						<TextArea
 							name="Description"
@@ -96,6 +140,6 @@ export default function EventForm({
 					</eventFetcher.Form>
 				</Modal>
 			)}
-		</>
+		</Suspense>
 	);
 }
