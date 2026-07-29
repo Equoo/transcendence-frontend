@@ -6,6 +6,7 @@ import type { Route } from "./+types/home";
 import EventList from "../events/components/EventList";
 import EventListSkeleton from "../events/components/EventListSkeleton";
 import EventForm from "../events/components/EventForm";
+import type { EventRole } from "../events/api/event_roles.api";
 
 export function clientLoader(): {
 	events: Promise<EventData[]>;
