@@ -1,6 +1,6 @@
 import type { Route } from "./+types/channel";
 import { toast } from "react-toastify";
-import { createChannel, useChannels, type ChannelActionResult } from "../../models/chat";
+import { createChannel, useChannels, type ChannelActionResult } from "../../api/chat";
 import Alert from "../../components/Alert";
 
 export async function clientAction({

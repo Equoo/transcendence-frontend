@@ -1,12 +1,12 @@
 import { type JSX, useEffect } from "react";
 import { PiBookOpen, PiCalendarBlank, PiChat, PiHouse, PiPlus } from "react-icons/pi";
 import { HiMenuAlt2 } from "react-icons/hi";
-import ItemCategorie from "./ItemCategorie";
+import ItemCategory from "./ItemCategory";
 import ItemChannel from "./ItemChannel";
 import { initDrawers } from "flowbite";
 import { useLocation, Form } from "react-router";
 import InvitationForm from "../../invitations/components/InvitationForm";
-import { type Channel, useChannels } from "../../models/chat"
+import { type Channel, useChannels } from "../../api/chat"
 
 function Sidebar(): JSX.Element {
 	const location = useLocation();

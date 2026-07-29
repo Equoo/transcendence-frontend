@@ -1,6 +1,6 @@
 import type { JSX } from "react";
 import type { Route } from "./+types/channel";
-import { fetchMessages, type Message, type Channel } from "../models/chat";
+import { fetchMessages, type Message, type Channel } from "../api/chat";
 import { FiChevronLeft } from "react-icons/fi";
 import { redirect, useNavigate } from "react-router";
 import { toast } from "react-toastify";

@@ -2,7 +2,7 @@
 import type { JSX, ReactNode } from "react";
 import type { IconType } from "react-icons";
 import { NavLink } from "react-router";
-import type { Channel } from "../../models/chat"
+import type { Channel } from "../../api/chat"
 
 function ItemChannel({
 	channel

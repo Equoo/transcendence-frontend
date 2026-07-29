@@ -2,7 +2,7 @@ import { useEffect, type JSX } from "react";
 import { useFetcher, useSearchParams } from "react-router";
 import CheckButton from "../CheckButton";
 import Modal from "../Modal";
-import type { ChannelActionResult } from "../../models/chat";
+import type { ChannelActionResult } from "../../api/chat";
 
 export default function ChannelForm(): JSX.Element {
 	const fetcher = useFetcher<ChannelActionResult>();
