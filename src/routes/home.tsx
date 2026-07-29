@@ -1,10 +1,9 @@
 import { fetchEvents, type EventData } from "../events/api/events.api";
-import { Suspense, type JSX } from "react";
+import type { JSX } from "react";
 import { isRouteErrorResponse } from "react-router";
 import { APIError } from "../api/problem_detail";
 import type { Route } from "./+types/home";
 import EventList from "../events/components/EventList";
-import EventListSkeleton from "../events/components/EventListSkeleton";
 import EventForm from "../events/components/EventForm";
 import type { EventRole } from "../events/api/event_roles.api";
 
@@ -26,9 +25,7 @@ export default function Home({
 				</h1>
 				<EventForm roles={loaderData.events} />
 			</div>
-			<Suspense fallback={<EventListSkeleton />}>
-				<EventList events={loaderData.events} />
-			</Suspense>
+			<EventList events={loaderData.events} />
 		</>
 	);
 }
