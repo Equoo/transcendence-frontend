@@ -9,7 +9,7 @@ import { getValidationErrors } from "../../api/problem_detail";
 import { TextArea } from "../../components/TextArea";
 import { PiPlusBold } from "react-icons/pi";
 import type { EventRole } from "../api/event_roles.api";
-import Promisable from "./PromiseDependent";
+import Promisable from "./Promisable";
 
 export default function EventForm({
 	className,

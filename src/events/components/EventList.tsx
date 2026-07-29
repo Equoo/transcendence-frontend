@@ -1,7 +1,7 @@
 import type { JSX } from "react";
 import EventCard from "./EventCard";
 import type { EventData } from "../api/events.api";
-import Promisable from "./PromiseDependent";
+import Promisable from "./Promisable";
 
 function EventCardSkeleton(): JSX.Element {
 	return (
