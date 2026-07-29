@@ -58,7 +58,7 @@ export default function Channel({
 
 			<div className="flex min-h-0 flex-1">
 				<div className="flex min-w-0 flex-1 flex-col">
-					<MessageList msgs={messages} />
+					<MessageList msgs={messages} channelId={channel.id} />
 					<MessageComposer placeholder={`Message to #${channel.name}...`} channelId={channel.id} />
 				</div>
 

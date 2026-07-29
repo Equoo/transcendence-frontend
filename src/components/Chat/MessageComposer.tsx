@@ -37,7 +37,7 @@ function MessageComposer({
 	};
 
 	const handleSend = () => {
-		const text = editableRef.current?.textContent?.trim();
+		const text = editableRef.current?.innerText?.trim();
 		if (!text) return;
 
 		const formData = new FormData();
@@ -92,6 +92,14 @@ function MessageComposer({
 
 		handleInput();
 	}
+
+	useEffect(() => {
+		function handleEscape(e: KeyboardEvent) {
+			if (e.key === "Escape") setShowPicker(false);
+		}
+		document.addEventListener("keydown", handleEscape);
+		return () => document.removeEventListener("keydown", handleEscape);
+	}, []);
 
 	return (
 		<div className="relative mx-[22px] mt-3 mb-[18px] flex flex-col rounded-xl border border-border bg-surface shadow-sm transition-colors duration-[140ms] focus-within:border-accent">

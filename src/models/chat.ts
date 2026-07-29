@@ -140,12 +140,23 @@ export async function fetchChannels(): Promise<Channel[]> {
 	return channels;
 }
 
-export async function fetchMessages(channelId: string, limit: number, before: string): Promise<Message[]> {
-	const response = await fetch(`/api/channels/${channelId}/messages`);
+export async function fetchMessages(channelId: string, limit: number, before: string | null): Promise<Message[]> {
+	let url = `/api/channels/${channelId}/messages?take=${limit}`;
+	
+	if (before) {
+		url += `&before=${before.toISOString()}`;
+	}
+
+	const response = await fetch(url);
 	if (!response.ok) {
 		throw new Error("Can't fetch messages");
 	}
-	const messages = (await response.json()) as Message[];
+	const raw = (await response.json()) as Message[];
+	const messages: Message[] = raw.map(m => ({
+		...m,
+		sentAt: new Date(m.sentAt),
+		editAt: m.editAt ? new Date(m.editAt) : undefined,
+	}));
 	return messages;
 }
 
