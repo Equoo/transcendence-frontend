@@ -14,8 +14,14 @@ export async function clientAction({
 		toast.error(Alert, { data: { ...res.error } });	
 		return res;
 	}
+	
+	const message = {
+		...res.data,
+		sentAt: new Date(res.data.sentAt),
+		editAt: res.data.editAt ? new Date(res.data.editAt) : undefined,
+	}
 
-	useChat.getState().addMsg(params.channelId, res.data);
+	useChat.getState().addMsg(params.channelId, message);
 
 	return res;
 }
