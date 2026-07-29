@@ -1,7 +1,7 @@
 import type { ProblemDetail } from "./problem_detail";
 import type { User } from "./users";
-import { useState } from 'react';
-import { create } from 'zustand';
+import { useState } from "react";
+import { create } from "zustand";
 
 export interface Message {
 	id: string;
@@ -10,7 +10,7 @@ export interface Message {
 	editAt?: Date;
 	messageReference?: string;
 	sender: User;
-	channel: {channelId: string};
+	channel: { channelId: string };
 }
 
 export interface Channel {
@@ -40,18 +40,20 @@ interface ChatState {
 export const useChat = create<ChatState>((set) => ({
 	channels: {},
 
-	setChannels: (channels) => set({ channels: Object.fromEntries(channels.map((c) => [c.id, c])) }),
+	setChannels: (channels) =>
+		set({ channels: Object.fromEntries(channels.map((c) => [c.id, c])) }),
 
 	addChannel: (channel) =>
 		set((state) => ({
 			channels: { ...state.channels, [channel.id]: channel },
 		})),
-  
+
 	removeChannel: (id) =>
-		set((state) => ({ channels: {
+		set((state) => ({
+			channels: {
 				...state.channels,
-				[id]: null
-			}
+				[id]: null,
+			},
 		})),
 
 	updateChannel: (id, updates) =>
@@ -60,19 +62,21 @@ export const useChat = create<ChatState>((set) => ({
 				...state.channels,
 				[id]: {
 					...state.channels[id],
-					...updates
-				}
-			}
+					...updates,
+				},
+			},
 		})),
-	
-	setMsgs: (channelId, messages) => set({ channels: {
-			...state.channels,
-			[channelId]: {
-				...state.channels[channelId],
-				messages: messages
-			}
-		}
-	}),
+
+	setMsgs: (channelId, messages) =>
+		set({
+			channels: {
+				...state.channels,
+				[channelId]: {
+					...state.channels[channelId],
+					messages: messages,
+				},
+			},
+		}),
 
 	appendMsgs: (channelId, messages) =>
 		set((state) => ({
@@ -80,41 +84,53 @@ export const useChat = create<ChatState>((set) => ({
 				...state.channels,
 				[channelId]: {
 					...state.channels[channelId],
-					messages: [...messages, ...state.channels[channelId].messages ?? []],
+					messages: [
+						...messages,
+						...(state.channels[channelId].messages ?? []),
+					],
 				},
 			},
 		})),
-	
+
 	addMsg: (channelId, message) =>
 		set((state) => ({
 			channels: {
 				...state.channels,
 				[channelId]: {
 					...state.channels[channelId],
-					messages: [...state.channels[channelId].messages ?? [], message],
+					messages: [
+						...(state.channels[channelId].messages ?? []),
+						message,
+					],
 				},
 			},
 		})),
-	
+
 	addMsgs: (channelId, messages) =>
 		set((state) => ({
 			channels: {
 				...state.channels,
 				[channelId]: {
 					...state.channels[channelId],
-					messages: [...state.channels[channelId].messages ?? [], ...messages],
+					messages: [
+						...(state.channels[channelId].messages ?? []),
+						...messages,
+					],
 				},
 			},
 		})),
-	
+
 	removeMsg: (channelId, id) =>
-		set((state) => ({ channels: {
+		set((state) => ({
+			channels: {
 				...state.channels,
 				[channelId]: {
 					...state.channels[channelId],
-					messages: state.channels[channelId].messages.filter(m => m.id != id)
-				}
-			}
+					messages: state.channels[channelId].messages.filter(
+						(m) => m.id != id,
+					),
+				},
+			},
 		})),
 
 	updateMsg: (channelId, id, updates) =>
@@ -123,12 +139,13 @@ export const useChat = create<ChatState>((set) => ({
 				...state.channels,
 				[channelId]: {
 					...state.channels[channelId],
-					messages: state.channels[channelId].messages.map((i) => (i.id === id ? { ...i, ...updates } : i))
-				}
-			}
+					messages: state.channels[channelId].messages.map((i) =>
+						i.id === id ? { ...i, ...updates } : i,
+					),
+				},
+			},
 		})),
 }));
-
 
 export async function fetchChannels(): Promise<Channel[]> {
 	const response = await fetch("/api/channels");
@@ -140,9 +157,13 @@ export async function fetchChannels(): Promise<Channel[]> {
 	return channels;
 }
 
-export async function fetchMessages(channelId: string, limit: number, before: string | null): Promise<Message[]> {
+export async function fetchMessages(
+	channelId: string,
+	limit: number,
+	before: string | null,
+): Promise<Message[]> {
 	let url = `/api/channels/${channelId}/messages?take=${limit}`;
-	
+
 	if (before) {
 		url += `&before=${before.toISOString()}`;
 	}
@@ -152,14 +173,13 @@ export async function fetchMessages(channelId: string, limit: number, before: st
 		throw new Error("Can't fetch messages");
 	}
 	const raw = (await response.json()) as Message[];
-	const messages: Message[] = raw.map(m => ({
+	const messages: Message[] = raw.map((m) => ({
 		...m,
 		sentAt: new Date(m.sentAt),
 		editAt: m.editAt ? new Date(m.editAt) : undefined,
 	}));
 	return messages;
 }
-
 
 export type ActionResult =
 	| { ok: true; data: Any }
@@ -179,7 +199,7 @@ export async function createChannel(
 		},
 		body: JSON.stringify({
 			name: formData.get("name") as string,
-			topic: formData.get("topic") as string
+			topic: formData.get("topic") as string,
 		}),
 	});
 
@@ -196,10 +216,9 @@ export async function createChannel(
 	};
 }
 
-
 export async function sendMessage(
 	channelId: string,
-	content: string
+	content: string,
 ): Promise<ActionResult> {
 	const response = await fetch(`/api/channels/${channelId}/messages`, {
 		method: "POST",
@@ -207,7 +226,7 @@ export async function sendMessage(
 			"Content-Type": "application/json",
 		},
 		body: JSON.stringify({
-			content: content
+			content: content,
 		}),
 	});
 
