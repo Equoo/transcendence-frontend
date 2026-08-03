@@ -1,5 +1,12 @@
 import "./index.css";
-import { Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router";
+import {
+	Links,
+	Meta,
+	Outlet,
+	redirect,
+	Scripts,
+	ScrollRestoration,
+} from "react-router";
 import { ToastContainer } from "react-toastify";
 import { UserContext, userFetcher } from "./users/api/users.api";
 import type { Route } from "./+types/root";
@@ -14,12 +21,14 @@ const alertStyle = {
 	default: "bg-bg",
 };
 
-export const clientMiddleware: Route.ClientMiddlewareFunction[] = [
-	// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/explicit-function-return-type
-	async ({ context }, next) => {
+export const clientMiddleware: Route.MiddlewareFunction[] = [
+	// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/explicit-function-return-type, @typescript-eslint/consistent-return
+	async ({ context, url }, next) => {
 		const res = await userFetcher();
 		if (res.ok) {
 			context.set(UserContext, res.res);
+		} else if (url.pathname !== "/login" && url.pathname !== "/register") {
+			return redirect("/login");
 		}
 		await next();
 	},

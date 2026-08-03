@@ -8,7 +8,7 @@ export interface User {
 }
 
 // eslint-disable-next-line @eslint-react/no-missing-context-display-name
-export const UserContext = createContext<User | null>(null);
+export const UserContext = createContext<User>();
 
 let refresh: Promise<Response> | null = null;
 
