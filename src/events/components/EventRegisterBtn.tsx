@@ -8,6 +8,7 @@ import type { clientLoader as userLoader } from "../../routes/dashboard";
 
 export default function EventRegisterBtn({
 	event,
+	className,
 }: ComponentProps<"form"> & {
 	event: EventData;
 }): JSX.Element {
@@ -24,12 +25,12 @@ export default function EventRegisterBtn({
 
 	return (
 		<>
-			<div className={`flex flex-col items-center`}>
+			<div className={`flex flex-col items-center ${className}`}>
 				<CheckButton
 					type="button"
 					active={presence}
 					discrete={isFull}
-					disabled={isFull}
+					disabled={isFull || fetcher.state !== "idle"}
 					pending={fetcher.state !== "idle"}
 					onClick={() => {
 						if (isRegistered) {
