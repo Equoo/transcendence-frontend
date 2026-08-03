@@ -1,4 +1,4 @@
-import { useState, type JSX } from "react";
+import { useEffect, useState, type JSX } from "react";
 import { useFetcher } from "react-router";
 import CheckButton from "../../components/CheckButton";
 import Modal from "../../components/Modal";
@@ -21,6 +21,12 @@ export default function EventForm({
 	const eventFetcher = useFetcher<typeof eventAction>();
 	const [showEventForm, setShowEventForm] = useState(false);
 
+	useEffect(() => {
+		if (eventFetcher.data) {
+			// eslint-disable-next-line @eslint-react/set-state-in-effect
+			setShowEventForm(false);
+		}
+	}, [eventFetcher.data]);
 	return (
 		<Promisable
 			skeleton={

@@ -8,7 +8,6 @@ import type { clientLoader as userLoader } from "../../routes/dashboard";
 
 export default function EventRegisterBtn({
 	event,
-	...rest
 }: ComponentProps<"form"> & {
 	event: EventData;
 }): JSX.Element {
@@ -49,7 +48,9 @@ export default function EventRegisterBtn({
 			<fetcher.Form
 				action={`/events/${event.id}/registration`}
 				method={"POST"}
-				className={rest.className}
+				onSubmit={() => {
+					setShowRegister(false);
+				}}
 			>
 				{showRegister && (
 					<Modal

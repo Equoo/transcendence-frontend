@@ -5,13 +5,13 @@ import { APIError } from "../api/problem_detail";
 import type { Route } from "./+types/home";
 import EventList from "../events/components/EventList";
 import EventForm from "../events/components/EventForm";
-import type { EventRole } from "../events/api/event_roles.api";
+import { fetchEventRoles, type EventRole } from "../events/api/event_roles.api";
 
 export function clientLoader(): {
 	events: Promise<EventData[]>;
 	roles: Promise<EventRole[]>;
 } {
-	return { events: fetchEvents(), roles: fetchEvents() };
+	return { events: fetchEvents(), roles: fetchEventRoles() };
 }
 
 export default function Home({
