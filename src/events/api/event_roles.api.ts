@@ -13,7 +13,7 @@ export interface EventRoleInput {
 export async function createEventRole(
 	reg: EventRoleInput,
 ): Promise<APIResult<EventRole>> {
-	let res = await fetch(`/api/events/roles`, {
+	const res = await fetch(`/api/events/roles`, {
 		method: "POST",
 		body: JSON.stringify(reg),
 		headers: {
@@ -22,12 +22,6 @@ export async function createEventRole(
 	});
 
 	if (!res.ok) {
-		if (res.headers.get("Token-Expired") === "True") {
-			console.warn("Using RefreshToken...");
-			await fetch("/api/auth/refresh");
-			res = await fetch("/api/events/roles");
-			return { ok: true, res: (await res.json()) as EventRole };
-		}
 		return { ok: false, prob: (await res.json()) as ProblemDetail };
 	}
 	return { ok: true, res: (await res.json()) as EventRole };

@@ -40,14 +40,8 @@ export function toEventInput(formData: FormData): EventInput {
 }
 
 export async function fetchEvents(): Promise<APIResult<EventData[]>> {
-	let response = await fetch("/api/events");
+	const response = await fetch("/api/events");
 	if (!response.ok) {
-		if (response.headers.get("Token-Expired") === "True") {
-			console.warn("Using RefreshToken...");
-			await fetch("/api/auth/refresh");
-			response = await fetch("/api/events/roles");
-			return { ok: true, res: (await response.json()) as EventData[] };
-		}
 		return { ok: false, prob: (await response.json()) as ProblemDetail };
 	}
 
@@ -57,14 +51,8 @@ export async function fetchEvents(): Promise<APIResult<EventData[]>> {
 }
 
 export async function fetchEvent(id: string): Promise<APIResult<EventData>> {
-	let response = await fetch(`/api/events/${id}`);
+	const response = await fetch(`/api/events/${id}`);
 	if (!response.ok) {
-		if (response.headers.get("Token-Expired") === "True") {
-			console.warn("Using RefreshToken...");
-			await fetch("/api/auth/refresh");
-			response = await fetch("/api/events/roles");
-			return { ok: true, res: (await response.json()) as EventData };
-		}
 		return { ok: false, prob: (await response.json()) as ProblemDetail };
 	}
 	return {
