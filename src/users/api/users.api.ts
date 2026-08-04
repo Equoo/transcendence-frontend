@@ -1,6 +1,4 @@
 import { createContext } from "react-router";
-import type { ProblemDetail } from "../../api/problem_detail";
-import type { APIResult } from "../../api/results";
 
 export interface User {
 	id: string;
@@ -12,15 +10,14 @@ export const UserContext = createContext<User>();
 
 let refresh: Promise<Response> | null = null;
 
-export async function userFetcher(): Promise<APIResult<User>> {
+export async function userFetcher(): Promise<User | null> {
 	let res = await fetch("/api/me");
-
 	if (res.ok) {
-		return { ok: true, res: (await res.json()) as User };
+		return (await res.json()) as User;
 	}
 
 	if (res.headers.get("Token-Expired") !== "True") {
-		return { ok: false, prob: (await res.json()) as ProblemDetail };
+		return null;
 	}
 
 	refresh ??= fetch("/api/auth/refresh");
@@ -30,12 +27,12 @@ export async function userFetcher(): Promise<APIResult<User>> {
 	refresh = null;
 
 	if (!refreshResponse.ok) {
-		return { ok: false, prob: (await res.json()) as ProblemDetail };
+		return null;
 	}
 
 	res = await fetch("/api/me");
 	if (!res.ok) {
-		return { ok: false, prob: (await res.json()) as ProblemDetail };
+		return null;
 	}
-	return { ok: true, res: (await res.json()) as User };
+	return (await res.json()) as User;
 }

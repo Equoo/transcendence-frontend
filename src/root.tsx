@@ -24,9 +24,9 @@ const alertStyle = {
 export const clientMiddleware: Route.MiddlewareFunction[] = [
 	// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/explicit-function-return-type, @typescript-eslint/consistent-return
 	async ({ context, url }, next) => {
-		const res = await userFetcher();
-		if (res.ok) {
-			context.set(UserContext, res.res);
+		const user = await userFetcher();
+		if (user) {
+			context.set(UserContext, user);
 		} else if (url.pathname !== "/login" && url.pathname !== "/register") {
 			return redirect("/login");
 		}
