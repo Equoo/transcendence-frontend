@@ -1,16 +1,15 @@
 import type { JSX, ReactNode } from "react";
-import { useSearchParams } from "react-router";
 
 export default function Modal({
 	children,
 	title,
-	name,
+	onClose,
 }: {
 	children: ReactNode;
 	title: string;
 	name: string;
+	onClose: () => void;
 }): JSX.Element {
-	const [, setSearchParams] = useSearchParams();
 	return (
 		<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
 			<div className="bg-surface2 rounded-lg shadow-xl w-full max-w-lg px-6 py-4 animate-in m-4">
@@ -21,12 +20,7 @@ export default function Modal({
 					<button
 						type="button"
 						className="text-muted hover:text-text text-3xl cursor-pointer ml-auto"
-						onClick={() => {
-							setSearchParams((sp) => {
-								sp.delete(name);
-								return sp;
-							});
-						}}
+						onClick={onClose}
 					>
 						×
 					</button>

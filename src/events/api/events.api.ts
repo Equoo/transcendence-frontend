@@ -1,5 +1,5 @@
 import type { EventRole } from "./event_roles.api";
-import type { ProblemDetail } from "../../api/problem_detail";
+import { APIError, type ProblemDetail } from "../../api/problem_detail";
 import type { Registration } from "./registrations.api";
 import type { User } from "../../api/users";
 import type { APIResult } from "../../api/results";
@@ -39,15 +39,15 @@ export function toEventInput(formData: FormData): EventInput {
 	};
 }
 
-export async function fetchEvents(): Promise<APIResult<EventData[]>> {
+export async function fetchEvents(): Promise<EventData[]> {
 	const response = await fetch("/api/events");
 	if (!response.ok) {
-		return { ok: false, prob: (await response.json()) as ProblemDetail };
+		throw new APIError((await response.json()) as ProblemDetail);
 	}
 
 	const events = (await response.json()) as EventData[];
 	events.sort((evA, evB) => evA.date.localeCompare(evB.date));
-	return { ok: true, res: events };
+	return events;
 }
 
 export async function fetchEvent(id: string): Promise<APIResult<EventData>> {

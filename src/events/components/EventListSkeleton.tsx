@@ -1,7 +1,4 @@
 import type { JSX } from "react";
-import EventCard from "./EventCard";
-import type { EventData } from "../api/events.api";
-import Promisable from "./Promisable";
 
 function EventCardSkeleton(): JSX.Element {
 	return (
@@ -32,7 +29,11 @@ function EventCardSkeleton(): JSX.Element {
 	);
 }
 
-function EventListSkeleton({ count = 3 }: { count?: number }): JSX.Element {
+export default function EventListSkeleton({
+	count = 3,
+}: {
+	count?: number;
+}): JSX.Element {
 	return (
 		<div
 			className=" w-full flex shrink-0 px-4 py-6 gap-6 overflow-x-scroll items-center justify-center-safe"
@@ -43,29 +44,6 @@ function EventListSkeleton({ count = 3 }: { count?: number }): JSX.Element {
 			{Array.from({ length: count }, (___, index) => (
 				<EventCardSkeleton key={index} />
 			))}
-		</div>
-	);
-}
-
-export default function EventList({
-	events,
-	skeletonCount = 3,
-}: {
-	events: Promise<EventData[]> | EventData[];
-	skeletonCount?: number;
-}): JSX.Element {
-	return (
-		<div className=" w-full flex shrink-0 px-4 py-6 gap-6 overflow-x-scroll items-center justify-center-safe">
-			<Promisable
-				data={events}
-				skeleton={<EventListSkeleton count={skeletonCount} />}
-			>
-				{(data) =>
-					data.map((event) => (
-						<EventCard key={event.id} event={event} />
-					))
-				}
-			</Promisable>
 		</div>
 	);
 }

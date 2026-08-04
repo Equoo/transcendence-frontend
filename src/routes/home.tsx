@@ -1,24 +1,21 @@
-import EventForm from "../events/components/EventForm";
-import CheckButton from "../components/CheckButton";
-import { fetchEvents } from "../events/api/events.api";
+import { fetchEvents, type EventData } from "../events/api/events.api";
 import type { JSX } from "react";
-import { PiPlusBold } from "react-icons/pi";
-import { isRouteErrorResponse, Form } from "react-router";
+import { isRouteErrorResponse } from "react-router";
 import { APIError } from "../api/problem_detail";
 import type { Route } from "./+types/home";
 import EventList from "../events/components/EventList";
+import EventForm from "../events/components/EventForm";
+import { fetchEventRoles, type EventRole } from "../events/api/event_roles.api";
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
-export async function clientLoader() {
-	const res = await fetchEvents();
-	if (!res.ok) {
-		throw new APIError(res.prob);
-	}
-	return res.res;
+export function clientLoader(): {
+	events: Promise<EventData[]>;
+	roles: Promise<EventRole[]>;
+} {
+	return { events: fetchEvents(), roles: fetchEventRoles() };
 }
 
 export default function Home({
-	loaderData: events,
+	loaderData,
 }: Route.ComponentProps): JSX.Element {
 	return (
 		<>
@@ -26,20 +23,9 @@ export default function Home({
 				<h1 className="font-semibold tracking-tight text-xl">
 					Accueil
 				</h1>
-				<Form>
-					<CheckButton
-						type="submit"
-						active
-						activeCheck={false}
-						name="eventForm"
-					>
-						<PiPlusBold />
-						Event
-					</CheckButton>
-				</Form>
+				<EventForm roles={loaderData.events} />
 			</div>
-			<EventList events={events} />
-			<EventForm />
+			<EventList events={loaderData.events} />
 		</>
 	);
 }

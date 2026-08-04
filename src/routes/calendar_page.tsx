@@ -1,4 +1,4 @@
-import { useState, type JSX } from "react";
+import { Suspense, useState, type JSX } from "react";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import {
 	format,
@@ -13,25 +13,22 @@ import {
 	isSameDay,
 } from "date-fns";
 import { fetchEvents, type EventData } from "../events/api/events.api";
-import type { Route } from "./+types/calendar";
-import { Form, Link } from "react-router";
+import type { Route } from "./+types/calendar_page";
+import { Await, Link } from "react-router";
 import EventList from "../events/components/EventList";
-import CheckButton from "../components/CheckButton";
-import { PiPlusBold } from "react-icons/pi";
+import EventListSkeleton from "../events/components/EventListSkeleton";
 import EventForm from "../events/components/EventForm";
-import { APIError } from "../api/problem_detail";
+import { fetchEventRoles, type EventRole } from "../events/api/event_roles.api";
 
-export async function clientLoader(): Promise<EventData[]> {
-	const res = await fetchEvents();
-
-	if (!res.ok) {
-		throw new APIError(res.prob);
-	}
-	return res.res;
+export function clientLoader(): {
+	events: Promise<EventData[]>;
+	roles: Promise<EventRole[]>;
+} {
+	return { events: fetchEvents(), roles: fetchEventRoles() };
 }
 
 export default function Calendar({
-	loaderData: events,
+	loaderData,
 }: Route.ComponentProps): JSX.Element {
 	const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 	const [selectedDay, setSelectedDay] = useState(() => startOfToday());
@@ -44,19 +41,11 @@ export default function Calendar({
 
 	return (
 		<main className="flex flex-col w-full items-center h-full mt-2">
-			<EventForm />
+			<EventForm
+				roles={loaderData.roles}
+				className="w-fit ml-auto mr-2 mt-2"
+			/>
 			<div className="xl:w-8/10 w-9/10 mt-2">
-				<Form className="w-fit ml-auto">
-					<CheckButton
-						type="submit"
-						active
-						activeCheck={false}
-						name="eventForm"
-					>
-						<PiPlusBold />
-						Event
-					</CheckButton>
-				</Form>
 				<div className="flex w-full items-center justify-between p-4">
 					<FiChevronLeft
 						size={21}
@@ -100,27 +89,47 @@ export default function Calendar({
 							>
 								{format(day, "d")}
 							</div>
-							<div className="mt-1 mb-0.75 w-9/10 overflow-y-auto flex flex-col gap-0.5">
-								{events
-									.filter((ev) => isSameDay(ev.date, day))
-									.map((ev) => (
-										<Link
-											to={`/calendar/${ev.id}`}
-											key={ev.id}
-											className={`text-xs px-1 w-full font-light text-white rounded-xs hover:bg-accent/90
+							<Suspense
+								fallback={
+									<div className="mt-1 mb-2 w-9/10 h-full flex flex-col gap-0.5 bg-back2 animate-pulse rounded-xl" />
+								}
+							>
+								<Await resolve={loaderData.events}>
+									{(events) => (
+										<div className="mt-1 mb-0.75 w-9/10 overflow-y-auto flex flex-col gap-0.5">
+											{events
+												.filter((ev) =>
+													isSameDay(ev.date, day),
+												)
+												.map((ev) => (
+													<Link
+														to={`/calendar/${ev.id}`}
+														key={ev.id}
+														className={`text-xs px-1 w-full font-light text-white rounded-xs hover:bg-accent/90
 												${ev.size === ev.registrations.length ? "bg-muted" : "bg-accent"}`}
-										>
-											{ev.name}
-										</Link>
-									))}
-							</div>
+													>
+														{ev.name}
+													</Link>
+												))}
+										</div>
+									)}
+								</Await>
+							</Suspense>
 						</div>
 					))}
 				</div>
 			</div>
-			<EventList
-				events={events.filter((ev) => isSameDay(ev.date, selectedDay))}
-			></EventList>
+			<Suspense fallback={<EventListSkeleton count={1} />}>
+				<Await resolve={loaderData.events}>
+					{(events) => (
+						<EventList
+							events={events.filter((ev) =>
+								isSameDay(ev.date, selectedDay),
+							)}
+						></EventList>
+					)}
+				</Await>
+			</Suspense>
 		</main>
 	);
 }
