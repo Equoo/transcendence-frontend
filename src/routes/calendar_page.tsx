@@ -1,4 +1,4 @@
-import { Suspense, useState, type JSX } from "react";
+import { useState, type JSX } from "react";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import {
 	format,
@@ -14,11 +14,11 @@ import {
 } from "date-fns";
 import { fetchEvents, type EventData } from "../events/api/events.api";
 import type { Route } from "./+types/calendar_page";
-import { Await, Link } from "react-router";
+import { Link } from "react-router";
 import EventList from "../events/components/EventList";
-import EventListSkeleton from "../events/components/EventListSkeleton";
 import EventForm from "../events/components/EventForm";
 import { fetchEventRoles, type EventRole } from "../events/api/event_roles.api";
+import Promisable from "../events/components/Promisable";
 
 export function clientLoader(): {
 	events: Promise<EventData[]>;
@@ -89,47 +89,40 @@ export default function Calendar({
 							>
 								{format(day, "d")}
 							</div>
-							<Suspense
-								fallback={
+							<Promisable
+								data={loaderData.events}
+								skeleton={
 									<div className="mt-1 mb-2 w-9/10 h-full flex flex-col gap-0.5 bg-back2 animate-pulse rounded-xl" />
 								}
 							>
-								<Await resolve={loaderData.events}>
-									{(events) => (
-										<div className="mt-1 mb-0.75 w-9/10 overflow-y-auto flex flex-col gap-0.5">
-											{events
-												.filter((ev) =>
-													isSameDay(ev.date, day),
-												)
-												.map((ev) => (
-													<Link
-														to={`/calendar/${ev.id}`}
-														key={ev.id}
-														className={`text-xs px-1 w-full font-light text-white rounded-xs hover:bg-accent/90
+								{(events) => (
+									<div className="mt-1 mb-0.75 w-9/10 overflow-y-auto flex flex-col gap-0.5">
+										{events
+											.filter((ev) =>
+												isSameDay(ev.date, day),
+											)
+											.map((ev) => (
+												<Link
+													to={`/calendar/${ev.id}`}
+													key={ev.id}
+													className={`text-xs px-1 w-full font-light text-white rounded-xs hover:bg-accent/90
 												${ev.size === ev.registrations.length ? "bg-muted" : "bg-accent"}`}
-													>
-														{ev.name}
-													</Link>
-												))}
-										</div>
-									)}
-								</Await>
-							</Suspense>
+												>
+													{ev.name}
+												</Link>
+											))}
+									</div>
+								)}
+							</Promisable>
 						</div>
 					))}
 				</div>
 			</div>
-			<Suspense fallback={<EventListSkeleton count={1} />}>
-				<Await resolve={loaderData.events}>
-					{(events) => (
-						<EventList
-							events={events.filter((ev) =>
-								isSameDay(ev.date, selectedDay),
-							)}
-						></EventList>
-					)}
-				</Await>
-			</Suspense>
+			<EventList
+				events={loaderData.events.then((data) =>
+					data.filter((ev) => isSameDay(ev.date, selectedDay)),
+				)}
+			></EventList>
 		</main>
 	);
 }
