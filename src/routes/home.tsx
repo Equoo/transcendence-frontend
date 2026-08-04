@@ -1,6 +1,6 @@
 import EventForm from "../events/components/EventForm";
 import CheckButton from "../components/CheckButton";
-import { fetchEvents, type EventData } from "../events/api/events.api";
+import { fetchEvents } from "../events/api/events.api";
 import type { JSX } from "react";
 import { PiPlusBold } from "react-icons/pi";
 import { isRouteErrorResponse, Form } from "react-router";
@@ -8,9 +8,9 @@ import { APIError } from "../api/problem_detail";
 import type { Route } from "./+types/home";
 import EventList from "../events/components/EventList";
 
-export async function clientLoader(): Promise<EventData[]> {
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
+export async function clientLoader() {
 	const res = await fetchEvents();
-
 	if (!res.ok) {
 		throw new APIError(res.prob);
 	}

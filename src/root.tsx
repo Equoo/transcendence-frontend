@@ -1,7 +1,16 @@
 import "./index.css";
-import { Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router";
-import type { JSX, ReactNode } from "react";
+import {
+	Links,
+	Meta,
+	Outlet,
+	redirect,
+	Scripts,
+	ScrollRestoration,
+} from "react-router";
 import { ToastContainer } from "react-toastify";
+import { UserContext, userFetcher } from "./users/api/users.api";
+import type { Route } from "./+types/root";
+import type { JSX, ReactNode } from "react";
 
 const alertStyle = {
 	success: "bg-good-soft text-good",
@@ -11,6 +20,19 @@ const alertStyle = {
 	dark: "",
 	default: "bg-bg",
 };
+
+export const clientMiddleware: Route.MiddlewareFunction[] = [
+	// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/explicit-function-return-type, @typescript-eslint/consistent-return
+	async ({ context, url }, next) => {
+		const res = await userFetcher();
+		if (res.ok) {
+			context.set(UserContext, res.res);
+		} else if (url.pathname !== "/login" && url.pathname !== "/register") {
+			return redirect("/login");
+		}
+		await next();
+	},
+];
 
 export function Layout({ children }: { children: ReactNode }): JSX.Element {
 	return (

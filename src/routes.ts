@@ -13,6 +13,8 @@ export default [
 		route("knowledge", "routes/knowledge.tsx"),
 		route("messages", "routes/messages.tsx"),
 	]),
+	route("/register", "users/routes/register.tsx"),
+	route("/login", "users/routes/login.tsx"),
 	// Resources routes
 	route(
 		"/events/:eventId/registration",

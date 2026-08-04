@@ -1,9 +1,10 @@
 import { useEffect, type ComponentProps, type JSX } from "react";
-import { useFetcher, useSearchParams } from "react-router";
+import { useFetcher, useRouteLoaderData, useSearchParams } from "react-router";
 import type { EventData } from "../api/events.api";
 import CheckButton from "../../components/CheckButton";
 import Modal from "../../components/Modal";
 import type { clientAction as registerAction } from "../routes/registrations.route";
+import type { clientLoader as userLoader } from "../../routes/dashboard";
 
 export default function EventRegisterBtn({
 	event,
@@ -13,8 +14,10 @@ export default function EventRegisterBtn({
 }): JSX.Element {
 	const [searchParams, setSearchParams] = useSearchParams();
 	const fetcher = useFetcher<typeof registerAction>();
+	const user = useRouteLoaderData<typeof userLoader>("routes/dashboard");
+
 	const isRegistered = event.registrations.some(
-		(reg) => reg.user.userName === "asventi",
+		(reg) => reg.user.id === user?.id,
 	);
 	const isFull = event.size === event.registrations.length;
 	const presence =
