@@ -1,8 +1,8 @@
-import type { ProblemDetail } from "../../api/problem_detail";
-import type { APIResult } from "../../api/results";
+import { APIError, type ProblemDetail } from "../../api/problem_detail";
+
 import type { User } from "../../api/users";
 
-export interface APIFile {
+export interface AppFile {
 	key: string;
 	name: string;
 	length: number;
@@ -16,13 +16,13 @@ export interface FileInput {
 	name: string;
 }
 
-export async function fetchFiles(): Promise<APIResult<APIFile[]>> {
+export async function fetchFiles(): Promise<AppFile[]> {
 	const res = await fetch("/api/files");
 
 	if (!res.ok) {
-		return { ok: false, prob: (await res.json()) as ProblemDetail };
+		throw new APIError((await res.json()) as ProblemDetail);
 	}
-	const files = (await res.json()) as APIFile[];
+	const files = (await res.json()) as AppFile[];
 	files.sort((fileA, fileB) => fileA.name.localeCompare(fileB.name));
-	return { ok: true, res: files };
+	return files;
 }

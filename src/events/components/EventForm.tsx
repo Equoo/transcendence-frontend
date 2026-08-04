@@ -58,7 +58,6 @@ export default function EventForm({
 
 					{showEventForm && (
 						<Modal
-							name="eventForm"
 							title="Create An Event"
 							onClose={() => {
 								setShowEventForm(false);
