@@ -10,14 +10,14 @@ export interface UserInput {
 
 export type UserResult = { ok: true } | { ok: false };
 
-export function toUserInput(formData: FormData): UserInput {
+function toUserInput(formData: FormData): UserInput {
 	return {
 		username: formData.get("username") as string,
 		password: formData.get("password") as string,
 	};
 }
 
-export async function registerUser(formData: FormData): Promise<UserResult> {
+async function registerUser(formData: FormData): Promise<UserResult> {
 	const object = toUserInput(formData);
 
 	const response = await fetch("/api/auth/register", {
