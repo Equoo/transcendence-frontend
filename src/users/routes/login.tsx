@@ -4,7 +4,7 @@ import type { UserInput, UserResult } from "./register";
 import { AuthForm, AuthLogo, AuthTitle } from "../components/AuthForm";
 import type { Route } from "./+types/login";
 
-export function toUserInput(formData: FormData): UserInput {
+function toUserInput(formData: FormData): UserInput {
 	return {
 		username: formData.get("username") as string,
 		password: formData.get("password") as string,
@@ -12,7 +12,7 @@ export function toUserInput(formData: FormData): UserInput {
 }
 
 // Middlwear detect if user is already connect
-export async function loginUser(formData: FormData): Promise<UserResult> {
+async function loginUser(formData: FormData): Promise<UserResult> {
 	const object = toUserInput(formData);
 
 	const response = await fetch("/api/auth/login", {
