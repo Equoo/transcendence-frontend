@@ -14,6 +14,23 @@ export interface AppFile {
 
 export interface FileInput {
 	name: string;
+	file: File;
+}
+
+export function toFileInput(formData: FormData): FileInput {
+	return {
+		name: formData.get("Name") as string,
+		file: formData.get("File") as File,
+	};
+}
+
+export async function createFile(data: FormData): Promise<Response> {
+	const res = await fetch("/api/files", {
+		method: "POST",
+		body: data,
+	});
+
+	return res;
 }
 
 export async function fetchFiles(): Promise<AppFile[]> {
