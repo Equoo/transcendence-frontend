@@ -1,9 +1,15 @@
 import type { JSX } from "react";
 import AdminBox from "../components/checkbox";
-import { useFetcher } from "react-router";
+import { useFetcher, type ClientActionFunctionArgs } from "react-router";
 
-export async function createRole(): Promise<null> {
-	const res = await fetch("/api/roles");
+export async function createRole({ data }: { data: formData }): Promise<null> {
+	const res = await fetch("/role", {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify(data),
+	});
 
 	if (!res.ok) {
 		console.warn("LE TRUC DE MERDE IL A FAIL");
@@ -13,9 +19,11 @@ export async function createRole(): Promise<null> {
 	return null;
 }
 
-export async function clientAction(): Promise<null> {
-	await createRole();
-	return null;
+export async function clientLoader({
+	request,
+}: ClientActionFunctionArgs): Promise<null> {
+	const res = createRole(await request.formData());
+	return res;
 }
 
 export default function Admin(): JSX.Element {
