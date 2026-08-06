@@ -16,8 +16,8 @@ export default function FileItem({ file }: { file: AppFile }): JSX.Element {
 			<td className="px-6 py-4">{file.length}</td>
 			<td className="py-4">{file.creator.userName}</td>
 			<td className="py-4">
-				<Link to={`/files/${file.key}`}>
-					<PiDotsThreeVerticalBold size={18}/>
+				<Link to={`/knowledge/${file.key}`}>
+					<PiDotsThreeVerticalBold size={18} />
 				</Link>
 			</td>
 		</tr>

@@ -27,14 +27,6 @@ export default function FileUpload({
 				className="flex flex-col items-center w-4/5 gap-5 mb-4"
 			>
 				<Input
-					name="Name"
-					required
-					value={name}
-					onChange={(ev) => {
-						setName(ev.target.value);
-					}}
-				/>
-				<Input
 					name="File"
 					type="file"
 					required
@@ -44,6 +36,14 @@ export default function FileUpload({
 								ev.target.value.lastIndexOf("\\") + 1,
 							),
 						);
+					}}
+				/>
+				<Input
+					name="Name"
+					required
+					value={name}
+					onChange={(ev) => {
+						setName(ev.target.value);
 					}}
 				/>
 				<CheckButton

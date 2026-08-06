@@ -33,6 +33,23 @@ export async function createFile(data: FormData): Promise<Response> {
 	return res;
 }
 
+export async function downloadFile(key: string): Promise<Blob> {
+	const res = await fetch(`/api/files/${key}`);
+
+	if (!res.ok) {
+		throw new APIError((await res.json()) as ProblemDetail);
+	}
+	return res.blob();
+}
+
+export async function fetchFile(key: string): Promise<AppFile> {
+	const res = await fetch(`/api/files/meta/${key}`);
+	if (!res.ok) {
+		throw new APIError((await res.json()) as ProblemDetail);
+	}
+	return (await res.json()) as AppFile;
+}
+
 export async function fetchFiles(): Promise<AppFile[]> {
 	const res = await fetch("/api/files");
 

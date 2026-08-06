@@ -11,6 +11,7 @@ export default [
 		route("calendar", "routes/calendar_page.tsx"),
 		route("calendar/:eventId", "routes/event_details.tsx"),
 		route("knowledge", "routes/knowledge.tsx"),
+		route("knowledge/:key", "routes/file_view.tsx"),
 		route("messages", "routes/messages.tsx"),
 	]),
 	route("/register", "users/routes/register.tsx"),
