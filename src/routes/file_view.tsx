@@ -23,7 +23,7 @@ export default function FileView({
 }: Route.ComponentProps): JSX.Element {
 	const navigate = useNavigate();
 	return (
-		<div className="w-full flex flex-col px-6 py-4 gap-2">
+		<div className="w-full h-full flex flex-col px-6 py-4 gap-2">
 			<div className="flex items-center gap-2">
 				<FiChevronLeft
 					size={25}
