@@ -8,9 +8,9 @@ export default function FileItem({ file }: { file: AppFile }): JSX.Element {
 		<tr className="bg-surface border-b border-border">
 			<th
 				scope="row"
-				className="px-6 py-4 font-medium text-text whitespace-nowrap"
+				className="pl-8 pr-6 py-4 font-medium text-text whitespace-nowrap"
 			>
-				{file.name}
+				<Link to={`/knowledge/${file.key}`}>{file.name}</Link>
 			</th>
 			<td className="px-6 py-4">{file.contentType}</td>
 			<td className="px-6 py-4">{file.length}</td>
