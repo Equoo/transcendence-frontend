@@ -1,25 +1,52 @@
-import type { JSX } from "react";
 import type { User } from "../../api/users";
+import type { ComponentProps, JSX } from "react";
+import type { Role } from "../api/roles";
+import type React from "react";
 
-export default function ListUsers({ user }: { user: User }): JSX.Element {
-	let role = "";
+export type Props = ComponentProps<"h1"> & {
+	className?: string;
+};
 
-	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-	if (user.role !== null) {
-		role = user.role.name;
+function handleChange(
+	e: React.ChangeEvent<HTMLInputElement>,
+	Roles: Role[],
+	UserId: string,
+): void {
+	let id = "" as string;
+
+	for (const role of Roles) {
+		if (role.name === e.target.value) {
+			id = role.id;
+		}
 	}
 
+	const res = fetch(`/api/roles/give/${UserId}/${id}`, {
+		method: "POST",
+	});
+}
+
+export default function ListUsers({
+	user,
+	roles,
+}: {
+	user: User;
+	roles: Role[];
+}): JSX.Element {
 	return (
-		<div>
-			<h1>
-				{user.userName} [{role}]
-			</h1>
-			<select name="role">
-				<option>null</option>
-				<option>admin</option>
-				<option>modo</option>
-				<option>helper</option>
-			</select>
-		</div>
+		<tr>
+			<td>{user.userName}</td>
+			<td>
+				<select onChange={(e) => handleChange(e, roles, user.id)}>
+					{roles.map((rl) => (
+						<option
+							selected={rl.name === user.role.name}
+							key={rl.id}
+						>
+							{rl.name}
+						</option>
+					))}
+				</select>
+			</td>
+		</tr>
 	);
 }

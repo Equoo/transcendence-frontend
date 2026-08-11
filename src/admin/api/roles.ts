@@ -1,3 +1,5 @@
+import { APIError, type ProblemDetail } from "../../api/problem_detail";
+
 export interface RoleInput {
 	Name: string;
 	Permission: number;
@@ -13,10 +15,7 @@ export enum Perm {
 	isAdmin = 1,
 
 	// Event
-	CreateEvent = 2,
-	DeleteEvent = 4,
-	GetEvents = 8,
-	ChangeEvent = 16,
+	HandleEvent = 2,
 
 	// User
 	GetUser = 32,
@@ -26,23 +25,22 @@ export enum Perm {
 	ResetUserPassword = 516,
 
 	// Chat
-	SendMessage = 1024,
-	CreateChannel = 2048,
-	DeleteChannel = 5096,
+	HandleChannel = 2048,
 
 	// Knowledge
 
 	// Calendar
 }
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
-export async function fetchRoles() {
+export async function fetchRoles(): Promise<Role[]> {
 	const res = await fetch("/api/roles");
-	const roles = (await res.json()) as string;
 
 	if (!res.ok) {
-		return null;
+		throw new APIError((await res.json()) as ProblemDetail);
 	}
+
+	const roles = (await res.json()) as Role[];
+
 	return roles;
 }
 

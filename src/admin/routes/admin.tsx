@@ -28,7 +28,6 @@ export async function createRole(data: FormData): Promise<null> {
 export async function clientAction({
 	request,
 }: ClientActionFunctionArgs): Promise<null> {
-	console.warn("test");
 	await createRole(await request.formData());
 	return null;
 }
@@ -59,16 +58,19 @@ export default function Admin({
 
 	return (
 		<div className="flex justify-center items-center w-full h-full">
-			<div className="flex justify-center gap-20">
+			{/* <div className="flex justify-center gap-20">
 				<fetcher.Form className="flex flex-col gap-6" method="post">
 					<h1 className="text-3xl">Create Roles</h1>
 					<input type="text" name="name"></input>
 					<AdminBox name="isAdmin" value={Perm.isAdmin}></AdminBox>
 					<AdminBox
 						name="CreateEvent"
-						value={Perm.CreateEvent}
+						value={Perm.HandleEvent}
 					></AdminBox>
-					<AdminBox name="GetEvent" value={Perm.GetEvents}></AdminBox>
+					<AdminBox
+						name="GetEvent"
+						value={Perm.HandleChannel}
+					></AdminBox>
 					<button type="submit" className="border-2 w-1/2">
 						Create
 					</button>
@@ -78,13 +80,13 @@ export default function Admin({
 					{rolesMap}
 				</div>
 				<div className="flex flex-col gap-4">
-					<fetcher.Form>
+					<fetcher.Form method="post">
 						<h1 className="text-3xl"> List User</h1>
 						{usersMap}
-						<button type="submit">test</button>
+						<button type="submit">SUBMIT</button>
 					</fetcher.Form>
 				</div>
-			</div>
+			</div> */}
 		</div>
 	);
 }

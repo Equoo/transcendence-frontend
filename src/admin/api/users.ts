@@ -1,10 +1,12 @@
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
-export async function fetchUsers() {
+import { APIError, type ProblemDetail } from "../../api/problem_detail";
+import type { User } from "../../api/users";
+
+export async function fetchUsers(): Promise<User[]> {
 	const res = await fetch("/api/users");
-	const users = (await res.json()) as string;
 
 	if (!res.ok) {
-		return null;
+		throw new APIError((await res.json()) as ProblemDetail);
 	}
+	const users = (await res.json()) as User[];
 	return users;
 }
