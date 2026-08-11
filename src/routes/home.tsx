@@ -6,12 +6,18 @@ import type { Route } from "./+types/home";
 import EventList from "../events/components/EventList";
 import EventForm from "../events/components/EventForm";
 import { fetchEventRoles, type EventRole } from "../events/api/event_roles.api";
+import { fetchFiles, type AppFile } from "../files/api/files.api";
 
 export function clientLoader(): {
 	events: Promise<EventData[]>;
 	roles: Promise<EventRole[]>;
+	files: Promise<AppFile[]>;
 } {
-	return { events: fetchEvents(), roles: fetchEventRoles() };
+	return {
+		events: fetchEvents(),
+		roles: fetchEventRoles(),
+		files: fetchFiles(),
+	};
 }
 
 export default function Home({
@@ -23,7 +29,7 @@ export default function Home({
 				<h1 className="font-semibold tracking-tight text-xl">
 					Accueil
 				</h1>
-				<EventForm roles={loaderData.events} />
+				<EventForm roles={loaderData.roles} files={loaderData.files} />
 			</div>
 			<EventList events={loaderData.events} />
 		</>

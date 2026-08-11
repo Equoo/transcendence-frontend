@@ -1,41 +1,12 @@
-import { useState, type JSX } from "react";
+import type { JSX } from "react";
 import type { AppFile } from "../api/files.api";
 import FileItem from "./FileItem";
 import FolderItem from "./FolderItem";
+import { useFileBrowser } from "../hooks/useFileBrowser";
 
 export default function FileList({ files }: { files: AppFile[] }): JSX.Element {
-	const [currFolder, setCurrFolder] = useState("");
-
-	const folders = Array.from(
-		new Set(
-			(JSON.parse(JSON.stringify(files)) as AppFile[])
-				.filter((file) => {
-					if (!file.name.startsWith(currFolder)) {
-						return false;
-					}
-					file.name = file.name.slice(currFolder.length);
-					if (!file.name.includes("/")) {
-						return false;
-					}
-					[file.name] = file.name.split("/");
-					return true;
-				})
-				.map((file) => file.name),
-		),
-	);
-
-	const rootFiles = (JSON.parse(JSON.stringify(files)) as AppFile[]).filter(
-		(file) => {
-			if (!file.name.startsWith(currFolder)) {
-				return false;
-			}
-			file.name = file.name.substring(currFolder.length);
-			if (file.name.includes("/")) {
-				return false;
-			}
-			return true;
-		},
-	);
+	const { currFolder, folders, rootFiles, enterFolder, goUp } =
+		useFileBrowser(files);
 
 	return (
 		<div className="w-full overflow-x-auto bg-surface rounded-base border border-border">
@@ -59,32 +30,23 @@ export default function FileList({ files }: { files: AppFile[] }): JSX.Element {
 				</thead>
 				<tbody>
 					{currFolder.length > 0 && (
-						<FolderItem
-							name=".."
-							onClick={() => {
-								setCurrFolder(
-									currFolder.substring(
-										0,
-										currFolder.lastIndexOf(
-											"/",
-											currFolder.length - 2,
-										) + 1,
-									),
-								);
-							}}
-						/>
+						<FolderItem name=".." onClick={goUp} />
 					)}
 					{folders.map((folder) => (
 						<FolderItem
 							key={folder}
 							name={folder}
-							onClick={(name) => {
-								setCurrFolder(`${currFolder}${name}/`);
-							}}
+							onClick={enterFolder}
 						/>
 					))}
 					{rootFiles.map((file) => (
-						<FileItem key={file.key} file={file} />
+						<FileItem
+							key={file.key}
+							file={{
+								...file,
+								name: file.name.slice(currFolder.length),
+							}}
+						/>
 					))}
 				</tbody>
 			</table>

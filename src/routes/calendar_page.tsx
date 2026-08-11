@@ -19,12 +19,18 @@ import EventList from "../events/components/EventList";
 import EventForm from "../events/components/EventForm";
 import { fetchEventRoles, type EventRole } from "../events/api/event_roles.api";
 import Promisable from "../events/components/Promisable";
+import { fetchFiles, type AppFile } from "../files/api/files.api";
 
 export function clientLoader(): {
 	events: Promise<EventData[]>;
 	roles: Promise<EventRole[]>;
+	files: Promise<AppFile[]>;
 } {
-	return { events: fetchEvents(), roles: fetchEventRoles() };
+	return {
+		events: fetchEvents(),
+		roles: fetchEventRoles(),
+		files: fetchFiles(),
+	};
 }
 
 export default function Calendar({
@@ -43,6 +49,7 @@ export default function Calendar({
 		<main className="flex flex-col w-full items-center h-full mt-2">
 			<EventForm
 				roles={loaderData.roles}
+				files={loaderData.files}
 				className="w-fit ml-auto mr-2 mt-2"
 			/>
 			<div className="xl:w-8/10 w-9/10 mt-2">

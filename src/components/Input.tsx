@@ -1,5 +1,6 @@
 import type { ComponentProps, JSX, ReactNode } from "react";
 import type { ValidationErrors } from "../api/problem_detail";
+import { Field } from "./Field";
 
 export type InputProps = ComponentProps<"input"> & {
 	name: string;
@@ -18,13 +19,7 @@ export function Input({
 	const isError = Boolean(errors?.[name] ?? false);
 
 	return (
-		<div className="inline-flex flex-col w-full">
-			<div className="text-red-500">
-				<label className="text-text font-main font-medium">
-					{name}
-				</label>
-				{(rest.required ?? false) && "*"}
-			</div>
+		<Field name={name} required={rest.required} errors={errors}>
 			<div
 				className={`relative flex flex-wrap items-center w-full bg-surface border rounded-md
                     px-2 py-1 font-main text-text
@@ -37,11 +32,6 @@ export function Input({
 					{...rest}
 				/>
 			</div>
-			{errors?.[name]?.map((err) => (
-				<p className="ml-1 text-error text-xs tracking-wide " key={err}>
-					- {err}
-				</p>
-			))}
-		</div>
+		</Field>
 	);
 }
