@@ -27,6 +27,7 @@ export function RolesBox({
 	perm: number;
 	enumPerm: number;
 }): JSX.Element {
+	// eslint-disable-next-line no-bitwise
 	if ((perm | enumPerm) === enumPerm) {
 		return (
 			<div className="w-30">

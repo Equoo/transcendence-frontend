@@ -32,7 +32,10 @@ export default function AdminUser({
 							<PiMagnifyingGlass className="m-5 size-5"></PiMagnifyingGlass>
 						</div>
 
-						<button className="w-1/3 h-10 bg-accent text-accent-text font-semibold rounded-4xl cursor-pointer hover:brightness-120">
+						<button
+							type="submit"
+							className="w-1/3 h-10 bg-accent text-accent-text font-semibold rounded-4xl cursor-pointer hover:brightness-120"
+						>
 							Add User
 						</button>
 					</div>
@@ -45,7 +48,11 @@ export default function AdminUser({
 						<th className="border-1 w-1/3">Action</th>
 					</tr>
 					{loaderData.users.map((usr) => (
-						<ListUsers key={usr.id} user={usr} roles={loaderData.roles}></ListUsers>
+						<ListUsers
+							key={usr.id}
+							user={usr}
+							roles={loaderData.roles}
+						></ListUsers>
 					))}
 				</table>
 			</div>
