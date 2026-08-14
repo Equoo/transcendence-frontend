@@ -35,7 +35,7 @@ function isTextLikeFile(filename: string, mimeType: string): boolean {
 	);
 }
 
-function BlobView({
+export function BlobView({
 	type,
 	url,
 	blob,
