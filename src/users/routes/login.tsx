@@ -16,7 +16,6 @@ function toUserInput(formData: FormData): LoginInput {
 	};
 }
 
-// Middlwear detect if user is already connect
 async function loginUser(formData: FormData): Promise<UserResult> {
 	const object = toUserInput(formData);
 

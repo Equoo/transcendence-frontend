@@ -11,7 +11,7 @@ type Props = ComponentProps<"button"> & {
 
 export default function CheckButton({
 	children,
-	active = false,
+	active = true,
 	discrete = false,
 	activeCheck = true,
 	type = "button",

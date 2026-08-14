@@ -67,7 +67,7 @@ export default function ListUsers({
 }: {
 	user: User;
 	roles: Role[];
-	switchShowChange: () => void;
+	switchShowChange: (id: string | null) => void;
 }): JSX.Element {
 	return (
 		<tr className="text-sm text-body bg-surface border-b rounded-base border-border">
@@ -100,8 +100,9 @@ export default function ListUsers({
 				<button
 					type="submit"
 					className="hover:text-accent hover:cursor-pointer"
-					// eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
-					onClick={() => switchShowChange()}
+					onClick={() => {
+						switchShowChange(user.id);
+					}}
 				>
 					Reset Password
 				</button>
@@ -110,7 +111,7 @@ export default function ListUsers({
 					className="hover:text-accent hover:cursor-pointer"
 					onClick={() => void handleRemoveRefresh(user.id)}
 				>
-					Remove RefreshToken
+					Disconnect
 				</button>
 			</td>
 		</tr>

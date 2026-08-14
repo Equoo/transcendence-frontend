@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/strict-boolean-expressions */
 import { useState, type JSX } from "react";
 import { fetchUsers } from "../api/users";
 import ListUsers from "../components/listUsers";
@@ -5,6 +6,7 @@ import { PiMagnifyingGlass } from "react-icons/pi";
 import type { Route } from "./+types/admin_users";
 import { fetchRoles } from "../api/roles";
 import ChangeBox from "../components/changebox";
+import { APIError, type ProblemDetail } from "../../api/problem_detail";
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
 export async function clientLoader() {
@@ -14,19 +16,60 @@ export async function clientLoader() {
 	return { users, roles };
 }
 
+interface resetInput {
+	id: string;
+	password: string;
+}
+
+function toResetInput(formData: FormData): resetInput {
+	return {
+		id: formData.get("id") as string,
+		password: formData.get("password") as string,
+	};
+}
+
+async function resetPassword(formdata: FormData): Promise<void> {
+	const object = toResetInput(formdata);
+
+	const res = await fetch(`/api/users/${object.id}/password`, {
+		method: "PUT",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify(object),
+	});
+
+	if (!res.ok) {
+		throw new APIError((await res.json()) as ProblemDetail);
+	}
+}
+
+export async function clientAction({
+	request,
+}: Route.ClientActionArgs): Promise<void> {
+	await resetPassword(await request.formData());
+}
+
 export default function AdminUser({
 	loaderData,
 }: Route.ComponentProps): JSX.Element {
-	const [showChange, setShowChange] = useState<boolean>(false);
+	const [showChange, setShowChange] = useState<string | null>(null);
 
-	const switchShowChange = (): void => {
-		setShowChange(!showChange);
+	const switchShowChange = (id: string | null): void => {
+		if (id !== null) {
+			setShowChange(id);
+			return;
+		}
+		setShowChange(null);
 	};
 
 	return (
 		<div className="w-full h-full bg-back">
 			{showChange ? (
-				<ChangeBox switchShowChange={switchShowChange} />
+				<ChangeBox
+					id={showChange}
+					switchShowChange={switchShowChange}
+				/>
 			) : null}
 			<div className="flex justify-center flex-row gap-10 w-full h-full">
 				<div className="flex flex-col gap-10 w-11/12 my-10">
