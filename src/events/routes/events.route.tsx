@@ -6,7 +6,6 @@ import {
 	fetchEventRoles,
 	type EventRole,
 } from "../api/event_roles.api";
-import { APIError } from "../../api/problem_detail";
 
 async function upsertRoleIds(
 	roles: EventRole[],
@@ -26,10 +25,7 @@ async function upsertRoleIds(
 	}
 	const results = await Promise.all(promises);
 	for (const res of results) {
-		if (!res.ok) {
-			throw new APIError(res.prob);
-		}
-		rolesId.push(res.res.id);
+		rolesId.push(res.id);
 	}
 	return rolesId;
 }
@@ -43,11 +39,5 @@ export async function clientAction({ request }: Route.ClientActionArgs) {
 	event.eventRoleIds = await upsertRoleIds(roles, event.eventRoleIds);
 	const res = await createEvent(event);
 
-	if (!res.ok) {
-		if (res.prob.status === 400) {
-			return data(res, { status: 400 });
-		}
-		throw new APIError(res.prob);
-	}
 	return data(res, { status: 201 });
 }

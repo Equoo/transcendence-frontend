@@ -1,11 +1,10 @@
-import type { ProblemDetail } from "../../api/problem_detail";
-import type { APIResult } from "../../api/results";
-import type { User } from "../../api/users";
+import { APIError, type ProblemDetail } from "../../api/problem_detail";
+import type { User } from "../../users/api/users.api";
 
 export interface Registration {
 	user: User;
 	registeredAt: string;
-	role?: string;
+	role: string;
 }
 
 export interface RegistrationInput {
@@ -21,7 +20,7 @@ export function toRegistrationInput(formData: FormData): RegistrationInput {
 export async function registerToEvent(
 	eventId: string,
 	reg: RegistrationInput,
-): Promise<APIResult<null>> {
+): Promise<Response> {
 	const res = await fetch(`/api/events/${eventId}/registration`, {
 		method: "POST",
 		body: JSON.stringify(reg),
@@ -31,20 +30,29 @@ export async function registerToEvent(
 	});
 
 	if (!res.ok) {
-		return { ok: false, prob: (await res.json()) as ProblemDetail };
+		throw new APIError((await res.json()) as ProblemDetail);
 	}
-	return { ok: true, res: null };
+	return res;
 }
 
-export async function unregisterFromEvent(
-	eventId: string,
-): Promise<APIResult<null>> {
+export async function unregisterFromEvent(eventId: string): Promise<Response> {
 	const res = await fetch(`/api/events/${eventId}/registration`, {
 		method: "DELETE",
 	});
 
 	if (!res.ok) {
-		return { ok: false, prob: (await res.json()) as ProblemDetail };
+		throw new APIError((await res.json()) as ProblemDetail);
 	}
-	return { ok: true, res: null };
+	return res;
+}
+
+export async function fetchRegistration(
+	eventId: string,
+): Promise<Registration[]> {
+	const res = await fetch(`/api/events/${eventId}/registration`);
+
+	if (res.ok) {
+		throw new APIError((await res.json()) as ProblemDetail);
+	}
+	return (await res.json()) as Registration[];
 }

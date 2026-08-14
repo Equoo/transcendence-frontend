@@ -5,7 +5,6 @@ import Modal from "../../components/Modal";
 import MultipleInput from "../../components/MultipleInput";
 import type { clientAction as eventAction } from "../routes/events.route";
 import { Input } from "../../components/Input";
-import { getValidationErrors } from "../../api/problem_detail";
 import { TextArea } from "../../components/TextArea";
 import { PiPlusBold } from "react-icons/pi";
 import type { EventRole } from "../api/event_roles.api";
@@ -81,18 +80,12 @@ export default function EventForm({
 									name="Name"
 									required
 									placeholder="Event Name"
-									errors={getValidationErrors(
-										eventFetcher.data,
-									)}
 								/>
 								<Input
 									name="Date"
 									type="datetime-local"
 									required
 									placeholder="Event Date"
-									errors={getValidationErrors(
-										eventFetcher.data,
-									)}
 								/>
 								<Input
 									name="Size"
@@ -100,25 +93,16 @@ export default function EventForm({
 									required
 									min="1"
 									placeholder="Max Registrations"
-									errors={getValidationErrors(
-										eventFetcher.data,
-									)}
 								/>
 								<Input
 									name="Location"
 									required
 									placeholder="Event Location"
-									errors={getValidationErrors(
-										eventFetcher.data,
-									)}
 								/>
 								<MultipleInput
 									name="Tags"
 									placeholder="Event Tags"
 									className="w-full bg-surface border rounded-md border-border2  px-2 py-1 font-main text-text"
-									errors={getValidationErrors(
-										eventFetcher.data,
-									)}
 								/>
 								<MultipleInput
 									name="Roles"
@@ -127,25 +111,16 @@ export default function EventForm({
 									)}
 									placeholder="Event Roles"
 									className="w-full bg-surface border rounded-md border-border2  px-2 py-1 font-main text-text"
-									errors={getValidationErrors(
-										eventFetcher.data,
-									)}
 								/>
 								<TextArea
 									name="Description"
 									placeholder="Event Description"
-									errors={getValidationErrors(
-										eventFetcher.data,
-									)}
 								/>
 								<Promisable data={filesInput}>
 									{(files) => (
 										<FileSelect
 											files={files}
 											name="Files"
-											errors={getValidationErrors(
-												eventFetcher.data,
-											)}
 										/>
 									)}
 								</Promisable>

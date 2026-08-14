@@ -1,7 +1,7 @@
 import { type JSX, useEffect, useState } from "react";
 import CheckButton from "../../components/CheckButton";
 import EventBadge from "../../components/Badge";
-import type { EventData } from "../api/events.api";
+import type { EventSummary } from "../api/events.api";
 import { FiChevronRight } from "react-icons/fi";
 import { IoLocationOutline } from "react-icons/io5";
 import { GoPeople } from "react-icons/go";
@@ -42,7 +42,7 @@ function formatCountdown(countdown: CountdownType): string {
 	return `${pad(countdown.hours)}:${pad(countdown.minutes)}:${pad(countdown.seconds)}`;
 }
 
-function Countdown({date}: {date: Date}): JSX.Element {
+function Countdown({ date }: { date: Date }): JSX.Element {
 	const [countdown, setCountdown] = useState(() => getCountdown(date));
 
 	useEffect(() => {
@@ -71,7 +71,7 @@ function Countdown({date}: {date: Date}): JSX.Element {
 export default function EventCard({
 	event,
 }: {
-	event: EventData;
+	event: EventSummary;
 }): JSX.Element {
 	return (
 		<div className="bg-surface flex max-w-lg grow sm:min-w-md min-w-sm h-fit flex-col gap-4 overflow-hidden border border-border rounded-3xl p-6 shadow-main sm:p-8">
@@ -111,7 +111,7 @@ export default function EventCard({
 				<div className="ml-auto">
 					<EventBadge border="" bg="bg-good-soft" text="text-good">
 						<GoPeople />
-						{event.registrations.length}/{event.size} Registered
+						{event.registeredCount}/{event.size} Registered
 					</EventBadge>
 				</div>
 			</div>

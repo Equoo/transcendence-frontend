@@ -1,5 +1,4 @@
 import { APIError, type ProblemDetail } from "../../api/problem_detail";
-import type { APIResult } from "../../api/results";
 
 export interface EventRole {
 	id: string;
@@ -10,9 +9,7 @@ export interface EventRoleInput {
 	name: string;
 }
 
-export async function createEventRole(
-	reg: EventRoleInput,
-): Promise<APIResult<EventRole>> {
+export async function createEventRole(reg: EventRoleInput): Promise<EventRole> {
 	const res = await fetch(`/api/events/roles`, {
 		method: "POST",
 		body: JSON.stringify(reg),
@@ -22,9 +19,9 @@ export async function createEventRole(
 	});
 
 	if (!res.ok) {
-		return { ok: false, prob: (await res.json()) as ProblemDetail };
+		throw new APIError((await res.json()) as ProblemDetail);
 	}
-	return { ok: true, res: (await res.json()) as EventRole };
+	return (await res.json()) as EventRole;
 }
 
 export async function fetchEventRoles(): Promise<EventRole[]> {

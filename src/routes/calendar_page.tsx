@@ -12,7 +12,7 @@ import {
 	isSameMonth,
 	isSameDay,
 } from "date-fns";
-import { fetchEvents, type EventData } from "../events/api/events.api";
+import { fetchEvents, type EventSummary } from "../events/api/events.api";
 import type { Route } from "./+types/calendar_page";
 import { Link } from "react-router";
 import EventList from "../events/components/EventList";
@@ -22,7 +22,7 @@ import Promisable from "../events/components/Promisable";
 import { fetchFiles, type AppFile } from "../files/api/files.api";
 
 export function clientLoader(): {
-	events: Promise<EventData[]>;
+	events: Promise<EventSummary[]>;
 	roles: Promise<EventRole[]>;
 	files: Promise<AppFile[]>;
 } {
@@ -113,7 +113,7 @@ export default function Calendar({
 													to={`/calendar/${ev.id}`}
 													key={ev.id}
 													className={`text-xs px-1 w-full font-light text-white rounded-xs hover:bg-accent/90
-												${ev.size === ev.registrations.length ? "bg-muted" : "bg-accent"}`}
+												${ev.size === ev.registeredCount ? "bg-muted" : "bg-accent"}`}
 												>
 													{ev.name}
 												</Link>

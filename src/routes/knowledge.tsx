@@ -7,7 +7,6 @@ import CheckButton from "../components/CheckButton";
 import { PiUploadSimple } from "react-icons/pi";
 import FileUpload from "../files/components/FileUpload";
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
 export function clientLoader(): { files: Promise<AppFile[]> } {
 	return { files: fetchFiles() };
 }

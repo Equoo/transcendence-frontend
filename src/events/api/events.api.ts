@@ -1,9 +1,8 @@
 import type { EventRole } from "./event_roles.api";
 import { APIError, type ProblemDetail } from "../../api/problem_detail";
 import type { Registration } from "./registrations.api";
-import type { User } from "../../api/users";
-import type { APIResult } from "../../api/results";
 import type { AppFile } from "../../files/api/files.api";
+import type { User } from "../../users/api/users.api";
 
 export interface EventData {
 	id: string;
@@ -17,6 +16,20 @@ export interface EventData {
 	eventRoles: EventRole[];
 	registrations: Registration[];
 	files: AppFile[];
+	registeredCount: number;
+	isRegistered: boolean;
+}
+
+export interface EventSummary {
+	id: string;
+	name: string;
+	date: string;
+	size: number;
+	location: string;
+	tags: string[];
+	eventRoles: EventRole[];
+	registeredCount: number;
+	isRegistered: boolean;
 }
 
 export interface EventInput {
@@ -43,32 +56,27 @@ export function toEventInput(formData: FormData): EventInput {
 	};
 }
 
-export async function fetchEvents(): Promise<EventData[]> {
+export async function fetchEvents(): Promise<EventSummary[]> {
 	const response = await fetch("/api/events");
 	if (!response.ok) {
 		throw new APIError((await response.json()) as ProblemDetail);
 	}
 
-	const events = (await response.json()) as EventData[];
+	const events = (await response.json()) as EventSummary[];
 	events.sort((evA, evB) => evA.date.localeCompare(evB.date));
 	return events;
 }
 
-export async function fetchEvent(id: string): Promise<APIResult<EventData>> {
-	const response = await fetch(`/api/events/${id}`);
-	if (!response.ok) {
-		return { ok: false, prob: (await response.json()) as ProblemDetail };
+export async function fetchEvent(id: string): Promise<EventData> {
+	const res = await fetch(`/api/events/${id}`);
+	if (!res.ok) {
+		throw new APIError((await res.json()) as ProblemDetail);
 	}
-	return {
-		ok: true,
-		res: (await response.json()) as EventData,
-	};
+	return (await res.json()) as EventData;
 }
 
-export async function createEvent(
-	event: EventInput,
-): Promise<APIResult<EventData>> {
-	const response = await fetch("/api/events", {
+export async function createEvent(event: EventInput): Promise<EventData> {
+	const res = await fetch("/api/events", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
@@ -76,15 +84,9 @@ export async function createEvent(
 		body: JSON.stringify(event),
 	});
 
-	if (!response.ok) {
-		return {
-			ok: false,
-			prob: (await response.json()) as ProblemDetail,
-		};
+	if (!res.ok) {
+		throw new APIError((await res.json()) as ProblemDetail);
 	}
 
-	return {
-		ok: true,
-		res: (await response.json()) as EventData,
-	};
+	return (await res.json()) as EventData;
 }
