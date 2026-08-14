@@ -3,6 +3,7 @@ import { APIError, type ProblemDetail } from "../../api/problem_detail";
 import type { Registration } from "./registrations.api";
 import type { User } from "../../api/users";
 import type { APIResult } from "../../api/results";
+import type { AppFile } from "../../files/api/files.api";
 
 export interface EventData {
 	id: string;
@@ -15,6 +16,7 @@ export interface EventData {
 	organizer: User;
 	eventRoles: EventRole[];
 	registrations: Registration[];
+	files: AppFile[];
 }
 
 export interface EventInput {
@@ -24,6 +26,7 @@ export interface EventInput {
 	location: string;
 	tags: string[];
 	eventRoleIds: string[];
+	fileKeys: string[];
 	description: string;
 }
 
@@ -35,6 +38,7 @@ export function toEventInput(formData: FormData): EventInput {
 		location: formData.get("Location") as string,
 		tags: formData.getAll("Tags") as string[],
 		eventRoleIds: formData.getAll("Roles") as string[],
+		fileKeys: formData.getAll("Files") as string[],
 		description: formData.get("Description") as string,
 	};
 }

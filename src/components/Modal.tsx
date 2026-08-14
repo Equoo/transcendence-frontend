@@ -7,7 +7,6 @@ export default function Modal({
 }: {
 	children: ReactNode;
 	title: string;
-	name: string;
 	onClose: () => void;
 }): JSX.Element {
 	return (

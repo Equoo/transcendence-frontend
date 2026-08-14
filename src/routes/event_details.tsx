@@ -2,7 +2,7 @@ import type { JSX } from "react";
 import type { Route } from "./+types/event_details";
 import { fetchEvent, type EventData } from "../events/api/events.api";
 import { FiChevronLeft } from "react-icons/fi";
-import { redirect, useNavigate } from "react-router";
+import { Link, redirect, useNavigate } from "react-router";
 import EventRegisterBtn from "../events/components/EventRegisterBtn";
 import { toast } from "react-toastify";
 import Alert from "../components/Alert";
@@ -110,7 +110,19 @@ export default function EventDetails({
 					<span className="font-bold text-muted text-xs tracking-wider mt-4">
 						RESOURCES
 					</span>
-					<div className="flex mt-1 items-center gap-3"></div>
+					<div className="flex mt-1 items-center gap-3">
+						{event.files.map((file) => (
+							<Link key={file.key} to={`/knowledge/${file.key}`}>
+								<div
+									className={`inline-flex items-center gap-2 rounded p-2 hover:cursor-pointer bg-surface2 hover:bg-surface`}
+								>
+									<p className={`text-lg font-medium`}>
+										{file.name}
+									</p>
+								</div>
+							</Link>
+						))}
+					</div>
 				</div>
 				<div className=""></div>
 			</div>

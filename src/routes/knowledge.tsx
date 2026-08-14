@@ -1,5 +1,45 @@
-import type { JSX } from "react";
+import { useState, type JSX } from "react";
+import { fetchFiles, type AppFile } from "../files/api/files.api";
+import type { Route } from "./+types/knowledge";
+import FileList from "../files/components/FileList";
+import Promisable from "../events/components/Promisable";
+import CheckButton from "../components/CheckButton";
+import { PiUploadSimple } from "react-icons/pi";
+import FileUpload from "../files/components/FileUpload";
 
-export default function Knowledge(): JSX.Element {
-	return <main className="flex-1"></main>;
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
+export function clientLoader(): { files: Promise<AppFile[]> } {
+	return { files: fetchFiles() };
+}
+
+export default function Knowledge({
+	loaderData,
+}: Route.ComponentProps): JSX.Element {
+	const [showUpload, setShowUpload] = useState(false);
+
+	return (
+		<main className="w-7/10 justify-center flex flex-col gap-1">
+			<CheckButton
+				active
+				activeCheck={false}
+				className="self-end mt-20"
+				onClick={() => {
+					setShowUpload(true);
+				}}
+			>
+				<PiUploadSimple />
+				Upload
+			</CheckButton>
+			{showUpload && (
+				<FileUpload
+					onClose={() => {
+						setShowUpload(false);
+					}}
+				/>
+			)}
+			<Promisable data={loaderData.files}>
+				{(files) => <FileList files={files}></FileList>}
+			</Promisable>
+		</main>
+	);
 }

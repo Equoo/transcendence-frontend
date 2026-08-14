@@ -10,13 +10,17 @@ import { TextArea } from "../../components/TextArea";
 import { PiPlusBold } from "react-icons/pi";
 import type { EventRole } from "../api/event_roles.api";
 import Promisable from "./Promisable";
+import FileSelect from "../../files/components/FileSelect";
+import type { AppFile } from "../../files/api/files.api";
 
 export default function EventForm({
 	className,
 	roles: rolesInput,
+	files: filesInput,
 }: {
 	className?: string;
 	roles: EventRole[] | Promise<EventRole[]>;
+	files: AppFile[] | Promise<AppFile[]>;
 }): JSX.Element {
 	const eventFetcher = useFetcher<typeof eventAction>();
 	const [showEventForm, setShowEventForm] = useState(false);
@@ -58,7 +62,6 @@ export default function EventForm({
 
 					{showEventForm && (
 						<Modal
-							name="eventForm"
 							title="Create An Event"
 							onClose={() => {
 								setShowEventForm(false);
@@ -109,29 +112,25 @@ export default function EventForm({
 										eventFetcher.data,
 									)}
 								/>
-								<div className="inline-flex flex-col w-full">
-									<label className="text-text font-main font-medium">
-										Tags
-									</label>
-									<MultipleInput
-										name="Tags"
-										placeholder="Event Tags"
-										className="w-full bg-surface border rounded-md border-border2  px-2 py-1 font-main text-text"
-									/>
-								</div>
-								<div className="inline-flex flex-col w-full">
-									<label className="text-text font-main font-medium">
-										Roles
-									</label>
-									<MultipleInput
-										name="Roles"
-										suggestions={roles.map(
-											(role) => role.name,
-										)}
-										placeholder="Event Roles"
-										className="w-full bg-surface border rounded-md border-border2  px-2 py-1 font-main text-text"
-									/>
-								</div>
+								<MultipleInput
+									name="Tags"
+									placeholder="Event Tags"
+									className="w-full bg-surface border rounded-md border-border2  px-2 py-1 font-main text-text"
+									errors={getValidationErrors(
+										eventFetcher.data,
+									)}
+								/>
+								<MultipleInput
+									name="Roles"
+									suggestions={roles.map(
+										(role) => role.name,
+									)}
+									placeholder="Event Roles"
+									className="w-full bg-surface border rounded-md border-border2  px-2 py-1 font-main text-text"
+									errors={getValidationErrors(
+										eventFetcher.data,
+									)}
+								/>
 								<TextArea
 									name="Description"
 									placeholder="Event Description"
@@ -139,6 +138,18 @@ export default function EventForm({
 										eventFetcher.data,
 									)}
 								/>
+								<Promisable data={filesInput}>
+									{(files) => (
+										<FileSelect
+											files={files}
+											name="Files"
+											errors={getValidationErrors(
+												eventFetcher.data,
+											)}
+										/>
+									)}
+								</Promisable>
+
 								<CheckButton
 									active
 									type="submit"

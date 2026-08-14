@@ -5,6 +5,9 @@ import {
 	useState,
 } from "react";
 import EventBadge from "./Badge";
+import { Field } from "./Field";
+import HiddenValues from "./HiddenValues";
+import type { ValidationErrors } from "../api/problem_detail";
 
 const emptyArray: string[] = [];
 
@@ -13,11 +16,16 @@ export default function MultipleInput({
 	className,
 	name,
 	placeholder,
+	values: replaceValues,
+	errors,
 	...rest
 }: {
+	name: string;
 	suggestions?: string[];
+	values?: string[];
+	errors?: ValidationErrors;
 } & ComponentProps<"input">): JSX.Element {
-	const [values, setValues] = useState<string[]>([]);
+	const [values, setValues] = useState<string[]>(replaceValues ?? []);
 	const [draft, setDraft] = useState("");
 	const [selected, setSelected] = useState(0);
 
@@ -69,7 +77,7 @@ export default function MultipleInput({
 		}
 	};
 	return (
-		<>
+		<Field name={name} required={rest.required} errors={errors}>
 			<div
 				className={`relative flex flex-wrap gap-1 focus-within:border-accent ${className}`}
 			>
@@ -125,9 +133,7 @@ export default function MultipleInput({
 					))}
 				</div>
 			</div>
-			{values.map((val) => (
-				<input hidden key={val} name={name} value={val} readOnly />
-			))}
-		</>
+			<HiddenValues name={name} values={values} />
+		</Field>
 	);
 }

@@ -55,7 +55,6 @@ export default function EventRegisterBtn({
 			>
 				{showRegister && (
 					<Modal
-						name="eventRegister"
 						title="Register"
 						onClose={() => {
 							setShowRegister(false);
