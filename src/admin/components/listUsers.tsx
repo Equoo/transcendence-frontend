@@ -1,9 +1,8 @@
 import type { User } from "../../api/users";
-import type { ComponentProps, Dispatch, JSX, SetStateAction } from "react";
+import type { ComponentProps, JSX } from "react";
 import type { Role } from "../api/roles";
 import type React from "react";
 import { APIError, type ProblemDetail } from "../../api/problem_detail";
-import { PiCross } from "react-icons/pi";
 
 export type Props = ComponentProps<"h1"> & {
 	className?: string;
@@ -101,6 +100,7 @@ export default function ListUsers({
 				<button
 					type="submit"
 					className="hover:text-accent hover:cursor-pointer"
+					// eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
 					onClick={() => switchShowChange()}
 				>
 					Reset Password

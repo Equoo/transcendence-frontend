@@ -4,7 +4,6 @@ import ListUsers from "../components/listUsers";
 import { PiMagnifyingGlass } from "react-icons/pi";
 import type { Route } from "./+types/admin_users";
 import { fetchRoles } from "../api/roles";
-import { TbLayoutSidebarRightCollapse } from "react-icons/tb";
 import ChangeBox from "../components/changebox";
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
@@ -21,7 +20,6 @@ export default function AdminUser({
 	const [showChange, setShowChange] = useState<boolean>(false);
 
 	const switchShowChange = (): void => {
-		console.warn("coucocu");
 		setShowChange(!showChange);
 	};
 

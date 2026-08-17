@@ -18,6 +18,7 @@ export default function ChangeBox({
 					<button
 						type="submit"
 						className="w-1/3 h-10 bg-accent text-accent-text font-semibold rounded-4xl cursor-pointer hover:brightness-120"
+						// eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
 						onClick={() => switchShowChange()}
 					>
 						Change
