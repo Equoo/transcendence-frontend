@@ -27,6 +27,6 @@ export default [
 	route("/events/roles", "events/routes/event_roles.route.tsx"),
 
 	route("/admin", "admin/routes/admin.tsx"),
-	route("/admin/roles", "admin/routes/addPermission.tsx"),
+	route("/admin/roles", "admin/routes/admin_roles.tsx"),
 	route("/admin/users", "admin/routes/admin_users.tsx"),
 ] satisfies RouteConfig;

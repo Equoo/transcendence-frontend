@@ -8,7 +8,7 @@ export async function clientLoader() {
 	return { roles };
 }
 
-export default function addPermision(): JSX.Element {
+export default function AdminRoles(): JSX.Element {
 	return (
 		<div className="flex w-full h-full justify-center bg-back">
 			<div className="w-11/12 my-10">

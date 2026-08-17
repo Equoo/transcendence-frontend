@@ -50,7 +50,7 @@ export async function clientAction({
 	await resetPassword(await request.formData());
 }
 
-export default function AdminUser({
+export default function AdminUsers({
 	loaderData,
 }: Route.ComponentProps): JSX.Element {
 	const [showChange, setShowChange] = useState<string | null>(null);
