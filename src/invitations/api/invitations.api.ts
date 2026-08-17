@@ -13,7 +13,7 @@ export interface InvitationInput {
 
 export function toInvitationInput(formData: FormData): InvitationInput {
 	return {
-		expiresAt: formData.get("ExpiresAt") as string,
+		expiresAt: formData.get("Expires At") as string,
 		usages: Number(formData.get("Usages")),
 	};
 }
@@ -24,13 +24,16 @@ export async function createInvitation(
 	const res = await fetch("/api/auth/invitation", {
 		method: "POST",
 		body: JSON.stringify(input),
+		headers: {
+			"Content-Type": "application/json",
+		},
 	});
 
 	if (!res.ok) {
 		throw new APIError((await res.json()) as ProblemDetail);
 	}
 
-	return res.text();
+	return res.json();
 }
 
 export async function fetchInvitations(): Promise<Invitation[]> {

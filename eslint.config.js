@@ -44,6 +44,7 @@ export default defineConfig([
 			"@eslint-react/exhaustive-deps": "off",
 			"@eslint-react/jsx-no-children-prop": "off",
 			"no-console": ["error", { allow: ["warn", "error"] }],
+			"@typescript-eslint/strict-boolean-expressions": "off",
 		},
 	},
 ]);
