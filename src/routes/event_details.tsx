@@ -1,24 +1,17 @@
 import type { JSX } from "react";
 import type { Route } from "./+types/event_details";
-import { fetchEvent, type EventData } from "../events/api/events.api";
+import { fetchEvent } from "../events/api/events.api";
 import { FiChevronLeft } from "react-icons/fi";
-import { Link, redirect, useNavigate } from "react-router";
+import { data, Link, useNavigate } from "react-router";
 import EventRegisterBtn from "../events/components/EventRegisterBtn";
-import { toast } from "react-toastify";
-import Alert from "../components/Alert";
 import ProfilePic from "../components/ProfilePic";
 import EventBadge from "../components/Badge";
 
-export async function clientLoader({
-	params,
-}: Route.ClientLoaderArgs): Promise<EventData | Response> {
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
+export async function clientLoader({ params }: Route.ClientLoaderArgs) {
 	const res = await fetchEvent(params.eventId);
 
-	if (!res.ok) {
-		toast.error(Alert, { data: { ...res.prob } });
-		return redirect("/");
-	}
-	return res.res;
+	return data(res);
 }
 
 export default function EventDetails({

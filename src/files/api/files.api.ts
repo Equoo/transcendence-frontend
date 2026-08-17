@@ -1,6 +1,5 @@
 import { APIError, type ProblemDetail } from "../../api/problem_detail";
-
-import type { User } from "../../api/users";
+import type { User } from "../../users/api/users.api";
 
 export interface AppFile {
 	key: string;

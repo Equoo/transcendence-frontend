@@ -1,25 +1,19 @@
 import { useState, type ComponentProps, type JSX } from "react";
-import { useFetcher, useRouteLoaderData } from "react-router";
-import type { EventData } from "../api/events.api";
+import { useFetcher } from "react-router";
+import type { EventSummary } from "../api/events.api";
 import CheckButton from "../../components/CheckButton";
 import Modal from "../../components/Modal";
-import type { clientAction as registerAction } from "../routes/registrations.route";
-import type { clientLoader as userLoader } from "../../routes/dashboard";
 
 export default function EventRegisterBtn({
-	event,
+	event: { isRegistered, size, registeredCount, id, eventRoles },
 	className,
 }: ComponentProps<"form"> & {
-	event: EventData;
+	event: EventSummary;
 }): JSX.Element {
 	const [showRegister, setShowRegister] = useState(false);
-	const fetcher = useFetcher<typeof registerAction>();
-	const user = useRouteLoaderData<typeof userLoader>("routes/dashboard");
+	const fetcher = useFetcher();
 
-	const isRegistered = event.registrations.some(
-		(reg) => reg.user.id === user?.id,
-	);
-	const isFull = event.size === event.registrations.length;
+	const isFull = size === registeredCount;
 	const presence =
 		fetcher.state === "idle" ? isRegistered : fetcher.formMethod === "POST";
 
@@ -36,7 +30,7 @@ export default function EventRegisterBtn({
 						if (isRegistered) {
 							void fetcher.submit(null, {
 								method: "DELETE",
-								action: `/events/${event.id}/registration`,
+								action: `/events/${id}/registration`,
 							});
 						} else {
 							setShowRegister(true);
@@ -47,7 +41,7 @@ export default function EventRegisterBtn({
 				</CheckButton>
 			</div>
 			<fetcher.Form
-				action={`/events/${event.id}/registration`}
+				action={`/events/${id}/registration`}
 				method={"POST"}
 				onSubmit={() => {
 					setShowRegister(false);
@@ -68,7 +62,7 @@ export default function EventRegisterBtn({
 							name="eventRoleId"
 							className="bg-surface border-border rounded-md text-text font-medium focus:ring-accent"
 						>
-							{event.eventRoles.map((er) => (
+							{eventRoles.map((er) => (
 								<option
 									key={er.id}
 									value={er.id}

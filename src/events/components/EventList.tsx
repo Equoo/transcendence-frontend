@@ -1,6 +1,6 @@
 import type { JSX } from "react";
 import EventCard from "./EventCard";
-import type { EventData } from "../api/events.api";
+import type { EventSummary } from "../api/events.api";
 import Promisable from "./Promisable";
 
 function EventCardSkeleton(): JSX.Element {
@@ -46,7 +46,7 @@ export default function EventList({
 	events,
 	skeletonCount = 3,
 }: {
-	events: Promise<EventData[]> | EventData[];
+	events: Promise<EventSummary[]> | EventSummary[];
 	skeletonCount?: number;
 }): JSX.Element {
 	return (
