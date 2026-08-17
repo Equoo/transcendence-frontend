@@ -47,7 +47,7 @@ async function handleRemoveUser(id: string): Promise<void> {
 	window.location.reload();
 }
 
-async function handleRemoveRefresh(id: string): Promise<void> {
+async function handleDisconnect(id: string): Promise<void> {
 	const res = await fetch(`/api/auth/refresh/${id}`, {
 		method: "DELETE",
 		headers: {
@@ -109,7 +109,7 @@ export default function ListUsers({
 				<button
 					type="submit"
 					className="hover:text-accent hover:cursor-pointer"
-					onClick={() => void handleRemoveRefresh(user.id)}
+					onClick={() => void handleDisconnect(user.id)}
 				>
 					Disconnect
 				</button>

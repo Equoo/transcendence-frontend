@@ -85,13 +85,6 @@ export default function AdminUser({
 								></input>
 								<PiMagnifyingGlass className="m-5 size-5"></PiMagnifyingGlass>
 							</div>
-
-							<button
-								type="submit"
-								className="w-1/3 h-10 bg-accent text-accent-text font-semibold rounded-4xl cursor-pointer hover:brightness-120"
-							>
-								Add User
-							</button>
 						</div>
 					</div>
 					<table className="w-full text-sm font-main text-left text-text">
