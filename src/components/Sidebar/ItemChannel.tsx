@@ -1,18 +1,13 @@
-import type { JSX, ReactNode } from "react";
-import type { IconType } from "react-icons";
+import type { JSX } from "react";
 import { NavLink } from "react-router";
-import type { Channel } from "../../api/chat"
 
-function ItemChannel({
-	channel
-}: {
-	channel: Channel;
-}): JSX.Element {
+import type { Channel } from "@/chat/api/chat.api";
+
+function ItemChannel({ channel }: { channel: Channel }): JSX.Element {
 	return (
 		<li>
 			<NavLink
 				to={`/channels/${channel.id}`}
-				end={`/channels/${channel.id}/`}
 				className={({ isActive }) =>
 					[
 						"flex items-center px-2 py-1.5 text-[14px] rounded-base group duration-120",
@@ -24,7 +19,11 @@ function ItemChannel({
 			>
 				{({ isActive }) => (
 					<>
-						<span className={`font-semibold ${isActive ? "text-accent" : "text-muted"}`} >#</span>
+						<span
+							className={`font-semibold ${isActive ? "text-accent" : "text-muted"}`}
+						>
+							#
+						</span>
 						<span className="ms-3">{channel.name}</span>
 					</>
 				)}

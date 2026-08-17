@@ -1,53 +1,59 @@
 import { type JSX, useEffect, useState } from "react";
-import type { Route } from "./+types/channel";
-import { useChat, fetchMessages, type Message, type Channel } from "../api/chat";
-import { useShallow } from "zustand/react/shallow";
 import { PiPushPin, PiUsers } from "react-icons/pi";
-import { redirect } from "react-router";
-import { toast } from "react-toastify";
-import Alert from "../components/Alert";
-import ProfilePic from "../components/ProfilePic";
-import IconBtn from "../components/IconBtn";
-import MessageComposer from "../components/Chat/MessageComposer";
-import MessageList from "../components/Chat/MessageList";
+import { useShallow } from "zustand/react/shallow";
 
-export default function Channel({
+import { fetchMessages } from "@/chat/api/chat.api";
+import MessageComposer from "@/chat/components/MessageComposer";
+import MessageList from "@/chat/components/MessageList";
+import { useChat } from "@/chat/hooks/chat.hook";
+import IconBtn from "@/components/IconBtn";
+
+import type { Route } from "./+types/channel";
+
+export default function ChannelRoute({
 	params,
 }: Route.ComponentProps): JSX.Element {
-	const channels = useChat((state) => state.channels);
 	const channel = useChat((state) => state.channels[params.channelId]);
-	const messages = useChat(useShallow((state) => state.channels[params.channelId]?.messages ?? []));
-	
-	let free = true;
+	const messages = useChat(
+		useShallow((state) => state.channels[params.channelId]?.messages ?? []),
+	);
+
+	const [isFree, setIsFree] = useState(true);
 	useEffect(() => {
-		async function load_messages() {
-			if (!free)
+		async function loadMessages(): Promise<void> {
+			if (!isFree) {
 				return;
+			}
 			try {
-				free = false;
-				useChat.getState().addMsgs(params.channelId, await fetchMessages(params.channelId, 10, ""));
+				setIsFree(false);
+				useChat
+					.getState()
+					.addMsgs(
+						params.channelId,
+						await fetchMessages(params.channelId, 10, null),
+					);
 			} catch (err) {
 				console.error(err);
 			} finally {
-				free = true;
+				setIsFree(true);
 			}
 		}
-		
-		if (messages.length == 0) {
-			load_messages();
+
+		if (messages.length === 0) {
+			void loadMessages();
 		}
-	}, [params.channelId]);
+	}, [isFree, messages.length, params.channelId]);
 
 	return (
 		<div className="flex flex-col w-full h-full">
-			<div className="flex flex-none items-center gap-3 border-b border-border px-[22px] py-[15px]">
+			<div className="flex flex-none items-center gap-3 border-b border-border px-5.5 py-3.75">
 				<div className="flex flex-col">
-					<div className="flex items-center gap-[7px] font-head text-[17px] font-[650]">
+					<div className="flex items-center gap-1.75 font-head text-[17px] font-[650]">
 						<span className="text-muted">#</span>
-						{channel.name}
+						{channel?.name}
 					</div>
 					<div className="text-[12.5px] text-muted">
-						{channel.topic}
+						{channel?.topic}
 					</div>
 				</div>
 				<span className="flex-1" />
@@ -58,8 +64,14 @@ export default function Channel({
 
 			<div className="flex min-h-0 flex-1">
 				<div className="flex min-w-0 flex-1 flex-col">
-					<MessageList msgs={messages} channelId={channel.id} />
-					<MessageComposer placeholder={`Message to #${channel.name}...`} channelId={channel.id} />
+					<MessageList
+						msgs={messages}
+						channelId={channel?.id ?? ""}
+					/>
+					<MessageComposer
+						placeholder={`Message to #${channel?.name}...`}
+						channelId={channel?.id ?? ""}
+					/>
 				</div>
 
 				{/* {thread && ( */}

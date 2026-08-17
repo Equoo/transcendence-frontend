@@ -21,7 +21,10 @@
 		"noUnusedLocals": true,
 		"noUnusedParameters": true,
 		"erasableSyntaxOnly": true,
-		"noFallthroughCasesInSwitch": true
+		"noFallthroughCasesInSwitch": true,
+
+		/* Paths */
+		"paths": { "@/*": ["./src/*"] }
 	},
 	"include": ["src", ".react-router/types/**/*"]
 }

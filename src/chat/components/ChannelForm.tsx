@@ -1,8 +1,10 @@
-import { useEffect, type JSX } from "react";
+import { type JSX, useEffect } from "react";
 import { useFetcher, useSearchParams } from "react-router";
-import CheckButton from "../CheckButton";
-import Modal from "../Modal";
-import type { ChannelActionResult } from "../../api/chat";
+
+import CheckButton from "@/components/CheckButton";
+import Modal from "@/components/Modal";
+
+import type { ChannelActionResult } from "../api/chat.api";
 
 export default function ChannelForm(): JSX.Element {
 	const fetcher = useFetcher<ChannelActionResult>();
@@ -16,12 +18,11 @@ export default function ChannelForm(): JSX.Element {
 				return sp;
 			});
 		}
-		// eslint-disable-next-line @eslint-react/exhaustive-deps
-	}, [fetcher.data?.ok, fetcher.state]);
+	}, [fetcher.data?.ok, fetcher.state, setSearchParams]);
 	return (
 		<>
 			{showEventForm === null ? null : (
-				<Modal title="Create a channel">
+				<Modal title="Create a channel" name="Channel">
 					<fetcher.Form
 						action="/channels"
 						method="post"

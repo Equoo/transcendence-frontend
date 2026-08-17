@@ -1,4 +1,6 @@
 import "./index.css";
+
+import type { JSX, ReactNode } from "react";
 import {
 	Links,
 	Meta,
@@ -8,9 +10,9 @@ import {
 	ScrollRestoration,
 } from "react-router";
 import { ToastContainer } from "react-toastify";
+
 import { UserContext, userFetcher } from "./users/api/users.api";
 import type { Route } from "./+types/root";
-import type { JSX, ReactNode } from "react";
 
 const alertStyle = {
 	success: "bg-good-soft text-good",

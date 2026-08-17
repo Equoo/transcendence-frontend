@@ -1,17 +1,28 @@
+import { initDrawers } from "flowbite";
 import { type JSX, useEffect } from "react";
-import { PiBookOpen, PiCalendarBlank, PiChat, PiHouse, PiPlus } from "react-icons/pi";
 import { HiMenuAlt2 } from "react-icons/hi";
+import {
+	PiBookOpen,
+	PiCalendarBlank,
+	PiChat,
+	PiHouse,
+	PiPlus,
+} from "react-icons/pi";
+import { Form, useLocation } from "react-router";
+import { useShallow } from "zustand/react/shallow";
+
+import type { Channel } from "@/chat/api/chat.api";
+import { useChat } from "@/chat/hooks/chat.hook";
+
 import ItemCategory from "./ItemCategory";
 import ItemChannel from "./ItemChannel";
-import { initDrawers } from "flowbite";
-import { useLocation, Form } from "react-router";
 import InvitationForm from "../../invitations/components/InvitationForm";
-import { type Channel, useChat } from "../../api/chat"
-import { useShallow } from "zustand/react/shallow";
 
 function Sidebar(): JSX.Element {
 	const location = useLocation();
-	const channels = useChat(useShallow((state) => Object.values(state.channels)));
+	const channels = useChat(
+		useShallow((state) => Object.values(state.channels) as Channel[]),
+	);
 
 	useEffect(() => {
 		initDrawers();
@@ -83,17 +94,39 @@ function Sidebar(): JSX.Element {
 						<ItemCategory to="/messages" icon={PiChat}>
 							Messages
 						</ItemCategory>
-						<li className="flex justify-between items-center px-2 py-1.5 mt-3 text-[11px] text-muted font-bold tracking-wider uppercase group">Channels <Form><button className="cursor-pointer hover:text-text" type="submit" name="channelForm"><PiPlus size={14} /></button></Form></li>
+						<li className="flex justify-between items-center px-2 py-1.5 mt-3 text-[11px] text-muted font-bold tracking-wider uppercase group">
+							Channels{" "}
+							<Form>
+								<button
+									className="cursor-pointer hover:text-text"
+									type="submit"
+									name="channelForm"
+								>
+									<PiPlus size={14} />
+								</button>
+							</Form>
+						</li>
 						{channels.map((channel) => (
-							<ItemChannel channel={channel}></ItemChannel>
+							<ItemChannel
+								key={channel.id}
+								channel={channel}
+							></ItemChannel>
 						))}
-						<li className="flex justify-between items-center px-2 py-1.5 mt-3 text-[11px] text-muted font-bold tracking-wider uppercase group">Upcoming</li>
+						<li className="flex justify-between items-center px-2 py-1.5 mt-3 text-[11px] text-muted font-bold tracking-wider uppercase group">
+							Upcoming
+						</li>
 					</ul>
 
-					{ 
-						// NOTE: PLACEHOLDER 
+					{
+						// NOTE: PLACEHOLDER
 					}
-					<select name="user" id="user" onChange={(e) => document.cookie = "UserName=" + e.target.value}>
+					<select
+						name="user"
+						id="user"
+						onChange={(ev) => {
+							document.cookie = `UserName=${ev.target.value}`;
+						}}
+					>
 						<option value="asventi">Asventi</option>
 						<option value="equo">Equo</option>
 					</select>

@@ -1,3 +1,4 @@
+import type { JSX } from "react/jsx-runtime";
 
 function isSameDay(d1: Date, d2: Date): boolean {
 	return (
@@ -19,8 +20,12 @@ function isYesterday(date: Date): boolean {
 }
 
 function formatDaySeparator(date: Date): string {
-	if (isToday(date)) return "Today"; // TODO: <LOCALIZATION>
-	if (isYesterday(date)) return "Yesterday";
+	if (isToday(date)) {
+		return "Today";
+	}
+	if (isYesterday(date)) {
+		return "Yesterday";
+	}
 
 	return date.toLocaleDateString("en-EN", {
 		weekday: "long",
@@ -29,12 +34,12 @@ function formatDaySeparator(date: Date): string {
 	});
 }
 
-// NOTE: It's not update in realtime: 'today' after 23:59 it do not will change to 'yesterday'
-function MessageDaySeparator({ date }: { date: DateTime }) {
+// NOTE:/Todo It's not update in realtime: 'today' after 23:59 it do not will change to 'yesterday'
+function MessageDaySeparator({ date }: { date: Date }): JSX.Element {
 	const day = formatDaySeparator(date);
 
 	return (
-		<div className="flex items-center gap-[14px] text-[12px] font-semibold text-muted">
+		<div className="flex items-center gap-3.5 text-[12px] font-semibold text-muted">
 			<span className="h-px flex-1 bg-border" />
 			{day}
 			<span className="h-px flex-1 bg-border" />

@@ -1,4 +1,7 @@
 import { data } from "react-router";
+
+import { APIError } from "../../api/problem_detail";
+import type { APIResult } from "../../api/results";
 import {
 	registerToEvent,
 	toRegistrationInput,

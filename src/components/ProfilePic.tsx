@@ -4,7 +4,7 @@ export default function ProfilePic({
 	name,
 	size = 8,
 	idx = 1,
-	className = "",
+	className,
 }: {
 	name: string;
 	size?: number;
