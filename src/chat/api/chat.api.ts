@@ -1,5 +1,6 @@
 import type { ProblemDetail } from "@/api/problem_detail";
 import type { User } from "@/api/users";
+import { useChat } from "@/chat/hooks/chat.hook";
 
 export interface Message {
 	id: string;
@@ -21,13 +22,18 @@ export interface Channel {
 	messages: Message[];
 }
 
-export async function fetchChannels(): Promise<Channel[]> {
+export async function fetchChannels(): Promise<Channel[] | null> {
+	if (Object.keys(useChat.getState().channels).length !== 0) {
+		return null;
+	}
+
 	const response = await fetch("/api/channels");
 	if (!response.ok) {
 		throw new Error("Can't fetch channels");
 	}
 
 	const channels = (await response.json()) as Channel[];
+	useChat.getState().setChannels(channels);
 	return channels;
 }
 

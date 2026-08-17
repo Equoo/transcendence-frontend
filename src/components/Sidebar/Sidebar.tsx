@@ -1,5 +1,5 @@
 import { initDrawers } from "flowbite";
-import { type JSX, useEffect } from "react";
+import { type JSX, Suspense, useEffect } from "react";
 import { HiMenuAlt2 } from "react-icons/hi";
 import {
 	PiBookOpen,
@@ -8,15 +8,30 @@ import {
 	PiHouse,
 	PiPlus,
 } from "react-icons/pi";
-import { Form, useLocation } from "react-router";
+import { Await, Form, useLocation } from "react-router";
 import { useShallow } from "zustand/react/shallow";
 
-import type { Channel } from "@/chat/api/chat.api";
+import { type Channel, fetchChannels } from "@/chat/api/chat.api";
 import { useChat } from "@/chat/hooks/chat.hook";
 
 import ItemCategory from "./ItemCategory";
 import ItemChannel from "./ItemChannel";
 import InvitationForm from "../../invitations/components/InvitationForm";
+
+function ChannelListSkeleton(): JSX.Element {
+	return (
+		<>
+			{Array.from({ length: 4 }, (___, index) => (
+				<li key={index}>
+					<div className="flex items-center px-2 py-1.5 text-[14px] rounded-base group duration-120 shadow-main animate-pulse">
+						<span className="font-semibold text-muted">#</span>
+						<div className="ms-3 py-1 h-3 w-32 rounded bg-muted"></div>
+					</div>
+				</li>
+			))}
+		</>
+	);
+}
 
 function Sidebar(): JSX.Element {
 	const location = useLocation();
@@ -106,12 +121,16 @@ function Sidebar(): JSX.Element {
 								</button>
 							</Form>
 						</li>
-						{channels.map((channel) => (
-							<ItemChannel
-								key={channel.id}
-								channel={channel}
-							></ItemChannel>
-						))}
+						<Suspense fallback={<ChannelListSkeleton />}>
+							<Await resolve={fetchChannels()}>
+								{channels.map((channel) => (
+									<ItemChannel
+										key={channel.id}
+										channel={channel}
+									></ItemChannel>
+								))}
+							</Await>
+						</Suspense>
 						<li className="flex justify-between items-center px-2 py-1.5 mt-3 text-[11px] text-muted font-bold tracking-wider uppercase group">
 							Upcoming
 						</li>
