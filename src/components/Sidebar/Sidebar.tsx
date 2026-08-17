@@ -4,6 +4,7 @@ import { HiMenuAlt2 } from "react-icons/hi";
 import ItemCategory from "./ItemCategorie";
 import { initDrawers } from "flowbite";
 import { useLocation } from "react-router";
+import InvitationForm from "../../invitations/components/InvitationForm";
 
 function Sidebar(): JSX.Element {
 	const location = useLocation();
@@ -64,7 +65,8 @@ function Sidebar(): JSX.Element {
 							</span>
 						</div>
 					</a>
-					<ul className="space-y-3 font-main font-medium text-muted text-[14.5px]">
+					<InvitationForm className=""></InvitationForm>
+					<ul className="mt-4 space-y-3 font-main font-medium text-muted text-[14.5px]">
 						<ItemCategory to="/" icon={PiHouse}>
 							Home
 						</ItemCategory>

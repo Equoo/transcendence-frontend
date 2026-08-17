@@ -6,19 +6,24 @@ import type { Route } from "./+types/register";
 export interface UserInput {
 	username: string;
 	password: string;
+	invitationCode: string;
 }
 
 export type UserResult = { ok: true } | { ok: false };
 
-function toUserInput(formData: FormData): UserInput {
+function toUserInput(formData: FormData, code: string): UserInput {
 	return {
 		username: formData.get("username") as string,
 		password: formData.get("password") as string,
+		invitationCode: code,
 	};
 }
 
-async function registerUser(formData: FormData): Promise<UserResult> {
-	const object = toUserInput(formData);
+async function registerUser(
+	formData: FormData,
+	code: string,
+): Promise<UserResult> {
+	const object = toUserInput(formData, code);
 
 	const response = await fetch("/api/auth/register", {
 		method: "POST",
@@ -36,8 +41,14 @@ async function registerUser(formData: FormData): Promise<UserResult> {
 
 export async function clientAction({
 	request,
+	url,
 }: Route.ClientActionArgs): Promise<UserResult> {
-	if (!(await registerUser(await request.formData())).ok) {
+	const code = url.searchParams.get("invitation");
+
+	if (code === null) {
+		return redirect("/login");
+	}
+	if (!(await registerUser(await request.formData(), code)).ok) {
 		return { ok: false };
 	}
 	return redirect("/");

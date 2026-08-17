@@ -23,4 +23,5 @@ export default [
 	),
 	route("/events", "events/routes/events.route.tsx"),
 	route("/files", "files/routes/files.route.tsx"),
+	route("/invitations", "invitations/routes/invitations.route.tsx"),
 ] satisfies RouteConfig;
