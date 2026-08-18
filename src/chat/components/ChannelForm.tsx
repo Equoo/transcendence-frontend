@@ -1,21 +1,23 @@
-import { type JSX, useEffect, useState } from "react";
+import { type JSX, useState } from "react";
 import { PiPlus } from "react-icons/pi";
 import { useFetcher } from "react-router";
 
 import CheckButton from "@/components/CheckButton";
 import Modal from "@/components/Modal";
 
-import type { ChannelActionResult } from "../api/chat.api";
+import type { Channel } from "../api/chat.api";
 
 export default function ChannelForm(): JSX.Element {
-	const fetcher = useFetcher<ChannelActionResult>();
+	const fetcher = useFetcher<Channel>();
 	const [showChannelForm, setShowChannelForm] = useState(false);
+	const [prevFetcherState, setPrevFetcherState] = useState(fetcher.state);
 
-	useEffect(() => {
-		if (fetcher.state === "idle") {
+	if (prevFetcherState !== fetcher.state) {
+		setPrevFetcherState(fetcher.state);
+		if (fetcher.state === "idle" && prevFetcherState !== "idle") {
 			setShowChannelForm(false);
 		}
-	}, [fetcher.state]);
+	}
 
 	return (
 		<>
