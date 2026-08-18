@@ -1,10 +1,15 @@
 import type { JSX } from "react";
 import { redirect, useFetcher } from "react-router";
-import type { UserInput, UserResult } from "./register";
+import type { UserResult } from "./register";
 import { AuthForm, AuthLogo, AuthTitle } from "../components/AuthForm";
 import type { Route } from "./+types/login";
 
-function toUserInput(formData: FormData): UserInput {
+interface LoginInput {
+	username: string;
+	password: string;
+}
+
+function toUserInput(formData: FormData): LoginInput {
 	return {
 		username: formData.get("username") as string,
 		password: formData.get("password") as string,

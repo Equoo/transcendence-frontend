@@ -1,22 +1,31 @@
-import type { JSX } from "react";
+import { useEffect, useState, type JSX } from "react";
 import type { Route } from "./+types/event_details";
 import { fetchEvent } from "../events/api/events.api";
 import { FiChevronLeft } from "react-icons/fi";
-import { data, Link, useNavigate } from "react-router";
+import { Link, useFetcher, useNavigate } from "react-router";
 import EventRegisterBtn from "../events/components/EventRegisterBtn";
 import ProfilePic from "../components/ProfilePic";
 import EventBadge from "../components/Badge";
+import EventForm from "../events/components/EventForm";
+import { fetchEventRoles } from "../events/api/event_roles.api";
+import { fetchFiles } from "../files/api/files.api";
+import { PiTrash } from "react-icons/pi";
+import type { clientAction } from "../events/routes/events.route";
+import Modal from "../components/Modal";
+import CheckButton from "../components/CheckButton";
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
 export async function clientLoader({ params }: Route.ClientLoaderArgs) {
 	const res = await fetchEvent(params.eventId);
 
-	return data(res);
+	return { event: res, roles: fetchEventRoles(), files: fetchFiles() };
 }
 
 export default function EventDetails({
-	loaderData: event,
+	loaderData: { event, roles, files },
 }: Route.ComponentProps): JSX.Element {
+	const fetcher = useFetcher<typeof clientAction>();
+	const navigate = useNavigate();
 	const dateString: string = new Date(event.date).toLocaleString([], {
 		hour: "2-digit",
 		minute: "2-digit",
@@ -24,10 +33,54 @@ export default function EventDetails({
 		day: "2-digit",
 		year: "numeric",
 	});
-	const navigate = useNavigate();
+	const [showConfirmation, setShowConfirmation] = useState(false);
 
+	useEffect(() => {
+		if (fetcher.data) {
+			if (
+				fetcher.data instanceof Response &&
+				fetcher.data.status === 204
+			) {
+				void navigate("/");
+			}
+		}
+	}, [fetcher.data]);
 	return (
 		<div className="flex flex-col w-full h-full">
+			{showConfirmation && (
+				<Modal
+					title={`Delete the event ${event.name} ?`}
+					onClose={() => {
+						setShowConfirmation(false);
+					}}
+				>
+					<p className="text-muted font-main font-light w-4/5 text-sm text-center">
+						This cannot be cancelled.
+					</p>
+					<div className="inline-flex gap-8">
+						<CheckButton
+							pending={fetcher.state !== "idle"}
+							onClick={() => {
+								void fetcher.submit(null, {
+									action: `/events/${event.id}`,
+									method: "DELETE",
+								});
+							}}
+						>
+							Yes
+						</CheckButton>
+						<CheckButton
+							active
+							activeCheck={false}
+							onClick={() => {
+								setShowConfirmation(false);
+							}}
+						>
+							No
+						</CheckButton>
+					</div>
+				</Modal>
+			)}
 			<div className="flex px-4 py-4 gap-4 items-center border-b border-border">
 				<FiChevronLeft
 					size={25}
@@ -37,13 +90,24 @@ export default function EventDetails({
 					}}
 					className="cursor-pointer"
 				/>
-				<div className="flex flex-col">
-					<div className="font-head text-text font-semibold text-lg">
-						{event.name}
+				<div className="inline-flex items-center gap-4">
+					<div className="flex flex-col">
+						<div className="font-head text-text font-semibold text-lg">
+							{event.name}
+						</div>
+						<div className="font-main text-muted text-sm font-light">
+							{dateString}
+						</div>
 					</div>
-					<div className="font-main text-muted text-sm font-light">
-						{dateString}
-					</div>
+					<EventForm edit roles={roles} files={files} event={event} />
+					<PiTrash
+						size={26}
+						color="var(--color-text2)"
+						className="hover:cursor-pointer"
+						onClick={() => {
+							setShowConfirmation(true);
+						}}
+					/>
 				</div>
 				<EventRegisterBtn event={event} className="ml-auto shrink-0" />
 			</div>

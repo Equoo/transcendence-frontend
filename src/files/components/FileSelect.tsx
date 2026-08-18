@@ -12,17 +12,21 @@ import { useFileBrowser } from "../hooks/useFileBrowser";
 
 export default function FileSelect({
 	files,
+	selectedKeys,
 	name,
 	required,
 	errors,
 }: {
 	files: AppFile[];
+	selectedKeys?: string[];
 	name: string;
 	required?: boolean;
 	errors?: ValidationErrors;
 }): JSX.Element {
 	const [showSelect, setShowSelect] = useState(false);
-	const [selectedFiles, setSelectedFiles] = useState<string[]>([]);
+	const [selectedFiles, setSelectedFiles] = useState<string[]>(
+		selectedKeys ?? [],
+	);
 	const { currFolder, folders, rootFiles, enterFolder, goUp } =
 		useFileBrowser(files);
 
@@ -65,7 +69,7 @@ export default function FileSelect({
 				})}
 				<button
 					type="button"
-					className="text-muted hover:text-text"
+					className="text-text hover:cursor-pointer"
 					onClick={() => {
 						setShowSelect(true);
 					}}
@@ -81,51 +85,55 @@ export default function FileSelect({
 						setShowSelect(false);
 					}}
 				>
-					<div className="w-full flex flex-col bg-surface rounded p-2">
-						{currFolder.length > 0 && (
-							<div
-								className="inline-flex items-center gap-2 rounded p-2 hover:bg-surface2 hover:cursor-pointer"
-								onClick={goUp}
-							>
-								<FcFolder size={22} />
-								<p className="text-lg font-medium">..</p>
-							</div>
-						)}
-						{folders.map((folder) => (
-							<div
-								key={folder}
-								className="inline-flex items-center gap-2 rounded p-2 hover:bg-surface2 hover:cursor-pointer"
-								onClick={() => {
-									enterFolder(folder);
-								}}
-							>
-								<FcFolder size={22} />
-								<p className="text-lg font-medium">{folder}</p>
-							</div>
-						))}
-						{rootFiles.map((file) => (
-							<div
-								key={file.key}
-								className={`inline-flex items-center gap-2 rounded p-2 hover:cursor-pointer hover:bg-surface2 ${
-									selectedFiles.includes(file.key)
-										? "bg-surface"
-										: ""
-								}`}
-								onClick={() => {
-									toggleSelected(file.key);
-								}}
-							>
-								{selectedFiles.includes(file.key) && (
-									<PiCheck size={20} />
-								)}
-								<p
-									className={`${selectedFiles.includes(file.key) || "pl-7"} text-lg font-medium`}
+					{files.length > 0 && (
+						<div className="w-full flex flex-col bg-surface rounded p-2">
+							{currFolder.length > 0 && (
+								<div
+									className="inline-flex items-center gap-2 rounded p-2 hover:bg-surface2 hover:cursor-pointer"
+									onClick={goUp}
 								>
-									{file.name.slice(currFolder.length)}
-								</p>
-							</div>
-						))}
-					</div>
+									<FcFolder size={22} />
+									<p className="text-lg font-medium">..</p>
+								</div>
+							)}
+							{folders.map((folder) => (
+								<div
+									key={folder}
+									className="inline-flex items-center gap-2 rounded p-2 hover:bg-surface2 hover:cursor-pointer"
+									onClick={() => {
+										enterFolder(folder);
+									}}
+								>
+									<FcFolder size={22} />
+									<p className="text-lg font-medium">
+										{folder}
+									</p>
+								</div>
+							))}
+							{rootFiles.map((file) => (
+								<div
+									key={file.key}
+									className={`inline-flex items-center gap-2 rounded p-2 hover:cursor-pointer hover:bg-surface2 ${
+										selectedFiles.includes(file.key)
+											? "bg-surface"
+											: ""
+									}`}
+									onClick={() => {
+										toggleSelected(file.key);
+									}}
+								>
+									{selectedFiles.includes(file.key) && (
+										<PiCheck size={20} />
+									)}
+									<p
+										className={`${selectedFiles.includes(file.key) || "pl-7"} text-lg font-medium text-text`}
+									>
+										{file.name.slice(currFolder.length)}
+									</p>
+								</div>
+							))}
+						</div>
+					)}
 					<CheckButton
 						active
 						type="button"
