@@ -12,7 +12,7 @@ interface ChatState {
 	addMsg: (channelId: string, message: Message) => void;
 	addMsgs: (channelId: string, messages: Message[]) => void;
 	removeMsg: (channelId: string, id: string) => void;
-	updateMsg: (channelId: string, id: string, updates: Channel) => void;
+	updateMsg: (channelId: string, id: string, updates: Message) => void;
 }
 
 export const useChat = create<ChatState>((set) => ({

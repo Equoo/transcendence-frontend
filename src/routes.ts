@@ -26,5 +26,4 @@ export default [
 	route("/files", "files/routes/files.route.tsx"),
 	route("/invitations", "invitations/routes/invitations.route.tsx"),
 	route("/channels", "chat/routes/channel.route.tsx"),
-	route("/channels/:channelId/messages", "chat/routes/message.route.tsx"),
 ] satisfies RouteConfig;

@@ -1,5 +1,6 @@
-import { type JSX, useEffect } from "react";
-import { useFetcher, useSearchParams } from "react-router";
+import { type JSX, useEffect, useState } from "react";
+import { PiPlus } from "react-icons/pi";
+import { useFetcher } from "react-router";
 
 import CheckButton from "@/components/CheckButton";
 import Modal from "@/components/Modal";
@@ -8,21 +9,37 @@ import type { ChannelActionResult } from "../api/chat.api";
 
 export default function ChannelForm(): JSX.Element {
 	const fetcher = useFetcher<ChannelActionResult>();
-	const [searchParams, setSearchParams] = useSearchParams();
-	const showEventForm = searchParams.get("channelForm");
+	const [showChannelForm, setShowChannelForm] = useState(false);
 
 	useEffect(() => {
-		if (fetcher.state === "idle" && (fetcher.data?.ok ?? false)) {
-			setSearchParams((sp) => {
-				sp.delete("channelForm");
-				return sp;
-			});
+		if (fetcher.state === "idle") {
+			setShowChannelForm(false);
 		}
-	}, [fetcher.data?.ok, fetcher.state, setSearchParams]);
+	}, [fetcher.state]);
+
 	return (
 		<>
-			{showEventForm === null ? null : (
-				<Modal title="Create a channel" name="Channel">
+			<li className="flex justify-between items-center px-2 py-1.5 mt-3 text-[11px] text-muted font-bold tracking-wider uppercase group">
+				Channels{" "}
+				<button
+					className="cursor-pointer hover:text-text"
+					type="button"
+					name="channelForm"
+					onClick={() => {
+						setShowChannelForm(true);
+					}}
+				>
+					<PiPlus size={14} />
+				</button>
+			</li>
+
+			{showChannelForm && (
+				<Modal
+					title="Create a channel"
+					onClose={() => {
+						setShowChannelForm(false);
+					}}
+				>
 					<fetcher.Form
 						action="/channels"
 						method="post"

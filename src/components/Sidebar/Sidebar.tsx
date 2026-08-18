@@ -1,17 +1,12 @@
 import { initDrawers } from "flowbite";
 import { type JSX, Suspense, useEffect } from "react";
 import { HiMenuAlt2 } from "react-icons/hi";
-import {
-	PiBookOpen,
-	PiCalendarBlank,
-	PiChat,
-	PiHouse,
-	PiPlus,
-} from "react-icons/pi";
-import { Await, Form, useLocation } from "react-router";
+import { PiBookOpen, PiCalendarBlank, PiChat, PiHouse } from "react-icons/pi";
+import { Await, useLocation } from "react-router";
 import { useShallow } from "zustand/react/shallow";
 
 import { type Channel, fetchChannels } from "@/chat/api/chat.api";
+import ChannelForm from "@/chat/components/ChannelForm";
 import { useChat } from "@/chat/hooks/chat.hook";
 
 import InvitationForm from "../../invitations/components/InvitationForm";
@@ -109,18 +104,7 @@ function Sidebar(): JSX.Element {
 						<ItemCategory to="/messages" icon={PiChat}>
 							Messages
 						</ItemCategory>
-						<li className="flex justify-between items-center px-2 py-1.5 mt-3 text-[11px] text-muted font-bold tracking-wider uppercase group">
-							Channels{" "}
-							<Form>
-								<button
-									className="cursor-pointer hover:text-text"
-									type="submit"
-									name="channelForm"
-								>
-									<PiPlus size={14} />
-								</button>
-							</Form>
-						</li>
+						<ChannelForm></ChannelForm>
 						<Suspense fallback={<ChannelListSkeleton />}>
 							<Await resolve={fetchChannels()}>
 								{channels.map((channel) => (

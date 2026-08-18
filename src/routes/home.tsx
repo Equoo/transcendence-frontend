@@ -2,15 +2,15 @@ import type { JSX } from "react";
 import { isRouteErrorResponse } from "react-router";
 
 import { APIError } from "../api/problem_detail";
-import { type EventRole,fetchEventRoles } from "../events/api/event_roles.api";
-import { type EventData,fetchEvents } from "../events/api/events.api";
+import { type EventRole, fetchEventRoles } from "../events/api/event_roles.api";
+import { type EventSummary, fetchEvents } from "../events/api/events.api";
 import EventForm from "../events/components/EventForm";
 import EventList from "../events/components/EventList";
-import { type AppFile,fetchFiles } from "../files/api/files.api";
+import { type AppFile, fetchFiles } from "../files/api/files.api";
 import type { Route } from "./+types/home";
 
 export function clientLoader(): {
-	events: Promise<EventData[]>;
+	events: Promise<EventSummary[]>;
 	roles: Promise<EventRole[]>;
 	files: Promise<AppFile[]>;
 } {

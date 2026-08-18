@@ -4,10 +4,13 @@ import { init } from "emoji-mart";
 import { type JSX, useEffect, useRef, useState } from "react";
 import { BsSend } from "react-icons/bs";
 import { PiImage, PiPaperclip, PiSmiley } from "react-icons/pi";
-import { useFetcher } from "react-router";
 
 import IconBtn from "@/components/IconBtn";
 import { useClickOutside } from "@/hooks/useClickOutside";
+import { useUser } from "@/users/hooks/users.hooks";
+
+import { type Message, sendMessage } from "../api/chat.api";
+import { useChat } from "../hooks/chat.hook";
 
 await init({ data });
 
@@ -36,40 +39,63 @@ function MessageComposer({
 	placeholder: string;
 	channelId: string;
 }): JSX.Element {
-	const fetcher = useFetcher();
 	const [isEmpty, setIsEmpty] = useState(true);
+	const [counter, setCounter] = useState(0);
 	const [showPicker, setShowPicker] = useState(false);
 
 	const editableRef = useRef<HTMLDivElement>(null);
 	const pickerRef = useRef<HTMLDivElement>(null);
 
-	const isSending = fetcher.state !== "idle";
+	const addMsg = useChat((state) => state.addMsg);
+	const updateMsg = useChat((state) => state.updateMsg);
+	const user = useUser();
 
 	const updateEmpty = (target: HTMLDivElement): void => {
 		setIsEmpty(target.textContent.trim().length === 0);
 	};
 
-	const handleSend = (self: HTMLDivElement): void => {
+	const handleSend = async (self: HTMLDivElement): Promise<void> => {
 		const text = self.innerText.trim();
 
 		const formData = new FormData();
 		formData.set("content", text);
 
-		void fetcher.submit(formData, {
-			method: "post",
-			action: `/channels/${channelId}/messages`,
-		});
-
 		self.textContent = "";
 		setIsEmpty(true);
+
+		const pendingId = new Date().toString() + counter;
+		let message = {
+			id: pendingId,
+			content: text,
+			channel: { id: channelId },
+			sentAt: new Date(),
+			sender: user,
+			status: "pending",
+		} as Message;
+
+		setCounter(counter + 1);
+		addMsg(channelId, message);
+
+		const res = await sendMessage(channelId, text);
+		if (res.ok) {
+			message = {
+				...res.data,
+				sentAt: new Date(res.data.sentAt),
+				editAt: res.data.editAt ? new Date(res.data.editAt) : null,
+				status: "sended",
+			};
+		} else {
+			message.status = "error";
+		}
+		updateMsg(channelId, pendingId, message);
 	};
 
-	const handleKeyDown = (ev: React.KeyboardEvent): void => {
+	const handleKeyDown = async (ev: React.KeyboardEvent): Promise<void> => {
 		const self = ev.currentTarget as HTMLDivElement;
 
 		if (ev.key === "Enter" && !ev.shiftKey) {
 			ev.preventDefault();
-			handleSend(self);
+			await handleSend(self);
 		}
 	};
 
@@ -166,7 +192,7 @@ function MessageComposer({
 					onInput={(ev) => {
 						updateEmpty(ev.currentTarget);
 					}}
-					onKeyDown={handleKeyDown}
+					onKeyDown={(ev) => void handleKeyDown(ev)}
 					onPaste={handlePaste}
 				/>
 			</div>
@@ -186,10 +212,10 @@ function MessageComposer({
 					active
 					icon={BsSend}
 					size={16}
-					disabled={isEmpty || isSending}
+					disabled={isEmpty}
 					onClick={() => {
 						if (editableRef.current) {
-							handleSend(editableRef.current);
+							void handleSend(editableRef.current);
 						}
 					}}
 					className="grid h-9 w-9 place-items-center rounded-[11px]"

@@ -154,7 +154,9 @@ function MessageList({
 									size={10}
 								/>
 							)}
-							<div className="ml-12">
+							<div
+								className={`ml-12 ${msg.status === "pending" && "animate-pulse"}`}
+							>
 								{notSameTime && (
 									<div className="mb-0.75 flex items-baseline gap-2.25">
 										<span className="font-head font-[650] text-[14.5px]">

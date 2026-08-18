@@ -6,10 +6,11 @@ export interface Message {
 	id: string;
 	content: string;
 	sentAt: Date;
-	editAt?: Date;
+	editAt?: Date | null;
 	messageReference?: string;
 	sender: User;
-	channel: { channelId: string };
+	channel: { id: string };
+	status: string;
 }
 
 export interface Channel {
@@ -34,6 +35,7 @@ export async function fetchChannels(): Promise<Channel[] | null> {
 
 	const channels = (await response.json()) as Channel[];
 	useChat.getState().setChannels(channels);
+
 	return channels;
 }
 
