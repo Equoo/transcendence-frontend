@@ -24,11 +24,11 @@ export default function AdminBox({
 	);
 }
 
-async function handleCheckbox(
+function handleCheckbox(
 	box: React.MouseEvent<HTMLInputElement>,
 	role: Role,
 	perm: Perm,
-): Promise<void> {
+): void {
 	let finalCode;
 
 	if (box.currentTarget.checked) {
@@ -38,8 +38,7 @@ async function handleCheckbox(
 		// eslint-disable-next-line no-multi-assign
 		finalCode = role.permission -= perm.code;
 	}
-
-	
+	console.warn(finalCode);
 }
 
 export function RolesBox({
