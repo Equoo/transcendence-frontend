@@ -1,4 +1,4 @@
-import { type JSX,useEffect, useState } from "react";
+import { type JSX, useEffect, useState } from "react";
 import { useFetcher } from "react-router";
 
 import CheckButton from "../../components/CheckButton";
@@ -18,7 +18,7 @@ export default function FileUpload({
 		if (filesFetcher.data) {
 			onClose();
 		}
-	}, [filesFetcher.data]);
+	}, [filesFetcher.data, onClose]);
 	return (
 		<Modal title="Upload a file" onClose={onClose}>
 			<filesFetcher.Form

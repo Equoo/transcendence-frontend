@@ -54,7 +54,7 @@ function Countdown({ date }: { date: Date }): JSX.Element {
 		return (): void => {
 			clearInterval(intervalId);
 		};
-	}, []);
+	}, [date]);
 
 	return (
 		<div

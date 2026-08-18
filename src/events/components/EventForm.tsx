@@ -1,4 +1,4 @@
-import { type JSX, useEffect, useState } from "react";
+import { type JSX, useState } from "react";
 import { PiPlusBold } from "react-icons/pi";
 import { useFetcher } from "react-router";
 
@@ -25,13 +25,17 @@ export default function EventForm({
 }): JSX.Element {
 	const eventFetcher = useFetcher<typeof eventAction>();
 	const [showEventForm, setShowEventForm] = useState(false);
+	const [prevFetcherState, setPrevFetcherState] = useState(
+		eventFetcher.state,
+	);
 
-	useEffect(() => {
-		if (eventFetcher.data) {
-			// eslint-disable-next-line @eslint-react/set-state-in-effect
+	if (prevFetcherState !== eventFetcher.state) {
+		setPrevFetcherState(eventFetcher.state);
+		if (eventFetcher.state === "idle" && prevFetcherState !== "idle") {
 			setShowEventForm(false);
 		}
-	}, [eventFetcher.data]);
+	}
+
 	return (
 		<Promisable
 			skeleton={

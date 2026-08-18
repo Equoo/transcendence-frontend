@@ -1,4 +1,4 @@
-import { type JSX,useEffect, useState } from "react";
+import { type JSX, useState } from "react";
 import { PiPlusBold } from "react-icons/pi";
 import { useFetcher } from "react-router";
 
@@ -15,15 +15,19 @@ export default function InvitationForm({
 	const [link, setLink] = useState("");
 	const invitationFetcher = useFetcher<typeof invitationAction>();
 	const [showInvitationForm, setShowInvitationForm] = useState(false);
+	const [prevFetcherState, setPrevFetcherState] = useState(
+		invitationFetcher.state,
+	);
 
-	useEffect(() => {
-		if (invitationFetcher.data) {
-			// eslint-disable-next-line @eslint-react/set-state-in-effect
+	if (prevFetcherState !== invitationFetcher.state) {
+		setPrevFetcherState(invitationFetcher.state);
+		if (invitationFetcher.state === "idle" && prevFetcherState !== "idle") {
 			setLink(
 				`${window.location.href}register?invitation=${invitationFetcher.data}`,
 			);
 		}
-	}, [invitationFetcher.data]);
+	}
+
 	return (
 		<>
 			<CheckButton

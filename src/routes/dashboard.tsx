@@ -9,17 +9,19 @@ import { UserContext } from "../users/api/users.api";
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
 export function clientLoader({ context }: Route.LoaderArgs) {
-	return { user: context.get(UserContext) };
+	return context.get(UserContext);
 }
 
 export default function Dashboard({
-	loaderData,
+	loaderData: user,
 }: Route.ComponentProps): JSX.Element {
 	return (
 		<div className="relative w-full h-full overflow-hidden bg-back">
 			<Sidebar />
 			<div className="h-full sm:pl-64 flex flex-col w-full items-center overflow-y-scroll">
-				<UserReactContext value={loaderData.user}>
+				<UserReactContext
+					value={typeof user === "undefined" ? null : user}
+				>
 					<Outlet />
 				</UserReactContext>
 			</div>

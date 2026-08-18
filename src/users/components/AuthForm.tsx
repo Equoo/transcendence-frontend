@@ -37,7 +37,7 @@ export function AuthTitle({
 type Side = "r" | "l";
 
 export function AuthLogo({ side }: { side: Side }): JSX.Element {
-	// eslint-disable-next-line @eslint-react/purity
+	// eslint-disable-next-line @eslint-react/purity, react-hooks/purity
 	const randomNumber: number = Date.now();
 
 	let animChoice: string;

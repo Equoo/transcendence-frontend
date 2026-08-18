@@ -43,7 +43,7 @@ export function Input({
 
 	useEffect(() => {
 		if (value) {
-			// eslint-disable-next-line @eslint-react/set-state-in-effect
+			// eslint-disable-next-line @eslint-react/set-state-in-effect, react-hooks/set-state-in-effect
 			setInternalValue(value);
 		}
 	}, [value]);
