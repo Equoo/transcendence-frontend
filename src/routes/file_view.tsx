@@ -2,8 +2,8 @@ import type { JSX } from "react/jsx-runtime";
 import { FiChevronLeft } from "react-icons/fi";
 import { useNavigate } from "react-router";
 
-import Promisable from "../events/components/Promisable";
-import { type AppFile,downloadFile, fetchFile } from "../files/api/files.api";
+import Promisable from "../components/Promisable";
+import { type AppFile, downloadFile, fetchFile } from "../files/api/files.api";
 import FilePreview from "../files/components/FilePreview";
 import type { Route } from "./+types/file_view";
 

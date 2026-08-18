@@ -1,6 +1,8 @@
-import { type JSX,useEffect, useState } from "react";
+import { type JSX, useEffect, useState } from "react";
 import { PiPlusBold } from "react-icons/pi";
 import { useFetcher } from "react-router";
+
+import Promisable from "@/components/Promisable";
 
 import CheckButton from "../../components/CheckButton";
 import { Input } from "../../components/Input";
@@ -11,7 +13,6 @@ import type { AppFile } from "../../files/api/files.api";
 import FileSelect from "../../files/components/FileSelect";
 import type { EventRole } from "../api/event_roles.api";
 import type { clientAction as eventAction } from "../routes/events.route";
-import Promisable from "./Promisable";
 
 export default function EventForm({
 	className,
@@ -107,9 +108,7 @@ export default function EventForm({
 								/>
 								<MultipleInput
 									name="Roles"
-									suggestions={roles.map(
-										(role) => role.name,
-									)}
+									suggestions={roles.map((role) => role.name)}
 									placeholder="Event Roles"
 									className="w-full bg-surface border rounded-md border-border2  px-2 py-1 font-main text-text"
 								/>

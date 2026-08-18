@@ -10,16 +10,16 @@ import {
 	startOfToday,
 	startOfWeek,
 } from "date-fns";
-import { type JSX,useState } from "react";
+import { type JSX, useState } from "react";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { Link } from "react-router";
 
-import { type EventRole,fetchEventRoles } from "../events/api/event_roles.api";
-import { type EventSummary,fetchEvents } from "../events/api/events.api";
+import Promisable from "../components/Promisable";
+import { type EventRole, fetchEventRoles } from "../events/api/event_roles.api";
+import { type EventSummary, fetchEvents } from "../events/api/events.api";
 import EventForm from "../events/components/EventForm";
 import EventList from "../events/components/EventList";
-import Promisable from "../events/components/Promisable";
-import { type AppFile,fetchFiles } from "../files/api/files.api";
+import { type AppFile, fetchFiles } from "../files/api/files.api";
 import type { Route } from "./+types/calendar_page";
 
 export function clientLoader(): {

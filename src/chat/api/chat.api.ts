@@ -1,4 +1,4 @@
-import type { ProblemDetail } from "@/api/problem_detail";
+import { APIError, type ProblemDetail } from "@/api/problem_detail";
 import { useChat } from "@/chat/hooks/chat.hook";
 import type { User } from "@/users/api/users.api";
 
@@ -9,7 +9,7 @@ export interface Message {
 	editAt?: Date | null;
 	messageReference?: string;
 	sender: User;
-	channel: { id: string };
+	channel: Channel;
 	status: string;
 }
 
@@ -30,7 +30,7 @@ export async function fetchChannels(): Promise<Channel[] | null> {
 
 	const response = await fetch("/api/channels");
 	if (!response.ok) {
-		throw new Error("Can't fetch channels");
+		throw new APIError((await response.json()) as ProblemDetail);
 	}
 
 	const channels = (await response.json()) as Channel[];
@@ -52,8 +52,9 @@ export async function fetchMessages(
 
 	const response = await fetch(url);
 	if (!response.ok) {
-		throw new Error("Can't fetch messages");
+		throw new APIError((await response.json()) as ProblemDetail);
 	}
+
 	const raw = (await response.json()) as Message[];
 	const messages: Message[] = raw.map((msg) => ({
 		...msg,
@@ -67,17 +68,7 @@ export async function fetchMessages(
 	return messages;
 }
 
-export type MessageActionResult =
-	| { ok: true; data: Message }
-	| { ok: false; error: ProblemDetail };
-
-export type ChannelActionResult =
-	| { ok: true; channel: Channel }
-	| { ok: false; error: ProblemDetail };
-
-export async function createChannel(
-	formData: FormData,
-): Promise<ChannelActionResult> {
+export async function createChannel(formData: FormData): Promise<Channel> {
 	const response = await fetch("/api/channels", {
 		method: "POST",
 		headers: {
@@ -90,22 +81,16 @@ export async function createChannel(
 	});
 
 	if (!response.ok) {
-		return {
-			ok: false,
-			error: (await response.json()) as ProblemDetail,
-		};
+		throw new APIError((await response.json()) as ProblemDetail);
 	}
 
-	return {
-		ok: true,
-		channel: (await response.json()) as Channel,
-	};
+	return (await response.json()) as Channel;
 }
 
 export async function sendMessage(
 	channelId: string,
 	content: string,
-): Promise<MessageActionResult> {
+): Promise<Message> {
 	const response = await fetch(`/api/channels/${channelId}/messages`, {
 		method: "POST",
 		headers: {
@@ -117,14 +102,8 @@ export async function sendMessage(
 	});
 
 	if (!response.ok) {
-		return {
-			ok: false,
-			error: (await response.json()) as ProblemDetail,
-		};
+		throw new APIError((await response.json()) as ProblemDetail);
 	}
 
-	return {
-		ok: true,
-		data: (await response.json()) as Message,
-	};
+	return (await response.json()) as Message;
 }

@@ -30,21 +30,6 @@ function inSameMinute(d1: Date, d2: Date): boolean {
 	);
 }
 
-// Const segmenter = new Intl.Segmenter("en-EN", {
-// 	Granularity: "grapheme",
-// });
-
-// Search for emojis in text by separating Unicode segments using Grapheme
-// Function isEmojiOnly(text: string): boolean {
-// 	Const graphemes = [...segmenter.segment(text)].map((data) => data.segment);
-//
-// 	If (graphemes.length > 25) {
-// 		Return false;
-// 	}
-//
-// 	Return graphemes.every((gr) => /\p{Extended_Pictographic}/u.test(gr));
-// }
-
 function MessageList({
 	msgs,
 	channelId,
@@ -58,40 +43,47 @@ function MessageList({
 	}, [msgs]);
 
 	const containerRef = useRef<HTMLDivElement>(null);
+	const loadedChannelRef = useRef<string | null>(null);
 	const [loading, setLoading] = useState(false);
 	const [hasMore, setHasMore] = useState(true);
 
 	const appendMsgs = useChat((state) => state.appendMsgs);
 	const THRESHOLD = 50;
 
-	const loadOlderMessages = useCallback(async () => {
-		if (loading || !hasMore) {
-			return;
-		}
-		setLoading(true);
-
-		const el = containerRef.current;
-		const prevScrollHeight = el?.scrollHeight ?? 0;
-
-		const before = msgs[0]?.sentAt;
-		const older = await fetchMessages(channelId, 10, before);
-
-		if (older.length === 0) {
-			setHasMore(false);
-		} else {
-			appendMsgs(channelId, older);
-		}
-
-		setLoading(false);
-
-		// Preserve scroll position after prepending, once DOM updates
-		requestAnimationFrame(() => {
-			if (el) {
-				const newScrollHeight = el.scrollHeight;
-				el.scrollTop = newScrollHeight - prevScrollHeight;
+	const loadOlderMessages = useCallback(
+		async (limit = 10): Promise<void> => {
+			if (loading || !hasMore || channelId === "") {
+				return;
 			}
-		});
-	}, [msgs, loading, hasMore, channelId, appendMsgs]);
+			setLoading(true);
+
+			const el = containerRef.current;
+			const prevScrollHeight = el?.scrollHeight ?? 0;
+
+			const before = msgs[0] ? msgs[0].sentAt : null;
+			const older = await fetchMessages(channelId, limit, before);
+			if (loadedChannelRef.current !== channelId) {
+				return;
+			}
+
+			if (older.length === 0) {
+				setHasMore(false);
+			} else {
+				appendMsgs(channelId, older);
+			}
+
+			setLoading(false);
+
+			// Preserve scroll position after prepending, once DOM updates
+			requestAnimationFrame(() => {
+				if (el) {
+					const newScrollHeight = el.scrollHeight;
+					el.scrollTop = newScrollHeight - prevScrollHeight;
+				}
+			});
+		},
+		[loading, hasMore, msgs, channelId, appendMsgs],
+	);
 
 	const handleScroll = (ev: React.UIEvent<HTMLDivElement>): void => {
 		const el = ev.currentTarget;
@@ -120,6 +112,17 @@ function MessageList({
 		}
 		return <>{emojisArray}</>;
 	};
+
+	useEffect(() => {
+		if (loadedChannelRef.current === channelId) {
+			return;
+		}
+		loadedChannelRef.current = channelId;
+		// NOTE: when having to high screen may not load enougth to be able to scroll
+		// Important to being able to load older messages
+		void loadOlderMessages(40);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [channelId]);
 
 	const oldDate = new Date("1970-01-01T00:00:00");
 	return (

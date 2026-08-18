@@ -54,7 +54,7 @@ function MessageComposer({
 		setIsEmpty(target.textContent.trim().length === 0);
 	};
 
-	const handleSend = async (self: HTMLDivElement): Promise<void> => {
+	const handleSend = (self: HTMLDivElement): void => {
 		const text = self.innerText.trim();
 
 		const formData = new FormData();
@@ -76,26 +76,28 @@ function MessageComposer({
 		setCounter(counter + 1);
 		addMsg(channelId, message);
 
-		const res = await sendMessage(channelId, text);
-		if (res.ok) {
-			message = {
-				...res.data,
-				sentAt: new Date(res.data.sentAt),
-				editAt: res.data.editAt ? new Date(res.data.editAt) : null,
-				status: "sended",
-			};
-		} else {
-			message.status = "error";
-		}
-		updateMsg(channelId, pendingId, message);
+		sendMessage(channelId, text)
+			.then((msg) => {
+				message = {
+					...msg,
+					sentAt: new Date(msg.sentAt),
+					editAt: msg.editAt ? new Date(msg.editAt) : null,
+					status: "sended",
+				};
+				updateMsg(channelId, pendingId, message);
+			})
+			.catch(() => {
+				message.status = "error";
+				updateMsg(channelId, pendingId, message);
+			});
 	};
 
-	const handleKeyDown = async (ev: React.KeyboardEvent): Promise<void> => {
+	const handleKeyDown = (ev: React.KeyboardEvent): void => {
 		const self = ev.currentTarget as HTMLDivElement;
 
 		if (ev.key === "Enter" && !ev.shiftKey) {
 			ev.preventDefault();
-			await handleSend(self);
+			handleSend(self);
 		}
 	};
 
@@ -160,6 +162,8 @@ function MessageComposer({
 	};
 
 	useEffect(() => {
+		editableRef.current?.focus();
+
 		function handleEscape(ev: KeyboardEvent): void {
 			if (ev.key === "Escape") {
 				setShowPicker(false);
@@ -192,7 +196,7 @@ function MessageComposer({
 					onInput={(ev) => {
 						updateEmpty(ev.currentTarget);
 					}}
-					onKeyDown={(ev) => void handleKeyDown(ev)}
+					onKeyDown={handleKeyDown}
 					onPaste={handlePaste}
 				/>
 			</div>
@@ -215,7 +219,7 @@ function MessageComposer({
 					disabled={isEmpty}
 					onClick={() => {
 						if (editableRef.current) {
-							void handleSend(editableRef.current);
+							handleSend(editableRef.current);
 						}
 					}}
 					className="grid h-9 w-9 place-items-center rounded-[11px]"

@@ -34,7 +34,7 @@ function formatDaySeparator(date: Date): string {
 	});
 }
 
-// NOTE:/Todo It's not update in realtime: 'today' after 23:59 it do not will change to 'yesterday'
+// NOTE: /Todo It's not update in realtime: 'today' after 23:59 it do not will change to 'yesterday'
 function MessageDaySeparator({ date }: { date: Date }): JSX.Element {
 	const day = formatDaySeparator(date);
 

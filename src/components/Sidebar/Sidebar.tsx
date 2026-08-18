@@ -119,20 +119,6 @@ function Sidebar(): JSX.Element {
 							Upcoming
 						</li>
 					</ul>
-
-					{
-						// NOTE: PLACEHOLDER
-					}
-					<select
-						name="user"
-						id="user"
-						onChange={(ev) => {
-							document.cookie = `UserName=${ev.target.value}`;
-						}}
-					>
-						<option value="asventi">Asventi</option>
-						<option value="equo">Equo</option>
-					</select>
 				</div>
 			</aside>
 		</>

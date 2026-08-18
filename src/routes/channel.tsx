@@ -1,8 +1,7 @@
-import { type JSX, useEffect, useState } from "react";
+import type { JSX } from "react";
 import { PiPushPin, PiUsers } from "react-icons/pi";
 import { useShallow } from "zustand/react/shallow";
 
-import { fetchMessages } from "@/chat/api/chat.api";
 import MessageComposer from "@/chat/components/MessageComposer";
 import MessageList from "@/chat/components/MessageList";
 import { useChat } from "@/chat/hooks/chat.hook";
@@ -17,32 +16,6 @@ export default function ChannelRoute({
 	const messages = useChat(
 		useShallow((state) => state.channels[params.channelId]?.messages ?? []),
 	);
-
-	const [isFree, setIsFree] = useState(true);
-	useEffect(() => {
-		async function loadMessages(): Promise<void> {
-			if (!isFree) {
-				return;
-			}
-			try {
-				setIsFree(false);
-				useChat
-					.getState()
-					.addMsgs(
-						params.channelId,
-						await fetchMessages(params.channelId, 10, null),
-					);
-			} catch (err) {
-				console.error(err);
-			} finally {
-				setIsFree(true);
-			}
-		}
-
-		if (messages.length === 0) {
-			void loadMessages();
-		}
-	}, [isFree, messages.length, params.channelId]);
 
 	return (
 		<div className="flex flex-col w-full h-full">
@@ -65,6 +38,7 @@ export default function ChannelRoute({
 			<div className="flex min-h-0 flex-1">
 				<div className="flex min-w-0 flex-1 flex-col">
 					<MessageList
+						key={channel?.id}
 						msgs={messages}
 						channelId={channel?.id ?? ""}
 					/>
