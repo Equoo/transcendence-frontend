@@ -1,4 +1,4 @@
-import type { User } from "../../api/users";
+import type { User } from "../../users/api/users.api";
 import type { ComponentProps, JSX } from "react";
 import type { Role } from "../api/roles";
 import type React from "react";

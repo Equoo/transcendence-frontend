@@ -9,7 +9,7 @@ interface LoginInput {
 	password: string;
 }
 
-function toUserInput(formData: FormData): LoginInput {
+function toLoginInput(formData: FormData): LoginInput {
 	return {
 		username: formData.get("username") as string,
 		password: formData.get("password") as string,
@@ -17,7 +17,7 @@ function toUserInput(formData: FormData): LoginInput {
 }
 
 async function loginUser(formData: FormData): Promise<UserResult> {
-	const object = toUserInput(formData);
+	const object = toLoginInput(formData);
 
 	const response = await fetch("/api/auth/login", {
 		method: "POST",

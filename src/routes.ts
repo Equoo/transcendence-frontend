@@ -24,7 +24,6 @@ export default [
 	route("/events/:eventId?", "events/routes/events.route.tsx"),
 	route("/files", "files/routes/files.route.tsx"),
 	route("/invitations", "invitations/routes/invitations.route.tsx"),
-	route("/events/roles", "events/routes/event_roles.route.tsx"),
 
 	route("/admin", "admin/routes/admin.tsx"),
 	route("/admin/roles", "admin/routes/admin_roles.tsx"),

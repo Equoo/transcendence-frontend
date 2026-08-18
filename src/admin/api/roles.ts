@@ -43,4 +43,3 @@ export async function fetchRoles(): Promise<Role[]> {
 
 	return roles;
 }
-

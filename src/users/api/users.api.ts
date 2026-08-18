@@ -1,8 +1,10 @@
 import { createContext } from "react-router";
+import type { Role } from "../../admin/api/roles";
 
 export interface User {
 	id: string;
 	userName: string;
+	role: Role;
 }
 
 // eslint-disable-next-line @eslint-react/no-missing-context-display-name
