@@ -1,8 +1,8 @@
-import type { EventRole } from "./event_roles.api";
 import { APIError, type ProblemDetail } from "../../api/problem_detail";
-import type { Registration } from "./registrations.api";
 import type { AppFile } from "../../files/api/files.api";
 import type { User } from "../../users/api/users.api";
+import type { EventRole } from "./event_roles.api";
+import type { Registration } from "./registrations.api";
 
 export interface EventData {
 	id: string;

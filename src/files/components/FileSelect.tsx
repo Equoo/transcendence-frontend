@@ -1,13 +1,14 @@
-import { useState, type JSX } from "react";
-import type { AppFile } from "../api/files.api";
-import Modal from "../../components/Modal";
+import { type JSX,useState } from "react";
 import { FcFolder } from "react-icons/fc";
-import CheckButton from "../../components/CheckButton";
 import { PiCheck } from "react-icons/pi";
+
+import type { ValidationErrors } from "../../api/problem_detail";
 import EventBadge from "../../components/Badge";
+import CheckButton from "../../components/CheckButton";
 import { Field } from "../../components/Field";
 import HiddenValues from "../../components/HiddenValues";
-import type { ValidationErrors } from "../../api/problem_detail";
+import Modal from "../../components/Modal";
+import type { AppFile } from "../api/files.api";
 import { useFileBrowser } from "../hooks/useFileBrowser";
 
 export default function FileSelect({

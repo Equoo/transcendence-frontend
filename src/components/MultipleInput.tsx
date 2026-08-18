@@ -5,10 +5,10 @@ import {
 	useState,
 } from "react";
 
+import type { ValidationErrors } from "../api/problem_detail";
 import EventBadge from "./Badge";
 import { Field } from "./Field";
 import HiddenValues from "./HiddenValues";
-import type { ValidationErrors } from "../api/problem_detail";
 
 const emptyArray: string[] = [];
 

@@ -1,10 +1,10 @@
 import type { JSX } from "react";
 import { Outlet } from "react-router";
 
+import type { Route } from "../+types/root";
 import ChannelForm from "../chat/components/ChannelForm";
 import Sidebar from "../components/Sidebar/Sidebar";
 import { UserContext } from "../users/api/users.api";
-import type { Route } from "../+types/root";
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
 export function clientLoader({ context }: Route.LoaderArgs) {

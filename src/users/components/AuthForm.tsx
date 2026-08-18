@@ -1,6 +1,6 @@
 import type { JSX } from "react";
-import { PiLock, PiUser } from "react-icons/pi";
 import type { IconType } from "react-icons";
+import { PiLock, PiUser } from "react-icons/pi";
 
 interface Title {
 	top: string;

@@ -1,16 +1,17 @@
-import { useEffect, useState, type JSX } from "react";
+import { type JSX,useEffect, useState } from "react";
+import { PiPlusBold } from "react-icons/pi";
 import { useFetcher } from "react-router";
+
 import CheckButton from "../../components/CheckButton";
+import { Input } from "../../components/Input";
 import Modal from "../../components/Modal";
 import MultipleInput from "../../components/MultipleInput";
-import type { clientAction as eventAction } from "../routes/events.route";
-import { Input } from "../../components/Input";
 import { TextArea } from "../../components/TextArea";
-import { PiPlusBold } from "react-icons/pi";
-import type { EventRole } from "../api/event_roles.api";
-import Promisable from "./Promisable";
-import FileSelect from "../../files/components/FileSelect";
 import type { AppFile } from "../../files/api/files.api";
+import FileSelect from "../../files/components/FileSelect";
+import type { EventRole } from "../api/event_roles.api";
+import type { clientAction as eventAction } from "../routes/events.route";
+import Promisable from "./Promisable";
 
 export default function EventForm({
 	className,

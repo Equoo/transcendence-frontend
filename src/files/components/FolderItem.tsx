@@ -1,6 +1,6 @@
 import type { JSX } from "react";
-import { PiDotsThreeVerticalBold } from "react-icons/pi";
 import { FcFolder } from "react-icons/fc";
+import { PiDotsThreeVerticalBold } from "react-icons/pi";
 
 export default function FolderItem({
 	name,

@@ -1,12 +1,13 @@
 import { type JSX, useEffect, useState } from "react";
-import CheckButton from "../../components/CheckButton";
-import EventBadge from "../../components/Badge";
-import type { EventSummary } from "../api/events.api";
 import { FiChevronRight } from "react-icons/fi";
-import { IoLocationOutline } from "react-icons/io5";
 import { GoPeople } from "react-icons/go";
+import { IoLocationOutline } from "react-icons/io5";
 import { PiClock } from "react-icons/pi";
 import { Link } from "react-router";
+
+import EventBadge from "../../components/Badge";
+import CheckButton from "../../components/CheckButton";
+import type { EventSummary } from "../api/events.api";
 import EventRegisterBtn from "./EventRegisterBtn";
 
 interface CountdownType {

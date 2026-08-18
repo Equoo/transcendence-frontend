@@ -1,8 +1,9 @@
 import type { JSX } from "react";
 import { redirect, useFetcher } from "react-router";
-import type { UserInput, UserResult } from "./register";
+
 import { AuthForm, AuthLogo, AuthTitle } from "../components/AuthForm";
 import type { Route } from "./+types/login";
+import type { UserInput, UserResult } from "./register";
 
 function toUserInput(formData: FormData): UserInput {
 	return {

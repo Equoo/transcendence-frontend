@@ -1,6 +1,6 @@
 import type { ProblemDetail } from "@/api/problem_detail";
-import type { User } from "@/api/users";
 import { useChat } from "@/chat/hooks/chat.hook";
+import type { User } from "@/users/api/users.api";
 
 export interface Message {
 	id: string;

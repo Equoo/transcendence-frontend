@@ -1,11 +1,12 @@
 import type { JSX } from "react";
-import type { Route } from "./+types/event_details";
-import { fetchEvent } from "../events/api/events.api";
 import { FiChevronLeft } from "react-icons/fi";
 import { data, Link, useNavigate } from "react-router";
-import EventRegisterBtn from "../events/components/EventRegisterBtn";
-import ProfilePic from "../components/ProfilePic";
+
 import EventBadge from "../components/Badge";
+import ProfilePic from "../components/ProfilePic";
+import { fetchEvent } from "../events/api/events.api";
+import EventRegisterBtn from "../events/components/EventRegisterBtn";
+import type { Route } from "./+types/event_details";
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
 export async function clientLoader({ params }: Route.ClientLoaderArgs) {

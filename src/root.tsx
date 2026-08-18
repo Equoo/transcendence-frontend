@@ -11,8 +11,8 @@ import {
 } from "react-router";
 import { ToastContainer } from "react-toastify";
 
-import { UserContext, userFetcher } from "./users/api/users.api";
 import type { Route } from "./+types/root";
+import { UserContext, userFetcher } from "./users/api/users.api";
 
 const alertStyle = {
 	success: "bg-good-soft text-good",

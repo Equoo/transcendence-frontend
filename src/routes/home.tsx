@@ -1,12 +1,13 @@
-import { fetchEvents, type EventData } from "../events/api/events.api";
 import type { JSX } from "react";
 import { isRouteErrorResponse } from "react-router";
+
 import { APIError } from "../api/problem_detail";
-import type { Route } from "./+types/home";
-import EventList from "../events/components/EventList";
+import { type EventRole,fetchEventRoles } from "../events/api/event_roles.api";
+import { type EventData,fetchEvents } from "../events/api/events.api";
 import EventForm from "../events/components/EventForm";
-import { fetchEventRoles, type EventRole } from "../events/api/event_roles.api";
-import { fetchFiles, type AppFile } from "../files/api/files.api";
+import EventList from "../events/components/EventList";
+import { type AppFile,fetchFiles } from "../files/api/files.api";
+import type { Route } from "./+types/home";
 
 export function clientLoader(): {
 	events: Promise<EventData[]>;

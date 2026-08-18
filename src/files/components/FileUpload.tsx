@@ -1,9 +1,10 @@
-import { useEffect, useState, type JSX } from "react";
+import { type JSX,useEffect, useState } from "react";
+import { useFetcher } from "react-router";
+
+import CheckButton from "../../components/CheckButton";
+import { Input } from "../../components/Input";
 import Modal from "../../components/Modal";
 import type { clientAction as filesAction } from "../routes/files.route";
-import { useFetcher } from "react-router";
-import { Input } from "../../components/Input";
-import CheckButton from "../../components/CheckButton";
 
 export default function FileUpload({
 	onClose,

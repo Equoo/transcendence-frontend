@@ -1,11 +1,12 @@
-import type { Route } from "./+types/events.route";
-import { createEvent, toEventInput } from "../api/events.api";
 import { data } from "react-router";
+
 import {
 	createEventRole,
-	fetchEventRoles,
 	type EventRole,
+	fetchEventRoles,
 } from "../api/event_roles.api";
+import { createEvent, toEventInput } from "../api/events.api";
+import type { Route } from "./+types/events.route";
 
 async function upsertRoleIds(
 	roles: EventRole[],

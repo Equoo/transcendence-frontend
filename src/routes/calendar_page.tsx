@@ -1,25 +1,26 @@
-import { useState, type JSX } from "react";
-import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import {
-	format,
 	addMonths,
-	startOfToday,
-	startOfMonth,
-	startOfWeek,
-	endOfWeek,
-	endOfMonth,
 	eachDayOfInterval,
-	isSameMonth,
+	endOfMonth,
+	endOfWeek,
+	format,
 	isSameDay,
+	isSameMonth,
+	startOfMonth,
+	startOfToday,
+	startOfWeek,
 } from "date-fns";
-import { fetchEvents, type EventSummary } from "../events/api/events.api";
-import type { Route } from "./+types/calendar_page";
+import { type JSX,useState } from "react";
+import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { Link } from "react-router";
-import EventList from "../events/components/EventList";
+
+import { type EventRole,fetchEventRoles } from "../events/api/event_roles.api";
+import { type EventSummary,fetchEvents } from "../events/api/events.api";
 import EventForm from "../events/components/EventForm";
-import { fetchEventRoles, type EventRole } from "../events/api/event_roles.api";
+import EventList from "../events/components/EventList";
 import Promisable from "../events/components/Promisable";
-import { fetchFiles, type AppFile } from "../files/api/files.api";
+import { type AppFile,fetchFiles } from "../files/api/files.api";
+import type { Route } from "./+types/calendar_page";
 
 export function clientLoader(): {
 	events: Promise<EventSummary[]>;

@@ -1,8 +1,9 @@
 import type { JSX } from "react/jsx-runtime";
+
 import BlobURL from "../../components/BlobURL";
-import type { AppFile } from "../api/files.api";
 import CheckButton from "../../components/CheckButton";
 import Promisable from "../../events/components/Promisable";
+import type { AppFile } from "../api/files.api";
 
 function isTextLikeFile(filename: string, mimeType: string): boolean {
 	const textExtensions = [

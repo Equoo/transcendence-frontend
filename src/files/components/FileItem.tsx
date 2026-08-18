@@ -1,7 +1,8 @@
 import type { JSX } from "react";
-import type { AppFile } from "../api/files.api";
 import { PiDotsThreeVerticalBold } from "react-icons/pi";
 import { Link } from "react-router";
+
+import type { AppFile } from "../api/files.api";
 
 export default function FileItem({ file }: { file: AppFile }): JSX.Element {
 	return (

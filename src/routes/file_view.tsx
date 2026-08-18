@@ -1,10 +1,11 @@
 import type { JSX } from "react/jsx-runtime";
-import type { Route } from "./+types/file_view";
-import { downloadFile, fetchFile, type AppFile } from "../files/api/files.api";
-import Promisable from "../events/components/Promisable";
 import { FiChevronLeft } from "react-icons/fi";
 import { useNavigate } from "react-router";
+
+import Promisable from "../events/components/Promisable";
+import { type AppFile,downloadFile, fetchFile } from "../files/api/files.api";
 import FilePreview from "../files/components/FilePreview";
+import type { Route } from "./+types/file_view";
 
 export async function clientLoader({
 	params,

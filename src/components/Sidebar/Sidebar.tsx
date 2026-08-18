@@ -14,9 +14,9 @@ import { useShallow } from "zustand/react/shallow";
 import { type Channel, fetchChannels } from "@/chat/api/chat.api";
 import { useChat } from "@/chat/hooks/chat.hook";
 
+import InvitationForm from "../../invitations/components/InvitationForm";
 import ItemCategory from "./ItemCategory";
 import ItemChannel from "./ItemChannel";
-import InvitationForm from "../../invitations/components/InvitationForm";
 
 function ChannelListSkeleton(): JSX.Element {
 	return (
