@@ -7,6 +7,7 @@ import type { Route } from "./+types/admin_users";
 import { fetchRoles } from "../api/roles";
 import ChangeBox from "../components/changebox";
 import { APIError, type ProblemDetail } from "../../api/problem_detail";
+import List from "../components/list";
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
 export async function clientLoader() {
@@ -77,50 +78,24 @@ export default function AdminUsers({
 						<h1 className="text-3xl m-4 font-semibold font-head">
 							User Management
 						</h1>
-						<div className="flex gap-10">
-							<div className="flex h-10 bg-white border-2 border-border  rounded-md justify-center items-center">
-								<input
-									className="w-15/16 pl-2.5"
-									placeholder="Search User"
-								></input>
-								<PiMagnifyingGlass className="m-5 size-5"></PiMagnifyingGlass>
-							</div>
+						<div className="flex h-10 bg-white border-2 border-border  rounded-md justify-center items-center">
+							<input
+								className="w-15/16 pl-2.5"
+								placeholder="Search User"
+							></input>
+							<PiMagnifyingGlass className="m-5 size-5"></PiMagnifyingGlass>
 						</div>
 					</div>
-					<table className="w-full text-sm font-main text-left text-text">
-						<thead className="text-sm text-body bg-surface border-b rounded-base border-border">
-							<tr>
-								<th
-									scope="col"
-									className="px-6 py-3 font-semibold text-lg"
-								>
-									Username
-								</th>
-								<th
-									scope="col"
-									className="px-6 py-3 font-semibold text-lg"
-								>
-									Role
-								</th>
-								<th
-									scope="col"
-									className="px-6 py-3 font-semibold text-lg"
-								>
-									Actions
-								</th>
-							</tr>
-						</thead>
-						<tbody>
-							{loaderData.users.map((usr) => (
-								<ListUsers
-									switchShowChange={switchShowChange}
-									key={usr.id}
-									user={usr}
-									roles={loaderData.roles}
-								></ListUsers>
-							))}
-						</tbody>
-					</table>
+					<List headers={["Username", "Role", "Actions"]}>
+						{loaderData.users.map((usr) => (
+							<ListUsers
+								switchShowChange={switchShowChange}
+								key={usr.id}
+								user={usr}
+								roles={loaderData.roles}
+							></ListUsers>
+						))}
+					</List>
 				</div>
 			</div>
 		</div>

@@ -1,4 +1,8 @@
+/* eslint-disable no-bitwise */
 import type { JSX } from "react";
+import type { Perm } from "./listRoles";
+import type React from "react";
+import type { Role } from "../api/roles";
 
 export default function AdminBox({
 	name,
@@ -20,24 +24,42 @@ export default function AdminBox({
 	);
 }
 
-export function RolesBox({
-	perm,
-	enumPerm,
-}: {
-	perm: number;
-	enumPerm: number;
-}): JSX.Element {
-	// eslint-disable-next-line no-bitwise
-	if ((perm | enumPerm) === enumPerm) {
-		return (
-			<div className="w-30">
-				<input type="checkbox" defaultChecked></input>
-			</div>
-		);
+async function handleCheckbox(
+	box: React.MouseEvent<HTMLInputElement>,
+	role: Role,
+	perm: Perm,
+): Promise<void> {
+	let finalCode;
+
+	if (box.currentTarget.checked) {
+		// eslint-disable-next-line no-multi-assign
+		finalCode = role.permission += perm.code;
+	} else {
+		// eslint-disable-next-line no-multi-assign
+		finalCode = role.permission -= perm.code;
 	}
+
+	
+}
+
+export function RolesBox({
+	role,
+	perm,
+}: {
+	role: Role;
+	perm: Perm;
+}): JSX.Element {
 	return (
-		<div className="w-30">
-			<input type="checkbox"></input>
+		<div className="flex flex-col items-center w-30">
+			<p>{perm.name}</p>
+			<input
+				type="checkbox"
+				defaultChecked={Boolean(perm.code & role.permission)}
+				className="text-accent cursor-pointer"
+				onClick={(box) => {
+					handleCheckbox(box, role, perm);
+				}}
+			></input>
 		</div>
 	);
 }

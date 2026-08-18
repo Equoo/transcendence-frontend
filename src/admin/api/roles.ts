@@ -18,14 +18,14 @@ export enum Perm {
 	HandleEvent = 2,
 
 	// User
-	GetUser = 32,
-	CreateUser = 64,
-	ChangeUserName = 128,
-	DeleteUser = 256,
-	ResetUserPassword = 516,
+	GetUser = 4,
+	InviteUser = 8,
+	ChangeUsername = 16,
+	DeleteUser = 32,
+	ResetUserPassword = 64,
 
 	// Chat
-	HandleChannel = 2048,
+	HandleChannel = 128,
 
 	// Knowledge
 
@@ -44,20 +44,3 @@ export async function fetchRoles(): Promise<Role[]> {
 	return roles;
 }
 
-function getPermissionBytes(data: FormData): number {
-	let permission = 0 as number;
-	for (const pair of data.entries()) {
-		if (pair[0] === "name") {
-			// eslint-disable-next-line no-continue
-			continue;
-		}
-		permission += Number(pair[1]);
-	}
-	return permission;
-}
-export function toRoleInput(data: FormData): RoleInput {
-	return {
-		Name: data.get("name") as string,
-		Permission: getPermissionBytes(data),
-	};
-}
