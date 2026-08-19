@@ -56,7 +56,10 @@ export function Input({
 			>
 				{(copyable ?? false) &&
 					(copied ? (
-						<TbCopyCheck size={20} className="mr-1.5" />
+						<TbCopyCheck
+							size={20}
+							className="mr-1.5 hover:cursor-copy"
+						/>
 					) : (
 						<TbCopy
 							size={20}
@@ -64,7 +67,7 @@ export function Input({
 								copyContent(internalValue as string);
 								setCopied(true);
 							}}
-							className="mr-1.5"
+							className="mr-1.5 hover:cursor-copy"
 						/>
 					))}
 				{children}
