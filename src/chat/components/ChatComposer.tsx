@@ -48,6 +48,10 @@ function ChatComposer({
 	const handleSubmit = (self: HTMLDivElement): void => {
 		const text = self.innerText.trim();
 
+		if (text === "") {
+			return;
+		}
+
 		self.textContent = "";
 		setIsEmpty(true);
 
