@@ -1,12 +1,11 @@
-import { useState, type JSX } from "react";
 import { fetchUsers } from "../api/users";
 import ListUsers from "../components/listUsers";
 import { PiMagnifyingGlass } from "react-icons/pi";
 import type { Route } from "./+types/admin_users";
 import { fetchRoles } from "../api/roles";
-import ChangeBox from "../components/changebox";
 import { APIError, type ProblemDetail } from "../../api/problem_detail";
 import List from "../components/list";
+import type { JSX } from "react";
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
 export async function clientLoader() {
@@ -53,24 +52,8 @@ export async function clientAction({
 export default function AdminUsers({
 	loaderData,
 }: Route.ComponentProps): JSX.Element {
-	const [showChange, setShowChange] = useState<string | null>(null);
-
-	const switchShowChange = (id: string | null): void => {
-		if (id !== null) {
-			setShowChange(id);
-			return;
-		}
-		setShowChange(null);
-	};
-
 	return (
 		<div className="w-full h-full bg-back">
-			{showChange ? (
-				<ChangeBox
-					id={showChange}
-					switchShowChange={switchShowChange}
-				/>
-			) : null}
 			<div className="flex justify-center flex-row gap-10 w-full h-full">
 				<div className="flex flex-col gap-10 w-11/12 my-10">
 					<div className="flex justify-between items-center w-full ">
@@ -88,7 +71,6 @@ export default function AdminUsers({
 					<List headers={["Username", "Role", "Actions"]}>
 						{loaderData.users.map((usr) => (
 							<ListUsers
-								switchShowChange={switchShowChange}
 								key={usr.id}
 								user={usr}
 								roles={loaderData.roles}
