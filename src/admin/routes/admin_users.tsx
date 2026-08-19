@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/strict-boolean-expressions */
 import { useState, type JSX } from "react";
 import { fetchUsers } from "../api/users";
 import ListUsers from "../components/listUsers";
