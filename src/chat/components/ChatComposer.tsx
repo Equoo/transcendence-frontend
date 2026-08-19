@@ -7,10 +7,6 @@ import { PiImage, PiPaperclip, PiSmiley } from "react-icons/pi";
 
 import IconBtn from "@/components/IconBtn";
 import { useClickOutside } from "@/hooks/useClickOutside";
-import { useUser } from "@/users/hooks/users.hooks";
-
-import { type Message, sendMessage } from "../api/chat.api";
-import { useChat } from "../hooks/chat.hook";
 
 await init({ data });
 
@@ -32,64 +28,30 @@ interface EmojiMartEmoji {
 	src?: string;
 }
 
-function MessageComposer({
+function ChatComposer({
 	placeholder,
-	channelId,
+	onSend,
 }: {
 	placeholder: string;
-	channelId: string;
+	onSend: (text: string) => void;
 }): JSX.Element {
 	const [isEmpty, setIsEmpty] = useState(true);
-	const [counter, setCounter] = useState(0);
 	const [showPicker, setShowPicker] = useState(false);
 
 	const editableRef = useRef<HTMLDivElement>(null);
 	const pickerRef = useRef<HTMLDivElement>(null);
 
-	const addMsg = useChat((state) => state.addMsg);
-	const updateMsg = useChat((state) => state.updateMsg);
-	const user = useUser();
-
 	const updateEmpty = (target: HTMLDivElement): void => {
 		setIsEmpty(target.textContent.trim().length === 0);
 	};
 
-	const handleSend = (self: HTMLDivElement): void => {
+	const handleSubmit = (self: HTMLDivElement): void => {
 		const text = self.innerText.trim();
-
-		const formData = new FormData();
-		formData.set("content", text);
 
 		self.textContent = "";
 		setIsEmpty(true);
 
-		const pendingId = new Date().toString() + counter;
-		let message = {
-			id: pendingId,
-			content: text,
-			channel: { id: channelId },
-			sentAt: new Date(),
-			sender: user,
-			status: "pending",
-		} as Message;
-
-		setCounter(counter + 1);
-		addMsg(channelId, message);
-
-		sendMessage(channelId, text)
-			.then((msg) => {
-				message = {
-					...msg,
-					sentAt: new Date(msg.sentAt),
-					editAt: msg.editAt ? new Date(msg.editAt) : null,
-					status: "sended",
-				};
-				updateMsg(channelId, pendingId, message);
-			})
-			.catch(() => {
-				message.status = "error";
-				updateMsg(channelId, pendingId, message);
-			});
+		onSend(text);
 	};
 
 	const handleKeyDown = (ev: React.KeyboardEvent): void => {
@@ -97,7 +59,7 @@ function MessageComposer({
 
 		if (ev.key === "Enter" && !ev.shiftKey) {
 			ev.preventDefault();
-			handleSend(self);
+			handleSubmit(self);
 		}
 	};
 
@@ -140,10 +102,6 @@ function MessageComposer({
 		updateEmpty(editableRef.current);
 	};
 
-	useClickOutside(pickerRef, (): void => {
-		setShowPicker(false);
-	});
-
 	const handleEmojiSelect = (emoji: EmojiMartEmoji): void => {
 		if (!editableRef.current) {
 			return;
@@ -160,6 +118,10 @@ function MessageComposer({
 		insertText(emojiText);
 		updateEmpty(editableRef.current);
 	};
+
+	useClickOutside(pickerRef, (): void => {
+		setShowPicker(false);
+	});
 
 	useEffect(() => {
 		editableRef.current?.focus();
@@ -222,7 +184,7 @@ function MessageComposer({
 					disabled={isEmpty}
 					onClick={() => {
 						if (editableRef.current) {
-							handleSend(editableRef.current);
+							handleSubmit(editableRef.current);
 						}
 					}}
 					className="grid h-9 w-9 place-items-center rounded-[11px]"
@@ -232,4 +194,4 @@ function MessageComposer({
 	);
 }
 
-export default MessageComposer;
+export default ChatComposer;
