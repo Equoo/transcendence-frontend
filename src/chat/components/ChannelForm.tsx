@@ -49,12 +49,16 @@ export default function ChannelForm(): JSX.Element {
 					>
 						<div className="inline-flex flex-col w-full bg-sur">
 							<div className="text-red-500">
-								<label className="text-text font-main font-medium">
+								<label
+									className="text-text font-main font-medium"
+									htmlFor="channelform-name"
+								>
 									Name
 								</label>
 								*
 							</div>
 							<input
+								id="channelform-name"
 								name="name"
 								required
 								className="w-full bg-white border rounded-md border-border2 inset-shadow-xs px-2 py-1 font-main text-text"
@@ -63,12 +67,16 @@ export default function ChannelForm(): JSX.Element {
 						</div>
 						<div className="inline-flex flex-col w-full bg-sur">
 							<div className="text-red-500">
-								<label className="text-text font-main font-medium">
+								<label
+									className="text-text font-main font-medium"
+									htmlFor="channelform-topic"
+								>
 									Topic
 								</label>
 								*
 							</div>
 							<input
+								id="channelform-topic"
 								name="topic"
 								required
 								className="w-full bg-white border rounded-md border-border2 inset-shadow-xs px-2 py-1 font-main text-text"

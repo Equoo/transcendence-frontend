@@ -176,7 +176,10 @@ function MessageComposer({
 	}, []);
 
 	return (
-		<div className="relative mx-5.5 mt-3 mb-4.5 flex flex-col rounded-xl border border-border bg-surface shadow-sm transition-colors duration-140 focus-within:border-accent">
+		<div
+			className="relative mx-5.5 mt-3 mb-4.5 flex flex-col rounded-xl border border-border bg-surface shadow-sm transition-colors duration-140 hover:cursor-text focus-within:border-accent"
+			onClick={() => editableRef.current?.focus()}
+		>
 			{showPicker && (
 				<div className="absolute bottom-full left-0" ref={pickerRef}>
 					<Picker data={data} onEmojiSelect={handleEmojiSelect} />
