@@ -1,6 +1,7 @@
 import type { JSX } from "react";
 import { Outlet } from "react-router";
 
+import { useChatHub } from "@/chat/hooks/chat_hub.hook";
 import { UserReactContext } from "@/users/hooks/users.hooks";
 
 import type { Route } from "../+types/root";
@@ -15,6 +16,9 @@ export function clientLoader({ context }: Route.LoaderArgs) {
 export default function Dashboard({
 	loaderData: user,
 }: Route.ComponentProps): JSX.Element {
+	const connectChatHub = useChatHub((state) => state.connect);
+	connectChatHub();
+
 	return (
 		<div className="relative w-full h-full overflow-hidden bg-back">
 			<Sidebar />
