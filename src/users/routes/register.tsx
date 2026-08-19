@@ -3,7 +3,7 @@ import { redirect, Form } from "react-router";
 import { AuthForm, AuthLogo, AuthTitle } from "../components/AuthForm";
 import type { Route } from "./+types/register";
 
-export interface UserInput {
+interface RegisterInput {
 	username: string;
 	password: string;
 	invitationCode: string;
@@ -11,7 +11,7 @@ export interface UserInput {
 
 export type UserResult = { ok: true } | { ok: false };
 
-function toUserInput(formData: FormData, code: string): UserInput {
+function toUserInput(formData: FormData, code: string): RegisterInput {
 	return {
 		username: formData.get("username") as string,
 		password: formData.get("password") as string,

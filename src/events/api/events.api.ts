@@ -90,3 +90,33 @@ export async function createEvent(event: EventInput): Promise<EventData> {
 
 	return (await res.json()) as EventData;
 }
+
+export async function updateEvent(
+	event: EventInput,
+	id: string,
+): Promise<Response> {
+	const res = await fetch(`/api/events/${id}`, {
+		method: "PUT",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify(event),
+	});
+
+	if (!res.ok) {
+		throw new APIError((await res.json()) as ProblemDetail);
+	}
+
+	return res;
+}
+
+export async function deleteEvent(id: string): Promise<Response> {
+	const res = await fetch(`/api/events/${id}`, {
+		method: "DELETE",
+	});
+
+	if (!res.ok) {
+		throw new APIError((await res.json()) as ProblemDetail);
+	}
+	return res;
+}
