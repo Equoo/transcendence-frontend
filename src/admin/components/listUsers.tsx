@@ -48,7 +48,7 @@ async function handleRemoveUser(id: string): Promise<void> {
 }
 
 async function handleDisconnect(id: string): Promise<void> {
-	const res = await fetch(`/api/auth/refresh/${id}`, {
+	const res = await fetch(`/api/auth/logout/${id}`, {
 		method: "DELETE",
 		headers: {
 			"Content-Type": "application/json",
