@@ -16,8 +16,8 @@ async function handleChange(
 	for (const role of Roles) {
 		if (role.name === event.target.value) {
 			// eslint-disable-next-line no-await-in-loop
-			const res = await fetch(`/api/roles/give/${UserId}/${role.id}`, {
-				method: "POST",
+			const res = await fetch(`/api/users/${UserId}/role/${role.id}`, {
+				method: "PATCH",
 				headers: {
 					"Content-Type": "application/json",
 				},
