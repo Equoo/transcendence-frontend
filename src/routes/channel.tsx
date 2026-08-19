@@ -4,7 +4,7 @@ import { useShallow } from "zustand/react/shallow";
 
 import MessageComposer from "@/chat/components/MessageComposer";
 import MessageList from "@/chat/components/MessageList";
-import { useChat } from "@/chat/hooks/chat.hook";
+import { useChat, useChatHub } from "@/chat/hooks/chat.hook";
 import IconBtn from "@/components/IconBtn";
 
 import type { Route } from "./+types/channel";
@@ -16,6 +16,9 @@ export default function ChannelRoute({
 	const messages = useChat(
 		useShallow((state) => state.channels[params.channelId]?.messages ?? []),
 	);
+
+	const connect = useChatHub((state) => state.connect);
+	connect();
 
 	return (
 		<div className="flex flex-col w-full h-full">

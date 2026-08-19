@@ -25,6 +25,7 @@ export default defineConfig(() => {
 					target: proxyTarget,
 					changeOrigin: true,
 					rewrite: (url): string => url.replace(/^\/api/u, ""),
+					ws: true,
 				},
 			},
 		},

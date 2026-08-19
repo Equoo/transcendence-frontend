@@ -13,6 +13,18 @@ export interface Message {
 	status: string;
 }
 
+export function normalizeMessage(msg: Message): Message {
+	return {
+		...msg,
+		...({
+			sentAt: new Date(msg.sentAt),
+			editAt:
+				typeof msg.editAt !== "undefined" &&
+				new Date(msg.editAt ?? new Date()),
+		} as Message),
+	};
+}
+
 export interface Channel {
 	id: string;
 	name: string;
@@ -56,15 +68,7 @@ export async function fetchMessages(
 	}
 
 	const raw = (await response.json()) as Message[];
-	const messages: Message[] = raw.map((msg) => ({
-		...msg,
-		...({
-			sentAt: new Date(msg.sentAt),
-			editAt:
-				typeof msg.editAt !== "undefined" &&
-				new Date(msg.editAt ?? new Date()),
-		} as Message),
-	}));
+	const messages: Message[] = raw.map((msg) => normalizeMessage(msg));
 	return messages;
 }
 
