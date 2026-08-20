@@ -4,12 +4,20 @@ import type { Perm } from "./listRoles";
 import type React from "react";
 import type { Role } from "../api/roles";
 
-function handleCheckbox(
+interface PermInput {
+	permission: number;
+}
+
+function toPermInput(perm: number): PermInput {
+	return { permission: perm };
+}
+
+async function handleCheckbox(
 	box: React.MouseEvent<HTMLInputElement>,
 	role: Role,
 	perm: Perm,
-): void {
-	let finalCode;
+): Promise<Response> {
+	let finalCode: number;
 
 	if (box.currentTarget.checked) {
 		// eslint-disable-next-line no-multi-assign
@@ -18,7 +26,16 @@ function handleCheckbox(
 		// eslint-disable-next-line no-multi-assign
 		finalCode = role.permission -= perm.code;
 	}
-	console.warn(finalCode);
+
+	const res = await fetch(`/api/roles/${role.id}`, {
+		method: "PATCH",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify(toPermInput(finalCode).permission),
+	});
+
+	return res;
 }
 
 export function RolesBox({
@@ -35,7 +52,7 @@ export function RolesBox({
 				defaultChecked={Boolean(perm.code & role.permission)}
 				className="text-accent cursor-pointer rounded-sm w-6 h-6 text-2xl hover:bg-gray-50 hover:inset-shadow-2xs focus:ring-0"
 				onClick={(box) => {
-					handleCheckbox(box, role, perm);
+					void handleCheckbox(box, role, perm);
 				}}
 			></input>
 		</td>

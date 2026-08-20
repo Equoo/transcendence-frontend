@@ -1,6 +1,5 @@
 import type { JSX } from "react/jsx-runtime";
 import { RolesBox } from "./checkbox";
-import { useFetcher } from "react-router";
 import type { Role } from "../api/roles";
 
 export interface Perm {
@@ -9,8 +8,6 @@ export interface Perm {
 }
 
 export default function ListRoles({ role }: { role: Role }): JSX.Element {
-	const fetcher = useFetcher();
-
 	const checkboxes: Perm[] = [
 		{ name: "isAdmin", code: 1 },
 		{ name: "HandleEvent", code: 2 },

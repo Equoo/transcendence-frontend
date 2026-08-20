@@ -1,5 +1,5 @@
 import type { JSX } from "react";
-import { Form, redirect, useFetcher } from "react-router";
+import { Form, redirect } from "react-router";
 import type { UserResult } from "./register";
 import { AuthForm, AuthLogo, AuthTitle } from "../components/AuthForm";
 import type { Route } from "./+types/login";
@@ -47,7 +47,6 @@ export default function Login(): JSX.Element {
 			<AuthLogo side={"r"} />
 			<div className="flex flex-col w-2/3 h-6/10 justify-center items-end z-10 ">
 				<Form method="POST" className="flex flex-col gap-5 ">
-                    
 					<AuthTitle
 						top="JOIN THE TEAM"
 						mid="Login your account"
