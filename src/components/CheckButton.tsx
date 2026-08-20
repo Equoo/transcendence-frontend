@@ -11,7 +11,7 @@ type Props = ComponentProps<"button"> & {
 
 export default function CheckButton({
 	children,
-	active = true,
+	active = false,
 	discrete = false,
 	activeCheck = true,
 	type = "button",
@@ -30,7 +30,7 @@ export default function CheckButton({
 				type={type}
 				{...rest}
 				aria-pressed={active}
-				className={`${active ? activeStyle : discrete ? discreteStyle : unactiveStyle} inline-flex items-center font-semibold duration-150 py-2 px-4 gap-2 rounded-full cursor-pointer`}
+				className={`${active ? activeStyle : discrete ? discreteStyle : unactiveStyle} inline-flex items-center font-semibold duration-150 justify-center w-full py-2 px-4 gap-2 rounded-full cursor-pointer`}
 			>
 				{pending && <TbLoader2 className="animate-spin" />}
 				{active && activeCheck && !pending && <PiCheckFatFill />}

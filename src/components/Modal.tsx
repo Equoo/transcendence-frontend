@@ -21,7 +21,7 @@ export default function Modal({
 						className="text-muted hover:text-text text-3xl cursor-pointer ml-auto"
 						onClick={onClose}
 					>
-						×
+						x
 					</button>
 				</div>
 				<div className="flex flex-col items-center gap-6 mt-8">

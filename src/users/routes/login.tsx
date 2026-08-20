@@ -11,8 +11,8 @@ interface LoginInput {
 
 function toLoginInput(formData: FormData): LoginInput {
 	return {
-		username: formData.get("username") as string,
-		password: formData.get("password") as string,
+		username: formData.get("Username") as string,
+		password: formData.get("Password") as string,
 	};
 }
 
