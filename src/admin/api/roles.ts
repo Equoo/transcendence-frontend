@@ -1,8 +1,7 @@
 import { APIError, type ProblemDetail } from "../../api/problem_detail";
 
 export interface RoleInput {
-	Name: string;
-	Permission: number;
+	name: string;
 }
 
 export interface Role {
@@ -32,6 +31,12 @@ export enum Perm {
 	// Calendar
 }
 
+export function toRoleInput(formdata: FormData): RoleInput {
+	return {
+		name: formdata.get("name") as string,
+	};
+}
+
 export async function fetchRoles(): Promise<Role[]> {
 	const res = await fetch("/api/roles");
 
@@ -42,4 +47,16 @@ export async function fetchRoles(): Promise<Role[]> {
 	const roles = (await res.json()) as Role[];
 
 	return roles;
+}
+
+export async function createRole(role: RoleInput): Promise<Response> {
+	const res = await fetch("/api/roles", {
+		method: "PUT",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify(role.name),
+	});
+
+	return res;
 }
