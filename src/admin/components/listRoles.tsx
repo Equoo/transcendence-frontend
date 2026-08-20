@@ -23,19 +23,11 @@ export default function ListRoles({ role }: { role: Role }): JSX.Element {
 	];
 
 	return (
-		<tr className="text-sm text-body bg-surface border-b rounded-base border-border">
-			<td className="px-6 py-3 font-medium">{role.name}</td>
-			<td className="flex w-10/20  px-6 py-3 font-medium">
-				<fetcher.Form className="flex">
-					{checkboxes.map((check) => (
-						<RolesBox
-							key={role.id}
-							role={role}
-							perm={check}
-						></RolesBox>
-					))}
-				</fetcher.Form>
-			</td>
+		<tr className="text-sm text-body border-b rounded-base border-border">
+			<td className="px-6 py-3 font-medium py-5">{role.name}</td>
+			{checkboxes.map((check) => (
+				<RolesBox role={role} perm={check} key={role.id}></RolesBox>
+			))}
 		</tr>
 	);
 }

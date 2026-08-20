@@ -1,5 +1,5 @@
 import type { JSX } from "react";
-import { redirect, useFetcher } from "react-router";
+import { Form, redirect, useFetcher } from "react-router";
 import type { UserResult } from "./register";
 import { AuthForm, AuthLogo, AuthTitle } from "../components/AuthForm";
 import type { Route } from "./+types/login";
@@ -42,13 +42,12 @@ export async function clientAction({
 }
 
 export default function Login(): JSX.Element {
-	const fetcher = useFetcher();
-
 	return (
 		<div className="flex items-center justify-center w-full h-full bg-back gap-20">
 			<AuthLogo side={"r"} />
 			<div className="flex flex-col w-2/3 h-6/10 justify-center items-end z-10 ">
-				<fetcher.Form method="POST" className="flex flex-col gap-5 ">
+				<Form method="POST" className="flex flex-col gap-5 ">
+                    
 					<AuthTitle
 						top="JOIN THE TEAM"
 						mid="Login your account"
@@ -57,7 +56,7 @@ export default function Login(): JSX.Element {
 						link="/register"
 					/>
 					<AuthForm btnName={"Login"} />
-				</fetcher.Form>
+				</Form>
 			</div>
 		</div>
 	);

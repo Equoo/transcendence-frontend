@@ -80,9 +80,9 @@ export default function ListUsers({
 	setUserName: React.Dispatch<React.SetStateAction<string>>;
 }): JSX.Element {
 	return (
-		<tr className="text-sm text-body bg-surface border-b rounded-base border-border">
+		<tr className="text-sm text-body  border-b rounded-base border-border">
 			<td className="px-6 py-3 font-medium ">{user.userName}</td>
-			<td className="px-6 py-3 font-medium">
+			<td className="px-6 py-3 font-medium text-center">
 				<select
 					className="border-0 bg-surface appearance-none focus:border-0 focus:ring-0 hover:cursor-pointer hover:text-accent"
 					onChange={(event) => {
@@ -99,7 +99,7 @@ export default function ListUsers({
 					))}
 				</select>
 			</td>
-			<td className="space-x-10 w-10/20  px-6 py-3 font-medium">
+			<td className="space-x-10 w-10/20  px-6 py-3 font-medium text-center">
 				<button
 					type="submit"
 					className="hover:text-accent hover:cursor-pointer"

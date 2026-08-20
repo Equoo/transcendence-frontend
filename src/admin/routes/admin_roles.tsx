@@ -44,7 +44,7 @@ export default function AdminRoles({
 						setShowRoleForm(false);
 					}}
 				>
-					<Form
+					<fetcher.Form
 						className="flex flex-col items-center w-1/2  gap-5"
 						method="PUT"
 					>
@@ -55,7 +55,7 @@ export default function AdminRoles({
 							placeholder="Name"
 						/>
 						<CheckButton type="submit">Ok</CheckButton>
-					</Form>
+					</fetcher.Form>
 				</Modal>
 			)}
 			<div className="flex w-full h-full justify-center bg-back">
@@ -75,7 +75,19 @@ export default function AdminRoles({
 							Add Role
 						</CheckButton>
 					</div>
-					<List headers={["Role", "Permissions"]}>
+					<List
+						headers={[
+							"Role",
+							"IsAdmin",
+							"HandleEvent",
+							"GetUser",
+							"InviteUser",
+							"ChangeUsername",
+							"DeleteUser",
+							"ResetPassword",
+							"HandleChannel",
+						]}
+					>
 						{loaderData.roles.map((rls) => (
 							<ListRoles key={rls.id} role={rls}></ListRoles>
 						))}

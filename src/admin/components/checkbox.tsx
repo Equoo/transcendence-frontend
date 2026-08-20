@@ -4,26 +4,6 @@ import type { Perm } from "./listRoles";
 import type React from "react";
 import type { Role } from "../api/roles";
 
-export default function AdminBox({
-	name,
-	value,
-}: {
-	name: string;
-	value: number;
-}): JSX.Element {
-	return (
-		<div className="flex gap-5 items-center">
-			<h1 className="text-2xl">{name}</h1>
-			<input
-				className="w-5 h-5"
-				type="checkbox"
-				value={value}
-				name={name}
-			></input>
-		</div>
-	);
-}
-
 function handleCheckbox(
 	box: React.MouseEvent<HTMLInputElement>,
 	role: Role,
@@ -49,16 +29,15 @@ export function RolesBox({
 	perm: Perm;
 }): JSX.Element {
 	return (
-		<div className="flex flex-col items-center w-30">
-			<p>{perm.name}</p>
+		<td className="text-center">
 			<input
 				type="checkbox"
 				defaultChecked={Boolean(perm.code & role.permission)}
-				className="text-accent cursor-pointer"
+				className="text-accent cursor-pointer rounded-sm w-6 h-6 text-2xl hover:bg-gray-50 hover:inset-shadow-2xs focus:ring-0"
 				onClick={(box) => {
 					handleCheckbox(box, role, perm);
 				}}
 			></input>
-		</div>
+		</td>
 	);
 }

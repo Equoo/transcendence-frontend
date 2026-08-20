@@ -2,6 +2,7 @@ import type { JSX } from "react";
 import { PiLock, PiUser } from "react-icons/pi";
 import { Input } from "../../components/Input";
 import CheckButton from "../../components/CheckButton";
+import { useNavigation } from "react-router";
 
 interface Title {
 	top: string;
@@ -70,6 +71,8 @@ export function AuthLogo({ side }: { side: Side }): JSX.Element {
 }
 
 export function AuthForm({ btnName }: { btnName: string }): JSX.Element {
+	const navigation = useNavigation();
+
 	return (
 		<div className="flex flex-col w-3/4 gap-4">
 			<Input
@@ -90,6 +93,7 @@ export function AuthForm({ btnName }: { btnName: string }): JSX.Element {
 			</Input>
 			<div className="flex justify-center w-full ">
 				<CheckButton
+					pending={navigation.state !== "idle"}
 					active
 					activeCheck={false}
 					type="submit"
