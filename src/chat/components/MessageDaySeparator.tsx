@@ -1,23 +1,5 @@
+import { isToday, isYesterday } from "date-fns";
 import type { JSX } from "react/jsx-runtime";
-
-function isSameDay(d1: Date, d2: Date): boolean {
-	return (
-		d1.getFullYear() === d2.getFullYear() &&
-		d1.getMonth() === d2.getMonth() &&
-		d1.getDate() === d2.getDate()
-	);
-}
-
-function isToday(date: Date): boolean {
-	const today = new Date();
-	return isSameDay(date, today);
-}
-
-function isYesterday(date: Date): boolean {
-	const yesterday = new Date();
-	yesterday.setDate(yesterday.getDate() - 1);
-	return isSameDay(date, yesterday);
-}
 
 function formatDaySeparator(date: Date): string {
 	if (isToday(date)) {
