@@ -27,7 +27,7 @@ export default function IconBtn({
 			type="button"
 			{...rest}
 			aria-pressed={active}
-			className={`${active ? activeStyle : discrete ? discreteStyle : unactiveStyle} inline-flex items-center font-semibold duration-150 py-2.5 px-2.5 gap-2 rounded-[12px] cursor-pointer`}
+			className={`${active ? activeStyle : discrete ? discreteStyle : unactiveStyle} inline-flex items-center font-semibold duration-150 py-2.5 px-2.5 gap-2 rounded-[12px] cursor-pointer ${rest.className}`}
 		>
 			<Icon size={size} />
 		</button>

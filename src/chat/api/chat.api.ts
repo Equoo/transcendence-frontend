@@ -111,3 +111,25 @@ export async function sendMessage(
 
 	return (await response.json()) as Message;
 }
+
+export async function updateMessage(
+	channelId: string,
+	id: string,
+	content: string,
+): Promise<Message> {
+	const response = await fetch(`/api/channels/${channelId}/messages/${id}`, {
+		method: "PUT",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify({
+			content,
+		}),
+	});
+
+	if (!response.ok) {
+		throw new APIError((await response.json()) as ProblemDetail);
+	}
+
+	return (await response.json()) as Message;
+}

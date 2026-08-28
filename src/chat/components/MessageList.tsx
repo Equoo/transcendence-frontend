@@ -17,6 +17,7 @@ import { useChat } from "@/chat/hooks/chat.hook";
 import ProfilePic from "@/components/ProfilePic";
 
 import { fetchMessages } from "../api/chat.api";
+import MessageActionBar, { type MessageActionBarHandles } from "./MessageActionBar";
 import MessageDaySeparator from "./MessageDaySeparator";
 
 export interface MessageListHandles {
@@ -33,6 +34,7 @@ function MessageList({
 	const bottomRef = useRef<HTMLDivElement>(null);
 	const containerRef = useRef<HTMLDivElement>(null);
 	const loadedChannelRef = useRef<string | null>(null);
+	const actionBarRef = useRef<MessageActionBarHandles>(null);
 
 	const [loading, setLoading] = useState(false);
 	const [hasMore, setHasMore] = useState(true);
@@ -125,10 +127,12 @@ function MessageList({
 	const oldDate = new Date("1970-01-01T00:00:00");
 	return (
 		<div
-			className="flex flex-1 min-h-0 flex-col overflow-y-auto px-5.5 pt-5"
+			className="flex flex-1 min-h-0 flex-col overflow-y-auto pt-5"
 			ref={containerRef}
 			onScroll={handleScroll}
 		>
+			<MessageActionBar ref={actionBarRef}>
+			</MessageActionBar>
 			<div className="mt-auto" />
 			{messages.map((msg, index) => {
 				const date = new Date(msg.sentAt);
@@ -145,8 +149,12 @@ function MessageList({
 					<Fragment key={msg.id}>
 						{separate && <MessageDaySeparator date={date} />}
 						<div
-							className={`relative gap-3 ${(notSameTime ? "mt-4.5" : "") || "mt-0.75"}`}
+							onMouseEnter={(ev) => actionBarRef.current?.show(ev)}
+							onFocus={(ev) => actionBarRef.current?.show(ev)}
+							onMouseLeave={() => actionBarRef.current?.hide()}
+							className={`relative gap-3 ${(notSameTime ? "mt-4.5" : "") || "mt-0.75"} px-5.5 hover:bg-back2 aria-selected:bg-back2`}
 							key={msg.id}
+							data-id={msg.id}
 						>
 							{notSameTime && (
 								<ProfilePic
@@ -156,7 +164,8 @@ function MessageList({
 								/>
 							)}
 							<div
-								className={`ml-12 ${msg.status === "pending" && "animate-pulse"}`}
+								{...msg.status === "pending" && { "data-pending": true }}
+								className="ml-12 data-pending:animate-pulse"
 							>
 								{notSameTime && (
 									<div className="mb-0.75 flex items-baseline gap-2.25">
@@ -174,7 +183,7 @@ function MessageList({
 										</span>
 									</div>
 								)}
-								<div className="whitespace-pre-wrap text-[14.5px] leading-normal text-text">
+								<div className="whitespace-pre-wrap wrap-break-word text-[14.5px] leading-normal text-text ">
 									{parseContent(msg.content)}
 								</div>
 							</div>
@@ -188,7 +197,7 @@ function MessageList({
 				);
 			})}
 			<div ref={bottomRef} />
-		</div>
+		</div >
 	);
 }
 
