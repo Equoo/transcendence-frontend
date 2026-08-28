@@ -118,9 +118,13 @@ function MessageList({
 		void loadMessages(40);
 	}, [channelId, loadMessages]);
 
+	const sleep = async (ms: number): Promise<unknown> =>
+		new Promise((resolve) => { setTimeout(resolve, ms); });
 	useImperativeHandle(ref, () => ({
 		scrollBack: (): void => {
-			bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+			void sleep(100).then(() => {
+				bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+			})
 		},
 	}));
 
@@ -152,7 +156,7 @@ function MessageList({
 							onMouseEnter={(ev) => actionBarRef.current?.show(ev)}
 							onFocus={(ev) => actionBarRef.current?.show(ev)}
 							onMouseLeave={() => actionBarRef.current?.hide()}
-							className={`relative gap-3 ${(notSameTime ? "mt-4.5" : "") || "mt-0.75"} px-5.5 hover:bg-back2 aria-selected:bg-back2`}
+							className={`relative gap-3 ${notSameTime ? "mt-4.5" : "mt-0.75"} px-5.5 hover:bg-back2 aria-selected:bg-back2`}
 							key={msg.id}
 							data-id={msg.id}
 						>

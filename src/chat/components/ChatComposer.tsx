@@ -7,6 +7,7 @@ import { PiImage, PiPaperclip, PiSmiley } from "react-icons/pi";
 
 import IconBtn from "@/components/IconBtn";
 import { useClickOutside } from "@/hooks/useClickOutside";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 await init({ data });
 
@@ -127,19 +128,23 @@ function ChatComposer({
 		setShowPicker(false);
 	});
 
+	const isTouch = useMediaQuery("(pointer: coarse)");
 	useEffect(() => {
-		editableRef.current?.focus();
-
 		function handleEscape(ev: KeyboardEvent): void {
 			if (ev.key === "Escape") {
 				setShowPicker(false);
 			}
 		}
-		document.addEventListener("keydown", handleEscape);
+
+		if (!isTouch) {
+			editableRef.current?.focus();
+
+			document.addEventListener("keydown", handleEscape);
+		}
 		return (): void => {
 			document.removeEventListener("keydown", handleEscape);
 		};
-	}, []);
+	}, [isTouch]);
 
 	return (
 		<div
