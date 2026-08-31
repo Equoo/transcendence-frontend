@@ -1,4 +1,4 @@
-import { createContext, type JSX, type ReactNode, useMemo, useRef, useState } from "react";
+import { createContext, type JSX, type ReactNode, use, useMemo, useRef, useState } from "react";
 
 import { useChat } from "@/chat/hooks/chat.hook";
 import { useUser } from "@/users/hooks/users.hooks";
@@ -7,12 +7,23 @@ import { type Message, sendMessage } from "../api/chat.api";
 import ChatComposer, { type ChatComposerState } from "./ChatComposer";
 import MessageList, { type MessageListHandles } from "./MessageList";
 
-const ChatContext = createContext<unknown>(null);
+interface ChatContextInner {
+	composerState: ChatComposerState,
+	setComposerState: (state: ChatComposerState) => void
+}
+
+const ChatContext = createContext<ChatContextInner | null>(null);
 ChatContext.displayName = "ChatContext";
+
+export function useChatContext(): ChatContextInner {
+	const ctx = use(ChatContext);
+	if (!ctx) { throw new Error("must be used inside ChatProvider"); }
+	return ctx;
+}
 
 function ChatProvider({ children }: { children: ReactNode }): JSX.Element {
 	const [composerState, setComposerState] = useState<ChatComposerState>({
-		mode: "default",
+		mode: "edit",
 		target: null
 	});
 
@@ -24,7 +35,7 @@ function ChatProvider({ children }: { children: ReactNode }): JSX.Element {
 	return (
 		<ChatContext value={value} >
 			{children}
-		</ ChatContext>
+		</ChatContext>
 	);
 }
 

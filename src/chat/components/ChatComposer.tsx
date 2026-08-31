@@ -9,6 +9,8 @@ import IconBtn from "@/components/IconBtn";
 import { useClickOutside } from "@/hooks/useClickOutside";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 
+import { useChatContext } from "./ChannelChat";
+
 await init({ data });
 
 interface EmojiMartEmoji {
@@ -151,11 +153,23 @@ function ChatComposer({
 		};
 	}, [isTouch, placeholder]);
 
+	const { composerState, setComposerState } = useChatContext();
+
 	return (
 		<div
 			className="relative mx-5.5 mt-3 mb-4.5 flex flex-col rounded-xl border border-border bg-surface shadow-sm transition-colors duration-140 hover:cursor-text focus-within:border-accent"
 			onClick={() => editableRef.current?.focus()}
 		>
+			{composerState.mode === "edit" && (
+				<div className="flex rounded-t-xl bg-back px-4 items-center justify-between">
+					<span className="text-sm text-muted">Editing a message</span>
+					<button
+						type="button"
+						className="text-muted hover:text-text text-2xl cursor-pointer"
+						onClick={() => { setComposerState({ mode: "default", target: null }); }}
+					>×</button>
+				</div>
+			)}
 			{showPicker && (
 				<div className="absolute bottom-full left-0" ref={pickerRef}>
 					<Picker data={data} onEmojiSelect={handleEmojiSelect} />
