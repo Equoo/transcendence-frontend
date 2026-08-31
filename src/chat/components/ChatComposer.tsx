@@ -29,6 +29,11 @@ interface EmojiMartEmoji {
 	src?: string;
 }
 
+export interface ChatComposerState {
+	mode: "default" | "reply" | "edit",
+	target: string | null,
+}
+
 function ChatComposer({
 	placeholder,
 	onSend,
@@ -144,7 +149,7 @@ function ChatComposer({
 		return (): void => {
 			document.removeEventListener("keydown", handleEscape);
 		};
-	}, [isTouch]);
+	}, [isTouch, placeholder]);
 
 	return (
 		<div

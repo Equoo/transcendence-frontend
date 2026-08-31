@@ -125,7 +125,7 @@ function MessageList({
 			void sleep(100).then(() => {
 				bottomRef.current?.scrollIntoView({ behavior: "smooth" });
 			})
-		},
+		}
 	}));
 
 	const oldDate = new Date("1970-01-01T00:00:00");
@@ -135,7 +135,7 @@ function MessageList({
 			ref={containerRef}
 			onScroll={handleScroll}
 		>
-			<MessageActionBar ref={actionBarRef}>
+			<MessageActionBar ref={actionBarRef} channelId={channelId}>
 			</MessageActionBar>
 			<div className="mt-auto" />
 			{messages.map((msg, index) => {
@@ -156,9 +156,10 @@ function MessageList({
 							onMouseEnter={(ev) => actionBarRef.current?.show(ev)}
 							onFocus={(ev) => actionBarRef.current?.show(ev)}
 							onMouseLeave={() => actionBarRef.current?.hide()}
-							className={`relative gap-3 ${notSameTime ? "mt-4.5" : "mt-0.75"} px-5.5 hover:bg-back2 aria-selected:bg-back2`}
+							className={`relative gap-3 ${notSameTime ? "mt-4.5" : "mt-0.75"} px-5.5 hover:bg-back2 aria-selected:bg-back2 data-[pending=true]:animate-pulse`}
 							key={msg.id}
 							data-id={msg.id}
+							data-pending={msg.status === "pending"}
 						>
 							{notSameTime && (
 								<ProfilePic
@@ -168,8 +169,7 @@ function MessageList({
 								/>
 							)}
 							<div
-								{...msg.status === "pending" && { "data-pending": true }}
-								className="ml-12 data-pending:animate-pulse"
+								className="ml-12"
 							>
 								{notSameTime && (
 									<div className="mb-0.75 flex items-baseline gap-2.25">

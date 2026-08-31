@@ -133,3 +133,21 @@ export async function updateMessage(
 
 	return (await response.json()) as Message;
 }
+
+export async function removeMessage(
+	channelId: string,
+	id: string
+): Promise<string> {
+	const response = await fetch(`/api/channels/${channelId}/messages/${id}`, {
+		method: "DELETE",
+		headers: {
+			"Content-Type": "application/json",
+		},
+	});
+
+	if (!response.ok) {
+		throw new APIError((await response.json()) as ProblemDetail);
+	}
+
+	return (response.text());
+}

@@ -1,11 +1,32 @@
-import { type JSX, useRef, useState } from "react";
+import { createContext, type JSX, type ReactNode, useMemo, useRef, useState } from "react";
 
 import { useChat } from "@/chat/hooks/chat.hook";
 import { useUser } from "@/users/hooks/users.hooks";
 
 import { type Message, sendMessage } from "../api/chat.api";
-import ChatComposer from "./ChatComposer";
+import ChatComposer, { type ChatComposerState } from "./ChatComposer";
 import MessageList, { type MessageListHandles } from "./MessageList";
+
+const ChatContext = createContext<unknown>(null);
+ChatContext.displayName = "ChatContext";
+
+function ChatProvider({ children }: { children: ReactNode }): JSX.Element {
+	const [composerState, setComposerState] = useState<ChatComposerState>({
+		mode: "default",
+		target: null
+	});
+
+	const value = useMemo(
+		() => ({ composerState, setComposerState }),
+		[composerState]
+	);
+
+	return (
+		<ChatContext value={value} >
+			{children}
+		</ ChatContext>
+	);
+}
 
 function ChannelChat({ channelId }: { channelId: string }): JSX.Element {
 	const channel = useChat((state) => state.channels[channelId]);
@@ -52,29 +73,18 @@ function ChannelChat({ channelId }: { channelId: string }): JSX.Element {
 	return (
 		<div className="flex min-h-0 flex-1">
 			<div className="flex min-w-0 flex-1 flex-col">
-				<MessageList
-					ref={listRef}
-					key={channel?.id}
-					channelId={channel?.id ?? ""}
-				/>
-				<ChatComposer
-					placeholder={`Message to #${channel?.name}...`}
-					onSend={onSend}
-				/>
+				<ChatProvider>
+					<MessageList
+						ref={listRef}
+						key={channel?.id}
+						channelId={channel?.id ?? ""}
+					/>
+					<ChatComposer
+						placeholder={`Message to #${channel?.name}...`}
+						onSend={onSend}
+					/>
+				</ChatProvider>
 			</div>
-
-			{/* {thread && ( */}
-			{/* 	<div className="kg-fade flex flex-none w-[280px] flex-col overflow-hidden border-l border-border bg-surface"> */}
-			{/* 		<div className="flex items-center justify-between border-b border-border px-[18px] py-[14px] font-head font-[650]"> */}
-			{/* 			Fil de discussion */}
-			{/* 			<IconBtn name="x" size={18} onClick={() => setThread(false)} /> */}
-			{/* 		</div> */}
-			{/* 		<div className="flex flex-col gap-[18px] overflow-y-auto px-[18px] py-4"> */}
-			{/* 			<ChatMessagesPlain msgs={KG.threadMsgs} /> */}
-			{/* 		</div> */}
-			{/* 		<Composer placeholder="Répondre au fil…" /> */}
-			{/* 	</div> */}
-			{/* )} */}
 		</div>
 	);
 }

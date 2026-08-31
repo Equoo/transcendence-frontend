@@ -2,7 +2,12 @@ import { type Ref, useImperativeHandle, useRef, useState } from "react";
 import type { JSX } from "react/jsx-runtime";
 import { PiArrowArcLeft, PiDotsThree, PiPencil, PiTrash } from "react-icons/pi";
 
+import CheckButton from "@/components/CheckButton";
 import IconBtn from "@/components/IconBtn";
+import Modal from "@/components/Modal";
+
+import { removeMessage } from "../api/chat.api";
+import { useChat } from "../hooks/chat.hook";
 
 export interface MessageActionBarHandles {
 	show: (e: React.MouseEvent<HTMLDivElement> | React.FocusEvent<HTMLDivElement>) => void;
@@ -16,10 +21,12 @@ interface ActionBar {
 	left: number
 }
 
-function MessageActionBar({ ref }: {
+function MessageActionBar({ ref, channelId }: {
 	ref?: Ref<MessageActionBarHandles>;
+	channelId: string;
 }): JSX.Element {
 	const [actionBar, setActionBar] = useState<ActionBar | null>(null);
+	const [showRemoveForm, setShowRemoveForm] = useState(false);
 	const actionBarTimerRef = useRef<number | null>(null);
 
 	useImperativeHandle(ref, () => ({
@@ -51,19 +58,49 @@ function MessageActionBar({ ref }: {
 		}
 	}));
 
+	const removeMsg = useChat((state) => state.removeMsg);
+
 	if (!actionBar) { return (<div></div>); }
-	return (
+	return (<>
 		<div
 			style={{ top: actionBar.top, left: actionBar.left }}
 			onMouseEnter={() => {
 				actionBarTimerRef.current && clearTimeout(actionBarTimerRef.current);
 			}}
 			className="absolute flex flex-row z-50 -translate-x-1/2">
-			<IconBtn icon={PiArrowArcLeft} size={14}></IconBtn>
-			<IconBtn icon={PiPencil} size={14}></IconBtn>
-			<IconBtn icon={PiTrash} className="text-red-400" size={14}></IconBtn>
+			{actionBar.el.dataset.pending === "false" && (<>
+				<IconBtn icon={PiArrowArcLeft} size={14}></IconBtn>
+				<IconBtn icon={PiPencil} size={14}></IconBtn>
+				<IconBtn icon={PiTrash}
+					className="text-red-400"
+					size={14}
+					onClick={() => { setShowRemoveForm(true); }}></IconBtn>
+			</>)}
 			<IconBtn icon={PiDotsThree} size={14}></IconBtn>
-		</div>
+		</div >
+		{showRemoveForm && (
+			<Modal title="Remove message"
+				onClose={() => {
+					setShowRemoveForm(false);
+				}}>
+				<p>Are you sure to remove this message ?</p>
+
+				<div className="flex flex-row gap-4">
+					<CheckButton active onClick={() => {
+						removeMessage(channelId, actionBar.msg).then(() => {
+							removeMsg(channelId, actionBar.msg);
+						}).catch(() => {
+							// NOTE: replace by good error handling
+							console.error("Removing message failed");
+						});
+						setShowRemoveForm(false);
+					}}>Yes</CheckButton>
+					<CheckButton onClick={() => { setShowRemoveForm(false); }}>No</CheckButton>
+				</div>
+			</Modal>
+		)
+		}
+	</>
 	)
 }
 
