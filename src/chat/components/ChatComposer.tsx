@@ -32,8 +32,8 @@ interface EmojiMartEmoji {
 }
 
 export interface ChatComposerState {
-	mode: "default" | "reply" | "edit",
-	target: string | null,
+	mode: "default" | "reply" | "edit";
+	target: string | null;
 }
 
 function ChatComposer({
@@ -153,26 +153,63 @@ function ChatComposer({
 		};
 	}, [isTouch, placeholder]);
 
-	const { composerState, setComposerState } = useChatContext();
+	const { getChatMode, setChatMode } = useChatContext();
+	const [chatMode, modeTarget] = getChatMode();
+
+	const closeEditMode = (): void => {
+		setChatMode("default", null);
+
+		if (!editableRef.current) {
+			return;
+		}
+		editableRef.current.textContent = "";
+		setIsEmpty(true);
+	};
+
+	const closeReplyMode = (): void => {
+		setChatMode("default", null);
+	};
 
 	return (
 		<div
 			className="relative mx-5.5 mt-3 mb-4.5 flex flex-col rounded-xl border border-border bg-surface shadow-sm transition-colors duration-140 hover:cursor-text focus-within:border-accent"
 			onClick={() => editableRef.current?.focus()}
 		>
-			{composerState.mode === "edit" && (
-				<div className="flex rounded-t-xl bg-back px-4 items-center justify-between">
-					<span className="text-sm text-muted">Editing a message</span>
-					<button
-						type="button"
-						className="text-muted hover:text-text text-2xl cursor-pointer"
-						onClick={() => { setComposerState({ mode: "default", target: null }); }}
-					>×</button>
-				</div>
-			)}
 			{showPicker && (
 				<div className="absolute bottom-full left-0" ref={pickerRef}>
 					<Picker data={data} onEmojiSelect={handleEmojiSelect} />
+				</div>
+			)}
+			{chatMode === "edit" && (
+				<div className="flex rounded-t-xl bg-back px-4 items-center justify-between">
+					<span className="text-sm text-muted">
+						Editing a message
+					</span>
+					<button
+						type="button"
+						className="text-muted hover:text-text text-2xl cursor-pointer"
+						onClick={() => {
+							closeEditMode();
+						}}
+					>
+						×
+					</button>
+				</div>
+			)}
+			{chatMode === "reply" && (
+				<div className="flex rounded-t-xl bg-back px-4 items-center justify-between">
+					<span className="text-sm text-muted">
+						Replying to @{modeTarget?.sender.userName ?? "Unknown"}
+					</span>
+					<button
+						type="button"
+						className="text-muted hover:text-text text-2xl cursor-pointer"
+						onClick={() => {
+							closeReplyMode();
+						}}
+					>
+						×
+					</button>
 				</div>
 			)}
 			<div className="relative max-h-50 min-h-6 px-4 pt-3.25 pb-1 text-[14.5px] overflow-y-auto">

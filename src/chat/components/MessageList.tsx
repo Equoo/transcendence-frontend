@@ -17,7 +17,9 @@ import { useChat } from "@/chat/hooks/chat.hook";
 import ProfilePic from "@/components/ProfilePic";
 
 import { fetchMessages } from "../api/chat.api";
-import MessageActionBar, { type MessageActionBarHandles } from "./MessageActionBar";
+import MessageActionBar, {
+	type MessageActionBarHandles,
+} from "./MessageActionBar";
 import MessageDaySeparator from "./MessageDaySeparator";
 
 export interface MessageListHandles {
@@ -119,13 +121,15 @@ function MessageList({
 	}, [channelId, loadMessages]);
 
 	const sleep = async (ms: number): Promise<unknown> =>
-		new Promise((resolve) => { setTimeout(resolve, ms); });
+		new Promise((resolve) => {
+			setTimeout(resolve, ms);
+		});
 	useImperativeHandle(ref, () => ({
 		scrollBack: (): void => {
 			void sleep(100).then(() => {
 				bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-			})
-		}
+			});
+		},
 	}));
 
 	const oldDate = new Date("1970-01-01T00:00:00");
@@ -135,8 +139,10 @@ function MessageList({
 			ref={containerRef}
 			onScroll={handleScroll}
 		>
-			<MessageActionBar ref={actionBarRef} channelId={channelId}>
-			</MessageActionBar>
+			<MessageActionBar
+				ref={actionBarRef}
+				channelId={channelId}
+			></MessageActionBar>
 			<div className="mt-auto" />
 			{messages.map((msg, index) => {
 				const date = new Date(msg.sentAt);
@@ -153,7 +159,9 @@ function MessageList({
 					<Fragment key={msg.id}>
 						{separate && <MessageDaySeparator date={date} />}
 						<div
-							onMouseEnter={(ev) => actionBarRef.current?.show(ev)}
+							onMouseEnter={(ev) =>
+								actionBarRef.current?.show(ev)
+							}
 							onFocus={(ev) => actionBarRef.current?.show(ev)}
 							onMouseLeave={() => actionBarRef.current?.hide()}
 							className={`relative gap-3 ${notSameTime ? "mt-4.5" : "mt-0.75"} px-5.5 hover:bg-back2 aria-selected:bg-back2 data-[pending=true]:animate-pulse`}
@@ -168,9 +176,7 @@ function MessageList({
 									size={10}
 								/>
 							)}
-							<div
-								className="ml-12"
-							>
+							<div className="ml-12">
 								{notSameTime && (
 									<div className="mb-0.75 flex items-baseline gap-2.25">
 										<span className="font-head font-[650] text-[14.5px]">
@@ -201,7 +207,7 @@ function MessageList({
 				);
 			})}
 			<div ref={bottomRef} />
-		</div >
+		</div>
 	);
 }
 
