@@ -23,6 +23,23 @@ interface resetInput {
 	password: string;
 }
 
+async function handleRemoveUser(id: string): Promise<Response> {
+	const res = await fetch(`/api/users/${id}`, {
+		method: "DELETE",
+		headers: {
+			"Content-Type": "application/json",
+		},
+	});
+
+	if (!res.ok) {
+		throw new APIError((await res.json()) as ProblemDetail);
+	}
+
+	window.location.reload();
+
+	return res;
+}
+
 function toResetInput(formData: FormData): resetInput {
 	return {
 		id: formData.get("id") as string,
@@ -59,6 +76,7 @@ export default function AdminUsers({
 	loaderData,
 }: Route.ComponentProps): JSX.Element {
 	const [showChangePass, setShowChangePass] = useState(false);
+	const [showConfirmation, setShowConfirmation] = useState(false);
 	const [userId, setUserId] = useState<string>("");
 	const [userName, setUserName] = useState<string>("");
 	const fetcher = useFetcher();
@@ -71,11 +89,44 @@ export default function AdminUsers({
 			setUserName("");
 			// eslint-disable-next-line @eslint-react/set-state-in-effect
 			setUserId("");
+			// eslint-disable-next-line @eslint-react/set-state-in-effect
+			setShowConfirmation(false);
 		}
 	}, [fetcher.data]);
 
 	return (
 		<>
+			{showConfirmation && (
+				<Modal
+					title={`Delete the user ${userName} ?`}
+					onClose={() => {
+						setShowConfirmation(false);
+					}}
+				>
+					<p className="text-muted font-main font-light w-4/5 text-sm text-center">
+						This cannot be cancelled.
+					</p>
+					<div className="inline-flex gap-8">
+						<CheckButton
+							pending={fetcher.state !== "idle"}
+							onClick={() => {
+								void handleRemoveUser(userId);
+							}}
+						>
+							Yes
+						</CheckButton>
+						<CheckButton
+							active
+							activeCheck={false}
+							onClick={() => {
+								setShowConfirmation(false);
+							}}
+						>
+							No
+						</CheckButton>
+					</div>
+				</Modal>
+			)}
 			{showChangePass && (
 				<Modal
 					title={`Change ${userName}'s password`}
@@ -124,6 +175,7 @@ export default function AdminUsers({
 									setUserName={setUserName}
 									setUserId={setUserId}
 									setShowChangePass={setShowChangePass}
+									setShowConfirmation={setShowConfirmation}
 									key={usr.id}
 									user={usr}
 									roles={loaderData.roles}

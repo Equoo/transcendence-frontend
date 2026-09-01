@@ -60,3 +60,14 @@ export async function createRole(role: RoleInput): Promise<Response> {
 
 	return res;
 }
+
+export async function deleteRole(id: string): Promise<Response> {
+	const res = await fetch(`/api/roles/${id}`, {
+		method: "DELETE",
+		headers: {
+			"Content-Type": "application/json",
+		},
+	});
+
+	return res;
+}

@@ -8,13 +8,13 @@ export default function List({
 	headers: string[];
 }): JSX.Element {
 	return (
-		<div className="w-full rounded bg-surface  border-border">
+		<div className="w-full rounded bg-surface  border-border overflow-x-auto">
 			<table className="w-full">
 				<thead className="text-body border-b border-border ">
 					<tr>
 						{headers.map((head) => (
 							<th
-								scope="col"
+								scope="row"
 								className="first:text-left  py-3 px-6 font-semibold text-lg text-center"
 								key={head}
 							>

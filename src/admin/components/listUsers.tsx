@@ -3,6 +3,7 @@ import type { ComponentProps, JSX } from "react";
 
 import type { Role } from "../api/roles";
 import { APIError, type ProblemDetail } from "../../api/problem_detail";
+import type React from "react";
 export type Props = ComponentProps<"h1"> & {
 	className?: string;
 };
@@ -34,23 +35,6 @@ async function handleChange(
 	}
 }
 
-async function handleRemoveUser(id: string): Promise<Response> {
-	const res = await fetch(`/api/users/${id}`, {
-		method: "DELETE",
-		headers: {
-			"Content-Type": "application/json",
-		},
-	});
-
-	if (!res.ok) {
-		throw new APIError((await res.json()) as ProblemDetail);
-	}
-
-	window.location.reload();
-
-	return res;
-}
-
 async function handleDisconnect(id: string): Promise<Response> {
 	const res = await fetch(`/api/auth/logout/${id}`, {
 		method: "DELETE",
@@ -70,12 +54,14 @@ export default function ListUsers({
 	user,
 	roles,
 	setShowChangePass,
+	setShowConfirmation,
 	setUserId,
 	setUserName,
 }: {
 	user: User;
 	roles: Role[];
 	setShowChangePass: React.Dispatch<React.SetStateAction<boolean>>;
+	setShowConfirmation: React.Dispatch<React.SetStateAction<boolean>>;
 	setUserId: React.Dispatch<React.SetStateAction<string>>;
 	setUserName: React.Dispatch<React.SetStateAction<string>>;
 }): JSX.Element {
@@ -103,7 +89,11 @@ export default function ListUsers({
 				<button
 					type="submit"
 					className="hover:text-accent hover:cursor-pointer"
-					onClick={() => void handleRemoveUser(user.id)}
+					onClick={() => {
+						setShowConfirmation(true);
+						setUserId(user.id);
+						setUserName(user.userName);
+					}}
 				>
 					Remove User
 				</button>

@@ -1,5 +1,5 @@
 import { useEffect, useState, type JSX } from "react";
-import { createRole, fetchRoles, toRoleInput } from "../api/roles";
+import { createRole, deleteRole, fetchRoles, toRoleInput } from "../api/roles";
 import List from "../components/list";
 import type { Route } from "./+types/admin_users";
 import ListRoles from "../components/listRoles";
@@ -17,7 +17,13 @@ export async function clientLoader() {
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
 export async function clientAction({ request }: Route.ClientActionArgs) {
-	const res = await createRole(toRoleInput(await request.formData()));
+	let res;
+	if (request.method === "POST") {
+		res = await createRole(toRoleInput(await request.formData()));
+	}
+	if (request.method === "DELETE") {
+		res = await deleteRole((await request.formData()).get("id") as string);
+	}
 
 	return data(res, { status: 201 });
 }
@@ -26,17 +32,90 @@ export default function AdminRoles({
 	loaderData,
 }: Route.ComponentProps): JSX.Element {
 	const [showRoleForm, setShowRoleForm] = useState<boolean>(false);
+	const [showConfirmation, setShowConfirmation] = useState<boolean>(false);
+	const [RoleId, setRoleId] = useState<string | null>(null);
+	const [showChangeRole, setShowChangeRole] = useState<boolean>(false);
 	const fetcher = useFetcher();
 
 	useEffect(() => {
 		if (fetcher.data) {
 			// eslint-disable-next-line @eslint-react/set-state-in-effect
 			setShowRoleForm(false);
+			// eslint-disable-next-line @eslint-react/set-state-in-effect
+			setShowConfirmation(false);
+			// eslint-disable-next-line @eslint-react/set-state-in-effect
+			setShowChangeRole(false);
 		}
 	}, [fetcher.data]);
 
 	return (
 		<>
+			{showChangeRole && (
+				<Modal
+					title={`Change role's name`}
+					onClose={() => {
+						setShowChangeRole(false);
+					}}
+				>
+					<fetcher.Form
+						className="flex flex-col items-center gap-5"
+						method="PATCH"
+					>
+						<input
+							type="hidden"
+							name="id"
+							value={String(RoleId)}
+						></input>
+						<input
+							name="name"
+							required
+							className="ring-0 focus:border-border border-border rounded-sm"
+							type="text"
+							placeholder="New Name"
+						></input>
+						<CheckButton active type="submit">
+							OK
+						</CheckButton>
+					</fetcher.Form>
+				</Modal>
+			)}
+			{showConfirmation && (
+				<Modal
+					title={`Delete the role ?`}
+					onClose={() => {
+						setShowConfirmation(false);
+					}}
+				>
+					<p className="text-muted font-main font-light w-4/5 text-sm text-center">
+						All users using this role will become member instead.
+						This cannot be cancelled.
+					</p>
+					<div className="inline-flex gap-8">
+						<fetcher.Form method="DELETE">
+							<input
+								type="hidden"
+								name="id"
+								value={String(RoleId)}
+							></input>
+							<CheckButton
+								pending={fetcher.state !== "idle"}
+								type="submit"
+							>
+								Yes
+							</CheckButton>
+							<CheckButton
+								active
+								activeCheck={false}
+								onClick={() => {
+									setShowConfirmation(false);
+								}}
+							>
+								No
+							</CheckButton>
+						</fetcher.Form>
+					</div>
+				</Modal>
+			)}
 			{showRoleForm && (
 				<Modal
 					title="Create Role"
@@ -46,7 +125,7 @@ export default function AdminRoles({
 				>
 					<fetcher.Form
 						className="flex flex-col items-center w-1/2  gap-5"
-						method="PUT"
+						method="POST"
 					>
 						<Input
 							name="name"
@@ -86,10 +165,17 @@ export default function AdminRoles({
 							"DeleteUser",
 							"ResetPassword",
 							"HandleChannel",
+							"Actions",
 						]}
 					>
 						{loaderData.roles.map((rls) => (
-							<ListRoles key={rls.id} role={rls}></ListRoles>
+							<ListRoles
+								key={rls.id}
+								role={rls}
+								setShowConfirmation={setShowConfirmation}
+								setRoleId={setRoleId}
+								setShowChangeRole={setShowChangeRole}
+							></ListRoles>
 						))}
 					</List>
 				</div>
