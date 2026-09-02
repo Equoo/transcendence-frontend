@@ -36,7 +36,7 @@ export function Input({
 	value,
 	...rest
 }: InputProps): JSX.Element {
-	const [internalValue, setInternalValue] = useState(value ?? "");
+	const [internalValue, setInternalValue] = useState(value);
 	const [copied, setCopied] = useState(false);
 	const isError = Boolean(errors?.[name] ?? false);
 
