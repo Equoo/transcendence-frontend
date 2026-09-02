@@ -143,6 +143,7 @@ function MessageList({
 				ref={actionBarRef}
 				channelId={channelId}
 			></MessageActionBar>
+
 			<div className="mt-auto" />
 			{messages.map((msg, index) => {
 				const date = new Date(msg.sentAt);

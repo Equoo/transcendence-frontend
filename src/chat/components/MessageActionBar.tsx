@@ -5,10 +5,11 @@ import { PiArrowArcLeft, PiDotsThree, PiPencil, PiTrash } from "react-icons/pi";
 import CheckButton from "@/components/CheckButton";
 import IconBtn from "@/components/IconBtn";
 import Modal from "@/components/Modal";
+import { useUser } from "@/users/hooks/users.hooks";
 
 import { type Message, removeMessage } from "../api/chat.api";
 import { useChat } from "../hooks/chat.hook";
-import { useChatContext } from "./ChannelChat";
+import { useChatContext } from "./ChatProvider";
 
 export interface MessageActionBarHandles {
 	show: (
@@ -18,7 +19,7 @@ export interface MessageActionBarHandles {
 }
 
 interface ActionBar {
-	msg: string;
+	msg: Message;
 	el: HTMLDivElement;
 	top: number;
 	left: number;
@@ -31,6 +32,8 @@ function MessageActionBar({
 	ref?: Ref<MessageActionBarHandles>;
 	channelId: string;
 }): JSX.Element {
+	const getMessage = useChat((state) => state.getMessage);
+
 	const [actionBar, setActionBar] = useState<ActionBar | null>(null);
 	const [showRemoveForm, setShowRemoveForm] = useState(false);
 	const actionBarTimerRef = useRef<number | null>(null);
@@ -55,9 +58,14 @@ function MessageActionBar({
 				if (prev && prev.el !== row) {
 					prev.el.ariaSelected = "false";
 				}
+				const id = row.dataset.id ?? "undefined";
+				const msg = getMessage(channelId, id);
+				if (!msg) {
+					return prev;
+				}
 
 				return {
-					msg: row.dataset.id ?? "undefined",
+					msg,
 					el: row,
 					top:
 						row.offsetTop -
@@ -80,7 +88,8 @@ function MessageActionBar({
 	}));
 
 	const removeMsg = useChat((state) => state.removeMsg);
-	const { setChatMode } = useChatContext();
+	const { composerRef } = useChatContext();
+	const user = useUser();
 
 	if (!actionBar) {
 		return <div></div>;
@@ -97,16 +106,25 @@ function MessageActionBar({
 			>
 				{actionBar.el.dataset.pending === "false" && (
 					<>
-						<IconBtn icon={PiArrowArcLeft} size={14}></IconBtn>
-						<IconBtn
-							icon={PiPencil}
-							size={14}
-							onClick={() => {
-								setChatMode("edit", {
-									id: actionBar.msg,
-								} as unknown as Message);
-							}}
-						></IconBtn>
+						{actionBar.msg.sender.id === user?.id ? (
+							<IconBtn
+								icon={PiPencil}
+								size={14}
+								onClick={() => {
+									if (composerRef.current) {
+										composerRef.current.enterEditMode(actionBar.msg);
+									}
+								}}
+							></IconBtn>
+						) : (
+							<IconBtn icon={PiArrowArcLeft} size={14}
+								onClick={() => {
+									if (composerRef.current) {
+										composerRef.current.enterReplyMode(actionBar.msg);
+									}
+								}}
+							></IconBtn>
+						)}
 						<IconBtn
 							icon={PiTrash}
 							className="text-red-400"
@@ -132,9 +150,9 @@ function MessageActionBar({
 						<CheckButton
 							active
 							onClick={() => {
-								removeMessage(channelId, actionBar.msg)
+								removeMessage(channelId, actionBar.msg.id)
 									.then(() => {
-										removeMsg(channelId, actionBar.msg);
+										removeMsg(channelId, actionBar.msg.id);
 									})
 									.catch(() => {
 										// NOTE: replace by good error handling

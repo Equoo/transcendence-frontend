@@ -13,9 +13,10 @@ interface ChatState {
 	addMsgs: (channelId: string, messages: Message[]) => void;
 	removeMsg: (channelId: string, id: string) => void;
 	updateMsg: (channelId: string, id: string, updates: Message) => void;
+	getMessage: (channelId: string, id: string) => Message | undefined;
 }
 
-export const useChat = create<ChatState>((set) => ({
+export const useChat = create<ChatState>((set, get) => ({
 	channels: {},
 
 	setChannels: (channels): void => {
@@ -134,4 +135,6 @@ export const useChat = create<ChatState>((set) => ({
 			},
 		}));
 	},
+
+	getMessage: (channelId: string, id: string): Message | undefined => get().channels[channelId]?.messages.find((msg) => msg.id === id)
 }));

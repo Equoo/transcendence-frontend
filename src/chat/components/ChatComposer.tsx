@@ -1,7 +1,8 @@
+/* eslint-disable max-lines */
 import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
 import { init } from "emoji-mart";
-import { type JSX, useEffect, useRef, useState } from "react";
+import { type JSX, type Ref, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { BsSend } from "react-icons/bs";
 import { PiImage, PiPaperclip, PiSmiley } from "react-icons/pi";
 
@@ -9,7 +10,8 @@ import IconBtn from "@/components/IconBtn";
 import { useClickOutside } from "@/hooks/useClickOutside";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 
-import { useChatContext } from "./ChannelChat";
+import type { Message } from "../api/chat.api";
+import { useChatContext } from "./ChatProvider";
 
 await init({ data });
 
@@ -31,15 +33,17 @@ interface EmojiMartEmoji {
 	src?: string;
 }
 
-export interface ChatComposerState {
-	mode: "default" | "reply" | "edit";
-	target: string | null;
+export interface ChatComposerHandles {
+	enterEditMode: (msg: Message) => void;
+	enterReplyMode: (msg: Message) => void;
 }
 
 function ChatComposer({
+	ref,
 	placeholder,
 	onSend,
 }: {
+	ref?: Ref<ChatComposerHandles>;
 	placeholder: string;
 	onSend: (text: string) => void;
 }): JSX.Element {
@@ -49,33 +53,18 @@ function ChatComposer({
 	const editableRef = useRef<HTMLDivElement>(null);
 	const pickerRef = useRef<HTMLDivElement>(null);
 
-	const updateEmpty = (target: HTMLDivElement): void => {
-		setIsEmpty(target.textContent.trim().length === 0);
-	};
+	const { getChatMode, setChatMode, getChatText, setChatText, getChatLastText, setChatLastText } = useChatContext();
 
-	const handleSubmit = (self: HTMLDivElement): void => {
-		const text = self.innerText.trim();
-
-		if (text === "") {
-			return;
-		}
-
-		self.textContent = "";
-		setIsEmpty(true);
-
-		onSend(text);
-	};
-
-	const handleKeyDown = (ev: React.KeyboardEvent): void => {
-		const self = ev.currentTarget as HTMLDivElement;
-
-		if (ev.key === "Enter" && !ev.shiftKey) {
-			ev.preventDefault();
-			handleSubmit(self);
+	const updateEmpty = (): void => {
+		if (editableRef.current) {
+			setIsEmpty(editableRef.current.textContent.trim().length === 0);
 		}
 	};
 
 	const insertText = (text: string): void => {
+		const editable = editableRef.current;
+		if (!editable) { return }
+
 		const selection = window.getSelection();
 		if (selection) {
 			if (selection.rangeCount === 0) {
@@ -100,18 +89,59 @@ function ChatComposer({
 			// eslint-disable-next-line @typescript-eslint/no-deprecated
 			document.execCommand("insertText", false, text);
 		}
+		updateEmpty();
+		setChatText(editable.textContent);
 	};
 
-	const handlePaste = (ev: React.ClipboardEvent): void => {
-		if (!editableRef.current) {
+	const setText = (text: string): void => {
+		const editable = editableRef.current;
+		if (!editable) { return }
+
+		editable.textContent = text;
+		setChatText(text);
+
+		const selection = window.getSelection();
+		if (selection) {
+			const range = document.createRange();
+
+			range.selectNodeContents(editable);
+			range.collapse(false);
+
+			selection.removeAllRanges();
+			selection.addRange(range);
+		}
+
+		updateEmpty();
+	}
+
+	const clearText = (): void => {
+		const editable = editableRef.current;
+		if (!editable) { return }
+
+		editable.textContent = "";
+		setChatText("");
+		setIsEmpty(true);
+	}
+
+
+	const handleSubmit = (self: HTMLDivElement): void => {
+		const text = self.innerText.trim();
+
+		if (text === "") {
 			return;
 		}
 
-		ev.preventDefault();
+		clearText();
+		onSend(text);
+	};
 
-		const text = ev.clipboardData.getData("text/plain");
-		insertText(text);
-		updateEmpty(editableRef.current);
+	const handleKeyDown = (ev: React.KeyboardEvent): void => {
+		const self = ev.currentTarget as HTMLDivElement;
+
+		if (ev.key === "Enter" && !ev.shiftKey) {
+			ev.preventDefault();
+			handleSubmit(self);
+		}
 	};
 
 	const handleEmojiSelect = (emoji: EmojiMartEmoji): void => {
@@ -128,12 +158,13 @@ function ChatComposer({
 		const emojiText = emoji.native;
 
 		insertText(emojiText);
-		updateEmpty(editableRef.current);
 	};
 
 	useClickOutside(pickerRef, (): void => {
 		setShowPicker(false);
 	});
+
+
 
 	const isTouch = useMediaQuery("(pointer: coarse)");
 	useEffect(() => {
@@ -143,6 +174,9 @@ function ChatComposer({
 			}
 		}
 
+		const composerText = getChatText();
+		setText(composerText);
+
 		if (!isTouch) {
 			editableRef.current?.focus();
 
@@ -151,24 +185,40 @@ function ChatComposer({
 		return (): void => {
 			document.removeEventListener("keydown", handleEscape);
 		};
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [isTouch, placeholder]);
 
-	const { getChatMode, setChatMode } = useChatContext();
+
+
 	const [chatMode, modeTarget] = getChatMode();
 
 	const closeEditMode = (): void => {
 		setChatMode("default", null);
-
-		if (!editableRef.current) {
-			return;
-		}
-		editableRef.current.textContent = "";
-		setIsEmpty(true);
+		setText(getChatLastText());
 	};
 
 	const closeReplyMode = (): void => {
 		setChatMode("default", null);
 	};
+
+	useImperativeHandle(ref, () => ({
+		enterEditMode: (msg: Message): void => {
+			if (!editableRef.current) { return; }
+
+			setChatMode("edit", msg);
+			setChatLastText(editableRef.current.textContent);
+			setText(msg.content);
+
+			editableRef.current.focus();
+		},
+		enterReplyMode: (msg: Message): void => {
+			setChatMode("reply", msg);
+			if (!editableRef.current) {
+				return;
+			}
+			editableRef.current.focus();
+		},
+	}));
 
 	return (
 		<div
@@ -183,7 +233,7 @@ function ChatComposer({
 			{chatMode === "edit" && (
 				<div className="flex rounded-t-xl bg-back px-4 items-center justify-between">
 					<span className="text-sm text-muted">
-						Editing a message
+						Editing a message - *Escap* to cancel
 					</span>
 					<button
 						type="button"
@@ -199,7 +249,7 @@ function ChatComposer({
 			{chatMode === "reply" && (
 				<div className="flex rounded-t-xl bg-back px-4 items-center justify-between">
 					<span className="text-sm text-muted">
-						Replying to @{modeTarget?.sender.userName ?? "Unknown"}
+						Replying to @{modeTarget?.sender.userName ?? "Unknown"} - *Escap* to cancel
 					</span>
 					<button
 						type="button"
@@ -221,13 +271,14 @@ function ChatComposer({
 				<div
 					ref={editableRef}
 					className="text-text outline-none"
-					contentEditable
+					contentEditable="plaintext-only"
 					suppressContentEditableWarning
 					onInput={(ev) => {
-						updateEmpty(ev.currentTarget);
+						updateEmpty();
+						setChatText(ev.currentTarget.textContent)
 					}}
 					onKeyDown={handleKeyDown}
-					onPaste={handlePaste}
+				// OnPaste={handlePaste}
 				/>
 			</div>
 			<div className="flex items-center gap-1 px-2 pt-1.5 pb-2">
@@ -248,6 +299,7 @@ function ChatComposer({
 					size={16}
 					disabled={isEmpty}
 					onClick={() => {
+
 						if (editableRef.current) {
 							handleSubmit(editableRef.current);
 						}
