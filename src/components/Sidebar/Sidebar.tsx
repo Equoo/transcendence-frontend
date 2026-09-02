@@ -1,12 +1,14 @@
-import { type JSX, useEffect } from "react";
-import { PiBookOpen, PiCalendarBlank, PiChat, PiHouse } from "react-icons/pi";
+/* eslint-disable no-bitwise */
+import React, { type JSX, useEffect } from "react";
+import { PiBookOpen, PiCalendarBlank, PiChat, PiComputerTower, PiHouse, PiUser } from "react-icons/pi";
 import { HiMenuAlt2 } from "react-icons/hi";
 import ItemCategory from "./ItemCategorie";
 import { initDrawers } from "flowbite";
 import { useLocation } from "react-router";
 import InvitationForm from "../../invitations/components/InvitationForm";
+import type { User } from "../../users/api/users.api";
 
-function Sidebar(): JSX.Element {
+function Sidebar({ user }: { user: User }): JSX.Element {
 	const location = useLocation();
 
 	useEffect(() => {
@@ -79,6 +81,22 @@ function Sidebar(): JSX.Element {
 						<ItemCategory to="/messages" icon={PiChat}>
 							Messages
 						</ItemCategory>
+						{Boolean(user.role.permission & 1) && (
+							<>
+								<li className="flex justify-center items-center">
+									---------- Admin Panel ----------
+								</li>
+								<ItemCategory to="/admin/users" icon={PiUser}>
+									Users
+								</ItemCategory>
+								<ItemCategory
+									to="/admin/roles"
+									icon={PiComputerTower}
+								>
+									Roles
+								</ItemCategory>
+							</>
+						)}
 					</ul>
 				</div>
 			</aside>

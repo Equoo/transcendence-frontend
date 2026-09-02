@@ -27,6 +27,9 @@ export const clientMiddleware: Route.MiddlewareFunction[] = [
 		const user = await userFetcher();
 		if (user) {
 			context.set(UserContext, user);
+			if (url.pathname === "/login" || url.pathname === "/register") {
+				return redirect("/");
+			}
 		} else if (url.pathname !== "/login" && url.pathname !== "/register") {
 			return redirect("/login");
 		}

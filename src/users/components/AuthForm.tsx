@@ -1,6 +1,8 @@
 import type { JSX } from "react";
 import { PiLock, PiUser } from "react-icons/pi";
-import type { IconType } from "react-icons";
+import { Input } from "../../components/Input";
+import CheckButton from "../../components/CheckButton";
+import { useNavigation } from "react-router";
 
 interface Title {
 	top: string;
@@ -68,72 +70,37 @@ export function AuthLogo({ side }: { side: Side }): JSX.Element {
 	);
 }
 
-interface Input {
-	Icon: IconType;
-	type: string;
-	name: string;
-	placeholder: string;
-	msgError?: string;
-}
-
-export function AuthInput({
-	Icon,
-	placeholder,
-	type,
-	name,
-	msgError,
-}: Input): JSX.Element {
-	if (typeof msgError !== "undefined") {
-		return (
-			<div className="flex flex-col text-red-500">
-				<div className="flex items-center rounded-md bg-surface border border-red-400">
-					<Icon className="ml-4" />
-					<input
-						type={type}
-						name={name}
-						className="w-full rounded-md h-13 border-none ring-0"
-						placeholder={placeholder}
-					></input>
-				</div>
-				<p>{msgError}</p>
-			</div>
-		);
-	}
-	return (
-		<div className="flex items-center rounded-md bg-surface border-border border">
-			<Icon className="ml-4" />
-			<input
-				type={type}
-				name={name}
-				className="w-full rounded-md h-13 border-none ring-0 bg-surface"
-				placeholder={placeholder}
-			></input>
-		</div>
-	);
-}
-
 export function AuthForm({ btnName }: { btnName: string }): JSX.Element {
+	const navigation = useNavigation();
+
 	return (
 		<div className="flex flex-col w-3/4 gap-4">
-			<AuthInput
-				Icon={PiUser}
+			<Input
+				className="h-12"
 				placeholder="Username"
 				type="text"
-				name="username"
-			/>
-			<AuthInput
-				Icon={PiLock}
+				name="Username"
+			>
+				<PiUser className="ml-2 mr-2" />
+			</Input>
+			<Input
+				className="h-12"
 				placeholder="Password"
 				type="password"
-				name="password"
-			/>
-			<div className="flex justify-center">
-				<button
+				name="Password"
+			>
+				<PiLock className="ml-2 mr-2" />
+			</Input>
+			<div className="flex justify-center w-full ">
+				<CheckButton
+					pending={navigation.state !== "idle"}
+					active
+					activeCheck={false}
 					type="submit"
-					className="w-1/3 h-10 bg-accent text-accent-text font-semibold rounded-4xl cursor-pointer hover:brightness-120"
+					className="w-3/7"
 				>
 					{btnName}
-				</button>
+				</CheckButton>
 			</div>
 		</div>
 	);

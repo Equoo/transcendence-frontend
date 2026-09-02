@@ -13,6 +13,8 @@ export default [
 		route("knowledge", "routes/knowledge.tsx"),
 		route("knowledge/:key", "routes/file_view.tsx"),
 		route("messages", "routes/messages.tsx"),
+		route("/admin/roles", "admin/routes/admin_roles.tsx"),
+		route("/admin/users", "admin/routes/admin_users.tsx"),
 	]),
 	route("/register", "users/routes/register.tsx"),
 	route("/login", "users/routes/login.tsx"),

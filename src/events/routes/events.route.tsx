@@ -46,7 +46,6 @@ export async function clientAction({
 		if (!params.eventId) {
 			throw new Error("Event ID is required for deletion");
 		}
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 		res = await deleteEvent(params.eventId);
 		return data(res);
 	}
@@ -62,7 +61,6 @@ export async function clientAction({
 		if (!params.eventId) {
 			throw new Error("Event ID is required for update");
 		}
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 		res = await updateEvent(event, params.eventId);
 	}
 
