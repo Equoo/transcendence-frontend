@@ -39,25 +39,28 @@ export default function ListRoles({
 				<RolesBox role={role} perm={check} key={role.id}></RolesBox>
 			))}
 			<td className="space-x-10 w-10/20  px-6 py-3 font-medium text-center">
-				<PiTrash
-					size={26}
-					color="var(--color-text2)"
-					className="hover:cursor-pointer"
-					onClick={() => {
-						console.warn(role.id);
-						setRoleId(role.id);
-						setShowConfirmation(true);
-					}}
-				/>
-				<TbPencil
-					size={26}
-					color="var(--color-text2)"
-					className={`cursor-pointer`}
-					onClick={() => {
-						setRoleId(role.id);
-						setShowChangeRole(true);
-					}}
-				/>
+				{role.name !== "Member" && (
+					<>
+						<PiTrash
+							size={26}
+							color="var(--color-text2)"
+							className="hover:cursor-pointer"
+							onClick={() => {
+								setRoleId(role.id);
+								setShowConfirmation(true);
+							}}
+						/>
+						<TbPencil
+							size={26}
+							color="var(--color-text2)"
+							className={`cursor-pointer`}
+							onClick={() => {
+								setRoleId(role.id);
+								setShowChangeRole(true);
+							}}
+						/>
+					</>
+				)}
 			</td>
 		</tr>
 	);

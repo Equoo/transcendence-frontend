@@ -51,7 +51,7 @@ export async function fetchRoles(): Promise<Role[]> {
 
 export async function createRole(role: RoleInput): Promise<Response> {
 	const res = await fetch("/api/roles", {
-		method: "PUT",
+		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
 		},
@@ -67,6 +67,21 @@ export async function deleteRole(id: string): Promise<Response> {
 		headers: {
 			"Content-Type": "application/json",
 		},
+	});
+
+	return res;
+}
+
+export async function changeRoleName(
+	id: string,
+	name: string,
+): Promise<Response> {
+	const res = await fetch(`/api/roles/${id}/name`, {
+		method: "PATCH",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify(name),
 	});
 
 	return res;

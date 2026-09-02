@@ -1,5 +1,11 @@
 import { useEffect, useState, type JSX } from "react";
-import { createRole, deleteRole, fetchRoles, toRoleInput } from "../api/roles";
+import {
+	changeRoleName,
+	createRole,
+	deleteRole,
+	fetchRoles,
+	toRoleInput,
+} from "../api/roles";
 import List from "../components/list";
 import type { Route } from "./+types/admin_users";
 import ListRoles from "../components/listRoles";
@@ -20,6 +26,14 @@ export async function clientAction({ request }: Route.ClientActionArgs) {
 	let res;
 	if (request.method === "POST") {
 		res = await createRole(toRoleInput(await request.formData()));
+	}
+	if (request.method === "PATCH") {
+		const dataRequest = await request.formData();
+
+		res = await changeRoleName(
+			dataRequest.get("id") as string,
+			dataRequest.get("name") as string,
+		);
 	}
 	if (request.method === "DELETE") {
 		res = await deleteRole((await request.formData()).get("id") as string);
@@ -90,30 +104,28 @@ export default function AdminRoles({
 						All users using this role will become member instead.
 						This cannot be cancelled.
 					</p>
-					<div className="inline-flex gap-8">
-						<fetcher.Form method="DELETE">
-							<input
-								type="hidden"
-								name="id"
-								value={String(RoleId)}
-							></input>
-							<CheckButton
-								pending={fetcher.state !== "idle"}
-								type="submit"
-							>
-								Yes
-							</CheckButton>
-							<CheckButton
-								active
-								activeCheck={false}
-								onClick={() => {
-									setShowConfirmation(false);
-								}}
-							>
-								No
-							</CheckButton>
-						</fetcher.Form>
-					</div>
+					<fetcher.Form method="DELETE" className="inline-flex gap-8">
+						<input
+							type="hidden"
+							name="id"
+							value={String(RoleId)}
+						></input>
+						<CheckButton
+							pending={fetcher.state !== "idle"}
+							type="submit"
+						>
+							Yes
+						</CheckButton>
+						<CheckButton
+							active
+							activeCheck={false}
+							onClick={() => {
+								setShowConfirmation(false);
+							}}
+						>
+							No
+						</CheckButton>
+					</fetcher.Form>
 				</Modal>
 			)}
 			{showRoleForm && (

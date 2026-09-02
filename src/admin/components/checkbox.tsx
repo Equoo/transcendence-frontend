@@ -27,7 +27,7 @@ async function handleCheckbox(
 		finalCode = role.permission -= perm.code;
 	}
 
-	const res = await fetch(`/api/roles/${role.id}`, {
+	const res = await fetch(`/api/roles/${role.id}/permission`, {
 		method: "PATCH",
 		headers: {
 			"Content-Type": "application/json",
