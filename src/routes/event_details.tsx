@@ -13,12 +13,17 @@ import { PiTrash } from "react-icons/pi";
 import type { clientAction } from "../events/routes/events.route";
 import Modal from "../components/Modal";
 import CheckButton from "../components/CheckButton";
+import ProfileLine from "../components/ProfileLine";
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
 export async function clientLoader({ params }: Route.ClientLoaderArgs) {
 	const res = await fetchEvent(params.eventId);
 
-	return { event: res, roles: fetchEventRoles(), files: fetchFiles() };
+	return {
+		event: res,
+		roles: fetchEventRoles(),
+		files: fetchFiles(),
+	};
 }
 
 export default function EventDetails({
@@ -150,20 +155,17 @@ export default function EventDetails({
 						{event.registrations.map((reg, idx) => (
 							<ProfilePic
 								key={reg.registeredAt}
-								name={reg.user.userName}
+								user={reg.user}
 								idx={idx}
+								// eslint-disable-next-line no-negated-condition
+								className={idx !== 0 ? "-ml-3" : ""}
 							/>
 						))}
 					</div>
 					<span className="font-bold text-muted text-xs tracking-wider mt-4">
 						ORGANIZED BY
 					</span>
-					<div className="flex mt-1 items-center gap-2">
-						<ProfilePic name={event.organizer.userName} />
-						<span className="text-lg font-medium text-text">
-							{event.organizer.userName}
-						</span>
-					</div>
+					<ProfileLine user={event.organizer} />
 					<span className="font-bold text-muted text-xs tracking-wider mt-4">
 						RESOURCES
 					</span>

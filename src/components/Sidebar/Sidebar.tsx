@@ -1,12 +1,20 @@
 /* eslint-disable no-bitwise */
-import React, { type JSX, useEffect } from "react";
-import { PiBookOpen, PiCalendarBlank, PiChat, PiComputerTower, PiHouse, PiUser } from "react-icons/pi";
+import { type JSX, useEffect } from "react";
+import {
+	PiBookOpen,
+	PiCalendarBlank,
+	PiChat,
+	PiComputerTower,
+	PiHouse,
+	PiUser,
+} from "react-icons/pi";
 import { HiMenuAlt2 } from "react-icons/hi";
 import ItemCategory from "./ItemCategorie";
 import { initDrawers } from "flowbite";
 import { useLocation } from "react-router";
 import InvitationForm from "../../invitations/components/InvitationForm";
 import type { User } from "../../users/api/users.api";
+import ProfileLine from "../ProfileLine";
 
 function Sidebar({ user }: { user: User }): JSX.Element {
 	const location = useLocation();
@@ -51,7 +59,7 @@ function Sidebar({ user }: { user: User }): JSX.Element {
 				bg-back2"
 				aria-label="Sidebar"
 			>
-				<div className="h-full px-3 py-4 overflow-y-auto border-e border-border">
+				<div className="h-full flex flex-col px-3 py-4 border-e border-border">
 					<a href="#" className="flex items-center ps-1 mb-5">
 						<img
 							src="/logo/icon-tile.svg"
@@ -68,7 +76,7 @@ function Sidebar({ user }: { user: User }): JSX.Element {
 						</div>
 					</a>
 					<InvitationForm className=""></InvitationForm>
-					<ul className="mt-4 space-y-3 font-main font-medium text-muted text-[14.5px]">
+					<ul className="mt-4 space-y-3 font-medium text-muted text-[14.5px]">
 						<ItemCategory to="/" icon={PiHouse}>
 							Home
 						</ItemCategory>
@@ -81,11 +89,10 @@ function Sidebar({ user }: { user: User }): JSX.Element {
 						<ItemCategory to="/messages" icon={PiChat}>
 							Messages
 						</ItemCategory>
-						{Boolean(user.role.permission & 1) && (
-							<>
-								<li className="flex justify-center items-center">
-									---------- Admin Panel ----------
-								</li>
+					</ul>
+					<ul className="border-b-2 border-t-2 border-border2 mt-auto">
+						{user.role.permission & 1 && (
+							<div className="mt-1 font-medium text-muted text-[14.5px]">
 								<ItemCategory to="/admin/users" icon={PiUser}>
 									Users
 								</ItemCategory>
@@ -95,9 +102,10 @@ function Sidebar({ user }: { user: User }): JSX.Element {
 								>
 									Roles
 								</ItemCategory>
-							</>
+							</div>
 						)}
 					</ul>
+					<ProfileLine user={user} />
 				</div>
 			</aside>
 		</>
