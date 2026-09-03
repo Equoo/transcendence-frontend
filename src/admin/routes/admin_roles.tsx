@@ -47,88 +47,18 @@ export default function AdminRoles({
 	loaderData,
 }: Route.ComponentProps): JSX.Element {
 	const [showRoleForm, setShowRoleForm] = useState<boolean>(false);
-	const [showConfirmation, setShowConfirmation] = useState<boolean>(false);
-	const [RoleId, setRoleId] = useState<string | null>(null);
-	const [showChangeRole, setShowChangeRole] = useState<boolean>(false);
+
 	const fetcher = useFetcher();
 
 	useEffect(() => {
 		if (fetcher.data) {
 			// eslint-disable-next-line @eslint-react/set-state-in-effect
 			setShowRoleForm(false);
-			// eslint-disable-next-line @eslint-react/set-state-in-effect
-			setShowConfirmation(false);
-			// eslint-disable-next-line @eslint-react/set-state-in-effect
-			setShowChangeRole(false);
 		}
 	}, [fetcher.data]);
 
 	return (
 		<>
-			{showChangeRole && (
-				<Modal
-					title={`Change role's name`}
-					onClose={() => {
-						setShowChangeRole(false);
-					}}
-				>
-					<fetcher.Form
-						className="flex flex-col items-center gap-5"
-						method="PATCH"
-					>
-						<input
-							type="hidden"
-							name="id"
-							value={String(RoleId)}
-						></input>
-						<input
-							name="name"
-							required
-							className="ring-0 focus:border-border border-border rounded-sm"
-							type="text"
-							placeholder="New Name"
-						></input>
-						<CheckButton active type="submit">
-							OK
-						</CheckButton>
-					</fetcher.Form>
-				</Modal>
-			)}
-			{showConfirmation && (
-				<Modal
-					title={`Delete the role ?`}
-					onClose={() => {
-						setShowConfirmation(false);
-					}}
-				>
-					<p className="text-muted font-main font-light w-4/5 text-sm text-center">
-						All users using this role will become member instead.
-						This cannot be cancelled.
-					</p>
-					<fetcher.Form method="DELETE" className="inline-flex gap-8">
-						<input
-							type="hidden"
-							name="id"
-							value={String(RoleId)}
-						></input>
-						<CheckButton
-							pending={fetcher.state !== "idle"}
-							type="submit"
-						>
-							Yes
-						</CheckButton>
-						<CheckButton
-							active
-							activeCheck={false}
-							onClick={() => {
-								setShowConfirmation(false);
-							}}
-						>
-							No
-						</CheckButton>
-					</fetcher.Form>
-				</Modal>
-			)}
 			{showRoleForm && (
 				<Modal
 					title="Create Role"
@@ -211,13 +141,7 @@ export default function AdminRoles({
 						]}
 					>
 						{loaderData.roles.map((rls) => (
-							<ListRoles
-								key={rls.id}
-								role={rls}
-								setShowConfirmation={setShowConfirmation}
-								setRoleId={setRoleId}
-								setShowChangeRole={setShowChangeRole}
-							></ListRoles>
+							<ListRoles key={rls.id} role={rls}></ListRoles>
 						))}
 					</List>
 				</div>
