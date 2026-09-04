@@ -1,4 +1,4 @@
-/* eslint-disable max-lines */
+
 import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
 import { init } from "emoji-mart";
@@ -32,10 +32,9 @@ interface EmojiMartEmoji {
 	// Custom emoji image URL
 	src?: string;
 }
-
 export interface ChatComposerHandles {
-	enterEditMode: (msg: Message) => void;
-	enterReplyMode: (msg: Message) => void;
+	enterEditMode: (msg: Message, el: HTMLDivElement) => void;
+	enterReplyMode: (msg: Message, el: HTMLDivElement) => void;
 }
 
 function ChatComposer({
@@ -45,7 +44,7 @@ function ChatComposer({
 }: {
 	ref?: Ref<ChatComposerHandles>;
 	placeholder: string;
-	onSend: (text: string) => void;
+	onSend: (text: string, mode: "default" | "edit" | "reply", target: Message | null) => void;
 }): JSX.Element {
 	const [isEmpty, setIsEmpty] = useState(true);
 	const [showPicker, setShowPicker] = useState(false);
@@ -124,6 +123,33 @@ function ChatComposer({
 	}
 
 
+	const [chatMode, modeTarget, modeTargetEl] = getChatMode();
+
+	const closeChatMode = (): void => {
+		if (chatMode === "default") { return; }
+		if (chatMode === "edit") { setText(getChatLastText()); }
+		setChatMode("default", null);
+	};
+
+	useImperativeHandle(ref, () => ({
+		enterEditMode: (msg: Message, el: HTMLDivElement): void => {
+			if (!editableRef.current) { return; }
+
+			setChatMode("edit", msg, el);
+			setChatLastText(editableRef.current.textContent);
+			setText(msg.content);
+			editableRef.current.focus();
+		},
+		enterReplyMode: (msg: Message, el: HTMLDivElement): void => {
+			setChatMode("reply", msg, el);
+			if (!editableRef.current) {
+				return;
+			}
+			editableRef.current.focus();
+		},
+	}));
+
+
 	const handleSubmit = (self: HTMLDivElement): void => {
 		const text = self.innerText.trim();
 
@@ -132,7 +158,8 @@ function ChatComposer({
 		}
 
 		clearText();
-		onSend(text);
+		closeChatMode();
+		onSend(text, chatMode, modeTarget);
 	};
 
 	const handleKeyDown = (ev: React.KeyboardEvent): void => {
@@ -164,61 +191,34 @@ function ChatComposer({
 		setShowPicker(false);
 	});
 
-
-
 	const isTouch = useMediaQuery("(pointer: coarse)");
 	useEffect(() => {
 		function handleEscape(ev: KeyboardEvent): void {
 			if (ev.key === "Escape") {
-				setShowPicker(false);
+				if (showPicker) {
+					setShowPicker(false);
+					return;
+				}
+				closeChatMode();
 			}
 		}
 
-		const composerText = getChatText();
-		setText(composerText);
-
-		if (!isTouch) {
-			editableRef.current?.focus();
-
-			document.addEventListener("keydown", handleEscape);
-		}
+		document.addEventListener("keydown", handleEscape);
 		return (): void => {
 			document.removeEventListener("keydown", handleEscape);
 		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [placeholder, chatMode, showPicker]);
+
+	useEffect(() => {
+		if (!isTouch) {
+			editableRef.current?.focus();
+		}
+
+		const composerText = getChatText();
+		setText(composerText);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [isTouch, placeholder]);
-
-
-
-	const [chatMode, modeTarget] = getChatMode();
-
-	const closeEditMode = (): void => {
-		setChatMode("default", null);
-		setText(getChatLastText());
-	};
-
-	const closeReplyMode = (): void => {
-		setChatMode("default", null);
-	};
-
-	useImperativeHandle(ref, () => ({
-		enterEditMode: (msg: Message): void => {
-			if (!editableRef.current) { return; }
-
-			setChatMode("edit", msg);
-			setChatLastText(editableRef.current.textContent);
-			setText(msg.content);
-
-			editableRef.current.focus();
-		},
-		enterReplyMode: (msg: Message): void => {
-			setChatMode("reply", msg);
-			if (!editableRef.current) {
-				return;
-			}
-			editableRef.current.focus();
-		},
-	}));
 
 	return (
 		<div
@@ -230,32 +230,20 @@ function ChatComposer({
 					<Picker data={data} onEmojiSelect={handleEmojiSelect} />
 				</div>
 			)}
-			{chatMode === "edit" && (
+			{chatMode !== "default" && (
 				<div className="flex rounded-t-xl bg-back px-4 items-center justify-between">
-					<span className="text-sm text-muted">
-						Editing a message - *Escap* to cancel
-					</span>
+					<a className="text-sm text-muted hover:text-text cursor-pointer" onClick={() => { modeTargetEl?.scrollIntoView({ behavior: "smooth" }); }}>
+						{chatMode === "edit" ? (<>
+							Editing a message - *Escap* to cancel
+						</>) : (<>
+							Replying to @{modeTarget?.sender.userName ?? "Unknown"} - *Escap* to cancel
+						</>)}
+					</a>
 					<button
 						type="button"
 						className="text-muted hover:text-text text-2xl cursor-pointer"
 						onClick={() => {
-							closeEditMode();
-						}}
-					>
-						×
-					</button>
-				</div>
-			)}
-			{chatMode === "reply" && (
-				<div className="flex rounded-t-xl bg-back px-4 items-center justify-between">
-					<span className="text-sm text-muted">
-						Replying to @{modeTarget?.sender.userName ?? "Unknown"} - *Escap* to cancel
-					</span>
-					<button
-						type="button"
-						className="text-muted hover:text-text text-2xl cursor-pointer"
-						onClick={() => {
-							closeReplyMode();
+							closeChatMode();
 						}}
 					>
 						×
@@ -278,7 +266,6 @@ function ChatComposer({
 						setChatText(ev.currentTarget.textContent)
 					}}
 					onKeyDown={handleKeyDown}
-				// OnPaste={handlePaste}
 				/>
 			</div>
 			<div className="flex items-center gap-1 px-2 pt-1.5 pb-2">
@@ -307,8 +294,7 @@ function ChatComposer({
 					className="grid h-9 w-9 place-items-center rounded-[11px]"
 				/>
 			</div>
-		</div>
+		</div >
 	);
 }
-
 export default ChatComposer;

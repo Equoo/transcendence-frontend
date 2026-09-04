@@ -7,7 +7,7 @@ import {
 import { useChat } from "@/chat/hooks/chat.hook";
 import { useUser } from "@/users/hooks/users.hooks";
 
-import { type Message, sendMessage } from "../api/chat.api";
+import { type Message, sendMessage, updateMessage } from "../api/chat.api";
 import ChatComposer, { type ChatComposerHandles } from "./ChatComposer";
 import { ChatProvider } from "./ChatProvider";
 import MessageList, { type MessageListHandles } from "./MessageList";
@@ -23,7 +23,18 @@ function ChannelChat({ channelId }: { channelId: string }): JSX.Element {
 	const addMsg = useChat((state) => state.addMsg);
 	const updateMsg = useChat((state) => state.updateMsg);
 
-	const onSend = (text: string): void => {
+	const onSend = (text: string, mode: "default" | "edit" | "reply", target: Message | null): void => {
+		if (mode === "edit" && target) {
+			target.content = text;
+			updateMsg(channelId, target.id, target);
+			updateMessage(channelId, target.id, text).catch(() => {
+				// eslint-disable-next-line no-warning-comments
+				// TODO: error
+			});
+
+			return;
+		}
+
 		const pendingId = new Date().toString() + counter;
 		let message = {
 			id: pendingId,
@@ -31,6 +42,7 @@ function ChannelChat({ channelId }: { channelId: string }): JSX.Element {
 			channel: { id: channelId },
 			sentAt: new Date(),
 			sender: user,
+			messageReference: target?.id,
 			status: "pending",
 		} as Message;
 

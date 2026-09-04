@@ -33,6 +33,14 @@ export const useChatHub = create<ChatHub>((set) => ({
 				useChat.getState().addMsg(channelId, normalizeMessage(msg));
 			});
 
+			conn.on("RemoveMessage", (channelId: string, id: string) => {
+				useChat.getState().removeMsg(channelId, id);
+			});
+
+			conn.on("UpdateMessage", (channelId: string, id: string, msg: Message) => {
+				useChat.getState().updateMsg(channelId, id, normalizeMessage(msg));
+			});
+
 			conn.on("NewChannel", (channel: Channel) => {
 				useChat.getState().addChannel(channel);
 			});

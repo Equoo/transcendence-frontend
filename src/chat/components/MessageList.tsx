@@ -15,8 +15,10 @@ import { useShallow } from "zustand/react/shallow";
 
 import { useChat } from "@/chat/hooks/chat.hook";
 import ProfilePic from "@/components/ProfilePic";
+import { usePrevious } from "@/hooks/usePrevious";
 
-import { fetchMessages } from "../api/chat.api";
+import { fetchMessages, type Message } from "../api/chat.api";
+import { useChatContext } from "./ChatProvider";
 import MessageActionBar, {
 	type MessageActionBarHandles,
 } from "./MessageActionBar";
@@ -120,17 +122,29 @@ function MessageList({
 		void loadMessages(40);
 	}, [channelId, loadMessages]);
 
+
 	const sleep = async (ms: number): Promise<unknown> =>
 		new Promise((resolve) => {
 			setTimeout(resolve, ms);
 		});
-	useImperativeHandle(ref, () => ({
-		scrollBack: (): void => {
-			void sleep(100).then(() => {
-				bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-			});
-		},
-	}));
+	const scrollBack = (): void => {
+		void sleep(100).then(() => {
+			bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+		});
+	}
+
+	const prevMessages: Message[] | null = usePrevious(messages) as Message[] | null;
+	useEffect(() => {
+		if (prevMessages && prevMessages[prevMessages.length - 1]?.id !== messages[messages.length - 1]?.id) {
+			scrollBack();
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [messages, prevMessages])
+
+	useImperativeHandle(ref, () => ({ scrollBack }));
+
+	const { getChatMode } = useChatContext();
+	const [chatMode, modeTarget] = getChatMode();
 
 	const oldDate = new Date("1970-01-01T00:00:00");
 	return (
@@ -165,10 +179,11 @@ function MessageList({
 							}
 							onFocus={(ev) => actionBarRef.current?.show(ev)}
 							onMouseLeave={() => actionBarRef.current?.hide()}
-							className={`relative gap-3 ${notSameTime ? "mt-4.5" : "mt-0.75"} px-5.5 hover:bg-back2 aria-selected:bg-back2 data-[pending=true]:animate-pulse`}
+							className={`relative gap-3 ${notSameTime ? "mt-4.5" : "mt-0.75"} px-5.5 hoer:bg-back2 aria-selected:bg-back2 data-[pending=true]:animate-pulse data-[focus=true]:bg-accent-soft`}
 							key={msg.id}
 							data-id={msg.id}
 							data-pending={msg.status === "pending"}
+							data-focus={chatMode !== "default" && modeTarget?.id === msg.id}
 						>
 							{notSameTime && (
 								<ProfilePic

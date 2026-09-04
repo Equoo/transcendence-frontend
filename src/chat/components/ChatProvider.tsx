@@ -9,6 +9,7 @@ interface ChatState {
 	lastEntry: string;
 	mode: "default" | "edit" | "reply";
 	targetMsg: Message | null;
+	targetEl: HTMLDivElement | null;
 }
 
 interface ChatContextInner {
@@ -19,8 +20,9 @@ interface ChatContextInner {
 	setChatMode: (
 		mode: "default" | "edit" | "reply",
 		target: Message | null,
+		targetEl?: HTMLDivElement | null,
 	) => void;
-	getChatMode: () => ["default" | "edit" | "reply", Message | null];
+	getChatMode: () => ["default" | "edit" | "reply", Message | null, HTMLDivElement | null];
 	setChatText: (text: string) => void;
 	getChatText: () => string;
 	setChatLastText: (text: string) => void;
@@ -48,23 +50,26 @@ export function ChatProvider({ children, chatId, listRef, composerRef }: { child
 		lastEntry: "",
 		mode: "default",
 		targetMsg: null,
+		targetEl: null,
 	};
 
 	const setChatMode = (
 		mode: "default" | "edit" | "reply",
 		target: Message | null,
+		targetEl: HTMLDivElement | null = null,
 	): void => {
 		const state = states.get(chatId) ?? defaultState;
 		state.mode = mode;
 		state.targetMsg = target;
+		state.targetEl = targetEl;
 
 		setStates((prevStates) => new Map(prevStates).set(chatId, state));
 	};
-	const getChatMode = (): ["default" | "edit" | "reply", Message | null] => {
+	const getChatMode = (): ["default" | "edit" | "reply", Message | null, HTMLDivElement | null] => {
 		const state = states.get(chatId);
 		return state
-			? [state.mode, state.targetMsg]
-			: [defaultState.mode, defaultState.targetMsg];
+			? [state.mode, state.targetMsg, state.targetEl]
+			: [defaultState.mode, null, null];
 	};
 
 	const setChatText = (text: string): void => {

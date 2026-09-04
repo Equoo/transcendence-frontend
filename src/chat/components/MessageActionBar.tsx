@@ -112,7 +112,7 @@ function MessageActionBar({
 								size={14}
 								onClick={() => {
 									if (composerRef.current) {
-										composerRef.current.enterEditMode(actionBar.msg);
+										composerRef.current.enterEditMode(actionBar.msg, actionBar.el);
 									}
 								}}
 							></IconBtn>
@@ -120,7 +120,7 @@ function MessageActionBar({
 							<IconBtn icon={PiArrowArcLeft} size={14}
 								onClick={() => {
 									if (composerRef.current) {
-										composerRef.current.enterReplyMode(actionBar.msg);
+										composerRef.current.enterReplyMode(actionBar.msg, actionBar.el);
 									}
 								}}
 							></IconBtn>
