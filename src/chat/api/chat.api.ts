@@ -6,7 +6,7 @@ export interface Message {
 	id: string;
 	content: string;
 	sentAt: Date;
-	editAt?: Date | null;
+	editAt?: Date;
 	messageReference?: string;
 	sender: User;
 	channel: Channel;
@@ -19,7 +19,7 @@ export function normalizeMessage(msg: Message): Message {
 		...({
 			sentAt: new Date(msg.sentAt),
 			editAt:
-				typeof msg.editAt !== "undefined" &&
+				msg.editAt &&
 				new Date(msg.editAt ?? new Date()),
 		} as Message),
 	};
@@ -94,6 +94,7 @@ export async function createChannel(formData: FormData): Promise<Channel> {
 export async function sendMessage(
 	channelId: string,
 	content: string,
+	reference: string | undefined
 ): Promise<Message> {
 	const response = await fetch(`/api/channels/${channelId}/messages`, {
 		method: "POST",
@@ -102,6 +103,7 @@ export async function sendMessage(
 		},
 		body: JSON.stringify({
 			content,
+			reference
 		}),
 	});
 

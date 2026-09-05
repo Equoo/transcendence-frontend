@@ -211,6 +211,7 @@ function MessageList({
 								)}
 								<div className="whitespace-pre-wrap wrap-break-word text-[14.5px] leading-normal text-text ">
 									{parseContent(msg.content)}
+									{msg.editAt && (<span className="text-[11.5px] text-muted"> (edtited)</span>)}
 								</div>
 							</div>
 							{/* {m.react && ( */}

@@ -49,12 +49,12 @@ function ChannelChat({ channelId }: { channelId: string }): JSX.Element {
 		setCounter(counter + 1);
 		addMsg(channelId, message);
 
-		sendMessage(channelId, text)
+		sendMessage(channelId, text, target?.id)
 			.then((msg) => {
 				message = {
 					...msg,
 					sentAt: new Date(msg.sentAt),
-					editAt: msg.editAt ? new Date(msg.editAt) : null,
+					editAt: msg.editAt && new Date(msg.editAt),
 					status: "sended",
 				};
 				updateMsg(channelId, pendingId, message);
