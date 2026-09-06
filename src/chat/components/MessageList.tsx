@@ -185,7 +185,7 @@ function MessageList({
 							data-pending={msg.status === "pending"}
 							data-focus={chatMode !== "default" && modeTarget?.id === msg.id}
 						>
-							{notSameTime && (
+							{(notSameTime) && (
 								<ProfilePic
 									className="absolute"
 									name={msg.sender.userName}
@@ -193,7 +193,7 @@ function MessageList({
 								/>
 							)}
 							<div className="ml-12">
-								{notSameTime && (
+								{(notSameTime) && (
 									<div className="mb-0.75 flex items-baseline gap-2.25">
 										<span className="font-head font-[650] text-[14.5px]">
 											{msg.sender.userName}
@@ -206,6 +206,20 @@ function MessageList({
 												day: "2-digit",
 												year: "numeric",
 											})}
+										</span>
+									</div>
+								)}
+								{msg.messageRef && (
+									<div className="border-l-4 border-accent pl-2 flex flex-row cursor-pointer">
+										<ProfilePic
+											name={msg.messageRef.sender.userName}
+											size={5}
+										/>
+										<span className="font-head text-[14.5px] text-text mx-1">
+											{msg.messageRef.sender.userName}
+										</span>
+										<span className="text-[14.5px] text-text2 truncate">
+											{msg.messageRef.content}
 										</span>
 									</div>
 								)}

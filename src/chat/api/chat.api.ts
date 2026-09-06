@@ -7,7 +7,7 @@ export interface Message {
 	content: string;
 	sentAt: Date;
 	editAt?: Date;
-	messageReference?: string;
+	messageRef?: Message;
 	sender: User;
 	channel: Channel;
 	status: string;
@@ -94,7 +94,7 @@ export async function createChannel(formData: FormData): Promise<Channel> {
 export async function sendMessage(
 	channelId: string,
 	content: string,
-	reference: string | undefined
+	messageReference: string | undefined
 ): Promise<Message> {
 	const response = await fetch(`/api/channels/${channelId}/messages`, {
 		method: "POST",
@@ -103,7 +103,7 @@ export async function sendMessage(
 		},
 		body: JSON.stringify({
 			content,
-			reference
+			messageReference
 		}),
 	});
 

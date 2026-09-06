@@ -26,6 +26,7 @@ function ChannelChat({ channelId }: { channelId: string }): JSX.Element {
 	const onSend = (text: string, mode: "default" | "edit" | "reply", target: Message | null): void => {
 		if (mode === "edit" && target) {
 			target.content = text;
+			target.editAt = new Date();
 			updateMsg(channelId, target.id, target);
 			updateMessage(channelId, target.id, text).catch(() => {
 				// eslint-disable-next-line no-warning-comments
@@ -42,7 +43,7 @@ function ChannelChat({ channelId }: { channelId: string }): JSX.Element {
 			channel: { id: channelId },
 			sentAt: new Date(),
 			sender: user,
-			messageReference: target?.id,
+			messageRef: target,
 			status: "pending",
 		} as Message;
 

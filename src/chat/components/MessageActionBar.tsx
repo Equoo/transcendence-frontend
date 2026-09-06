@@ -106,7 +106,7 @@ function MessageActionBar({
 			>
 				{actionBar.el.dataset.pending === "false" && (
 					<>
-						{actionBar.msg.sender.id === user?.id ? (
+						{actionBar.msg.sender.id === user?.id ? (<>
 							<IconBtn
 								icon={PiPencil}
 								size={14}
@@ -116,7 +116,15 @@ function MessageActionBar({
 									}
 								}}
 							></IconBtn>
-						) : (
+							<IconBtn
+								icon={PiTrash}
+								className="text-red-400"
+								size={14}
+								onClick={() => {
+									setShowRemoveForm(true);
+								}}
+							></IconBtn>
+						</>) : (
 							<IconBtn icon={PiArrowArcLeft} size={14}
 								onClick={() => {
 									if (composerRef.current) {
@@ -125,14 +133,6 @@ function MessageActionBar({
 								}}
 							></IconBtn>
 						)}
-						<IconBtn
-							icon={PiTrash}
-							className="text-red-400"
-							size={14}
-							onClick={() => {
-								setShowRemoveForm(true);
-							}}
-						></IconBtn>
 					</>
 				)}
 				<IconBtn icon={PiDotsThree} size={14}></IconBtn>
