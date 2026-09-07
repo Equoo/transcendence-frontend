@@ -19,16 +19,19 @@ export enum PermEnum {
 	HandleEvent = 2,
 
 	// User
-	GetUser = 4,
+	HandleUsers = 4,
 	InviteUser = 8,
-	ChangeUsername = 16,
-	DeleteUser = 32,
-	ResetUserPassword = 64,
 
 	// Chat
-	HandleChannel = 128,
+	HandleChannels = 16,
 
+	// Roles
+	HandleRoles = 32,
+
+
+    
 	// Knowledge
+	HandleKnowledge = 64,
 
 	// Calendar
 }

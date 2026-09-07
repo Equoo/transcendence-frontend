@@ -1,7 +1,7 @@
 /* eslint-disable @eslint-react/no-array-index-key */
 import type { JSX } from "react/jsx-runtime";
 import { RolesBox } from "./AdminRoleBox";
-import type { Role } from "../api/roles";
+import { PermEnum, type Role } from "../api/roles";
 import { PiTrash } from "react-icons/pi";
 import { TbPencil } from "react-icons/tb";
 import Modal from "../../components/Modal";
@@ -29,16 +29,15 @@ export default function ListRoles({ role }: { role: Role }): JSX.Element {
 		}
 	}, [fetcher.data]);
 
-	const checkboxes: Perm[] = [
-		{ name: "isAdmin", code: 1 },
-		{ name: "HandleEvent", code: 2 },
-		{ name: "GetUser", code: 4 },
-		{ name: "InviteUser", code: 8 },
-		{ name: "ChangeUsername", code: 16 },
-		{ name: "DeleteUser", code: 32 },
-		{ name: "ResetPassword", code: 64 },
-		{ name: "HandleChannel", code: 128 },
-	];
+	const checkboxes: Perm[] = [];
+
+	for (const [key, value] of Object.entries(PermEnum)) {
+		if (!isNaN(Number(key))) {
+			// eslint-disable-next-line no-continue
+			continue;
+		}
+		checkboxes.push({ name: key, code: value as number });
+	}
 
 	return (
 		<tr className="text-sm text-body border-b rounded-base border-border h-full">

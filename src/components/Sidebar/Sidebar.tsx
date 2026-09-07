@@ -37,6 +37,7 @@ function ChannelListSkeleton(): JSX.Element {
 		</>
 	);
 }
+import { PermEnum } from "../../admin/api/roles";
 
 function Sidebar({ user }: { user: User }): JSX.Element {
 	const location = useLocation();
@@ -100,8 +101,10 @@ function Sidebar({ user }: { user: User }): JSX.Element {
 							</span>
 						</div>
 					</a>
-					<InvitationForm className=""></InvitationForm>
-					<ul className="mt-4 space-y-3 font-medium text-muted text-[14.5px]">
+					{Boolean(user.role.permission & PermEnum.InviteUser) && (
+						<InvitationForm className=""></InvitationForm>
+					)}
+					<ul className="mt-4 space-y-3 font-main font-medium text-muted text-[14.5px]">
 						<ItemCategory to="/" icon={PiHouse}>
 							Home
 						</ItemCategory>
@@ -146,6 +149,38 @@ function Sidebar({ user }: { user: User }): JSX.Element {
 								</ItemCategory>
 							</div>
 						)}
+						{Boolean(user.role.permission & PermEnum.HandleUsers) &&
+							Boolean(
+								user.role.permission & PermEnum.HandleRoles,
+							) && (
+								<>
+									<li className="flex justify-center items-center">
+										---------- Admin Panel ----------
+									</li>
+									{Boolean(
+										user.role.permission &
+										PermEnum.HandleUsers,
+									) && (
+										<ItemCategory
+											to="/admin/users"
+											icon={PiUser}
+										>
+											Users
+										</ItemCategory>
+									)}
+									{Boolean(
+										user.role.permission &
+										PermEnum.HandleRoles,
+									) && (
+										<ItemCategory
+											to="/admin/roles"
+											icon={PiComputerTower}
+										>
+											Roles
+										</ItemCategory>
+									)}
+								</>
+							)}
 					</ul>
 					<ProfileLine user={user} status edit />
 				</div>

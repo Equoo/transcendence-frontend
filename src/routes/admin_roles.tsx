@@ -1,5 +1,5 @@
 import { useEffect, useState, type JSX } from "react";
-import { fetchRoles } from "../admin/api/roles";
+import { fetchRoles, PermEnum } from "../admin/api/roles";
 import List from "../components/List";
 import ListRoles from "../admin/components/AdminListRoles";
 import CheckButton from "../components/CheckButton";
@@ -28,6 +28,18 @@ export default function AdminRoles({
 			setShowRoleForm(false);
 		}
 	}, [fetcher.data]);
+
+	const headers: string[] = ["Name"];
+
+	for (const key in PermEnum) {
+		if (!isNaN(Number(key))) {
+			// eslint-disable-next-line no-continue
+			continue;
+		}
+		headers.push(key);
+	}
+
+	headers.push("Actions");
 
 	return (
 		<>
@@ -70,49 +82,7 @@ export default function AdminRoles({
 							Add Role
 						</CheckButton>
 					</div>
-					<List
-						empty={loaderData.roles.length === 0}
-						emptyMessage="No roles to display."
-						cols={[
-							{ id: "Role", pos: "text-left" },
-							{
-								id: "IsAdmin",
-								pos: "text-center",
-							},
-							{
-								id: "HandleEvent",
-								pos: "text-center",
-							},
-							{
-								id: "GetUser",
-								pos: "text-center",
-							},
-							{
-								id: "InviteUser",
-								pos: "text-center",
-							},
-							{
-								id: "ChangeUsername",
-								pos: "text-center",
-							},
-							{
-								id: "DeleteUser",
-								pos: "text-center",
-							},
-							{
-								id: "ResetPassword",
-								pos: "text-center",
-							},
-							{
-								id: "HandleChannel",
-								pos: "text-center",
-							},
-							{
-								id: "Actions",
-								pos: "text-right",
-							},
-						]}
-					>
+					<List headers={headers}>
 						{loaderData.roles.map((rls) => (
 							<ListRoles key={rls.id} role={rls}></ListRoles>
 						))}
