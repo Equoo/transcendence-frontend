@@ -1,46 +1,18 @@
-import { type JSX, useEffect, useState } from "react";
-import { data, useFetcher } from "react-router";
-
-import CheckButton from "../../components/CheckButton";
-import { Input } from "../../components/Input";
-import List from "../../components/List";
-import Modal from "../../components/Modal";
-import {
-	changeRoleName,
-	createRole,
-	deleteRole,
-	fetchRoles,
-	toRoleInput,
-} from "../api/roles";
-import ListRoles from "../components/listRoles";
-import type { Route } from "./+types/admin_users";
+import { useEffect, useState, type JSX } from "react";
+import { fetchRoles } from "../admin/api/roles";
+import List from "../components/List";
+import ListRoles from "../admin/components/AdminListRoles";
+import CheckButton from "../components/CheckButton";
+import Modal from "../components/Modal";
+import { Input } from "../components/Input";
+import { useFetcher } from "react-router";
+import type { Route } from "./+types/admin_roles";
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
 export async function clientLoader() {
 	const roles = await fetchRoles();
 
 	return { roles };
-}
-
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
-export async function clientAction({ request }: Route.ClientActionArgs) {
-	let res;
-	if (request.method === "POST") {
-		res = await createRole(toRoleInput(await request.formData()));
-	}
-	if (request.method === "PATCH") {
-		const dataRequest = await request.formData();
-
-		res = await changeRoleName(
-			dataRequest.get("id") as string,
-			dataRequest.get("name") as string,
-		);
-	}
-	if (request.method === "DELETE") {
-		res = await deleteRole((await request.formData()).get("id") as string);
-	}
-
-	return data(res, { status: 201 });
 }
 
 export default function AdminRoles({
@@ -69,6 +41,7 @@ export default function AdminRoles({
 					<fetcher.Form
 						className="flex flex-col items-center w-1/2  gap-5"
 						method="POST"
+						action="/roles"
 					>
 						<Input
 							name="name"
