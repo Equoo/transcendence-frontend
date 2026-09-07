@@ -24,6 +24,11 @@ export enum PermEnum {
 	// Roles
 	HandleRoles = 16,
 
+	// Roles
+	HandleRoles = 32,
+
+
+    
 	// Knowledge
 	HandleKnowledge = 32,
 
