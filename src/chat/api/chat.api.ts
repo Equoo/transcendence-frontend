@@ -33,6 +33,7 @@ export interface Channel {
 	eventId?: string;
 	category?: string;
 	messages: Message[];
+	ackTime?: Date | null;
 }
 
 export async function fetchChannels(): Promise<Channel[] | null> {
@@ -152,4 +153,21 @@ export async function removeMessage(
 	}
 
 	return (response.text());
+}
+
+export async function ackMessage(
+	channelId: string,
+	id: string,
+): Promise<void> {
+	const response = await fetch(`/api/channels/${channelId}/messages/${id}/ack`, {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify({}),
+	});
+
+	if (!response.ok) {
+		throw new APIError((await response.json()) as ProblemDetail);
+	}
 }

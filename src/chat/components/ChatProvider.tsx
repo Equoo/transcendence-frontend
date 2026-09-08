@@ -1,4 +1,4 @@
-import { createContext, type JSX, type ReactNode, type RefObject, use, useMemo, useState } from "react";
+import { createContext, type JSX, type ReactNode, type RefObject, use, useMemo, useRef, useState } from "react";
 
 import type { Message } from "../api/chat.api";
 import type { ChatComposerHandles } from "./ChatComposer";
@@ -17,6 +17,7 @@ interface ChatContextInner {
 	listRef: RefObject<MessageListHandles | null>;
 	composerRef: RefObject<ChatComposerHandles | null>;
 	chatsStates: Map<string, ChatState>;
+	scrollRef: RefObject<Map<string, number>>;
 	setChatMode: (
 		mode: "default" | "edit" | "reply",
 		target: Message | null,
@@ -45,6 +46,7 @@ export function ChatProvider({ children, chatId, listRef, composerRef }: { child
 		// eslint-disable-next-line @eslint-react/use-state
 		new Map<string, ChatState>(),
 	);
+	const scrollRef = useRef<Map<string, number>>(new Map());
 	const defaultState: ChatState = {
 		textEntry: "",
 		lastEntry: "",
@@ -96,6 +98,7 @@ export function ChatProvider({ children, chatId, listRef, composerRef }: { child
 			listRef,
 			composerRef,
 			chatsStates: states,
+			scrollRef,
 			setChatMode,
 			getChatMode,
 			setChatText,

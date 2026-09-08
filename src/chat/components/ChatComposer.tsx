@@ -232,7 +232,7 @@ function ChatComposer({
 			)}
 			{chatMode !== "default" && (
 				<div className="flex rounded-t-xl bg-back px-4 items-center justify-between">
-					<a className="text-sm text-muted hover:text-text cursor-pointer" onClick={() => { modeTargetEl?.scrollIntoView({ behavior: "smooth" }); }}>
+					<a className="text-sm text-muted hover:text-text cursor-pointer" onClick={() => { modeTargetEl?.scrollIntoView({ behavior: "smooth", block: "center" }); }}>
 						{chatMode === "edit" ? (<>
 							Editing a message - *Escap* to cancel
 						</>) : (<>

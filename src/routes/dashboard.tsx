@@ -6,15 +6,15 @@ import { UserReactContext } from "@/users/hooks/users.hooks";
 
 import type { Route } from "../+types/root";
 import Sidebar from "../components/Sidebar/Sidebar";
-import { UserContext } from "../users/api/users.api";
+import { type User, UserContext } from "../users/api/users.api";
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
-export function clientLoader({ context }: Route.LoaderArgs) {
+
+export function clientLoader({ context }: Route.ClientLoaderArgs): User | null {
 	return context.get(UserContext);
 }
 
 export default function Dashboard({
-	loaderData: user,
+	loaderData
 }: Route.ComponentProps): JSX.Element {
 	const connectChatHub = useChatHub((state) => state.connect);
 	connectChatHub();
@@ -24,7 +24,7 @@ export default function Dashboard({
 			<Sidebar />
 			<div className="h-full sm:pl-64 flex flex-col w-full items-center overflow-y-scroll">
 				<UserReactContext
-					value={typeof user === "undefined" ? null : user}
+					value={loaderData as unknown as User | null}
 				>
 					<Outlet />
 				</UserReactContext>
