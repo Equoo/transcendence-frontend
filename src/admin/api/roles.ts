@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { APIError, type ProblemDetail } from "../../api/problem_detail";
-import type { Perm } from "../components/AdminListRoles";
 
 export interface RoleInput {
 	name: string;
@@ -28,8 +27,6 @@ export enum PermEnum {
 	// Roles
 	HandleRoles = 32,
 
-
-    
 	// Knowledge
 	HandleKnowledge = 64,
 
@@ -100,22 +97,22 @@ function toPermInput(perm: number): PermInput {
 	return { permission: perm };
 }
 
+// eslint-disable-next-line @typescript-eslint/max-params
 export async function handleCheckbox(
-	box: React.MouseEvent<HTMLInputElement>,
-	role: Role,
-	perm: Perm,
+	IsChecked: string,
+	RoleId: string,
+	RolePerm: number,
+	CheckPerm: number,
 ): Promise<Response> {
 	let finalCode: number;
 
-	if (box.currentTarget.checked) {
-		// eslint-disable-next-line no-multi-assign
-		finalCode = role.permission += perm.code;
+	if (IsChecked === "true") {
+		finalCode = RolePerm + CheckPerm;
 	} else {
-		// eslint-disable-next-line no-multi-assign
-		finalCode = role.permission -= perm.code;
+		finalCode = RolePerm - CheckPerm;
 	}
 
-	const res = await fetch(`/api/roles/${role.id}/permission`, {
+	const res = await fetch(`/api/roles/${RoleId}/permission`, {
 		method: "PATCH",
 		headers: {
 			"Content-Type": "application/json",

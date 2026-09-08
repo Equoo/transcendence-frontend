@@ -30,6 +30,7 @@ export default [
 	route("/channels", "chat/routes/channel.route.tsx"),
 
 	route("/roles", "admin/routes/admin.role.route.tsx"),
+	route("/roles/check", "admin/routes/admin.role.route.check.tsx"),
 	route("/users", "admin/routes/admin.user.route.tsx"),
 	route("/users/disconnect", "admin/routes/admin.user.routeDisconnect.tsx"),
 ] satisfies RouteConfig;
