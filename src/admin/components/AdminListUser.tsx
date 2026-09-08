@@ -5,7 +5,6 @@ import type { Role } from "../api/roles";
 import { useFetcher } from "react-router";
 import Modal from "../../components/Modal";
 import CheckButton from "../../components/CheckButton";
-import { handleChange } from "../api/users";
 import type { clientAction } from "../routes/admin.user.route";
 export type Props = ComponentProps<"h1"> & {
 	className?: string;
@@ -152,7 +151,20 @@ export default function ListUsers({
 				<select
 					className="border-0 bg-surface appearance-none focus:border-0 focus:ring-0 hover:cursor-pointer hover:text-accent"
 					onChange={(event) => {
-						void handleChange(event, roles, user.id);
+						const role = roles.find(
+							(rl) => event.target.value === rl.name,
+						);
+
+						if (!role) {
+							return;
+						}
+						void fetcher.submit(
+							{
+								UserId: user.id,
+								RoleId: role.id,
+							},
+							{ method: "PATCH", action: "/users/disconnect" },
+						);
 					}}
 				>
 					{roles.map((rl) => (

@@ -150,37 +150,38 @@ function Sidebar({ user }: { user: User }): JSX.Element {
 							</div>
 						)}
 						{Boolean(user.role.permission & PermEnum.HandleUsers) &&
+						(Boolean(
+							user.role.permission & PermEnum.HandleUsers,
+						) ||
 							Boolean(
 								user.role.permission & PermEnum.HandleRoles,
-							) && (
-								<>
-									<li className="flex justify-center items-center">
-										---------- Admin Panel ----------
-									</li>
-									{Boolean(
-										user.role.permission &
-										PermEnum.HandleUsers,
-									) && (
-										<ItemCategory
-											to="/admin/users"
-											icon={PiUser}
-										>
-											Users
-										</ItemCategory>
-									)}
-									{Boolean(
-										user.role.permission &
-										PermEnum.HandleRoles,
-									) && (
-										<ItemCategory
-											to="/admin/roles"
-											icon={PiComputerTower}
-										>
-											Roles
-										</ItemCategory>
-									)}
-								</>
-							)}
+							)) && (
+							<>
+								<li className="flex justify-center items-center">
+									---------- Admin Panel ----------
+								</li>
+								{Boolean(
+									user.role.permission & PermEnum.HandleUsers,
+								) && (
+									<ItemCategory
+										to="/admin/users"
+										icon={PiUser}
+									>
+										Users
+									</ItemCategory>
+								)}
+								{Boolean(
+									user.role.permission & PermEnum.HandleRoles,
+								) && (
+									<ItemCategory
+										to="/admin/roles"
+										icon={PiComputerTower}
+									>
+										Roles
+									</ItemCategory>
+								)}
+							</>
+						)}
 					</ul>
 					<ProfileLine user={user} status edit />
 				</div>

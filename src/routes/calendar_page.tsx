@@ -21,16 +21,20 @@ import EventForm from "../events/components/EventForm";
 import EventList from "../events/components/EventList";
 import { type AppFile, fetchFiles } from "../files/api/files.api";
 import type { Route } from "./+types/calendar_page";
+import { UserContext, type User } from "../users/api/users.api";
+import { PermEnum } from "../admin/api/roles";
 
-export function clientLoader(): {
+export function clientLoader({ context }: Route.LoaderArgs): {
 	events: Promise<EventSummary[]>;
 	roles: Promise<EventRole[]>;
 	files: Promise<AppFile[]>;
+	user: User;
 } {
 	return {
 		events: fetchEvents(),
 		roles: fetchEventRoles(),
 		files: fetchFiles(),
+		user: context.get(UserContext),
 	};
 }
 
@@ -48,11 +52,16 @@ export default function Calendar({
 
 	return (
 		<main className="flex flex-col w-full items-center h-full mt-2">
-			<EventForm
-				roles={loaderData.roles}
-				files={loaderData.files}
-				className="w-fit ml-auto mr-2 mt-2"
-			/>
+			{Boolean(
+				// eslint-disable-next-line no-bitwise
+				loaderData.user.role.permission & PermEnum.HandleEvent,
+			) && (
+				<EventForm
+					roles={loaderData.roles}
+					files={loaderData.files}
+					className="w-fit ml-auto mr-2 mt-2"
+				/>
+			)}
 			<div className="xl:w-8/10 w-9/10 mt-2">
 				<div className="flex w-full items-center justify-between p-4">
 					<FiChevronLeft

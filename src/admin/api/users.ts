@@ -1,6 +1,5 @@
 import { APIError, type ProblemDetail } from "../../api/problem_detail";
 import type { User } from "../../users/api/users.api";
-import type { Role } from "./roles";
 
 export async function fetchUsers(): Promise<User[]> {
 	const res = await fetch("/api/users");
@@ -73,28 +72,20 @@ export async function handleRemoveUser(id: string): Promise<Response> {
 }
 
 export async function handleChange(
-	event: React.ChangeEvent<HTMLSelectElement>,
-	Roles: Role[],
 	UserId: string,
-): Promise<void> {
-	let res;
+	RoleId: string,
+): Promise<Response> {
+	const res = await fetch(`/api/users/${UserId}/role/${RoleId}`, {
+		method: "PATCH",
+		headers: {
+			"Content-Type": "application/json",
+		},
+	});
 
-	for (const role of Roles) {
-		if (role.name === event.target.value) {
-			// eslint-disable-next-line no-await-in-loop
-			res = await fetch(`/api/users/${UserId}/role/${role.id}`, {
-				method: "PATCH",
-				headers: {
-					"Content-Type": "application/json",
-				},
-			});
-
-			if (!res.ok) {
-				// eslint-disable-next-line no-await-in-loop
-				throw new APIError((await res.json()) as ProblemDetail);
-			}
-
-			break;
-		}
+	if (!res.ok) {
+		// eslint-disable-next-line no-await-in-loop
+		throw new APIError((await res.json()) as ProblemDetail);
 	}
+
+	return res;
 }
