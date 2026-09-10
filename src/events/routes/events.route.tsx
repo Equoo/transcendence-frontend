@@ -11,6 +11,7 @@ import {
 	fetchEventRoles,
 	type EventRole,
 } from "../api/event_roles.api";
+import { APIError } from "../../api/problem_detail";
 
 async function upsertRoleIds(
 	roles: EventRole[],
@@ -42,26 +43,35 @@ export async function clientAction({
 }: Route.ClientActionArgs) {
 	let res;
 
-	if (request.method === "DELETE") {
-		if (!params.eventId) {
-			throw new Error("Event ID is required for deletion");
+	try {
+		if (request.method === "DELETE") {
+			if (!params.eventId) {
+				throw new Error("Event ID is required for deletion");
+			}
+			res = await deleteEvent(params.eventId);
+			return data(res);
 		}
-		res = await deleteEvent(params.eventId);
-		return data(res);
-	}
-	const event = toEventInput(await request.formData());
-	const rolesPromise = fetchEventRoles();
-	const roles = await rolesPromise;
+		const event = toEventInput(await request.formData());
+		const rolesPromise = fetchEventRoles();
+		const roles = await rolesPromise;
 
-	event.eventRoleIds = await upsertRoleIds(roles, event.eventRoleIds);
+		event.eventRoleIds = await upsertRoleIds(roles, event.eventRoleIds);
 
-	if (request.method === "POST") {
-		res = await createEvent(event);
-	} else if (request.method === "PUT") {
-		if (!params.eventId) {
-			throw new Error("Event ID is required for update");
+		if (request.method === "POST") {
+			res = await createEvent(event);
+		} else if (request.method === "PUT") {
+			if (!params.eventId) {
+				throw new Error("Event ID is required for update");
+			}
+			res = await updateEvent(event, params.eventId);
 		}
-		res = await updateEvent(event, params.eventId);
+	} catch (err) {
+		if (err instanceof APIError) {
+			if (err.problem.status === 400) {
+				return data(err);
+			}
+		}
+		throw err;
 	}
 
 	return data(res);
