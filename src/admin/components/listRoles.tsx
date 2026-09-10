@@ -1,3 +1,9 @@
+import {
+	ListRow,
+	ListCell,
+	ListActions,
+	ListAction,
+} from "../../components/List";
 import type { JSX } from "react/jsx-runtime";
 import { RolesBox } from "./checkbox";
 import type { Role } from "../api/roles";
@@ -33,35 +39,33 @@ export default function ListRoles({
 	];
 
 	return (
-		<tr className="text-sm text-body border-b rounded-base border-border">
-			<td className="px-6 font-medium py-5">{role.name}</td>
+		<ListRow>
+			<ListCell rowHeader>{role.name}</ListCell>
 			{checkboxes.map((check) => (
-				<RolesBox role={role} perm={check} key={role.id}></RolesBox>
+				<RolesBox role={role} perm={check} key={check.code}></RolesBox>
 			))}
-			<td className="space-x-10 w-10/20  px-6 py-3 font-medium text-center">
+			<ListCell>
 				{role.name !== "Member" && (
-					<>
-						<PiTrash
-							size={26}
-							color="var(--color-text2)"
-							className="hover:cursor-pointer"
+					<ListActions>
+						<ListAction
 							onClick={() => {
 								setRoleId(role.id);
 								setShowConfirmation(true);
 							}}
-						/>
-						<TbPencil
-							size={26}
-							color="var(--color-text2)"
-							className={`cursor-pointer`}
+						>
+							<PiTrash size={22} />
+						</ListAction>
+						<ListAction
 							onClick={() => {
 								setRoleId(role.id);
 								setShowChangeRole(true);
 							}}
-						/>
-					</>
+						>
+							<TbPencil size={22} />
+						</ListAction>
+					</ListActions>
 				)}
-			</td>
-		</tr>
+			</ListCell>
+		</ListRow>
 	);
 }

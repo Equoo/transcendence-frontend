@@ -6,7 +6,7 @@ import {
 	fetchRoles,
 	toRoleInput,
 } from "../api/roles";
-import List from "../components/list";
+import List from "../../components/List";
 import type { Route } from "./+types/admin_users";
 import ListRoles from "../components/listRoles";
 import CheckButton from "../../components/CheckButton";
@@ -167,17 +167,46 @@ export default function AdminRoles({
 						</CheckButton>
 					</div>
 					<List
-						headers={[
-							"Role",
-							"IsAdmin",
-							"HandleEvent",
-							"GetUser",
-							"InviteUser",
-							"ChangeUsername",
-							"DeleteUser",
-							"ResetPassword",
-							"HandleChannel",
-							"Actions",
+						empty={loaderData.roles.length === 0}
+						emptyMessage="No roles to display."
+						cols={[
+							{ id: "Role", pos: "text-left" },
+							{
+								id: "IsAdmin",
+								pos: "text-center",
+							},
+							{
+								id: "HandleEvent",
+								pos: "text-center",
+							},
+							{
+								id: "GetUser",
+								pos: "text-center",
+							},
+							{
+								id: "InviteUser",
+								pos: "text-center",
+							},
+							{
+								id: "ChangeUsername",
+								pos: "text-center",
+							},
+							{
+								id: "DeleteUser",
+								pos: "text-center",
+							},
+							{
+								id: "ResetPassword",
+								pos: "text-center",
+							},
+							{
+								id: "HandleChannel",
+								pos: "text-center",
+							},
+							{
+								id: "Actions",
+								pos: "text-right",
+							},
 						]}
 					>
 						{loaderData.roles.map((rls) => (

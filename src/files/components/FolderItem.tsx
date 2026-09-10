@@ -1,3 +1,9 @@
+import {
+	ListRow,
+	ListCell,
+	ListActions,
+	ListAction,
+} from "../../components/List";
 import type { JSX } from "react";
 import { PiDotsThreeVerticalBold } from "react-icons/pi";
 import { FcFolder } from "react-icons/fc";
@@ -10,23 +16,33 @@ export default function FolderItem({
 	onClick: (name: string) => void;
 }): JSX.Element {
 	return (
-		<tr className="bg-surface border-b border-border">
-			<th
-				scope="row"
-				className="flex items-center gap-2 pl-2.5 pr-6 py-4 font-medium text-text whitespace-nowrap"
-				onClick={() => {
-					onClick(name);
-				}}
-			>
-				<FcFolder />
-				<p className="hover:underline hover:cursor-pointer">{name}</p>
-			</th>
-			<td className="px-6 py-4">Folder</td>
-			<td className="px-6 py-4">-</td>
-			<td className="py-4">-</td>
-			<td className="py-4">
-				<PiDotsThreeVerticalBold size={18} />
-			</td>
-		</tr>
+		<ListRow>
+			<ListCell rowHeader>
+				<ListAction
+					onClick={() => {
+						onClick(name);
+					}}
+					className="gap-2 whitespace-nowrap"
+				>
+					<FcFolder aria-hidden="true" />
+					{name}
+				</ListAction>
+			</ListCell>
+			<ListCell>Folder</ListCell>
+			<ListCell>-</ListCell>
+			<ListCell>-</ListCell>
+			<ListCell>
+				<ListActions>
+					<ListAction
+						aria-label={`Open folder ${name}`}
+						onClick={() => {
+							onClick(name);
+						}}
+					>
+						<PiDotsThreeVerticalBold size={18} />
+					</ListAction>
+				</ListActions>
+			</ListCell>
+		</ListRow>
 	);
 }

@@ -1,3 +1,9 @@
+import {
+	ListRow,
+	ListCell,
+	ListActions,
+	ListAction,
+} from "../../components/List";
 import type { User } from "../../users/api/users.api";
 import type { ComponentProps, JSX } from "react";
 
@@ -66,56 +72,47 @@ export default function ListUsers({
 	setUserName: React.Dispatch<React.SetStateAction<string>>;
 }): JSX.Element {
 	return (
-		<tr className="text-sm text-body  border-b rounded-base border-border">
-			<td className="px-6 py-3 font-medium ">{user.userName}</td>
-			<td className="px-6 py-3 font-medium text-center">
+		<ListRow>
+			<ListCell rowHeader>{user.userName}</ListCell>
+			<ListCell pos="text-center">
 				<select
+					aria-label={`Role for ${user.userName}`}
+					defaultValue={user.role.name}
 					className="border-0 bg-surface appearance-none focus:border-0 focus:ring-0 hover:cursor-pointer hover:text-accent"
 					onChange={(event) => {
 						void handleChange(event, roles, user.id);
 					}}
 				>
 					{roles.map((rl) => (
-						<option
-							selected={rl.name === user.role.name}
-							key={rl.id}
-						>
-							{rl.name}
-						</option>
+						<option key={rl.id}>{rl.name}</option>
 					))}
 				</select>
-			</td>
-			<td className="space-x-10 w-10/20  px-6 py-3 font-medium text-center">
-				<button
-					type="submit"
-					className="hover:text-accent hover:cursor-pointer"
-					onClick={() => {
-						setShowConfirmation(true);
-						setUserId(user.id);
-						setUserName(user.userName);
-					}}
-				>
-					Remove User
-				</button>
-				<button
-					type="submit"
-					className="hover:text-accent hover:cursor-pointer"
-					onClick={() => {
-						setShowChangePass(true);
-						setUserId(user.id);
-						setUserName(user.userName);
-					}}
-				>
-					Reset Password
-				</button>
-				<button
-					type="submit"
-					className="hover:text-accent hover:cursor-pointer"
-					onClick={() => void handleDisconnect(user.id)}
-				>
-					Disconnect
-				</button>
-			</td>
-		</tr>
+			</ListCell>
+			<ListCell>
+				<ListActions>
+					<ListAction
+						onClick={() => {
+							setShowConfirmation(true);
+							setUserId(user.id);
+							setUserName(user.userName);
+						}}
+					>
+						Remove User
+					</ListAction>
+					<ListAction
+						onClick={() => {
+							setShowChangePass(true);
+							setUserId(user.id);
+							setUserName(user.userName);
+						}}
+					>
+						Reset Password
+					</ListAction>
+					<ListAction onClick={() => void handleDisconnect(user.id)}>
+						Disconnect
+					</ListAction>
+				</ListActions>
+			</ListCell>
+		</ListRow>
 	);
 }

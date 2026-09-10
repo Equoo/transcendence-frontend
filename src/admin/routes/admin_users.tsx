@@ -4,7 +4,7 @@ import { PiMagnifyingGlass } from "react-icons/pi";
 import type { Route } from "./+types/admin_users";
 import { fetchRoles } from "../api/roles";
 import { APIError, type ProblemDetail } from "../../api/problem_detail";
-import List from "../components/list";
+import List from "../../components/List";
 import { useEffect, useState, type JSX } from "react";
 import CheckButton from "../../components/CheckButton";
 import Modal from "../../components/Modal";
@@ -169,7 +169,21 @@ export default function AdminUsers({
 								<PiMagnifyingGlass className="m-5 size-5"></PiMagnifyingGlass>
 							</div>
 						</div>
-						<List headers={["Username", "Role", "Actions"]}>
+						<List
+							empty={loaderData.users.length === 0}
+							emptyMessage="No users to display."
+							cols={[
+								{
+									id: "Username",
+									pos: "text-left",
+								},
+								{ id: "Role", pos: "text-center" },
+								{
+									id: "Actions",
+									pos: "text-right",
+								},
+							]}
+						>
 							{loaderData.users.map((usr) => (
 								<ListUsers
 									setUserName={setUserName}
