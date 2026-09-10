@@ -70,7 +70,15 @@ export function AuthLogo({ side }: { side: Side }): JSX.Element {
 	);
 }
 
-export function AuthForm({ btnName }: { btnName: string }): JSX.Element {
+export function AuthForm({
+	btnName,
+	code,
+	register = false,
+}: {
+	btnName: string;
+	code?: string | null;
+	register?: boolean;
+}): JSX.Element {
 	const navigation = useNavigation();
 
 	return (
@@ -80,6 +88,7 @@ export function AuthForm({ btnName }: { btnName: string }): JSX.Element {
 				placeholder="Username"
 				type="text"
 				name="Username"
+				required
 			>
 				<PiUser className="ml-2 mr-2" />
 			</Input>
@@ -88,9 +97,21 @@ export function AuthForm({ btnName }: { btnName: string }): JSX.Element {
 				placeholder="Password"
 				type="password"
 				name="Password"
+				required
 			>
 				<PiLock className="ml-2 mr-2" />
 			</Input>
+			{register && (
+				<Input
+					className="h-12"
+					placeholder="Invitation Code"
+					value={code ?? ""}
+					grayed={Boolean(code)}
+					type="text"
+					name="Code"
+					required
+				/>
+			)}
 			<div className="flex justify-center w-full ">
 				<CheckButton
 					pending={navigation.state !== "idle"}

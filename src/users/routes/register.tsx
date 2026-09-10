@@ -1,5 +1,5 @@
 import type { JSX } from "react";
-import { redirect, Form } from "react-router";
+import { redirect, Form, useLocation } from "react-router";
 import { AuthForm, AuthLogo, AuthTitle } from "../components/AuthForm";
 import type { Route } from "./+types/register";
 
@@ -11,19 +11,16 @@ interface RegisterInput {
 
 export type UserResult = { ok: true } | { ok: false };
 
-function toUserInput(formData: FormData, code: string): RegisterInput {
+function toUserInput(formData: FormData): RegisterInput {
 	return {
 		username: formData.get("Username") as string,
 		password: formData.get("Password") as string,
-		invitationCode: code,
+		invitationCode: formData.get("Code") as string,
 	};
 }
 
-async function registerUser(
-	formData: FormData,
-	code: string,
-): Promise<UserResult> {
-	const object = toUserInput(formData, code);
+async function registerUser(formData: FormData): Promise<UserResult> {
+	const object = toUserInput(formData);
 
 	const response = await fetch("/api/auth/register", {
 		method: "POST",
@@ -48,13 +45,16 @@ export async function clientAction({
 	if (code === null) {
 		return redirect("/login");
 	}
-	if (!(await registerUser(await request.formData(), code)).ok) {
+	if (!(await registerUser(await request.formData())).ok) {
 		return { ok: false };
 	}
 	return redirect("/");
 }
 
 export default function Register(): JSX.Element {
+	const location = useLocation();
+	const code = new URLSearchParams(location.search).get("invitation");
+
 	return (
 		<div className="flex items-center justify-center w-full h-full bg-back gap-20">
 			<AuthLogo side={"l"} />
@@ -67,7 +67,7 @@ export default function Register(): JSX.Element {
 						nameLink="Log in"
 						link="/login"
 					/>
-					<AuthForm btnName={"Register"} />
+					<AuthForm btnName={"Register"} register code={code} />
 				</Form>
 			</div>
 		</div>
