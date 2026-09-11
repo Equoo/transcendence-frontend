@@ -13,6 +13,7 @@ import { ToastContainer } from "react-toastify";
 
 import type { Route } from "./+types/root";
 import { UserContext, userFetcher } from "./users/api/users.api";
+import { PermEnum } from "./admin/api/roles";
 
 const alertStyle = {
 	success: "bg-good-soft text-good",
@@ -31,6 +32,16 @@ export const clientMiddleware: Route.MiddlewareFunction[] = [
 			context.set(UserContext, user);
 			if (url.pathname === "/login" || url.pathname === "/register") {
 				return redirect("/");
+			}
+			if (url.pathname === "/admin/roles") {
+				if (!(user.role.permission & PermEnum.HandleRoles)) {
+					return redirect("/");
+				}
+			}
+			if (url.pathname === "/admin/users") {
+				if (!(user.role.permission & PermEnum.HandleUsers)) {
+					return redirect("/");
+				}
 			}
 		} else if (url.pathname !== "/login" && url.pathname !== "/register") {
 			return redirect("/login");
@@ -59,7 +70,8 @@ export function Layout({ children }: { children: ReactNode }): JSX.Element {
 					newestOnTop
 					pauseOnHover
 					toastClassName={(context) =>
-						`${alertStyle[context?.type ?? "default"]
+						`${
+							alertStyle[context?.type ?? "default"]
 						} relative flex px-4 gap-1 py-2 min-h-10 rounded-lg justify-between overflow-hidden cursor-pointer`
 					}
 				/>

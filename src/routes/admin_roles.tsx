@@ -1,6 +1,6 @@
 import { useEffect, useState, type JSX } from "react";
 import { fetchRoles, PermEnum } from "../admin/api/roles";
-import List from "../components/List";
+import List, { type ListColumn } from "../components/List";
 import ListRoles from "../admin/components/AdminListRoles";
 import CheckButton from "../components/CheckButton";
 import Modal from "../components/Modal";
@@ -29,17 +29,20 @@ export default function AdminRoles({
 		}
 	}, [fetcher.data]);
 
-	const headers: string[] = ["Name"];
+	const headers: ListColumn[] = [];
+
+	headers.push({ id: "Name" });
 
 	for (const key in PermEnum) {
 		if (!isNaN(Number(key))) {
 			// eslint-disable-next-line no-continue
 			continue;
 		}
-		headers.push(key);
+		const col = { id: key } as ListColumn;
+		headers.push(col);
 	}
 
-	headers.push("Actions");
+	headers.push({ id: "Action" });
 
 	return (
 		<>
@@ -82,7 +85,7 @@ export default function AdminRoles({
 							Add Role
 						</CheckButton>
 					</div>
-					<List headers={headers}>
+					<List cols={headers}>
 						{loaderData.roles.map((rls) => (
 							<ListRoles key={rls.id} role={rls}></ListRoles>
 						))}

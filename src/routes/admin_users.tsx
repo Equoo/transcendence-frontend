@@ -33,7 +33,16 @@ export default function AdminUsers({
 							<PiMagnifyingGlass className="m-5 size-5"></PiMagnifyingGlass>
 						</div>
 					</div>
-					<List headers={["Username", "Role", "Actions"]}>
+					<List
+						cols={[
+							{ id: "Username" },
+							{ id: "Role" },
+							{ id: "Action" },
+						]}
+                        empty={loaderData.users.length === 0}
+
+                        emptyMessage="No user to display."
+					>
 						{loaderData.users.map((usr) => (
 							<ListUsers
 								key={usr.id}

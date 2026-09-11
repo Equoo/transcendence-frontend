@@ -135,7 +135,7 @@ function Sidebar({ user }: { user: User }): JSX.Element {
 							Upcoming
 						</li>
 					</ul>
-					<ul className="border-b-2 border-t-2 border-border2 mt-auto">
+					<div className="border-b-2 border-t-2 border-border2 mt-auto">
 						{user.role.permission & 1 && (
 							<div className="mt-1 font-medium text-muted text-[14.5px]">
 								<ItemCategory to="/admin/users" icon={PiUser}>
@@ -150,40 +150,39 @@ function Sidebar({ user }: { user: User }): JSX.Element {
 							</div>
 						)}
 						{Boolean(user.role.permission & PermEnum.HandleUsers) &&
-						(Boolean(
-							user.role.permission & PermEnum.HandleUsers,
-						) ||
-							Boolean(
-								user.role.permission & PermEnum.HandleRoles,
-							)) && (
-							<>
-								<li className="flex justify-center items-center">
-									---------- Admin Panel ----------
-								</li>
-								{Boolean(
-									user.role.permission & PermEnum.HandleUsers,
-								) && (
-									<ItemCategory
-										to="/admin/users"
-										icon={PiUser}
-									>
-										Users
-									</ItemCategory>
-								)}
-								{Boolean(
+							(Boolean(
+								user.role.permission & PermEnum.HandleUsers,
+							) ||
+								Boolean(
 									user.role.permission & PermEnum.HandleRoles,
-								) && (
-									<ItemCategory
-										to="/admin/roles"
-										icon={PiComputerTower}
-									>
-										Roles
-									</ItemCategory>
-								)}
-							</>
-						)}
-					</ul>
-					<ProfileLine user={user} status edit />
+								)) && (
+								<ul className="border-b pb-1 border-border2">
+									{Boolean(
+										user.role.permission &
+										PermEnum.HandleUsers,
+									) && (
+										<ItemCategory
+											to="/admin/users"
+											icon={PiUser}
+										>
+											Users
+										</ItemCategory>
+									)}
+									{Boolean(
+										user.role.permission &
+										PermEnum.HandleRoles,
+									) && (
+										<ItemCategory
+											to="/admin/roles"
+											icon={PiComputerTower}
+										>
+											Roles
+										</ItemCategory>
+									)}
+								</ul>
+							)}
+						<ProfileLine user={user} />
+					</div>
 				</div>
 			</aside>
 		</>
