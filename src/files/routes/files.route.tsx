@@ -8,6 +8,9 @@ export async function clientAction({ request }: Route.ClientActionArgs) {
 	const res = await createFile(await request.formData());
 
 	if (!res.ok) {
+		if (res.status === 400) {
+			return data(new APIError((await res.json()) as ProblemDetail));
+		}
 		throw new APIError((await res.json()) as ProblemDetail);
 	}
 
