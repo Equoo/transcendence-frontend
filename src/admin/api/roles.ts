@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { APIError, type ProblemDetail } from "../../api/problem_detail";
 
 export interface RoleInput {

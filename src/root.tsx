@@ -34,11 +34,13 @@ export const clientMiddleware: Route.MiddlewareFunction[] = [
 				return redirect("/");
 			}
 			if (url.pathname === "/admin/roles") {
+				// eslint-disable-next-line no-bitwise
 				if (!(user.role.permission & PermEnum.HandleRoles)) {
 					return redirect("/");
 				}
 			}
 			if (url.pathname === "/admin/users") {
+				// eslint-disable-next-line no-bitwise
 				if (!(user.role.permission & PermEnum.HandleUsers)) {
 					return redirect("/");
 				}

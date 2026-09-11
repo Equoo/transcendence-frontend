@@ -83,7 +83,6 @@ export async function handleChange(
 	});
 
 	if (!res.ok) {
-		// eslint-disable-next-line no-await-in-loop
 		throw new APIError((await res.json()) as ProblemDetail);
 	}
 
