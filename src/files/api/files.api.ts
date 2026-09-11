@@ -1,5 +1,4 @@
 import { APIError, type ProblemDetail } from "../../api/problem_detail";
-import type { User } from "../../users/api/users.api";
 
 export interface AppFile {
 	key: string;
@@ -8,7 +7,6 @@ export interface AppFile {
 	etag: string;
 	contentType: string;
 	lastUpdated: string;
-	creator: User;
 }
 
 export interface FileInput {

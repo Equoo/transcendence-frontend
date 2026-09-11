@@ -17,7 +17,6 @@ export default function FileItem({ file }: { file: AppFile }): JSX.Element {
 			</ListCell>
 			<ListCell>{file.contentType}</ListCell>
 			<ListCell>{file.length}</ListCell>
-			<ListCell>{file.creator.userName}</ListCell>
 			<ListCell>
 				<ListActions>
 					<Link

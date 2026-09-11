@@ -34,13 +34,13 @@ export default function ProfilePic({
 			{user.avatar ? (
 				<img
 					src={`/api/files/${user.avatar.key}`}
-					className={`rounded-full w-10 h-10 mt-0.5 ${className}`}
+					className={`rounded-full w-10 h-10 mt-0.5 ${className} border-2 border-accent-text`}
 					style={{ zIndex: idx }}
 				/>
 			) : (
 				<div
 					className={`w-10 h-10 text-accent-text flex items-center justify-center rounded-full pb-1
-					font-semibold text-lg border-3 border-accent-text ${className}`}
+					font-semibold text-lg border-2 border-accent-text ${className}`}
 					style={{ zIndex: idx, backgroundColor }}
 				>
 					{user.userName.substring(0, 2)}

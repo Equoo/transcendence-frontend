@@ -15,7 +15,6 @@ export default function FileList({ files }: { files: AppFile[] }): JSX.Element {
 				{ id: "Name" },
 				{ id: "Type" },
 				{ id: "Size" },
-				{ id: "Creator" },
 				{ id: "Actions", pos: "text-right" },
 			]}
 			empty={
