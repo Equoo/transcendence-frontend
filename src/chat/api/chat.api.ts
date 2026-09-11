@@ -35,6 +35,11 @@ export interface Channel {
 	messages: Message[];
 	ackTime?: Date | null;
 }
+export interface ChannelSummary {
+	id: string;
+	name: string;
+	createAt: Date;
+}
 
 export async function fetchChannels(): Promise<Channel[] | null> {
 	if (Object.keys(useChat.getState().channels).length !== 0) {

@@ -2,6 +2,8 @@ import type { JSX } from "react";
 import { FiChevronLeft } from "react-icons/fi";
 import { data, Link, useNavigate } from "react-router";
 
+import ChannelChat from "@/chat/components/ChannelChat";
+
 import EventBadge from "../components/Badge";
 import ProfilePic from "../components/ProfilePic";
 import { fetchEvent } from "../events/api/events.api";
@@ -118,7 +120,7 @@ export default function EventDetails({
 						))}
 					</div>
 				</div>
-				<div className=""></div>
+				<ChannelChat channelId={event.channel.id}></ChannelChat>
 			</div>
 		</div>
 	);

@@ -7,9 +7,9 @@ import IconBtn from "@/components/IconBtn";
 import Modal from "@/components/Modal";
 import { useUser } from "@/users/hooks/users.hooks";
 
-import { type Message, removeMessage } from "../api/chat.api";
-import { useChat } from "../hooks/chat.hook";
-import { useChatContext } from "./ChatProvider";
+import { type Message, removeMessage } from "../../api/chat.api";
+import { useChat } from "../../hooks/chat.hook";
+import { useChatContext } from "../ChatProvider";
 
 export interface MessageActionBarHandles {
 	show: (

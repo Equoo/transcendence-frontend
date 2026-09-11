@@ -10,7 +10,7 @@ import { useUser } from "@/users/hooks/users.hooks";
 import { type Message, sendMessage, updateMessage } from "../api/chat.api";
 import ChatComposer, { type ChatComposerHandles } from "./ChatComposer";
 import { ChatProvider } from "./ChatProvider";
-import MessageList, { type MessageListHandles } from "./MessageList";
+import MessageList, { type MessageListHandles } from "./Messages/MessageList";
 
 function ChannelChat({ channelId }: { channelId: string }): JSX.Element {
 	const channel = useChat((state) => state.channels[channelId]);

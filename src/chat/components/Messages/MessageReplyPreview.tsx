@@ -2,7 +2,7 @@ import type { JSX } from "react/jsx-runtime";
 
 import ProfilePic from "@/components/ProfilePic";
 
-import type { Message } from "../api/chat.api";
+import type { Message } from "../../api/chat.api";
 
 /** Compact preview of the message a reply points to. */
 function MessageReplyPreview({ message }: { message: Message }): JSX.Element {

@@ -2,7 +2,7 @@ import { createContext, type JSX, type ReactNode, type RefObject, use, useMemo, 
 
 import type { Message } from "../api/chat.api";
 import type { ChatComposerHandles } from "./ChatComposer";
-import type { MessageListHandles } from "./MessageList";
+import type { MessageListHandles } from "./Messages/MessageList";
 
 interface ChatState {
 	textEntry: string;

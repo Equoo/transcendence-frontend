@@ -2,7 +2,7 @@ import { type RefObject, useCallback, useEffect, useRef, useState } from "react"
 import { useShallow } from "zustand/react/shallow";
 
 import { fetchMessages } from "../api/chat.api";
-import type { MessageActionBarHandles } from "../components/MessageActionBar";
+import type { MessageActionBarHandles } from "../components/Messages/MessageActionBar";
 import { useChat } from "./chat.hook";
 
 const SCROLL_THRESHOLD_PX = 50;

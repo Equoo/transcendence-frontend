@@ -1,3 +1,5 @@
+import type { ChannelSummary } from "@/chat/api/chat.api";
+
 import { APIError, type ProblemDetail } from "../../api/problem_detail";
 import type { AppFile } from "../../files/api/files.api";
 import type { User } from "../../users/api/users.api";
@@ -18,6 +20,7 @@ export interface EventData {
 	files: AppFile[];
 	registeredCount: number;
 	isRegistered: boolean;
+	channel: ChannelSummary;
 }
 
 export interface EventSummary {

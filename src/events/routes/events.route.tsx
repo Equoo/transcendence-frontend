@@ -1,5 +1,8 @@
 import { data } from "react-router";
 
+import type { Channel } from "@/chat/api/chat.api";
+import { useChat } from "@/chat/hooks/chat.hook";
+
 import {
 	createEventRole,
 	type EventRole,
@@ -39,6 +42,8 @@ export async function clientAction({ request }: Route.ClientActionArgs) {
 
 	event.eventRoleIds = await upsertRoleIds(roles, event.eventRoleIds);
 	const res = await createEvent(event);
+
+	useChat.getState().addChannel(res.channel as unknown as Channel);
 
 	return data(res, { status: 201 });
 }

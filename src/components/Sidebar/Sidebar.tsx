@@ -107,7 +107,7 @@ function Sidebar(): JSX.Element {
 						<ChannelForm></ChannelForm>
 						<Suspense fallback={<ChannelListSkeleton />}>
 							<Await resolve={fetchChannels()}>
-								{channels.map((channel) => (
+								{channels.map((channel) => !channel.eventId && (
 									<ItemChannel
 										key={channel.id}
 										channel={channel}

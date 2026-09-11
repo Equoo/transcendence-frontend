@@ -1,7 +1,7 @@
 import type { JSX } from "react";
 import { Outlet } from "react-router";
 
-import { useChatHub } from "@/chat/hooks/chat_hub.hook";
+import { useChatHub } from "@/chat/hooks/chatHub.hook";
 import { UserReactContext } from "@/users/hooks/users.hooks";
 
 import type { Route } from "../+types/root";

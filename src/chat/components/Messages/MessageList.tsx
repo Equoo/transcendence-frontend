@@ -12,13 +12,13 @@ import { useShallow } from "zustand/react/shallow";
 import { useChat } from "@/chat/hooks/chat.hook";
 import { useUser } from "@/users/hooks/users.hooks";
 
-import type { Channel } from "../api/chat.api";
-import { useAutoScroll } from "../hooks/useAutoScroll";
-import { useMessagePagination } from "../hooks/useMessagePagination";
-import { useReadReceipts } from "../hooks/useReadReceipts";
-import { useScrollRestoration } from "../hooks/useScrollRestoration";
-import { startsNewDay, startsNewGroup } from "../utils/messageGrouping";
-import { useChatContext } from "./ChatProvider";
+import type { Channel } from "../../api/chat.api";
+import { useAutoScroll } from "../../hooks/useAutoScroll.hook";
+import { useMessagePagination } from "../../hooks/useMessagePagination.hook";
+import { useReadReceipts } from "../../hooks/useReadReceipts.hook";
+import { useScrollRestoration } from "../../hooks/useScrollRestoration.hook";
+import { startsNewDay, startsNewGroup } from "../../utils/message.util";
+import { useChatContext } from "../ChatProvider";
 import MessageActionBar, {
 	type MessageActionBarHandles,
 } from "./MessageActionBar";
