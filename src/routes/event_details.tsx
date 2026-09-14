@@ -17,20 +17,26 @@ import EventRegisterBtn from "../events/components/EventRegisterBtn";
 import type { clientAction } from "../events/routes/events.route";
 import { fetchFiles } from "../files/api/files.api";
 import type { Route } from "./+types/event_details";
+import { UserContext } from "../users/api/users.api";
+import { PermEnum } from "../admin/api/roles";
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
-export async function clientLoader({ params }: Route.ClientLoaderArgs) {
+export async function clientLoader({
+	params,
+	context,
+}: Route.ClientLoaderArgs) {
 	const res = await fetchEvent(params.eventId);
 
 	return {
 		event: res,
 		roles: fetchEventRoles(),
 		files: fetchFiles(),
+		user: context.get(UserContext),
 	};
 }
 
 export default function EventDetails({
-	loaderData: { event, roles, files },
+	loaderData: { event, roles, files, user },
 }: Route.ComponentProps): JSX.Element {
 	const fetcher = useFetcher<typeof clientAction>();
 	const navigate = useNavigate();
@@ -107,15 +113,24 @@ export default function EventDetails({
 							{dateString}
 						</div>
 					</div>
-					<EventForm edit roles={roles} files={files} event={event} />
-					<PiTrash
-						size={26}
-						color="var(--color-text2)"
-						className="hover:cursor-pointer"
-						onClick={() => {
-							setShowConfirmation(true);
-						}}
-					/>
+					{Boolean(user.role.permission & PermEnum.HandleEvent) && (
+						<>
+							<EventForm
+								edit
+								roles={roles}
+								files={files}
+								event={event}
+							/>
+							<PiTrash
+								size={26}
+								color="var(--color-text2)"
+								className="hover:cursor-pointer"
+								onClick={() => {
+									setShowConfirmation(true);
+								}}
+							/>
+						</>
+					)}
 				</div>
 				<EventRegisterBtn event={event} className="ml-auto shrink-0" />
 			</div>
