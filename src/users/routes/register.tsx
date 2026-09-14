@@ -1,5 +1,6 @@
 import type { JSX } from "react";
-import { redirect, Form, useLocation } from "react-router";
+import { Form, redirect, useLocation } from "react-router";
+
 import { AuthForm, AuthLogo, AuthTitle } from "../components/AuthForm";
 import type { Route } from "./+types/register";
 

@@ -1,13 +1,17 @@
 import type { JSX } from "react";
 import { isRouteErrorResponse, Outlet } from "react-router";
-import Sidebar from "../components/Sidebar/Sidebar";
-import { UserContext } from "../users/api/users.api";
 
-import { APIError } from "../api/problem_detail";
+import { APIError } from "@/api/problem_detail";
+import { useChatHub } from "@/chat/hooks/chatHub.hook";
+import { UserReactContext } from "@/users/hooks/users.hooks";
+
+import Sidebar from "../components/Sidebar/Sidebar";
+import { type User, UserContext } from "../users/api/users.api";
 import type { Route } from "./+types/dashboard";
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
-export function clientLoader({ context }: Route.LoaderArgs) {
+export function clientLoader({ context }: Route.ClientLoaderArgs): {
+	user: User;
+} {
 	const user = context.get(UserContext);
 	return { user };
 }
@@ -15,11 +19,16 @@ export function clientLoader({ context }: Route.LoaderArgs) {
 export default function Dashboard({
 	loaderData,
 }: Route.ComponentProps): JSX.Element {
+	const connectChatHub = useChatHub((state) => state.connect);
+	connectChatHub();
+
 	return (
 		<div className="relative w-full h-full overflow-hidden bg-back">
 			<Sidebar user={loaderData.user} />
 			<div className="h-full sm:pl-64 flex flex-col w-full items-center overflow-y-scroll">
-				<Outlet />
+				<UserReactContext value={loaderData.user}>
+					<Outlet />
+				</UserReactContext>
 			</div>
 		</div>
 	);

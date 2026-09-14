@@ -1,10 +1,11 @@
-import { useEffect, useState, type JSX } from "react";
+import { type JSX, useEffect, useState } from "react";
+import { useFetcher } from "react-router";
+
+import { APIError, type ValidationErrors } from "../../api/problem_detail";
+import CheckButton from "../../components/CheckButton";
+import { Input } from "../../components/Input";
 import Modal from "../../components/Modal";
 import type { clientAction as filesAction } from "../routes/files.route";
-import { useFetcher } from "react-router";
-import { Input } from "../../components/Input";
-import CheckButton from "../../components/CheckButton";
-import { APIError, type ValidationErrors } from "../../api/problem_detail";
 
 export default function FileUpload({
 	onClose,
@@ -24,7 +25,7 @@ export default function FileUpload({
 				onClose();
 			}
 		}
-	}, [filesFetcher.data]);
+	}, [filesFetcher.data, onClose]);
 	return (
 		<Modal title="Upload a file" onClose={onClose}>
 			<filesFetcher.Form

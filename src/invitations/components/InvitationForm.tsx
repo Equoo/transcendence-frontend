@@ -1,9 +1,10 @@
-import { useEffect, useState, type JSX } from "react";
-import { useFetcher } from "react-router";
-import CheckButton from "../../components/CheckButton";
-import Modal from "../../components/Modal";
-import { Input } from "../../components/Input";
+import { type JSX, useState } from "react";
 import { PiPlusBold } from "react-icons/pi";
+import { useFetcher } from "react-router";
+
+import CheckButton from "../../components/CheckButton";
+import { Input } from "../../components/Input";
+import Modal from "../../components/Modal";
 import type { clientAction as invitationAction } from "../routes/invitations.route";
 
 export default function InvitationForm({
@@ -14,15 +15,19 @@ export default function InvitationForm({
 	const [link, setLink] = useState("");
 	const invitationFetcher = useFetcher<typeof invitationAction>();
 	const [showInvitationForm, setShowInvitationForm] = useState(false);
+	const [prevFetcherState, setPrevFetcherState] = useState(
+		invitationFetcher.state,
+	);
 
-	useEffect(() => {
-		if (invitationFetcher.data) {
-			// eslint-disable-next-line @eslint-react/set-state-in-effect
+	if (prevFetcherState !== invitationFetcher.state) {
+		setPrevFetcherState(invitationFetcher.state);
+		if (invitationFetcher.state === "idle" && prevFetcherState !== "idle") {
 			setLink(
 				`${window.location.href}register?invitation=${invitationFetcher.data}`,
 			);
 		}
-	}, [invitationFetcher.data]);
+	}
+
 	return (
 		<>
 			<CheckButton

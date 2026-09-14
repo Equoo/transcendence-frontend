@@ -1,15 +1,16 @@
-import {
-	ListRow,
-	ListCell,
-	ListActions,
-	ListAction,
-} from "../../components/List";
+import type React from "react";
 import type { JSX } from "react/jsx-runtime";
-import { RolesBox } from "./checkbox";
-import type { Role } from "../api/roles";
 import { PiTrash } from "react-icons/pi";
 import { TbPencil } from "react-icons/tb";
-import type React from "react";
+
+import {
+	ListAction,
+	ListActions,
+	ListCell,
+	ListRow,
+} from "../../components/List";
+import type { Role } from "../api/roles";
+import { RolesBox } from "./checkbox";
 
 export interface Perm {
 	name: string;

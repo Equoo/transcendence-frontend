@@ -1,5 +1,7 @@
 /* eslint-disable no-bitwise */
-import { type JSX, useEffect } from "react";
+import { initDrawers } from "flowbite";
+import { type JSX, Suspense, useEffect } from "react";
+import { HiMenuAlt2 } from "react-icons/hi";
 import {
 	PiBookOpen,
 	PiCalendarBlank,
@@ -8,16 +10,39 @@ import {
 	PiHouse,
 	PiUser,
 } from "react-icons/pi";
-import { HiMenuAlt2 } from "react-icons/hi";
-import ItemCategory from "./ItemCategorie";
-import { initDrawers } from "flowbite";
-import { useLocation } from "react-router";
+import { Await, useLocation } from "react-router";
+import { useShallow } from "zustand/react/shallow";
+
+import { type Channel, fetchChannels } from "@/chat/api/chat.api";
+import ChannelForm from "@/chat/components/ChannelForm";
+import { useChat } from "@/chat/hooks/chat.hook";
+
 import InvitationForm from "../../invitations/components/InvitationForm";
 import type { User } from "../../users/api/users.api";
 import ProfileLine from "../ProfileLine";
+import ItemCategory from "./ItemCategory";
+import ItemChannel from "./ItemChannel";
+
+function ChannelListSkeleton(): JSX.Element {
+	return (
+		<>
+			{Array.from({ length: 4 }, (___, index) => (
+				<li key={index}>
+					<div className="flex items-center px-2 py-1.5 text-[14px] rounded-base group duration-120 shadow-main animate-pulse">
+						<span className="font-semibold text-muted">#</span>
+						<div className="ms-3 py-1 h-3 w-32 rounded bg-muted"></div>
+					</div>
+				</li>
+			))}
+		</>
+	);
+}
 
 function Sidebar({ user }: { user: User }): JSX.Element {
 	const location = useLocation();
+	const channels = useChat(
+		useShallow((state) => Object.values(state.channels) as Channel[]),
+	);
 
 	useEffect(() => {
 		initDrawers();
@@ -89,6 +114,23 @@ function Sidebar({ user }: { user: User }): JSX.Element {
 						<ItemCategory to="/messages" icon={PiChat}>
 							Messages
 						</ItemCategory>
+						<ChannelForm></ChannelForm>
+						<Suspense fallback={<ChannelListSkeleton />}>
+							<Await resolve={fetchChannels()}>
+								{channels.map(
+									(channel) =>
+										!channel.eventId && (
+											<ItemChannel
+												key={channel.id}
+												channel={channel}
+											></ItemChannel>
+										),
+								)}
+							</Await>
+						</Suspense>
+						<li className="flex justify-between items-center px-2 py-1.5 mt-3 text-[11px] text-muted font-bold tracking-wider uppercase group">
+							Upcoming
+						</li>
 					</ul>
 					<ul className="border-b-2 border-t-2 border-border2 mt-auto">
 						{user.role.permission & 1 && (

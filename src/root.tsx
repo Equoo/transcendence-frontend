@@ -1,4 +1,6 @@
 import "./index.css";
+
+import type { JSX, ReactNode } from "react";
 import {
 	Links,
 	Meta,
@@ -8,9 +10,9 @@ import {
 	ScrollRestoration,
 } from "react-router";
 import { ToastContainer } from "react-toastify";
-import { UserContext, userFetcher } from "./users/api/users.api";
+
 import type { Route } from "./+types/root";
-import type { JSX, ReactNode } from "react";
+import { UserContext, userFetcher } from "./users/api/users.api";
 
 const alertStyle = {
 	success: "bg-good-soft text-good",
@@ -57,8 +59,7 @@ export function Layout({ children }: { children: ReactNode }): JSX.Element {
 					newestOnTop
 					pauseOnHover
 					toastClassName={(context) =>
-						`${
-							alertStyle[context?.type ?? "default"]
+						`${alertStyle[context?.type ?? "default"]
 						} relative flex px-4 gap-1 py-2 min-h-10 rounded-lg justify-between overflow-hidden cursor-pointer`
 					}
 				/>

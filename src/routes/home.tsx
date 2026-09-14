@@ -1,10 +1,11 @@
-import { fetchEvents, type EventSummary } from "../events/api/events.api";
 import type { JSX } from "react";
-import type { Route } from "./+types/home";
-import EventList from "../events/components/EventList";
+
+import { type EventRole, fetchEventRoles } from "../events/api/event_roles.api";
+import { type EventSummary, fetchEvents } from "../events/api/events.api";
 import EventForm from "../events/components/EventForm";
-import { fetchEventRoles, type EventRole } from "../events/api/event_roles.api";
-import { fetchFiles, type AppFile } from "../files/api/files.api";
+import EventList from "../events/components/EventList";
+import { type AppFile, fetchFiles } from "../files/api/files.api";
+import type { Route } from "./+types/home";
 
 export function clientLoader(): {
 	events: Promise<EventSummary[]>;

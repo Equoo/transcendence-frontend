@@ -1,19 +1,21 @@
-import { useEffect, useState, type JSX } from "react";
+import { type JSX, useEffect, useState } from "react";
+import { PiPlusBold } from "react-icons/pi";
+import { TbPencil } from "react-icons/tb";
 import { useFetcher } from "react-router";
+
+import Promisable from "@/components/Promisable";
+
+import { APIError, type ValidationErrors } from "../../api/problem_detail";
 import CheckButton from "../../components/CheckButton";
+import { Input } from "../../components/Input";
 import Modal from "../../components/Modal";
 import MultipleInput from "../../components/MultipleInput";
-import type { clientAction as eventAction } from "../routes/events.route";
-import { Input } from "../../components/Input";
 import { TextArea } from "../../components/TextArea";
-import { PiPlusBold } from "react-icons/pi";
-import type { EventRole } from "../api/event_roles.api";
-import Promisable from "./Promisable";
-import FileSelect from "../../files/components/FileSelect";
 import type { AppFile } from "../../files/api/files.api";
+import FileSelect from "../../files/components/FileSelect";
+import type { EventRole } from "../api/event_roles.api";
 import type { EventData } from "../api/events.api";
-import { TbPencil } from "react-icons/tb";
-import { APIError, type ValidationErrors } from "../../api/problem_detail";
+import type { clientAction as eventAction } from "../routes/events.route";
 
 export default function EventForm({
 	className,
@@ -43,6 +45,7 @@ export default function EventForm({
 			}
 		}
 	}, [eventFetcher.data]);
+
 	return (
 		<Promisable
 			skeleton={

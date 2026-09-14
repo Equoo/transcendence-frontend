@@ -1,4 +1,5 @@
 import type { JSX } from "react";
+
 import type { User } from "../users/api/users.api";
 import ProfilePic from "./ProfilePic";
 

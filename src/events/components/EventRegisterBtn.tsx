@@ -1,8 +1,9 @@
-import { useState, type ComponentProps, type JSX } from "react";
+import { type ComponentProps, type JSX,useState } from "react";
 import { useFetcher } from "react-router";
-import type { EventSummary } from "../api/events.api";
+
 import CheckButton from "../../components/CheckButton";
 import Modal from "../../components/Modal";
+import type { EventSummary } from "../api/events.api";
 
 export default function EventRegisterBtn({
 	event: { isRegistered, size, registeredCount, id, eventRoles },

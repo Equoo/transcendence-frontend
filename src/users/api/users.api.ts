@@ -1,10 +1,12 @@
 import { createContext } from "react-router";
+
 import type { Role } from "../../admin/api/roles";
 import type { AppFile } from "../../files/api/files.api";
 
 export interface User {
 	id: string;
 	userName: string;
+	channelsAckMsg: Map<string, Date>;
 	role: Role;
 	avatar?: AppFile;
 }
@@ -14,21 +16,43 @@ export const UserContext = createContext<User>();
 
 let refresh: Promise<Response> | null = null;
 
+interface UserDto {
+	id: string;
+	userName: string;
+	channelsAckMsg: Record<string, string>;
+	role: Role;
+	avatar?: AppFile;
+}
+
+function normalizeUser(dto: UserDto): User {
+	return {
+		id: dto.id,
+		userName: dto.userName,
+		channelsAckMsg: new Map(
+			Object.entries(dto.channelsAckMsg).map(([key, val]) => [
+				key,
+				new Date(val),
+			]),
+		),
+		role: dto.role,
+		avatar: dto.avatar,
+	};
+}
+
 export async function userFetcher(): Promise<User | null> {
 	let res = await fetch("/api/me");
 	if (res.ok) {
-		return (await res.json()) as User;
+		return normalizeUser((await res.json()) as UserDto);
 	}
 
 	if (res.headers.get("Token-Expired") !== "True") {
 		return null;
 	}
 
-	refresh ??= fetch("/api/auth/refresh");
-
+	refresh ??= fetch("/api/auth/refresh").finally(() => {
+		refresh = null;
+	});
 	const refreshResponse = await refresh;
-	// eslint-disable-next-line require-atomic-updates
-	refresh = null;
 
 	if (!refreshResponse.ok) {
 		return null;
@@ -38,5 +62,5 @@ export async function userFetcher(): Promise<User | null> {
 	if (!res.ok) {
 		return null;
 	}
-	return (await res.json()) as User;
+	return normalizeUser((await res.json()) as UserDto);
 }

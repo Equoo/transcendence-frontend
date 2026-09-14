@@ -1,17 +1,21 @@
-import type { Route } from "./+types/events.route";
+import { data } from "react-router";
+
+import type { Channel } from "@/chat/api/chat.api";
+import { useChat } from "@/chat/hooks/chat.hook";
+
+import { APIError } from "../../api/problem_detail";
+import {
+	createEventRole,
+	type EventRole,
+	fetchEventRoles,
+} from "../api/event_roles.api";
 import {
 	createEvent,
 	deleteEvent,
 	toEventInput,
 	updateEvent,
 } from "../api/events.api";
-import { data } from "react-router";
-import {
-	createEventRole,
-	fetchEventRoles,
-	type EventRole,
-} from "../api/event_roles.api";
-import { APIError } from "../../api/problem_detail";
+import type { Route } from "./+types/events.route";
 
 async function upsertRoleIds(
 	roles: EventRole[],
@@ -59,6 +63,7 @@ export async function clientAction({
 
 		if (request.method === "POST") {
 			res = await createEvent(event);
+			useChat.getState().addChannel(res.channel as unknown as Channel);
 		} else if (request.method === "PUT") {
 			if (!params.eventId) {
 				throw new Error("Event ID is required for update");
@@ -73,6 +78,5 @@ export async function clientAction({
 		}
 		throw err;
 	}
-
 	return data(res);
 }

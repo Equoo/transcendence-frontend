@@ -1,8 +1,8 @@
 import {
-	type RouteConfig,
 	index,
 	layout,
 	route,
+	type RouteConfig,
 } from "@react-router/dev/routes";
 
 export default [
@@ -13,6 +13,7 @@ export default [
 		route("knowledge", "routes/knowledge.tsx"),
 		route("knowledge/:key", "routes/file_view.tsx"),
 		route("messages", "routes/messages.tsx"),
+		route("channels/:channelId", "routes/channel.tsx"),
 		route("/admin/roles", "admin/routes/admin_roles.tsx"),
 		route("/admin/users", "admin/routes/admin_users.tsx"),
 	]),
@@ -26,4 +27,5 @@ export default [
 	route("/events/:eventId?", "events/routes/events.route.tsx"),
 	route("/files", "files/routes/files.route.tsx"),
 	route("/invitations", "invitations/routes/invitations.route.tsx"),
+	route("/channels", "chat/routes/channel.route.tsx"),
 ] satisfies RouteConfig;

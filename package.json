@@ -11,18 +11,25 @@
 		"preview": "npx vite preview"
 	},
 	"dependencies": {
+		"@emoji-mart/data": "^1.2.1",
+		"@emoji-mart/react": "^1.1.1",
+		"@microsoft/signalr": "^10.0.0",
 		"@react-router/node": "^8.0.1",
 		"@tailwindcss/vite": "^4.3.1",
 		"@vitejs/plugin-react": "^6.0.3",
 		"date-fns": "^4.4.0",
+		"emoji-mart": "^5.6.0",
 		"flowbite": "^4.0.2",
 		"isbot": "^5",
 		"react": "^19.2.7",
 		"react-dom": "^19.2.7",
+		"react-emoji-render": "^2.0.1",
 		"react-icons": "^5.6.0",
 		"react-router": "^8.0.1",
 		"react-toastify": "^11.1.0",
-		"tailwindcss": "^4.3.1"
+		"signalr": "^2.4.3",
+		"tailwindcss": "^4.3.1",
+		"zustand": "^5.0.14"
 	},
 	"devDependencies": {
 		"@babel/core": "^7.29.7",
@@ -35,15 +42,22 @@
 		"@types/react": "^19.2.17",
 		"@types/react-dom": "^19.2.3",
 		"babel-plugin-react-compiler": "^1.0.0",
-		"eslint": "^10.5.0",
+		"eslint": "^10.8.0",
 		"eslint-plugin-react-hooks": "^7.1.1",
 		"eslint-plugin-react-refresh": "^0.5.3",
+		"eslint-plugin-simple-import-sort": "^14.0.0",
+		"eslint-plugin-unused-imports": "^4.4.1",
 		"globals": "^17.7.0",
 		"npm-check-updates": "^22.2.7",
 		"prettier": "^3.8.4",
 		"typescript": "~6.0.3",
 		"typescript-eslint": "^8.62.0",
 		"vite": "^8.1.0"
+	},
+	"overrides": {
+		"@emoji-mart/react": {
+			"react": "$react"
+		}
 	},
 	"prettier": {
 		"tabWidth": 4,

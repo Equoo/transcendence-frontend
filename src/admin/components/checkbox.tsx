@@ -1,9 +1,10 @@
 /* eslint-disable no-bitwise */
-import { ListCell } from "../../components/List";
-import type { JSX } from "react";
-import type { Perm } from "./listRoles";
 import type React from "react";
+import type { JSX } from "react";
+
+import { ListCell } from "../../components/List";
 import type { Role } from "../api/roles";
+import type { Perm } from "./listRoles";
 
 interface PermInput {
 	permission: number;

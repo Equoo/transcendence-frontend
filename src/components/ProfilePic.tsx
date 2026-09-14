@@ -1,4 +1,5 @@
 import type { JSX } from "react";
+
 import type { User } from "../users/api/users.api";
 
 function hashName(name: string): number {
@@ -21,9 +22,11 @@ function numberToRGB(num: number): string {
 export default function ProfilePic({
 	user,
 	idx = 1,
+	size = 10,
 	className,
 }: {
 	user: User;
+	size?: number;
 	idx?: number;
 	className?: string;
 }): JSX.Element {
@@ -34,12 +37,12 @@ export default function ProfilePic({
 			{user.avatar ? (
 				<img
 					src={`/api/files/${user.avatar.key}`}
-					className={`rounded-full w-10 h-10 mt-0.5 ${className} border-2 border-accent-text`}
+					className={`rounded-full w-${size} h-${size} mt-0.5 ${className} border-2 border-accent-text`}
 					style={{ zIndex: idx }}
 				/>
 			) : (
 				<div
-					className={`w-10 h-10 text-accent-text flex items-center justify-center rounded-full pb-1
+					className={`w-${size} h-${size} text-accent-text flex items-center justify-center rounded-full pb-1
 					font-semibold text-lg border-2 border-accent-text ${className}`}
 					style={{ zIndex: idx, backgroundColor }}
 				>

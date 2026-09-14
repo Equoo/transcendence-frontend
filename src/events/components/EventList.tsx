@@ -1,7 +1,9 @@
 import type { JSX } from "react";
-import EventCard from "./EventCard";
+
+import Promisable from "@/components/Promisable";
+
 import type { EventSummary } from "../api/events.api";
-import Promisable from "./Promisable";
+import EventCard from "./EventCard";
 
 function EventCardSkeleton(): JSX.Element {
 	return (

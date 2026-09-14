@@ -1,12 +1,13 @@
-import {
-	ListRow,
-	ListCell,
-	ListActions,
-	ListAction,
-} from "../../components/List";
 import type { JSX } from "react";
-import { PiDotsThreeVerticalBold } from "react-icons/pi";
 import { FcFolder } from "react-icons/fc";
+import { PiDotsThreeVerticalBold } from "react-icons/pi";
+
+import {
+	ListAction,
+	ListActions,
+	ListCell,
+	ListRow,
+} from "../../components/List";
 
 export default function FolderItem({
 	name,

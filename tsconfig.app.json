@@ -20,8 +20,11 @@
 		/* Linting */
 		"noUnusedLocals": true,
 		"noUnusedParameters": true,
-		"erasableSyntaxOnly": false,
-		"noFallthroughCasesInSwitch": true
+		"erasableSyntaxOnly": true,
+		"noFallthroughCasesInSwitch": true,
+
+		/* Paths */
+		"paths": { "@/*": ["./src/*"] }
 	},
 	"include": ["src", ".react-router/types/**/*"]
 }

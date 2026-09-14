@@ -1,8 +1,9 @@
-import { ListRow, ListCell, ListActions } from "../../components/List";
 import type { JSX } from "react";
-import type { AppFile } from "../api/files.api";
 import { PiDotsThreeVerticalBold } from "react-icons/pi";
 import { Link } from "react-router";
+
+import { ListActions,ListCell, ListRow } from "../../components/List";
+import type { AppFile } from "../api/files.api";
 
 export default function FileItem({ file }: { file: AppFile }): JSX.Element {
 	return (

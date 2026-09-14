@@ -1,13 +1,14 @@
 import {
-	useEffect,
-	useState,
 	type ComponentProps,
 	type JSX,
 	type ReactNode,
+	useEffect,
+	useState,
 } from "react";
+import { TbCopy, TbCopyCheck } from "react-icons/tb";
+
 import type { ValidationErrors } from "../api/problem_detail";
 import { Field } from "./Field";
-import { TbCopy, TbCopyCheck } from "react-icons/tb";
 
 export type InputProps = ComponentProps<"input"> & {
 	name: string;

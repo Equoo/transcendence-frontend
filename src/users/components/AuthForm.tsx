@@ -1,8 +1,9 @@
 import type { JSX } from "react";
 import { PiLock, PiUser } from "react-icons/pi";
-import { Input } from "../../components/Input";
-import CheckButton from "../../components/CheckButton";
 import { useNavigation } from "react-router";
+
+import CheckButton from "../../components/CheckButton";
+import { Input } from "../../components/Input";
 
 interface Title {
 	top: string;
@@ -39,7 +40,7 @@ export function AuthTitle({
 type Side = "r" | "l";
 
 export function AuthLogo({ side }: { side: Side }): JSX.Element {
-	// eslint-disable-next-line @eslint-react/purity
+	// eslint-disable-next-line @eslint-react/purity, react-hooks/purity
 	const randomNumber: number = Date.now();
 
 	let animChoice: string;

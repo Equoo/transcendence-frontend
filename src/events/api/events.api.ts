@@ -1,8 +1,10 @@
-import type { EventRole } from "./event_roles.api";
+import type { ChannelSummary } from "@/chat/api/chat.api";
+
 import { APIError, type ProblemDetail } from "../../api/problem_detail";
-import type { Registration } from "./registrations.api";
 import type { AppFile } from "../../files/api/files.api";
 import type { User } from "../../users/api/users.api";
+import type { EventRole } from "./event_roles.api";
+import type { Registration } from "./registrations.api";
 
 export interface EventData {
 	id: string;
@@ -18,6 +20,7 @@ export interface EventData {
 	files: AppFile[];
 	registeredCount: number;
 	isRegistered: boolean;
+	channel: ChannelSummary;
 }
 
 export interface EventSummary {

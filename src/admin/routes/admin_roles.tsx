@@ -1,4 +1,10 @@
-import { useEffect, useState, type JSX } from "react";
+import { type JSX, useEffect, useState } from "react";
+import { data, useFetcher } from "react-router";
+
+import CheckButton from "../../components/CheckButton";
+import { Input } from "../../components/Input";
+import List from "../../components/List";
+import Modal from "../../components/Modal";
 import {
 	changeRoleName,
 	createRole,
@@ -6,13 +12,8 @@ import {
 	fetchRoles,
 	toRoleInput,
 } from "../api/roles";
-import List from "../../components/List";
-import type { Route } from "./+types/admin_users";
 import ListRoles from "../components/listRoles";
-import CheckButton from "../../components/CheckButton";
-import Modal from "../../components/Modal";
-import { Input } from "../../components/Input";
-import { data, useFetcher } from "react-router";
+import type { Route } from "./+types/admin_users";
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
 export async function clientLoader() {

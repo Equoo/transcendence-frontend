@@ -1,9 +1,10 @@
-import List from "../../components/List";
 import type { JSX } from "react";
+
+import List from "../../components/List";
 import type { AppFile } from "../api/files.api";
+import { useFileBrowser } from "../hooks/useFileBrowser";
 import FileItem from "./FileItem";
 import FolderItem from "./FolderItem";
-import { useFileBrowser } from "../hooks/useFileBrowser";
 
 export default function FileList({ files }: { files: AppFile[] }): JSX.Element {
 	const { currFolder, folders, rootFiles, enterFolder, goUp } =

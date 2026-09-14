@@ -1,19 +1,22 @@
-import { useEffect, useState, type JSX } from "react";
-import type { Route } from "./+types/event_details";
-import { fetchEvent } from "../events/api/events.api";
+import { type JSX, useEffect, useState } from "react";
 import { FiChevronLeft } from "react-icons/fi";
-import { Link, useFetcher, useNavigate } from "react-router";
-import EventRegisterBtn from "../events/components/EventRegisterBtn";
-import ProfilePic from "../components/ProfilePic";
-import EventBadge from "../components/Badge";
-import EventForm from "../events/components/EventForm";
-import { fetchEventRoles } from "../events/api/event_roles.api";
-import { fetchFiles } from "../files/api/files.api";
 import { PiTrash } from "react-icons/pi";
-import type { clientAction } from "../events/routes/events.route";
-import Modal from "../components/Modal";
+import { Link, useFetcher, useNavigate } from "react-router";
+
+import ChannelChat from "@/chat/components/ChannelChat";
+
+import EventBadge from "../components/Badge";
 import CheckButton from "../components/CheckButton";
+import Modal from "../components/Modal";
 import ProfileLine from "../components/ProfileLine";
+import ProfilePic from "../components/ProfilePic";
+import { fetchEventRoles } from "../events/api/event_roles.api";
+import { fetchEvent } from "../events/api/events.api";
+import EventForm from "../events/components/EventForm";
+import EventRegisterBtn from "../events/components/EventRegisterBtn";
+import type { clientAction } from "../events/routes/events.route";
+import { fetchFiles } from "../files/api/files.api";
+import type { Route } from "./+types/event_details";
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
 export async function clientLoader({ params }: Route.ClientLoaderArgs) {
@@ -49,7 +52,7 @@ export default function EventDetails({
 				void navigate("/");
 			}
 		}
-	}, [fetcher.data]);
+	}, [fetcher.data, navigate]);
 	return (
 		<div className="flex flex-col w-full h-full">
 			{showConfirmation && (
@@ -183,7 +186,7 @@ export default function EventDetails({
 						))}
 					</div>
 				</div>
-				<div className=""></div>
+				<ChannelChat channelId={event.channel.id}></ChannelChat>
 			</div>
 		</div>
 	);
