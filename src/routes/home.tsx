@@ -14,7 +14,6 @@ import { type AppFile, fetchFiles } from "../files/api/files.api";
 import { fetchUsers, type User, UserContext } from "../users/api/users.api";
 import type { Route } from "./+types/home";
 import { UserContext, type User } from "../users/api/users.api";
-import { PermEnum } from "../admin/api/roles";
 
 export function clientLoader({ context }: Route.LoaderArgs): {
 	events: Promise<EventSummary[]>;
