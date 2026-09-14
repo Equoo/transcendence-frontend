@@ -1,3 +1,4 @@
+/* eslint-disable no-bitwise */
 import type { User } from "../../users/api/users.api";
 import { useEffect, useState, type ComponentProps, type JSX } from "react";
 
