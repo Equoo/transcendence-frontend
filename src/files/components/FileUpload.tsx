@@ -1,6 +1,7 @@
 import { type JSX, useEffect, useState } from "react";
 import { useFetcher } from "react-router";
 
+import { APIError, type ValidationErrors } from "../../api/problem_detail";
 import CheckButton from "../../components/CheckButton";
 import { Input } from "../../components/Input";
 import Modal from "../../components/Modal";
@@ -11,12 +12,18 @@ export default function FileUpload({
 }: {
 	onClose: () => void;
 }): JSX.Element {
+	const [errors, setErrors] = useState<ValidationErrors>();
 	const [name, setName] = useState("");
 	const filesFetcher = useFetcher<typeof filesAction>();
 
 	useEffect(() => {
 		if (filesFetcher.data) {
-			onClose();
+			if (filesFetcher.data instanceof APIError) {
+				// eslint-disable-next-line @eslint-react/set-state-in-effect
+				setErrors(filesFetcher.data.problem.errors);
+			} else {
+				onClose();
+			}
 		}
 	}, [filesFetcher.data, onClose]);
 	return (
@@ -31,6 +38,7 @@ export default function FileUpload({
 					name="File"
 					type="file"
 					required
+					errors={errors}
 					onChange={(ev) => {
 						setName(
 							ev.target.value.substring(
@@ -43,6 +51,7 @@ export default function FileUpload({
 					name="Name"
 					required
 					value={name}
+					errors={errors}
 					onChange={(ev) => {
 						setName(ev.target.value);
 					}}

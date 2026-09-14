@@ -1,25 +1,39 @@
-import type { JSX } from "react";
+import { type JSX, useEffect, useState } from "react";
 import { FiChevronLeft } from "react-icons/fi";
-import { data, Link, useNavigate } from "react-router";
+import { PiTrash } from "react-icons/pi";
+import { Link, useFetcher, useNavigate } from "react-router";
 
 import ChannelChat from "@/chat/components/ChannelChat";
 
 import EventBadge from "../components/Badge";
+import CheckButton from "../components/CheckButton";
+import Modal from "../components/Modal";
+import ProfileLine from "../components/ProfileLine";
 import ProfilePic from "../components/ProfilePic";
+import { fetchEventRoles } from "../events/api/event_roles.api";
 import { fetchEvent } from "../events/api/events.api";
+import EventForm from "../events/components/EventForm";
 import EventRegisterBtn from "../events/components/EventRegisterBtn";
+import type { clientAction } from "../events/routes/events.route";
+import { fetchFiles } from "../files/api/files.api";
 import type { Route } from "./+types/event_details";
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
 export async function clientLoader({ params }: Route.ClientLoaderArgs) {
 	const res = await fetchEvent(params.eventId);
 
-	return data(res);
+	return {
+		event: res,
+		roles: fetchEventRoles(),
+		files: fetchFiles(),
+	};
 }
 
 export default function EventDetails({
-	loaderData: event,
+	loaderData: { event, roles, files },
 }: Route.ComponentProps): JSX.Element {
+	const fetcher = useFetcher<typeof clientAction>();
+	const navigate = useNavigate();
 	const dateString: string = new Date(event.date).toLocaleString([], {
 		hour: "2-digit",
 		minute: "2-digit",
@@ -27,10 +41,54 @@ export default function EventDetails({
 		day: "2-digit",
 		year: "numeric",
 	});
-	const navigate = useNavigate();
+	const [showConfirmation, setShowConfirmation] = useState(false);
 
+	useEffect(() => {
+		if (fetcher.data) {
+			if (
+				fetcher.data instanceof Response &&
+				fetcher.data.status === 204
+			) {
+				void navigate("/");
+			}
+		}
+	}, [fetcher.data, navigate]);
 	return (
 		<div className="flex flex-col w-full h-full">
+			{showConfirmation && (
+				<Modal
+					title={`Delete the event ${event.name} ?`}
+					onClose={() => {
+						setShowConfirmation(false);
+					}}
+				>
+					<p className="text-muted font-main font-light w-4/5 text-sm text-center">
+						This cannot be cancelled.
+					</p>
+					<div className="inline-flex gap-8">
+						<CheckButton
+							pending={fetcher.state !== "idle"}
+							onClick={() => {
+								void fetcher.submit(null, {
+									action: `/events/${event.id}`,
+									method: "DELETE",
+								});
+							}}
+						>
+							Yes
+						</CheckButton>
+						<CheckButton
+							active
+							activeCheck={false}
+							onClick={() => {
+								setShowConfirmation(false);
+							}}
+						>
+							No
+						</CheckButton>
+					</div>
+				</Modal>
+			)}
 			<div className="flex px-4 py-4 gap-4 items-center border-b border-border">
 				<FiChevronLeft
 					size={25}
@@ -40,13 +98,24 @@ export default function EventDetails({
 					}}
 					className="cursor-pointer"
 				/>
-				<div className="flex flex-col">
-					<div className="font-head text-text font-semibold text-lg">
-						{event.name}
+				<div className="inline-flex items-center gap-4">
+					<div className="flex flex-col">
+						<div className="font-head text-text font-semibold text-lg">
+							{event.name}
+						</div>
+						<div className="font-main text-muted text-sm font-light">
+							{dateString}
+						</div>
 					</div>
-					<div className="font-main text-muted text-sm font-light">
-						{dateString}
-					</div>
+					<EventForm edit roles={roles} files={files} event={event} />
+					<PiTrash
+						size={26}
+						color="var(--color-text2)"
+						className="hover:cursor-pointer"
+						onClick={() => {
+							setShowConfirmation(true);
+						}}
+					/>
 				</div>
 				<EventRegisterBtn event={event} className="ml-auto shrink-0" />
 			</div>
@@ -89,20 +158,17 @@ export default function EventDetails({
 						{event.registrations.map((reg, idx) => (
 							<ProfilePic
 								key={reg.registeredAt}
-								name={reg.user.userName}
+								user={reg.user}
 								idx={idx}
+								// eslint-disable-next-line no-negated-condition
+								className={idx !== 0 ? "-ml-3" : ""}
 							/>
 						))}
 					</div>
 					<span className="font-bold text-muted text-xs tracking-wider mt-4">
 						ORGANIZED BY
 					</span>
-					<div className="flex mt-1 items-center gap-2">
-						<ProfilePic name={event.organizer.userName} />
-						<span className="text-lg font-medium text-text">
-							{event.organizer.userName}
-						</span>
-					</div>
+					<ProfileLine user={event.organizer} />
 					<span className="font-bold text-muted text-xs tracking-wider mt-4">
 						RESOURCES
 					</span>

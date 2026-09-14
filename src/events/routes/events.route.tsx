@@ -3,12 +3,18 @@ import { data } from "react-router";
 import type { Channel } from "@/chat/api/chat.api";
 import { useChat } from "@/chat/hooks/chat.hook";
 
+import { APIError } from "../../api/problem_detail";
 import {
 	createEventRole,
 	type EventRole,
 	fetchEventRoles,
 } from "../api/event_roles.api";
-import { createEvent, toEventInput } from "../api/events.api";
+import {
+	createEvent,
+	deleteEvent,
+	toEventInput,
+	updateEvent,
+} from "../api/events.api";
 import type { Route } from "./+types/events.route";
 
 async function upsertRoleIds(
@@ -35,15 +41,42 @@ async function upsertRoleIds(
 }
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
-export async function clientAction({ request }: Route.ClientActionArgs) {
-	const rolesPromise = fetchEventRoles();
-	const event = toEventInput(await request.formData());
-	const roles = await rolesPromise;
+export async function clientAction({
+	request,
+	params,
+}: Route.ClientActionArgs) {
+	let res;
 
-	event.eventRoleIds = await upsertRoleIds(roles, event.eventRoleIds);
-	const res = await createEvent(event);
+	try {
+		if (request.method === "DELETE") {
+			if (!params.eventId) {
+				throw new Error("Event ID is required for deletion");
+			}
+			res = await deleteEvent(params.eventId);
+			return data(res);
+		}
+		const event = toEventInput(await request.formData());
+		const rolesPromise = fetchEventRoles();
+		const roles = await rolesPromise;
 
-	useChat.getState().addChannel(res.channel as unknown as Channel);
+		event.eventRoleIds = await upsertRoleIds(roles, event.eventRoleIds);
 
-	return data(res, { status: 201 });
+		if (request.method === "POST") {
+			res = await createEvent(event);
+			useChat.getState().addChannel(res.channel as unknown as Channel);
+		} else if (request.method === "PUT") {
+			if (!params.eventId) {
+				throw new Error("Event ID is required for update");
+			}
+			res = await updateEvent(event, params.eventId);
+		}
+	} catch (err) {
+		if (err instanceof APIError) {
+			if (err.problem.status === 400) {
+				return data(err);
+			}
+		}
+		throw err;
+	}
+	return data(res);
 }

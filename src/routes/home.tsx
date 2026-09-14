@@ -1,7 +1,5 @@
 import type { JSX } from "react";
-import { isRouteErrorResponse } from "react-router";
 
-import { APIError } from "../api/problem_detail";
 import { type EventRole, fetchEventRoles } from "../events/api/event_roles.api";
 import { type EventSummary, fetchEvents } from "../events/api/events.api";
 import EventForm from "../events/components/EventForm";
@@ -34,31 +32,5 @@ export default function Home({
 			</div>
 			<EventList events={loaderData.events} />
 		</>
-	);
-}
-
-export function ErrorBoundary({
-	error,
-}: Route.ErrorBoundaryProps): JSX.Element {
-	if (isRouteErrorResponse(error)) {
-		return (
-			<div className="w-full p-6 text-red-500 font-main">
-				{error.status} — {error.statusText}
-			</div>
-		);
-	} else if (error instanceof APIError) {
-		return (
-			<>
-				<h1>{error.name}</h1>
-				<div className="w-full p-6 text-red-500 font-main">
-					{error.message}
-				</div>
-			</>
-		);
-	}
-	return (
-		<div className="w-full p-6 text-red-500 font-main">
-			Server error during page loading
-		</div>
 	);
 }

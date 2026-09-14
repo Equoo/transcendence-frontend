@@ -1,7 +1,15 @@
+/* eslint-disable no-bitwise */
 import { initDrawers } from "flowbite";
 import { type JSX, Suspense, useEffect } from "react";
 import { HiMenuAlt2 } from "react-icons/hi";
-import { PiBookOpen, PiCalendarBlank, PiChat, PiHouse } from "react-icons/pi";
+import {
+	PiBookOpen,
+	PiCalendarBlank,
+	PiChat,
+	PiComputerTower,
+	PiHouse,
+	PiUser,
+} from "react-icons/pi";
 import { Await, useLocation } from "react-router";
 import { useShallow } from "zustand/react/shallow";
 
@@ -10,6 +18,8 @@ import ChannelForm from "@/chat/components/ChannelForm";
 import { useChat } from "@/chat/hooks/chat.hook";
 
 import InvitationForm from "../../invitations/components/InvitationForm";
+import type { User } from "../../users/api/users.api";
+import ProfileLine from "../ProfileLine";
 import ItemCategory from "./ItemCategory";
 import ItemChannel from "./ItemChannel";
 
@@ -28,7 +38,7 @@ function ChannelListSkeleton(): JSX.Element {
 	);
 }
 
-function Sidebar(): JSX.Element {
+function Sidebar({ user }: { user: User }): JSX.Element {
 	const location = useLocation();
 	const channels = useChat(
 		useShallow((state) => Object.values(state.channels) as Channel[]),
@@ -74,7 +84,7 @@ function Sidebar(): JSX.Element {
 				bg-back2"
 				aria-label="Sidebar"
 			>
-				<div className="h-full px-3 py-4 overflow-y-auto border-e border-border">
+				<div className="h-full flex flex-col px-3 py-4 border-e border-border">
 					<a href="#" className="flex items-center ps-1 mb-5">
 						<img
 							src="/logo/icon-tile.svg"
@@ -91,7 +101,7 @@ function Sidebar(): JSX.Element {
 						</div>
 					</a>
 					<InvitationForm className=""></InvitationForm>
-					<ul className="font-main font-medium text-text2">
+					<ul className="mt-4 space-y-3 font-medium text-muted text-[14.5px]">
 						<ItemCategory to="/" icon={PiHouse}>
 							Home
 						</ItemCategory>
@@ -107,18 +117,37 @@ function Sidebar(): JSX.Element {
 						<ChannelForm></ChannelForm>
 						<Suspense fallback={<ChannelListSkeleton />}>
 							<Await resolve={fetchChannels()}>
-								{channels.map((channel) => !channel.eventId && (
-									<ItemChannel
-										key={channel.id}
-										channel={channel}
-									></ItemChannel>
-								))}
+								{channels.map(
+									(channel) =>
+										!channel.eventId && (
+											<ItemChannel
+												key={channel.id}
+												channel={channel}
+											></ItemChannel>
+										),
+								)}
 							</Await>
 						</Suspense>
 						<li className="flex justify-between items-center px-2 py-1.5 mt-3 text-[11px] text-muted font-bold tracking-wider uppercase group">
 							Upcoming
 						</li>
 					</ul>
+					<ul className="border-b-2 border-t-2 border-border2 mt-auto">
+						{user.role.permission & 1 && (
+							<div className="mt-1 font-medium text-muted text-[14.5px]">
+								<ItemCategory to="/admin/users" icon={PiUser}>
+									Users
+								</ItemCategory>
+								<ItemCategory
+									to="/admin/roles"
+									icon={PiComputerTower}
+								>
+									Roles
+								</ItemCategory>
+							</div>
+						)}
+					</ul>
+					<ProfileLine user={user} />
 				</div>
 			</aside>
 		</>

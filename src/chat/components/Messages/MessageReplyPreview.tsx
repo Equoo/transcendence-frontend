@@ -8,7 +8,7 @@ import type { Message } from "../../api/chat.api";
 function MessageReplyPreview({ message }: { message: Message }): JSX.Element {
 	return (
 		<div className="border-l-4 border-accent pl-2 flex flex-row cursor-pointer">
-			<ProfilePic name={message.sender.userName} size={5} />
+			<ProfilePic user={message.sender} size={5} />
 			<span className="font-head text-[14.5px] text-text mx-1">
 				{message.sender.userName}
 			</span>

@@ -11,7 +11,7 @@ export default function BlobURL({
 
 	useEffect(() => {
 		const objectUrl = URL.createObjectURL(blob);
-		// eslint-disable-next-line @eslint-react/set-state-in-effect, react-hooks/set-state-in-effect
+		// eslint-disable-next-line @eslint-react/set-state-in-effect
 		setUrl(objectUrl);
 		return (): void => {
 			URL.revokeObjectURL(objectUrl);

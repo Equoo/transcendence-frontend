@@ -65,7 +65,7 @@ export default defineConfig([
 			"react-hooks/preserve-manual-memoization": "error",
 			"react-hooks/purity": "error",
 			"react-hooks/refs": "error",
-			"react-hooks/set-state-in-effect": "error",
+			"react-hooks/set-state-in-effect": "off",
 			"react-hooks/set-state-in-render": "error",
 			"react-hooks/static-components": "error",
 			"react-hooks/unsupported-syntax": "warn",

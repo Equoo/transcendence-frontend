@@ -7,8 +7,7 @@ import MessageContent from "./MessageContent";
 import MessageReplyPreview from "./MessageReplyPreview";
 
 type ActivateEvent =
-	| React.MouseEvent<HTMLDivElement>
-	| React.FocusEvent<HTMLDivElement>;
+	React.MouseEvent<HTMLDivElement> | React.FocusEvent<HTMLDivElement>;
 
 interface MessageRowProps {
 	message: Message;
@@ -53,7 +52,7 @@ function MessageRow({
 			{showHeader && (
 				<ProfilePic
 					className="absolute"
-					name={message.sender.userName}
+					user={message.sender}
 					size={10}
 				/>
 			)}
@@ -74,7 +73,10 @@ function MessageRow({
 				<div className="whitespace-pre-wrap wrap-break-word text-[14.5px] leading-normal text-text ">
 					<MessageContent content={message.content} />
 					{message.editAt && (
-						<span className="text-[11.5px] text-muted"> (edtited)</span>
+						<span className="text-[11.5px] text-muted">
+							{" "}
+							(edtited)
+						</span>
 					)}
 				</div>
 			</div>

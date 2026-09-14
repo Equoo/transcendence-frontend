@@ -33,7 +33,9 @@ export interface MessageListHandles {
 function useNewMessagesDividerId(channelId: string): string | null {
 	const user = useUser();
 	const messages = useChat(
-		useShallow((state) => Object.values(state.channels[channelId]?.messages ?? [])),
+		useShallow((state) =>
+			Object.values(state.channels[channelId]?.messages ?? []),
+		),
 	);
 	const channels = useChat(
 		useShallow((state) => Object.values(state.channels) as Channel[]),
@@ -43,20 +45,26 @@ function useNewMessagesDividerId(channelId: string): string | null {
 	);
 
 	useEffect(() => {
-		if (!user) { return; }
+		if (!user) {
+			return;
+		}
 		channels.forEach((channel) => {
-			if (channel.ackTime) { return; }
+			if (channel.ackTime) {
+				return;
+			}
 			channel.ackTime = user.channelsAckMsg.get(channel.id) ?? null;
 		});
 	}, [user, channels]);
 
 	const [dividerMsgId, setDividerMsgId] = useState<string | null>(null);
 	useEffect(() => {
-		if (!ackDate) { return; }
+		if (!ackDate) {
+			return;
+		}
 		const firstUnread = messages.find(
 			(msg) => msg.sender.id !== user?.id && msg.sentAt > ackDate,
 		);
-		// eslint-disable-next-line react-hooks/set-state-in-effect, @eslint-react/set-state-in-effect
+		// eslint-disable-next-line @eslint-react/set-state-in-effect
 		setDividerMsgId(firstUnread?.id ?? null);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [channelId, ackDate]);
@@ -75,10 +83,16 @@ function MessageList({
 	const actionBarRef = useRef<MessageActionBarHandles>(null);
 
 	const messages = useChat(
-		useShallow((state) => Object.values(state.channels[channelId]?.messages ?? [])),
+		useShallow((state) =>
+			Object.values(state.channels[channelId]?.messages ?? []),
+		),
 	);
 
-	const handleScroll = useMessagePagination(channelId, containerRef, actionBarRef);
+	const handleScroll = useMessagePagination(
+		channelId,
+		containerRef,
+		actionBarRef,
+	);
 	useScrollRestoration(channelId, containerRef);
 	const { scrollToBottom } = useAutoScroll(channelId, containerRef);
 	const lastMessageRef = useReadReceipts(channelId);

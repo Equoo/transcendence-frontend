@@ -1,4 +1,10 @@
-import type { ComponentProps, JSX, ReactNode } from "react";
+import {
+	type ComponentProps,
+	type JSX,
+	type ReactNode,
+	useEffect,
+	useState,
+} from "react";
 
 import type { ValidationErrors } from "../api/problem_detail";
 
@@ -14,9 +20,18 @@ export function TextArea({
 	errors,
 	className,
 	children,
+	value,
 	...rest
 }: InputProps): JSX.Element {
 	const isError = Boolean(errors?.[name] ?? false);
+	const [internalValue, setInternalValue] = useState(value ?? "");
+
+	useEffect(() => {
+		if (value) {
+			// eslint-disable-next-line @eslint-react/set-state-in-effect
+			setInternalValue(value);
+		}
+	}, [value]);
 
 	return (
 		<div className="inline-flex flex-col w-full">
@@ -35,6 +50,10 @@ export function TextArea({
 				<textarea
 					name={name}
 					className={`bg-transparent outline-0 ring-0 border-0 p-0 w-10 grow peer`}
+					value={internalValue}
+					onChange={(ev) => {
+						setInternalValue(ev.target.value);
+					}}
 					{...rest}
 				/>
 			</div>
