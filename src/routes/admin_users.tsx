@@ -5,13 +5,15 @@ import { fetchRoles } from "../admin/api/roles";
 import List from "../components/List";
 import type { JSX } from "react";
 import type { Route } from "./+types/admin_users";
+import { UserContext } from "../users/api/users.api";
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
-export async function clientLoader() {
+export async function clientLoader({ context }: Route.LoaderArgs) {
 	const users = await fetchUsers();
 	const roles = await fetchRoles();
+	const user = context.get(UserContext);
 
-	return { users, roles };
+	return { users, roles, user };
 }
 
 export default function AdminUsers({
@@ -39,15 +41,15 @@ export default function AdminUsers({
 							{ id: "Role" },
 							{ id: "Action" },
 						]}
-                        empty={loaderData.users.length === 0}
-
-                        emptyMessage="No user to display."
+						empty={loaderData.users.length === 0}
+						emptyMessage="No user to display."
 					>
 						{loaderData.users.map((usr) => (
 							<ListUsers
 								key={usr.id}
 								user={usr}
 								roles={loaderData.roles}
+								currentUser={loaderData.user}
 							></ListUsers>
 						))}
 					</List>

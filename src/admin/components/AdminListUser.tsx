@@ -1,7 +1,7 @@
 import type { User } from "../../users/api/users.api";
 import { useEffect, useState, type ComponentProps, type JSX } from "react";
 
-import type { Role } from "../api/roles";
+import { PermEnum, type Role } from "../api/roles";
 import { useFetcher } from "react-router";
 import Modal from "../../components/Modal";
 import CheckButton from "../../components/CheckButton";
@@ -13,15 +13,16 @@ export type Props = ComponentProps<"h1"> & {
 export default function ListUsers({
 	user,
 	roles,
+	currentUser,
 }: {
 	user: User;
 	roles: Role[];
+	currentUser: User;
 }): JSX.Element {
 	const [showChangePass, setShowChangePass] = useState(false);
 	const [showConfirmationDelete, setShowConfirmationDelete] = useState(false);
 	const [showConfirmationDisconnect, setShowConfirmationDisconnect] =
 		useState(false);
-
 	const fetcher = useFetcher<typeof clientAction>();
 
 	useEffect(() => {
@@ -34,6 +35,14 @@ export default function ListUsers({
 			setShowConfirmationDisconnect(false);
 		}
 	}, [fetcher.data]);
+
+	let classSelect =
+		"border-0 bg-surface appearance-none focus:border-0 focus:ring-0 hover:cursor-pointer hover:text-accent";
+
+	if (!(currentUser.role.permission & PermEnum.HandleRoles)) {
+		classSelect =
+			"border-0  bg-none bg-surface focus:border-0 focus:ring-0";
+	}
 
 	return (
 		<tr className="text-sm text-body  border-b rounded-base border-border">
@@ -149,7 +158,10 @@ export default function ListUsers({
 			</td>
 			<td className="px-6 py-3 font-medium text-center">
 				<select
-					className="border-0 bg-surface appearance-none focus:border-0 focus:ring-0 hover:cursor-pointer hover:text-accent"
+					disabled={
+						!(currentUser.role.permission & PermEnum.HandleRoles)
+					}
+					className={classSelect}
 					onChange={(event) => {
 						const role = roles.find(
 							(rl) => event.target.value === rl.name,
