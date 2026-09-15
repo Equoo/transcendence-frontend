@@ -13,7 +13,6 @@ import EventList from "../events/components/EventList";
 import { type AppFile, fetchFiles } from "../files/api/files.api";
 import { fetchUsers, type User, UserContext } from "../users/api/users.api";
 import type { Route } from "./+types/home";
-import { UserContext, type User } from "../users/api/users.api";
 
 export function clientLoader({ context }: Route.LoaderArgs): {
 	events: Promise<EventSummary[]>;

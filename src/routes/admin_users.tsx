@@ -7,6 +7,7 @@ import List from "../components/List";
 import { UserContext } from "../users/api/users.api";
 import type { Route } from "./+types/admin_users";
 import { UserContext } from "../users/api/users.api";
+import type { Route } from "./+types/admin_users";
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
 export async function clientLoader({ context }: Route.LoaderArgs) {
