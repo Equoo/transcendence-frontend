@@ -6,7 +6,7 @@ import {
 } from "@react-router/dev/routes";
 
 export default [
-	layout("routes/dashboard.tsx", [
+	route("/", "routes/dashboard.tsx", [
 		index("routes/home.tsx"),
 		route("calendar", "routes/calendar_page.tsx"),
 		route("calendar/:eventId", "routes/event_details.tsx"),

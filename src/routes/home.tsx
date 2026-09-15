@@ -1,6 +1,7 @@
 import { type JSX, useState } from "react";
 
 import { ActivityEnum, useActivity } from "@/activity/hooks/activity.hook";
+import { PermEnum } from "@/admin/api/roles";
 import Modal from "@/components/Modal";
 import ProfileLine from "@/components/ProfileLine";
 import Promisable from "@/components/Promisable";
@@ -79,8 +80,10 @@ export default function Home({
 						)}
 					</Promisable>
 				</h1>
-
-				<EventForm roles={roles} files={files} />
+				{Boolean(
+					// eslint-disable-next-line no-bitwise
+					user.role.permission & PermEnum.HandleEvent,
+				) && <EventForm roles={roles} files={files} />}
 			</div>
 			<EventList events={events} />
 		</>
