@@ -136,19 +136,6 @@ function Sidebar({ user }: { user: User }): JSX.Element {
 						</li>
 					</ul>
 					<div className="border-b-2 border-t-2 border-border2 mt-auto">
-						{user.role.permission & 1 && (
-							<div className="mt-1 font-medium text-muted text-[14.5px]">
-								<ItemCategory to="/admin/users" icon={PiUser}>
-									Users
-								</ItemCategory>
-								<ItemCategory
-									to="/admin/roles"
-									icon={PiComputerTower}
-								>
-									Roles
-								</ItemCategory>
-							</div>
-						)}
 						{Boolean(user.role.permission & PermEnum.HandleUsers) &&
 							(Boolean(
 								user.role.permission & PermEnum.HandleUsers,
@@ -156,7 +143,7 @@ function Sidebar({ user }: { user: User }): JSX.Element {
 								Boolean(
 									user.role.permission & PermEnum.HandleRoles,
 								)) && (
-								<ul className="border-b pb-1 border-border2">
+								<ul className=" pb-1 border-border2">
 									{Boolean(
 										user.role.permission &
 										PermEnum.HandleUsers,
@@ -181,8 +168,8 @@ function Sidebar({ user }: { user: User }): JSX.Element {
 									)}
 								</ul>
 							)}
-						<ProfileLine user={user} />
 					</div>
+					<ProfileLine user={user} />
 				</div>
 			</aside>
 		</>
