@@ -1,11 +1,11 @@
 /* eslint-disable no-bitwise */
-import type { User } from "../../users/api/users.api";
-import { useEffect, useState, type ComponentProps, type JSX } from "react";
-
-import { PermEnum, type Role } from "../api/roles";
+import { type ComponentProps, type JSX,useEffect, useState } from "react";
 import { useFetcher } from "react-router";
-import Modal from "../../components/Modal";
+
 import CheckButton from "../../components/CheckButton";
+import Modal from "../../components/Modal";
+import type { User } from "../../users/api/users.api";
+import { PermEnum, type Role } from "../api/roles";
 import type { clientAction } from "../routes/admin.user.route";
 export type Props = ComponentProps<"h1"> & {
 	className?: string;

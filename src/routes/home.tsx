@@ -5,7 +5,6 @@ import Modal from "@/components/Modal";
 import ProfileLine from "@/components/ProfileLine";
 import Promisable from "@/components/Promisable";
 
-import { PermEnum } from "../admin/api/roles";
 import { type EventRole, fetchEventRoles } from "../events/api/event_roles.api";
 import { type EventSummary, fetchEvents } from "../events/api/events.api";
 import EventForm from "../events/components/EventForm";

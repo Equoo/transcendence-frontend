@@ -1,8 +1,9 @@
 /* eslint-disable no-bitwise */
 import type { JSX } from "react";
-import type { Perm } from "./AdminListRoles";
-import type { Role } from "../api/roles";
 import { useFetcher } from "react-router";
+
+import type { Role } from "../api/roles";
+import type { Perm } from "./AdminListRoles";
 
 export function RolesBox({
 	role,

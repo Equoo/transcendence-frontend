@@ -14,15 +14,15 @@ import { type JSX, useState } from "react";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { Link } from "react-router";
 
+import { PermEnum } from "../admin/api/roles";
 import Promisable from "../components/Promisable";
 import { type EventRole, fetchEventRoles } from "../events/api/event_roles.api";
 import { type EventSummary, fetchEvents } from "../events/api/events.api";
 import EventForm from "../events/components/EventForm";
 import EventList from "../events/components/EventList";
 import { type AppFile, fetchFiles } from "../files/api/files.api";
+import { type User,UserContext } from "../users/api/users.api";
 import type { Route } from "./+types/calendar_page";
-import { UserContext, type User } from "../users/api/users.api";
-import { PermEnum } from "../admin/api/roles";
 
 export function clientLoader({ context }: Route.LoaderArgs): {
 	events: Promise<EventSummary[]>;

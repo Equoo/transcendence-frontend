@@ -1,13 +1,14 @@
 /* eslint-disable @eslint-react/no-array-index-key */
+import { useEffect, useState } from "react";
 import type { JSX } from "react/jsx-runtime";
-import { RolesBox } from "./AdminRoleBox";
-import { PermEnum, type Role } from "../api/roles";
 import { PiTrash } from "react-icons/pi";
 import { TbPencil } from "react-icons/tb";
-import Modal from "../../components/Modal";
 import { useFetcher } from "react-router";
+
 import CheckButton from "../../components/CheckButton";
-import { useEffect, useState } from "react";
+import Modal from "../../components/Modal";
+import { PermEnum, type Role } from "../api/roles";
+import { RolesBox } from "./AdminRoleBox";
 
 export interface Perm {
 	name: string;

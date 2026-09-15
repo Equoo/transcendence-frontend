@@ -1,11 +1,12 @@
+import type { JSX } from "react";
+import { PiMagnifyingGlass } from "react-icons/pi";
+
+import { fetchRoles } from "../admin/api/roles";
 import { fetchUsers } from "../admin/api/users";
 import ListUsers from "../admin/components/AdminListUser";
-import { PiMagnifyingGlass } from "react-icons/pi";
-import { fetchRoles } from "../admin/api/roles";
 import List from "../components/List";
-import type { JSX } from "react";
-import type { Route } from "./+types/admin_users";
 import { UserContext } from "../users/api/users.api";
+import type { Route } from "./+types/admin_users";
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
 export async function clientLoader({ context }: Route.LoaderArgs) {

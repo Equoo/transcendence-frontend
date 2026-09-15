@@ -1,11 +1,12 @@
-import { useEffect, useState, type JSX } from "react";
+import { type JSX,useEffect, useState } from "react";
+import { useFetcher } from "react-router";
+
 import { fetchRoles, PermEnum } from "../admin/api/roles";
-import List, { type ListColumn } from "../components/List";
 import ListRoles from "../admin/components/AdminListRoles";
 import CheckButton from "../components/CheckButton";
-import Modal from "../components/Modal";
 import { Input } from "../components/Input";
-import { useFetcher } from "react-router";
+import List, { type ListColumn } from "../components/List";
+import Modal from "../components/Modal";
 import type { Route } from "./+types/admin_roles";
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types

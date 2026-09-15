@@ -1,3 +1,4 @@
+/* eslint-disable no-bitwise */
 import { type JSX, useEffect, useState } from "react";
 import { FiChevronLeft } from "react-icons/fi";
 import { PiTrash } from "react-icons/pi";
@@ -5,6 +6,7 @@ import { Link, useFetcher, useNavigate } from "react-router";
 
 import ChannelChat from "@/chat/components/ChannelChat";
 
+import { PermEnum } from "../admin/api/roles";
 import EventBadge from "../components/Badge";
 import CheckButton from "../components/CheckButton";
 import Modal from "../components/Modal";
@@ -16,9 +18,8 @@ import EventForm from "../events/components/EventForm";
 import EventRegisterBtn from "../events/components/EventRegisterBtn";
 import type { clientAction } from "../events/routes/events.route";
 import { fetchFiles } from "../files/api/files.api";
-import type { Route } from "./+types/event_details";
 import { UserContext } from "../users/api/users.api";
-import { PermEnum } from "../admin/api/roles";
+import type { Route } from "./+types/event_details";
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
 export async function clientLoader({
