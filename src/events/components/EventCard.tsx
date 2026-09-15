@@ -76,7 +76,7 @@ export default function EventCard({
 }): JSX.Element {
 	return (
 		<div className="bg-surface flex max-w-lg grow sm:min-w-md min-w-sm h-fit flex-col gap-4 overflow-hidden border border-border rounded-3xl p-6 shadow-main sm:p-8">
-			<h2 className=" text-3xl font-semibold font-head leading-8 text-text tracking-tight">
+			<h2 className=" text-3xl font-semibold font-head leading-8 text-text tracking-tight overflow-x-scroll overflow-y-hidden">
 				{event.name}
 			</h2>
 			<div className="inline-flex min-h-9 text-text2 text-sm gap-6 justify-between items-start">
