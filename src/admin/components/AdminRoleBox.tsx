@@ -17,6 +17,7 @@ export function RolesBox({
 	return (
 		<td className="text-center">
 			<input
+				name="perms"
 				type="checkbox"
 				defaultChecked={Boolean(perm.code & role.permission)}
 				className="text-accent cursor-pointer rounded-sm w-6 h-6 text-2xl hover:bg-gray-50 hover:inset-shadow-2xs focus:ring-0"

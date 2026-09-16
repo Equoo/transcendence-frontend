@@ -51,6 +51,8 @@ export function AuthLogo({ side }: { side: Side }): JSX.Element {
 		animChoice = "animate-spin";
 		animTime = "[animation-duration:200s]";
 	} else {
+		// eslint-disable-next-line no-console
+		console.log("Bounce KG Rebondit");
 		animChoice = "animate-bounce";
 		animTime = "[animation-duration:2s]";
 	}
@@ -85,6 +87,8 @@ export function AuthForm({
 	return (
 		<div className="flex flex-col w-3/4 gap-4">
 			<Input
+				minLength={3}
+				maxLength={25}
 				className="h-12"
 				placeholder="Username"
 				type="text"
@@ -94,6 +98,7 @@ export function AuthForm({
 				<PiUser className="ml-2 mr-2" />
 			</Input>
 			<Input
+				maxLength={256}
 				className="h-12"
 				placeholder="Password"
 				type="password"
@@ -104,6 +109,7 @@ export function AuthForm({
 			</Input>
 			{register && (
 				<Input
+					maxLength={200}
 					className="h-12"
 					placeholder="Invitation Code"
 					value={code ?? ""}

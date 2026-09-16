@@ -67,6 +67,7 @@ export default function InvitationForm({
 							placeholder="Expiration Date"
 						/>
 						<Input
+							max={2147483646}
 							name="Usages"
 							type="number"
 							required

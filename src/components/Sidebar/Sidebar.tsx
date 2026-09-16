@@ -135,7 +135,7 @@ function Sidebar({ user }: { user: User }): JSX.Element {
 							Upcoming
 						</li>
 					</ul>
-					<div className="border-b-2 border-t-2 border-border2 mt-auto">
+					<div className="border-b-2 border-t-2 border-border2 mt-auto font-main font-medium text-muted text-[14.5px]">
 						{Boolean(user.role.permission & PermEnum.HandleUsers) &&
 							(Boolean(
 								user.role.permission & PermEnum.HandleUsers,

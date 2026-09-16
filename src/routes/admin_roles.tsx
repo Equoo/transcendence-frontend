@@ -1,4 +1,4 @@
-import { type JSX,useEffect, useState } from "react";
+import { type JSX, useEffect, useState } from "react";
 import { useFetcher } from "react-router";
 
 import { fetchRoles, PermEnum } from "../admin/api/roles";
@@ -60,6 +60,7 @@ export default function AdminRoles({
 						action="/roles"
 					>
 						<Input
+							maxLength={15}
 							name="name"
 							type="text"
 							required

@@ -63,6 +63,7 @@ export async function createRole(role: RoleInput): Promise<Response> {
 }
 
 export async function deleteRole(id: string): Promise<Response> {
+	console.warn(id);
 	const res = await fetch(`/api/roles/${id}`, {
 		method: "DELETE",
 		headers: {

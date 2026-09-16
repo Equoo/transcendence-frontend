@@ -72,7 +72,7 @@ export default function MultipleInput({
 		}
 		if (ev.key === "Enter") {
 			ev.preventDefault();
-			if (draft.length > 0) {
+			if (draft.length > 0 && draft.length < 20) {
 				addValue(draft);
 			}
 		}

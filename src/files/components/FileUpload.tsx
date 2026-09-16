@@ -48,6 +48,7 @@ export default function FileUpload({
 					}}
 				/>
 				<Input
+					maxLength={100}
 					name="Name"
 					required
 					value={name}

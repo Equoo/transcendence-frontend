@@ -1,6 +1,9 @@
 /* eslint-disable no-bitwise */
-import { type ComponentProps, type JSX,useEffect, useState } from "react";
+import { type ComponentProps, type JSX, useEffect, useState } from "react";
 import { useFetcher } from "react-router";
+
+import HiddenValues from "@/components/HiddenValues";
+import { Input } from "@/components/Input";
 
 import CheckButton from "../../components/CheckButton";
 import Modal from "../../components/Modal";
@@ -63,11 +66,10 @@ export default function ListUsers({
 							action="/users"
 							className="inline-flex gap-8"
 						>
-							<input
-								type="hidden"
+							<HiddenValues
 								name="id"
-								value={user.id}
-							></input>
+								values={[user.id]}
+							></HiddenValues>
 							<CheckButton
 								type="submit"
 								pending={fetcher.state !== "idle"}
@@ -102,11 +104,10 @@ export default function ListUsers({
 							action="/users/disconnect"
 							className="inline-flex gap-8"
 						>
-							<input
-								type="hidden"
+							<HiddenValues
 								name="id"
-								value={user.id}
-							></input>
+								values={[user.id]}
+							></HiddenValues>
 							<CheckButton
 								pending={fetcher.state !== "idle"}
 								type="submit"
@@ -137,18 +138,19 @@ export default function ListUsers({
 							method="PATCH"
 							action="/users"
 						>
-							<input
-								type="hidden"
+							<HiddenValues
 								name="id"
-								value={user.id}
-							></input>
-							<input
+								values={[user.id]}
+							></HiddenValues>
+							<Input
 								name="password"
+								minLength={8}
+								maxLength={256}
 								required
-								className="ring-0 focus:border-border border-border rounded-sm"
+								className="ring-0 focus:border-border border-border w-50 rounded-sm"
 								type="text"
 								placeholder="New Password"
-							></input>
+							></Input>
 							<CheckButton active type="submit">
 								OK
 							</CheckButton>
