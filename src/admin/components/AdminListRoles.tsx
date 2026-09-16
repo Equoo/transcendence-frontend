@@ -1,8 +1,7 @@
 /* eslint-disable @eslint-react/no-array-index-key */
 import { useEffect, useState } from "react";
 import type { JSX } from "react/jsx-runtime";
-import { PiTrash } from "react-icons/pi";
-import { TbPencil } from "react-icons/tb";
+import { TbPencil, TbTrash } from "react-icons/tb";
 import { useFetcher } from "react-router";
 
 import HiddenValues from "@/components/HiddenValues";
@@ -124,16 +123,14 @@ export default function ListRoles({ role }: { role: Role }): JSX.Element {
 					<>
 						<TbPencil
 							size={26}
-							color="var(--color-text2)"
-							className={`cursor-pointer hover:animate-rotate`}
+							className={` text-text2 hover:text-text cursor-pointer hover:animate-rotate`}
 							onClick={() => {
 								setShowChangeRole(true);
 							}}
 						/>
-						<PiTrash
+						<TbTrash
 							size={26}
-							color="var(--color-text2)"
-							className="hover:cursor-pointer"
+							className="hover:cursor-pointer text-text2 hover:text-text"
 							onClick={() => {
 								setShowConfirmation(true);
 							}}

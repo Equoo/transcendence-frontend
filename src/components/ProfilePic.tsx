@@ -41,13 +41,13 @@ function getActivityColor(activity: ActivityEnum): string {
 export default function ProfilePic({
 	user,
 	idx = 1,
-	size = 10,
+	size = 1,
 	className,
 	status = false,
 	edit = false,
 }: {
 	user: User;
-	size?: number;
+	size?: 1 | 2 | 3;
 	idx?: number;
 	className?: string;
 	status?: boolean;
@@ -68,23 +68,53 @@ export default function ProfilePic({
 		[ActivityEnum.Busy, "Busy"],
 		[ActivityEnum.Offline, "Offline"],
 	];
+	let sizeStyle: string;
+
+	if (size === 1) {
+		sizeStyle = "w-10 h-10";
+	} else if (size === 2) {
+		sizeStyle = "w-15 h-15";
+	} else {
+		sizeStyle = "w-20 h-20";
+	}
+	const [editPic, setEditPic] = useState(false);
 
 	return (
 		<div className="flex">
 			{user.avatar ? (
 				<img
 					src={`/api/files/${user.avatar.key}`}
-					className={`rounded-full w-${size} h-${size} mt-0.5 ${className} border-2 border-accent-text`}
+					className={`rounded-full  mt-0.5 ${className} border-2 border-accent-text ${sizeStyle}`}
 					style={{ zIndex: idx }}
 				/>
 			) : (
-				<div
-					className={`w-${size} h-${size} text-accent-text flex items-center justify-center rounded-full pb-1
-					font-semibold text-lg border-2 border-accent-text ${className}`}
-					style={{ zIndex: idx, backgroundColor }}
-				>
-					{user.userName.substring(0, 2)}
-				</div>
+				<>
+					<div
+						onMouseEnter={() => {
+							setEditPic(true);
+						}}
+
+						className={` text-accent-text flex items-center justify-center rounded-full pb-1
+					font-semibold text-lg border-2 border-accent-text ${sizeStyle} ${className}`}
+						style={{ zIndex: idx, backgroundColor }}
+					>
+						{user.userName.substring(0, 2)}
+					</div>
+					{editPic && edit && (
+						<div
+							onMouseLeave={() => {
+								setEditPic(false);
+							}}
+							className={` cursor-pointer bg-slate-400/60  absolute z-1  text-accent-text flex items-center justify-center rounded-full pb-1
+                        font-semibold text-lg border-2 border-accent-text ${sizeStyle} ${className}`}
+						>
+							<TbPencil
+								size={30}
+								className="opacity-5000"
+							></TbPencil>
+						</div>
+					)}
+				</>
 			)}
 			{status && (
 				<div

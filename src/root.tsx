@@ -14,8 +14,6 @@ import { ToastContainer } from "react-toastify";
 import type { Route } from "./+types/root";
 import { PermEnum } from "./admin/api/roles";
 import { UserContext, userFetcher } from "./users/api/users.api";
-import { PermEnum } from "./admin/api/roles";
-import { UserContext, userFetcher } from "./users/api/users.api";
 
 const alertStyle = {
 	success: "bg-good-soft text-good",

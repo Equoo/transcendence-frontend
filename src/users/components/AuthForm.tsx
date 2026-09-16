@@ -87,7 +87,6 @@ export function AuthForm({
 	return (
 		<div className="flex flex-col w-3/4 gap-4">
 			<Input
-				minLength={3}
 				maxLength={25}
 				className="h-12"
 				placeholder="Username"

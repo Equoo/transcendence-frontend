@@ -24,7 +24,7 @@ export default function Modal({
 						×
 					</button>
 				</div>
-				<div className={`flex flex-col items-${align} gap-6 mt-8`}>
+				<div className={`flex flex-col items-${align} gap-6 mt-2`}>
 					{children}
 				</div>
 			</div>
