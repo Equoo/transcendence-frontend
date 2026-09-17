@@ -21,6 +21,7 @@ interface ActivityState {
 	askOthersActivity: () => void;
 	setPreference: (activity: ActivityEnum) => void;
 	removePreference: () => void;
+	getOnlineUsers: () => string[];
 }
 
 export const useActivity = create<ActivityState>()((set, get) => ({
@@ -81,5 +82,14 @@ export const useActivity = create<ActivityState>()((set, get) => ({
 	removePreference: (): void => {
 		localStorage.removeItem("activityPreference");
 		void get().setSelfActivity(ActivityEnum.Online);
+	},
+	getOnlineUsers: (): string[] => {
+		const online: string[] = [];
+		get().activities.forEach((val, key) => {
+			if (val !== ActivityEnum.Offline) {
+				online.push(key);
+			}
+		});
+		return online;
 	},
 }));

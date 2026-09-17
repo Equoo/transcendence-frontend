@@ -1,5 +1,7 @@
 import { createContext } from "react-router";
 
+import { APIError, type ProblemDetail } from "@/api/problem_detail";
+
 import type { Role } from "../../admin/api/roles";
 import type { AppFile } from "../../files/api/files.api";
 
@@ -63,4 +65,13 @@ export async function userFetcher(): Promise<User | null> {
 		return null;
 	}
 	return normalizeUser((await res.json()) as UserDto);
+}
+
+export async function fetchUsers(): Promise<User[]> {
+	const res = await fetch("/api/users");
+
+	if (!res.ok) {
+		throw new APIError((await res.json()) as ProblemDetail);
+	}
+	return (await res.json()) as User[];
 }
