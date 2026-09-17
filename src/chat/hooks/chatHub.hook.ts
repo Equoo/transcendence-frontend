@@ -5,19 +5,22 @@ import {
 } from "@microsoft/signalr";
 import { create } from "zustand";
 
+import { type ActivityEnum, useActivity } from "@/activity/hooks/activity.hook";
+
 import { type Channel, type Message, normalizeMessage } from "../api/chat.api";
 import { useChat } from "./chat.hook";
+
 interface ChatHub {
 	hub: HubConnection | null;
 	pending: boolean;
-	connect: () => void;
+	connect: () => Promise<void>;
 }
 
 export const useChatHub = create<ChatHub>((set) => ({
 	hub: null,
 	pending: false,
 
-	connect: (): void => {
+	connect: async (): Promise<void> => {
 		try {
 			if (useChatHub.getState().hub || useChatHub.getState().pending) {
 				return;
@@ -25,7 +28,7 @@ export const useChatHub = create<ChatHub>((set) => ({
 			set({ hub: null, pending: true });
 
 			const conn = new HubConnectionBuilder()
-				.withUrl("/api/chat")
+				.withUrl("/api")
 				.configureLogging(LogLevel.Information)
 				.build();
 
@@ -37,19 +40,36 @@ export const useChatHub = create<ChatHub>((set) => ({
 				useChat.getState().removeMsg(channelId, id);
 			});
 
-			conn.on("UpdateMessage", (channelId: string, id: string, msg: Message) => {
-				useChat.getState().updateMsg(channelId, id, normalizeMessage(msg));
-			});
+			conn.on(
+				"UpdateMessage",
+				(channelId: string, id: string, msg: Message) => {
+					useChat
+						.getState()
+						.updateMsg(channelId, id, normalizeMessage(msg));
+				},
+			);
 
 			conn.on("NewChannel", (channel: Channel) => {
 				useChat.getState().addChannel(channel);
+			});
+
+			conn.on(
+				"OtherActivityUpdated",
+				(userId: string, activity: ActivityEnum) => {
+					useActivity.getState().setOtherActivity(userId, activity);
+				},
+			);
+
+			conn.on("ReportActivityTo", (userId: string) => {
+				useActivity.getState().reportActivityTo(userId);
 			});
 
 			conn.onclose(() => {
 				console.warn("Connection closed");
 			});
 
-			conn.start()
+			await conn
+				.start()
 				.then(() => {
 					set({ hub: conn, pending: false });
 				})

@@ -168,7 +168,7 @@ export default function EventDetails({
 					<span className="font-bold text-muted text-xs tracking-wider mt-4">
 						ORGANIZED BY
 					</span>
-					<ProfileLine user={event.organizer} />
+					<ProfileLine user={event.organizer} status />
 					<span className="font-bold text-muted text-xs tracking-wider mt-4">
 						RESOURCES
 					</span>
