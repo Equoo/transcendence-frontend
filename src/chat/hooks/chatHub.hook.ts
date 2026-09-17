@@ -60,8 +60,8 @@ export const useChatHub = create<ChatHub>((set) => ({
 				},
 			);
 
-			conn.on("ReportActivity", () => {
-				useActivity.getState().reportActivity();
+			conn.on("ReportActivityTo", (userId: string) => {
+				useActivity.getState().reportActivityTo(userId);
 			});
 
 			conn.onclose(() => {

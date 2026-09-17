@@ -17,6 +17,7 @@ interface ActivityState {
 	setSelfActivity: (activity: ActivityEnum) => Promise<void>;
 	setSelfId: (id: string) => void;
 	reportActivity: () => void;
+	reportActivityTo: (userId: string) => void;
 	askOthersActivity: () => void;
 	setPreference: (activity: ActivityEnum) => void;
 	removePreference: () => void;
@@ -58,6 +59,15 @@ export const useActivity = create<ActivityState>()((set, get) => ({
 			.getState()
 			.hub?.invoke(
 				"ActivityReported",
+				get().activities.get(get().selfId),
+			);
+	},
+	reportActivityTo: (userId: string): void => {
+		void useChatHub
+			.getState()
+			.hub?.invoke(
+				"ReportActivityTo",
+				userId,
 				get().activities.get(get().selfId),
 			);
 	},
