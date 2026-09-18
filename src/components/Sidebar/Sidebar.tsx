@@ -169,7 +169,7 @@ function Sidebar({ user }: { user: User }): JSX.Element {
 								</ul>
 							)}
 					</div>
-					<ProfileLine user={user} />
+					<ProfileLine user={user} status edit />
 				</div>
 			</aside>
 		</>

@@ -53,16 +53,16 @@ export default function Home({
 									>
 										{data
 											.filter(
-												(user) =>
+												(us) =>
 													activity.getActivity(
-														user.id,
+														us.id,
 													) !== ActivityEnum.Offline,
 											)
-											.map((user) => (
+											.map((us) => (
 												<ProfileLine
 													status
-													user={user}
-													key={user.id}
+													user={us}
+													key={us.id}
 												/>
 											))}
 									</Modal>
