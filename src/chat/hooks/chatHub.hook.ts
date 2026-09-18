@@ -28,7 +28,7 @@ export const useChatHub = create<ChatHub>((set) => ({
 			set({ hub: null, pending: true });
 
 			const conn = new HubConnectionBuilder()
-				.withUrl("/api")
+				.withUrl("/api/")
 				.configureLogging(LogLevel.Information)
 				.build();
 
