@@ -45,14 +45,3 @@ export async function unregisterFromEvent(eventId: string): Promise<Response> {
 	}
 	return res;
 }
-
-export async function fetchRegistration(
-	eventId: string,
-): Promise<Registration[]> {
-	const res = await fetch(`/api/events/${eventId}/registration`);
-
-	if (res.ok) {
-		throw new APIError((await res.json()) as ProblemDetail);
-	}
-	return (await res.json()) as Registration[];
-}

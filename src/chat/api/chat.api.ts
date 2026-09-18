@@ -18,9 +18,7 @@ export function normalizeMessage(msg: Message): Message {
 		...msg,
 		...({
 			sentAt: new Date(msg.sentAt),
-			editAt:
-				msg.editAt &&
-				new Date(msg.editAt ?? new Date()),
+			editAt: msg.editAt && new Date(msg.editAt ?? new Date()),
 		} as Message),
 	};
 }
@@ -41,9 +39,9 @@ export interface ChannelSummary {
 	createAt: Date;
 }
 
-export async function fetchChannels(): Promise<Channel[] | null> {
+export async function fetchChannels(): Promise<Channel[]> {
 	if (Object.keys(useChat.getState().channels).length !== 0) {
-		return null;
+		return [];
 	}
 
 	const response = await fetch("/api/channels");
@@ -100,7 +98,7 @@ export async function createChannel(formData: FormData): Promise<Channel> {
 export async function sendMessage(
 	channelId: string,
 	content: string,
-	messageReference: string | undefined
+	messageReference: string | undefined,
 ): Promise<Message> {
 	const response = await fetch(`/api/channels/${channelId}/messages`, {
 		method: "POST",
@@ -109,7 +107,7 @@ export async function sendMessage(
 		},
 		body: JSON.stringify({
 			content,
-			messageReference
+			messageReference,
 		}),
 	});
 
@@ -144,7 +142,7 @@ export async function updateMessage(
 
 export async function removeMessage(
 	channelId: string,
-	id: string
+	id: string,
 ): Promise<string> {
 	const response = await fetch(`/api/channels/${channelId}/messages/${id}`, {
 		method: "DELETE",
@@ -157,20 +155,20 @@ export async function removeMessage(
 		throw new APIError((await response.json()) as ProblemDetail);
 	}
 
-	return (response.text());
+	return response.text();
 }
 
-export async function ackMessage(
-	channelId: string,
-	id: string,
-): Promise<void> {
-	const response = await fetch(`/api/channels/${channelId}/messages/${id}/ack`, {
-		method: "POST",
-		headers: {
-			"Content-Type": "application/json",
+export async function ackMessage(channelId: string, id: string): Promise<void> {
+	const response = await fetch(
+		`/api/channels/${channelId}/messages/${id}/ack`,
+		{
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({}),
 		},
-		body: JSON.stringify({}),
-	});
+	);
 
 	if (!response.ok) {
 		throw new APIError((await response.json()) as ProblemDetail);

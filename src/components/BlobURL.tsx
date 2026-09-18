@@ -5,9 +5,9 @@ export default function BlobURL({
 	children,
 }: {
 	blob: Blob;
-	children: (url: string | null) => ReactNode;
+	children: (url: string) => ReactNode;
 }): ReactNode {
-	const [url, setUrl] = useState<string | null>(null);
+	const [url, setUrl] = useState<string>("");
 
 	useEffect(() => {
 		const objectUrl = URL.createObjectURL(blob);

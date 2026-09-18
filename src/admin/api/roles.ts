@@ -1,3 +1,4 @@
+/* eslint-disable no-bitwise */
 import { APIError, type ProblemDetail } from "../../api/problem_detail";
 
 export interface RoleInput {
@@ -24,8 +25,6 @@ export enum PermEnum {
 	// Roles
 	HandleRoles = 16,
 
-
-    
 	// Knowledge
 	HandleKnowledge = 32,
 
@@ -63,7 +62,6 @@ export async function createRole(role: RoleInput): Promise<Response> {
 }
 
 export async function deleteRole(id: string): Promise<Response> {
-	console.warn(id);
 	const res = await fetch(`/api/roles/${id}`, {
 		method: "DELETE",
 		headers: {
@@ -107,9 +105,9 @@ export async function handleCheckbox(
 	let finalCode: number;
 
 	if (IsChecked === "true") {
-		finalCode = RolePerm + CheckPerm;
+		finalCode = RolePerm | CheckPerm;
 	} else {
-		finalCode = RolePerm - CheckPerm;
+		finalCode = RolePerm & ~CheckPerm;
 	}
 
 	const res = await fetch(`/api/roles/${RoleId}/permission`, {

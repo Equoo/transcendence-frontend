@@ -31,7 +31,6 @@ export default function FolderItem({
 			</ListCell>
 			<ListCell>Folder</ListCell>
 			<ListCell>-</ListCell>
-			<ListCell>-</ListCell>
 			<ListCell>
 				<ListActions>
 					<ListAction

@@ -53,9 +53,6 @@ export default function FileUpload({
 					required
 					value={name}
 					errors={errors}
-					onChange={(ev) => {
-						setName(ev.target.value);
-					}}
 				/>
 				<CheckButton
 					type="submit"

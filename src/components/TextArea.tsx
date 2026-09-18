@@ -27,10 +27,8 @@ export function TextArea({
 	const [internalValue, setInternalValue] = useState(value ?? "");
 
 	useEffect(() => {
-		if (value) {
-			// eslint-disable-next-line @eslint-react/set-state-in-effect
-			setInternalValue(value);
-		}
+		// eslint-disable-next-line @eslint-react/set-state-in-effect
+		setInternalValue(value ?? "");
 	}, [value]);
 
 	return (

@@ -9,19 +9,19 @@ export interface LineInfos {
 }
 
 export default function Section({
-	tittle,
+	title,
 	lines,
 }: {
-	tittle: string;
+	title: string;
 	lines: LineInfos[];
 }): JSX.Element {
 	return (
 		<div className="text-text w-full flex flex-col gap-5 border-b border-border2 ">
-			<h1 className="text-xl font-bold text-muted">{tittle}</h1>
+			<h1 className="text-xl font-bold text-muted">{title}</h1>
 			<div className="flex flex-col">
-				{lines.map((line, index) => (
+				{lines.map((line) => (
 					<LineInfo
-						key={index}
+						key={line.name}
 						name={line.name}
 						value={line.value}
 						action={line.action}

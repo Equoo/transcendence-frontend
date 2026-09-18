@@ -12,10 +12,10 @@ import {
 	PiSignOut,
 	PiUser,
 } from "react-icons/pi";
-import { Await, useFetcher, useLocation } from "react-router";
+import { Await, Link, useFetcher, useLocation } from "react-router";
 import { useShallow } from "zustand/react/shallow";
 
-import { type Channel, fetchChannels } from "@/chat/api/chat.api";
+import type { Channel } from "@/chat/api/chat.api";
 import ChannelForm from "@/chat/components/ChannelForm";
 import { useChat } from "@/chat/hooks/chat.hook";
 
@@ -44,7 +44,13 @@ function ChannelListSkeleton(): JSX.Element {
 	);
 }
 
-function Sidebar({ user }: { user: User }): JSX.Element {
+function Sidebar({
+	user,
+	channels: channelsInit,
+}: {
+	user: User;
+	channels: Channel[] | Promise<Channel[]>;
+}): JSX.Element {
 	const location = useLocation();
 	const channels = useChat(
 		useShallow((state) => Object.values(state.channels) as Channel[]),
@@ -89,7 +95,7 @@ function Sidebar({ user }: { user: User }): JSX.Element {
 				>
 					<div className="flex flex-col w-full 10 gap-4 ">
 						<ProfileLine size={3} user={user} edit></ProfileLine>
-						<Section tittle="Account Info" lines={Lines}></Section>
+						<Section title="Account Info" lines={Lines}></Section>
 						<div className="flex justify-around gap-5">
 							<CheckButton>Delete Account</CheckButton>
 							<CheckButton>Logout</CheckButton>
@@ -117,21 +123,17 @@ function Sidebar({ user }: { user: User }): JSX.Element {
 				aria-label="Sidebar"
 			>
 				<div className="h-full flex flex-col px-3 py-4 border-e border-border space-y-3 font-main font-medium text-muted text-[14.5px]">
-					<a href="#" className="flex items-center ps-1 mb-5">
-						<img
-							src="/logo/icon-tile.svg"
-							className="h-10 me-3"
-							alt="Flowbite Logo"
-						/>
+					<Link to="/" className="flex items-center ps-1 mb-5">
+						<img src="/logo/icon-tile.svg" className="h-10 me-3" />
 						<div className="flex flex-col self-center">
 							<span className="text-text font-head font-semibold text-[17px]">
 								Keep Grouped
 							</span>
 							<span className="text-muted font-main font-normal text-sm">
-								Transcendance Team
+								Transcendance Project
 							</span>
 						</div>
-					</a>
+					</Link>
 					{Boolean(user.role.permission & PermEnum.InviteUser) && (
 						<InvitationForm className=""></InvitationForm>
 					)}
@@ -150,7 +152,7 @@ function Sidebar({ user }: { user: User }): JSX.Element {
 						</ItemCategory>
 						<ChannelForm></ChannelForm>
 						<Suspense fallback={<ChannelListSkeleton />}>
-							<Await resolve={fetchChannels()}>
+							<Await resolve={channelsInit}>
 								{channels.map(
 									(channel) =>
 										!channel.eventId && (

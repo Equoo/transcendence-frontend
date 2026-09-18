@@ -21,7 +21,7 @@ import { type EventSummary, fetchEvents } from "../events/api/events.api";
 import EventForm from "../events/components/EventForm";
 import EventList from "../events/components/EventList";
 import { type AppFile, fetchFiles } from "../files/api/files.api";
-import { type User,UserContext } from "../users/api/users.api";
+import { type User, UserContext } from "../users/api/users.api";
 import type { Route } from "./+types/calendar_page";
 
 export function clientLoader({ context }: Route.LoaderArgs): {
@@ -135,11 +135,20 @@ export default function Calendar({
 					))}
 				</div>
 			</div>
-			<EventList
-				events={loaderData.events.then((data) =>
-					data.filter((ev) => isSameDay(ev.date, selectedDay)),
+			<Promisable
+				data={loaderData.events}
+				skeleton={
+					<div className="mt-1 mb-2 w-9/10 h-full flex flex-col gap-0.5 bg-back2 animate-pulse rounded-xl" />
+				}
+			>
+				{(events) => (
+					<EventList
+						events={events.filter((ev) =>
+							isSameDay(ev.date, selectedDay),
+						)}
+					/>
 				)}
-			></EventList>
+			</Promisable>
 		</main>
 	);
 }

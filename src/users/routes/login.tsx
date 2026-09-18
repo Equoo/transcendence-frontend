@@ -52,7 +52,7 @@ export default function Login(): JSX.Element {
 						top="JOIN THE TEAM"
 						mid="Login your account"
 						bot="New in the team? "
-						nameLink="Sign in"
+						nameLink="Sign up"
 						link="/register"
 					/>
 					<AuthForm btnName={"Login"} />

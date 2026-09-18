@@ -23,7 +23,7 @@ export default function InvitationForm({
 		setPrevFetcherState(invitationFetcher.state);
 		if (invitationFetcher.state === "idle" && prevFetcherState !== "idle") {
 			setLink(
-				`${window.location.href}register?invitation=${invitationFetcher.data}`,
+				`${window.location.origin}/register?invitation=${invitationFetcher.data}`,
 			);
 		}
 	}

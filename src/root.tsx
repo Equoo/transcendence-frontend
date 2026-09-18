@@ -13,6 +13,7 @@ import { ToastContainer } from "react-toastify";
 
 import type { Route } from "./+types/root";
 import { PermEnum } from "./admin/api/roles";
+import HydratingScreen from "./components/HydratingScreen";
 import { UserContext, userFetcher } from "./users/api/users.api";
 
 const alertStyle = {
@@ -90,5 +91,5 @@ export default function App(): JSX.Element {
 }
 
 export function HydrateFallback(): JSX.Element {
-	return <div>hydrating</div>;
+	return <HydratingScreen />;
 }

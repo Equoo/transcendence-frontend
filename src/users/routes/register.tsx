@@ -39,13 +39,7 @@ async function registerUser(formData: FormData): Promise<UserResult> {
 
 export async function clientAction({
 	request,
-	url,
 }: Route.ClientActionArgs): Promise<UserResult> {
-	const code = url.searchParams.get("invitation");
-
-	if (code === null) {
-		return redirect("/login");
-	}
 	if (!(await registerUser(await request.formData())).ok) {
 		return { ok: false };
 	}

@@ -35,23 +35,22 @@ export function Input({
 	grayed,
 	copyable,
 	value,
+	onChange,
 	...rest
 }: InputProps): JSX.Element {
-	const [internalValue, setInternalValue] = useState(value);
+	const [internalValue, setInternalValue] = useState(value ?? "");
 	const [copied, setCopied] = useState(false);
 	const isError = Boolean(errors?.[name] ?? false);
 
 	useEffect(() => {
-		if (value) {
-			// eslint-disable-next-line @eslint-react/set-state-in-effect
-			setInternalValue(value);
-		}
+		// eslint-disable-next-line @eslint-react/set-state-in-effect
+		setInternalValue(value ?? "");
 	}, [value]);
 
 	return (
 		<Field name={name} required={rest.required} errors={errors}>
 			<div
-				className={`relative flex flex-wrap items-center w-ful border rounded-md
+				className={`relative flex flex-wrap items-center w-full border rounded-md
                     px-2 py-1 font-main ${(grayed ?? false) ? "bg-muted/20 text-text2" : "bg-surface text-text"}  
                     ${isError ? "border-error" : "border-border2 focus-within:border-accent"} ${className}`}
 			>
@@ -76,10 +75,13 @@ export function Input({
 					className={`bg-transparent outline-0 ring-0 border-0 p-0 w-10 grow peer`}
 					name={name}
 					value={internalValue}
+					{...rest}
 					onChange={(ev) => {
+						if (onChange) {
+							onChange(ev);
+						}
 						setInternalValue(ev.target.value);
 					}}
-					{...rest}
 				/>
 			</div>
 		</Field>

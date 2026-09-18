@@ -47,7 +47,7 @@ export default function ProfilePic({
 	edit = false,
 }: {
 	user: User;
-	size?: 1 | 2 | 3;
+	size?: 0.5 | 1 | 2 | 3;
 	idx?: number;
 	className?: string;
 	status?: boolean;
@@ -72,6 +72,8 @@ export default function ProfilePic({
 
 	if (size === 1) {
 		sizeStyle = "w-10 h-10";
+	} else if (size === 0.5) {
+		sizeStyle = "w-5 h-5";
 	} else if (size === 2) {
 		sizeStyle = "w-15 h-15";
 	} else {
@@ -108,10 +110,7 @@ export default function ProfilePic({
 							className={` cursor-pointer bg-slate-400/60  absolute z-1  text-accent-text flex items-center justify-center rounded-full pb-1
                         font-semibold text-lg border-2 border-accent-text ${sizeStyle} ${className}`}
 						>
-							<TbPencil
-								size={30}
-								className="opacity-5000"
-							></TbPencil>
+							<TbPencil size={30}></TbPencil>
 						</div>
 					)}
 				</>

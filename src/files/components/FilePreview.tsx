@@ -1,4 +1,5 @@
 import type { JSX } from "react/jsx-runtime";
+import { AiFillFileUnknown } from "react-icons/ai";
 
 import BlobURL from "../../components/BlobURL";
 import CheckButton from "../../components/CheckButton";
@@ -72,6 +73,18 @@ export function BlobView({
 		<h1 className="text-center mt-10 font-semibold font-main text-text text-4xl">
 			Can't preview file
 		</h1>
+	);
+}
+
+export function FilePreviewSkeleton(): JSX.Element {
+	return (
+		<div className="flex items-center justify-center w-full h-full">
+			<AiFillFileUnknown
+				size={200}
+				color="var(--color-muted)"
+				className="animate-pulse"
+			/>
+		</div>
 	);
 }
 

@@ -1,4 +1,4 @@
-import { type JSX, type ReactNode,Suspense } from "react";
+import { type JSX, type ReactNode, Suspense } from "react";
 import { Await } from "react-router";
 
 export default function Promisable<T>({
