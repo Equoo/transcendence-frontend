@@ -37,6 +37,7 @@ function ChannelListSkeleton(): JSX.Element {
 		</>
 	);
 }
+import { PermEnum } from "../../admin/api/roles";
 
 function Sidebar({ user }: { user: User }): JSX.Element {
 	const location = useLocation();
@@ -84,7 +85,7 @@ function Sidebar({ user }: { user: User }): JSX.Element {
 				bg-back2"
 				aria-label="Sidebar"
 			>
-				<div className="h-full flex flex-col px-3 py-4 border-e border-border">
+				<div className="h-full flex flex-col px-3 py-4 border-e border-border space-y-3 font-main font-medium text-muted text-[14.5px]">
 					<a href="#" className="flex items-center ps-1 mb-5">
 						<img
 							src="/logo/icon-tile.svg"
@@ -100,8 +101,10 @@ function Sidebar({ user }: { user: User }): JSX.Element {
 							</span>
 						</div>
 					</a>
-					<InvitationForm className=""></InvitationForm>
-					<ul className="mt-4 space-y-3 font-medium text-muted text-[14.5px]">
+					{Boolean(user.role.permission & PermEnum.InviteUser) && (
+						<InvitationForm className=""></InvitationForm>
+					)}
+					<ul className="mt-4">
 						<ItemCategory to="/" icon={PiHouse}>
 							Home
 						</ItemCategory>
@@ -132,21 +135,40 @@ function Sidebar({ user }: { user: User }): JSX.Element {
 							Upcoming
 						</li>
 					</ul>
-					<ul className="border-b-2 border-t-2 border-border2 mt-auto">
-						{user.role.permission & 1 && (
-							<div className="mt-1 font-medium text-muted text-[14.5px]">
-								<ItemCategory to="/admin/users" icon={PiUser}>
-									Users
-								</ItemCategory>
-								<ItemCategory
-									to="/admin/roles"
-									icon={PiComputerTower}
-								>
-									Roles
-								</ItemCategory>
-							</div>
-						)}
-					</ul>
+					<div className="border-b-2 border-t-2 border-border2 mt-auto">
+						{Boolean(user.role.permission & PermEnum.HandleUsers) &&
+							(Boolean(
+								user.role.permission & PermEnum.HandleUsers,
+							) ||
+								Boolean(
+									user.role.permission & PermEnum.HandleRoles,
+								)) && (
+								<ul className=" pb-1 border-border2">
+									{Boolean(
+										user.role.permission &
+										PermEnum.HandleUsers,
+									) && (
+										<ItemCategory
+											to="/admin/users"
+											icon={PiUser}
+										>
+											Users
+										</ItemCategory>
+									)}
+									{Boolean(
+										user.role.permission &
+										PermEnum.HandleRoles,
+									) && (
+										<ItemCategory
+											to="/admin/roles"
+											icon={PiComputerTower}
+										>
+											Roles
+										</ItemCategory>
+									)}
+								</ul>
+							)}
+					</div>
 					<ProfileLine user={user} status edit />
 				</div>
 			</aside>

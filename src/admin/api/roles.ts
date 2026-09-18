@@ -10,23 +10,22 @@ export interface Role {
 	permission: number;
 }
 
-export enum Perm {
-	isAdmin = 1,
-
+export enum PermEnum {
 	// Event
-	HandleEvent = 2,
+	HandleEvent = 1,
 
 	// User
-	GetUser = 4,
-	InviteUser = 8,
-	ChangeUsername = 16,
-	DeleteUser = 32,
-	ResetUserPassword = 64,
+	HandleUsers = 2,
+	InviteUser = 4,
 
 	// Chat
-	HandleChannel = 128,
+	HandleChannels = 8,
+
+	// Roles
+	HandleRoles = 16,
 
 	// Knowledge
+	HandleKnowledge = 32,
 
 	// Calendar
 }
@@ -82,6 +81,40 @@ export async function changeRoleName(
 			"Content-Type": "application/json",
 		},
 		body: JSON.stringify(name),
+	});
+
+	return res;
+}
+
+interface PermInput {
+	permission: number;
+}
+
+function toPermInput(perm: number): PermInput {
+	return { permission: perm };
+}
+
+// eslint-disable-next-line @typescript-eslint/max-params
+export async function handleCheckbox(
+	IsChecked: string,
+	RoleId: string,
+	RolePerm: number,
+	CheckPerm: number,
+): Promise<Response> {
+	let finalCode: number;
+
+	if (IsChecked === "true") {
+		finalCode = RolePerm + CheckPerm;
+	} else {
+		finalCode = RolePerm - CheckPerm;
+	}
+
+	const res = await fetch(`/api/roles/${RoleId}/permission`, {
+		method: "PATCH",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify(toPermInput(finalCode).permission),
 	});
 
 	return res;

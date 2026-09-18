@@ -41,6 +41,13 @@ function normalizeUser(dto: UserDto): User {
 	};
 }
 
+export async function userLogout(): Promise<void> {
+	const res = await fetch("/api/auth/logout");
+	if (!res.ok) {
+		throw new APIError((await res.json()) as ProblemDetail);
+	}
+}
+
 export async function userFetcher(): Promise<User | null> {
 	let res = await fetch("/api/me");
 	if (res.ok) {

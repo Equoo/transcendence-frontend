@@ -4,11 +4,18 @@ import { isRouteErrorResponse, Outlet } from "react-router";
 import { ActivityEnum, useActivity } from "@/activity/hooks/activity.hook";
 import { APIError } from "@/api/problem_detail";
 import { useChatHub } from "@/chat/hooks/chatHub.hook";
+import { type User, UserContext, userLogout } from "@/users/api/users.api";
 import { UserReactContext } from "@/users/hooks/users.hooks";
 
 import Sidebar from "../components/Sidebar/Sidebar";
-import { type User, UserContext } from "../users/api/users.api";
 import type { Route } from "./+types/dashboard";
+
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
+export async function clientAction({ request }: Route.ClientLoaderArgs) {
+	if (request.method === "DELETE") {
+		await userLogout();
+	}
+}
 
 export async function clientLoader({
 	context,
