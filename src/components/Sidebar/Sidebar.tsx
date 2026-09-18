@@ -85,7 +85,7 @@ function Sidebar({ user }: { user: User }): JSX.Element {
 				bg-back2"
 				aria-label="Sidebar"
 			>
-				<div className="h-full flex flex-col px-3 py-4 border-e border-border">
+				<div className="h-full flex flex-col px-3 py-4 border-e border-border space-y-3 font-main font-medium text-muted text-[14.5px]">
 					<a href="#" className="flex items-center ps-1 mb-5">
 						<img
 							src="/logo/icon-tile.svg"
@@ -104,7 +104,7 @@ function Sidebar({ user }: { user: User }): JSX.Element {
 					{Boolean(user.role.permission & PermEnum.InviteUser) && (
 						<InvitationForm className=""></InvitationForm>
 					)}
-					<ul className="mt-4 space-y-3 font-main font-medium text-muted text-[14.5px]">
+					<ul className="mt-4">
 						<ItemCategory to="/" icon={PiHouse}>
 							Home
 						</ItemCategory>
