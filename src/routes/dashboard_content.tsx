@@ -10,7 +10,7 @@ import {
 import { APIError } from "@/api/problem_detail";
 import CheckButton from "@/components/CheckButton";
 
-import type { Route } from "./+types/dashboard_page";
+import type { Route } from "./+types/dashboard_content";
 
 export default function DashboardContent(): JSX.Element {
 	return <Outlet />;
