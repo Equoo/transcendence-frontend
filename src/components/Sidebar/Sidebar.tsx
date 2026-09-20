@@ -13,7 +13,7 @@ import {
 import { Await, useLocation } from "react-router";
 import { useShallow } from "zustand/react/shallow";
 
-import { type Channel, fetchChannels } from "@/chat/api/chat.api";
+import { type Channel, type ChannelCategory, fetchChannels } from "@/chat/api/chat.api";
 import ChannelForm from "@/chat/components/ChannelForm";
 import { useChat } from "@/chat/hooks/chat.hook";
 
@@ -38,11 +38,15 @@ function ChannelListSkeleton(): JSX.Element {
 	);
 }
 import { PermEnum } from "../../admin/api/roles";
+import ItemChannelCategory from "./ItemChannelCategory";
 
 function Sidebar({ user }: { user: User }): JSX.Element {
 	const location = useLocation();
 	const channels = useChat(
 		useShallow((state) => Object.values(state.channels) as Channel[]),
+	);
+	const categories = useChat(
+		useShallow((state) => Object.values(state.categories) as ChannelCategory[]),
 	);
 
 	useEffect(() => {
@@ -120,15 +124,35 @@ function Sidebar({ user }: { user: User }): JSX.Element {
 						<ChannelForm></ChannelForm>
 						<Suspense fallback={<ChannelListSkeleton />}>
 							<Await resolve={fetchChannels()}>
-								{channels.map(
-									(channel) =>
+								{channels
+									.filter((ch) => ch.category === null)
+									.map((channel) =>
 										!channel.eventId && (
 											<ItemChannel
 												key={channel.id}
 												channel={channel}
 											></ItemChannel>
 										),
-								)}
+									)}
+								{categories.map((category) => {
+									const channelsChild = channels
+										.filter((ch) => ch.category === category.id)
+										.map((channel) =>
+											!channel.eventId && (
+												<ItemChannel
+													key={channel.id}
+													channel={channel}
+												></ItemChannel>
+											),
+										);
+
+									return (
+										<ItemChannelCategory key={category.id} category={category}>
+											{channelsChild}
+										</ItemChannelCategory>
+									);
+								})}
+								{ }
 							</Await>
 						</Suspense>
 						<li className="flex justify-between items-center px-2 py-1.5 mt-3 text-[11px] text-muted font-bold tracking-wider uppercase group">
@@ -148,24 +172,24 @@ function Sidebar({ user }: { user: User }): JSX.Element {
 										user.role.permission &
 										PermEnum.HandleUsers,
 									) && (
-										<ItemCategory
-											to="/admin/users"
-											icon={PiUser}
-										>
-											Users
-										</ItemCategory>
-									)}
+											<ItemCategory
+												to="/admin/users"
+												icon={PiUser}
+											>
+												Users
+											</ItemCategory>
+										)}
 									{Boolean(
 										user.role.permission &
 										PermEnum.HandleRoles,
 									) && (
-										<ItemCategory
-											to="/admin/roles"
-											icon={PiComputerTower}
-										>
-											Roles
-										</ItemCategory>
-									)}
+											<ItemCategory
+												to="/admin/roles"
+												icon={PiComputerTower}
+											>
+												Roles
+											</ItemCategory>
+										)}
 								</ul>
 							)}
 					</div>
