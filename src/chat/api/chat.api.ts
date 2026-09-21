@@ -59,7 +59,7 @@ export async function fetchChannels(): Promise<Channel[] | null> {
 	const channels = (await channelsRes.json()) as Channel[];
 
 
-	const categoriesRes = await fetch("/api/channels/categories");
+	const categoriesRes = await fetch("/api/categories");
 	if (!categoriesRes.ok) {
 		throw new APIError((await categoriesRes.json()) as ProblemDetail);
 	}

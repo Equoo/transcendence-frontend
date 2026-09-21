@@ -21,19 +21,16 @@ export default function ChannelForm(): JSX.Element {
 
 	return (
 		<>
-			<li className="flex justify-between items-center px-2 py-1.5 mt-3 text-[11px] text-muted font-bold tracking-wider uppercase group">
-				Channels{" "}
-				<button
-					className="cursor-pointer hover:text-text"
-					type="button"
-					name="channelForm"
-					onClick={() => {
-						setShowChannelForm(true);
-					}}
-				>
-					<PiPlus size={14} />
-				</button>
-			</li>
+			<button
+				className="cursor-pointer hover:text-text"
+				type="button"
+				name="channelForm"
+				onClick={() => {
+					setShowChannelForm(true);
+				}}
+			>
+				<PiPlus size={14} />
+			</button>
 
 			{showChannelForm && (
 				<Modal

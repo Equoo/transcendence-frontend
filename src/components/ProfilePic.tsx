@@ -10,14 +10,12 @@ function hashName(name: string): number {
 	let hash = 0;
 
 	for (let idx = 0; idx < name.length; idx += 1) {
-		// eslint-disable-next-line no-bitwise
 		hash = name.charCodeAt(idx) + ((hash << 5) - hash);
 	}
 	return hash;
 }
 
 function numberToRGB(num: number): string {
-	// eslint-disable-next-line no-bitwise
 	const col = (num & 0x00ffffff).toString(16).toLowerCase();
 
 	return "00000".substring(0, 6 - col.length) + col;

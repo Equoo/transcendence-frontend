@@ -1,5 +1,4 @@
-/* eslint-disable no-bitwise */
-import { type ComponentProps, type JSX,useEffect, useState } from "react";
+import { type ComponentProps, type JSX, useEffect, useState } from "react";
 import { useFetcher } from "react-router";
 
 import CheckButton from "../../components/CheckButton";

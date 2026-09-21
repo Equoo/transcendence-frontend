@@ -1,4 +1,3 @@
-/* eslint-disable no-bitwise */
 import { initDrawers } from "flowbite";
 import { type JSX, Suspense, useEffect } from "react";
 import { HiMenuAlt2 } from "react-icons/hi";
@@ -121,7 +120,11 @@ function Sidebar({ user }: { user: User }): JSX.Element {
 						<ItemCategory to="/messages" icon={PiChat}>
 							Messages
 						</ItemCategory>
-						<ChannelForm></ChannelForm>
+
+						<li className="flex justify-between items-center px-2 py-1.5 mt-3 text-[11px] text-muted font-bold tracking-wider uppercase group">
+							Channels{" "}
+							<ChannelForm></ChannelForm>
+						</li>
 						<Suspense fallback={<ChannelListSkeleton />}>
 							<Await resolve={fetchChannels()}>
 								{channels

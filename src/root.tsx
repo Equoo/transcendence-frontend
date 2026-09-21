@@ -34,13 +34,11 @@ export const clientMiddleware: Route.MiddlewareFunction[] = [
 				return redirect("/");
 			}
 			if (url.pathname === "/admin/roles") {
-				// eslint-disable-next-line no-bitwise
 				if (!(user.role.permission & PermEnum.HandleRoles)) {
 					return redirect("/");
 				}
 			}
 			if (url.pathname === "/admin/users") {
-				// eslint-disable-next-line no-bitwise
 				if (!(user.role.permission & PermEnum.HandleUsers)) {
 					return redirect("/");
 				}
@@ -72,8 +70,7 @@ export function Layout({ children }: { children: ReactNode }): JSX.Element {
 					newestOnTop
 					pauseOnHover
 					toastClassName={(context) =>
-						`${
-							alertStyle[context?.type ?? "default"]
+						`${alertStyle[context?.type ?? "default"]
 						} relative flex px-4 gap-1 py-2 min-h-10 rounded-lg justify-between overflow-hidden cursor-pointer`
 					}
 				/>
