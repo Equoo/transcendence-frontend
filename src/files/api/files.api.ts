@@ -57,3 +57,29 @@ export async function fetchFiles(): Promise<AppFile[]> {
 	files.sort((fileA, fileB) => fileA.name.localeCompare(fileB.name));
 	return files;
 }
+
+export async function deleteFile(key: string): Promise<Response> {
+	const res = await fetch(`/api/files/${key}`, { method: "DELETE" });
+
+	if (!res.ok) {
+		throw new APIError((await res.json()) as ProblemDetail);
+	}
+	return res;
+}
+
+export async function updateFileName(
+	key: string,
+	name: string,
+): Promise<Response> {
+	const res = await fetch(`/api/files/${key}/name`, {
+		method: "PATCH",
+		body: JSON.stringify({ name }),
+		headers: {
+			"Content-Type": "application/json",
+		},
+	});
+	if (!res.ok) {
+		throw new APIError((await res.json()) as ProblemDetail);
+	}
+	return res;
+}
