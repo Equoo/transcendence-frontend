@@ -4,7 +4,9 @@ import { useNavigate } from "react-router";
 
 import Promisable from "../components/Promisable";
 import { type AppFile, downloadFile, fetchFile } from "../files/api/files.api";
-import FilePreview from "../files/components/FilePreview";
+import FilePreview, {
+	FilePreviewSkeleton,
+} from "../files/components/FilePreview";
 import type { Route } from "./+types/file_view";
 
 export async function clientLoader({
@@ -38,7 +40,10 @@ export default function FileView({
 					{loaderData.meta.name}
 				</h1>
 			</div>
-			<Promisable data={loaderData.blob} skeleton={<div>coucou</div>}>
+			<Promisable
+				data={loaderData.blob}
+				skeleton={<FilePreviewSkeleton />}
+			>
 				{(blob) => (
 					<FilePreview
 						blob={blob}

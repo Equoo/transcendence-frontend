@@ -1,4 +1,4 @@
-import { type ComponentProps, type JSX,useState } from "react";
+import { type ComponentProps, type JSX, useState } from "react";
 import { useFetcher } from "react-router";
 
 import CheckButton from "../../components/CheckButton";
@@ -14,7 +14,7 @@ export default function EventRegisterBtn({
 	const [showRegister, setShowRegister] = useState(false);
 	const fetcher = useFetcher();
 
-	const isFull = size === registeredCount;
+	const isFull = size <= registeredCount;
 	const presence =
 		fetcher.state === "idle" ? isRegistered : fetcher.formMethod === "POST";
 
@@ -25,7 +25,9 @@ export default function EventRegisterBtn({
 					type="button"
 					active={presence}
 					discrete={isFull}
-					disabled={isFull || fetcher.state !== "idle"}
+					disabled={
+						(isFull && !isRegistered) || fetcher.state !== "idle"
+					}
 					pending={fetcher.state !== "idle"}
 					onClick={() => {
 						if (isRegistered) {
@@ -62,13 +64,12 @@ export default function EventRegisterBtn({
 						<select
 							name="eventRoleId"
 							className="bg-surface border-border rounded-md text-text font-medium focus:ring-accent"
+							defaultValue={
+								eventRoles.find((er) => er.name === "Any")?.id
+							}
 						>
 							{eventRoles.map((er) => (
-								<option
-									key={er.id}
-									value={er.id}
-									selected={er.name === "Any"}
-								>
+								<option key={er.id} value={er.id}>
 									{er.name}
 								</option>
 							))}

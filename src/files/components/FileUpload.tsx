@@ -48,13 +48,11 @@ export default function FileUpload({
 					}}
 				/>
 				<Input
+					maxLength={100}
 					name="Name"
 					required
 					value={name}
 					errors={errors}
-					onChange={(ev) => {
-						setName(ev.target.value);
-					}}
 				/>
 				<CheckButton
 					type="submit"

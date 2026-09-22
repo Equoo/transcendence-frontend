@@ -1,4 +1,4 @@
-import { data } from "react-router";
+import { data, redirect } from "react-router";
 
 import type { Channel } from "@/chat/api/chat.api";
 import { useChat } from "@/chat/hooks/chat.hook";
@@ -53,7 +53,7 @@ export async function clientAction({
 				throw new Error("Event ID is required for deletion");
 			}
 			res = await deleteEvent(params.eventId);
-			return data(res);
+			return redirect("/calendar");
 		}
 		const event = toEventInput(await request.formData());
 		const rolesPromise = fetchEventRoles();

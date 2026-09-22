@@ -4,8 +4,10 @@ import {
 	type KeyboardEventHandler,
 	useState,
 } from "react";
+import { toast } from "react-toastify";
 
 import type { ValidationErrors } from "../api/problem_detail";
+import Alert from "./Alert";
 import EventBadge from "./Badge";
 import { Field } from "./Field";
 import HiddenValues from "./HiddenValues";
@@ -72,8 +74,16 @@ export default function MultipleInput({
 		}
 		if (ev.key === "Enter") {
 			ev.preventDefault();
-			if (draft.length > 0) {
+			if (draft.length > 0 && draft.length < 20) {
 				addValue(draft);
+			} else {
+				toast(Alert, {
+					type: "error",
+					data: {
+						title: "Validation Error",
+						detail: "Value too long, expect < 20 characters",
+					},
+				});
 			}
 		}
 	};

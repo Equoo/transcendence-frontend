@@ -23,7 +23,7 @@ export default function InvitationForm({
 		setPrevFetcherState(invitationFetcher.state);
 		if (invitationFetcher.state === "idle" && prevFetcherState !== "idle") {
 			setLink(
-				`${window.location.href}register?invitation=${invitationFetcher.data}`,
+				`${window.location.origin}/register?invitation=${invitationFetcher.data}`,
 			);
 		}
 	}
@@ -67,6 +67,7 @@ export default function InvitationForm({
 							placeholder="Expiration Date"
 						/>
 						<Input
+							max={2147483646}
 							name="Usages"
 							type="number"
 							required

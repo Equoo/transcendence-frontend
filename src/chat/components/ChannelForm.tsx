@@ -3,6 +3,7 @@ import { PiPlus } from "react-icons/pi";
 import { useFetcher } from "react-router";
 
 import CheckButton from "@/components/CheckButton";
+import { Input } from "@/components/Input";
 import Modal from "@/components/Modal";
 
 import type { Channel } from "../api/chat.api";
@@ -57,7 +58,8 @@ export default function ChannelForm(): JSX.Element {
 								</label>
 								*
 							</div>
-							<input
+							<Input
+								maxLength={55}
 								id="channelform-name"
 								name="name"
 								required
@@ -75,7 +77,8 @@ export default function ChannelForm(): JSX.Element {
 								</label>
 								*
 							</div>
-							<input
+							<Input
+								maxLength={30}
 								id="channelform-topic"
 								name="topic"
 								required

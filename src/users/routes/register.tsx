@@ -39,20 +39,16 @@ async function registerUser(formData: FormData): Promise<UserResult> {
 
 export async function clientAction({
 	request,
-	url,
 }: Route.ClientActionArgs): Promise<UserResult> {
-	const code = url.searchParams.get("invitation");
-
-	if (code === null) {
-		return redirect("/login");
-	}
 	if (!(await registerUser(await request.formData())).ok) {
 		return { ok: false };
 	}
 	return redirect("/");
 }
 
-export default function Register(): JSX.Element {
+export default function Register({
+	actionData,
+}: Route.ComponentProps): JSX.Element {
 	const location = useLocation();
 	const code = new URLSearchParams(location.search).get("invitation");
 
@@ -68,6 +64,11 @@ export default function Register(): JSX.Element {
 						nameLink="Log in"
 						link="/login"
 					/>
+					{actionData?.ok === false && (
+						<div className="text-error">
+							Invalid login or password.
+						</div>
+					)}
 					<AuthForm btnName={"Register"} register code={code} />
 				</Form>
 			</div>

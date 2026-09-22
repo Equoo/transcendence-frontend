@@ -90,7 +90,7 @@ export default function EventForm({
 
 					{showEventForm && (
 						<Modal
-							title="Create An Event"
+							title={edit ? "Edit Event" : "Create An Event"}
 							onClose={() => {
 								setShowEventForm(false);
 							}}
@@ -108,6 +108,7 @@ export default function EventForm({
 								className="flex flex-col items-center w-4/5 gap-5 mb-4"
 							>
 								<Input
+									maxLength={55}
 									name="Name"
 									value={event?.name}
 									required
@@ -126,6 +127,7 @@ export default function EventForm({
 									placeholder="Event Date"
 								/>
 								<Input
+									max={2147483646}
 									name="Size"
 									value={event?.size}
 									type="number"
@@ -135,6 +137,7 @@ export default function EventForm({
 									placeholder="Max Registrations"
 								/>
 								<Input
+									maxLength={50}
 									name="Location"
 									value={event?.location}
 									required

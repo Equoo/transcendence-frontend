@@ -42,7 +42,9 @@ export async function clientAction({
 	return redirect("/");
 }
 
-export default function Login(): JSX.Element {
+export default function Login({
+	actionData,
+}: Route.ComponentProps): JSX.Element {
 	return (
 		<div className="flex items-center justify-center w-full h-full bg-back gap-20">
 			<AuthLogo side={"r"} />
@@ -52,9 +54,14 @@ export default function Login(): JSX.Element {
 						top="JOIN THE TEAM"
 						mid="Login your account"
 						bot="New in the team? "
-						nameLink="Sign in"
+						nameLink="Sign up"
 						link="/register"
 					/>
+					{actionData?.ok === false && (
+						<div className="text-error">
+							Invalid login or password.
+						</div>
+					)}
 					<AuthForm btnName={"Login"} />
 				</Form>
 			</div>

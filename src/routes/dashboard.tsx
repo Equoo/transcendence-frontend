@@ -3,6 +3,7 @@ import { isRouteErrorResponse, Outlet } from "react-router";
 
 import { ActivityEnum, useActivity } from "@/activity/hooks/activity.hook";
 import { APIError } from "@/api/problem_detail";
+import { type Channel, fetchChannels } from "@/chat/api/chat.api";
 import { useChatHub } from "@/chat/hooks/chatHub.hook";
 import { type User, UserContext, userLogout } from "@/users/api/users.api";
 import { UserReactContext } from "@/users/hooks/users.hooks";
@@ -21,10 +22,12 @@ export async function clientLoader({
 	context,
 }: Route.ClientLoaderArgs): Promise<{
 	user: User;
+	channels: Promise<Channel[]>;
 }> {
 	await useChatHub.getState().connect();
 	const user = context.get(UserContext);
-	return { user };
+
+	return { user, channels: fetchChannels() };
 }
 
 let unloading = false;
@@ -72,7 +75,7 @@ export default function Dashboard({
 
 	return (
 		<div className="relative w-full h-full overflow-hidden bg-back">
-			<Sidebar user={loaderData.user} />
+			<Sidebar user={loaderData.user} channels={loaderData.channels} />
 			<div className="h-full sm:pl-64 flex flex-col w-full items-center overflow-y-scroll">
 				<UserReactContext value={loaderData.user}>
 					<Outlet />

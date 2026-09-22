@@ -14,7 +14,7 @@ import { type AppFile, fetchFiles } from "../files/api/files.api";
 import { fetchUsers, type User, UserContext } from "../users/api/users.api";
 import type { Route } from "./+types/home";
 
-export function clientLoader({ context }: Route.LoaderArgs): {
+export function clientLoader({ context }: Route.ClientLoaderArgs): {
 	events: Promise<EventSummary[]>;
 	roles: Promise<EventRole[]>;
 	files: Promise<AppFile[]>;
@@ -39,7 +39,7 @@ export default function Home({
 		<>
 			<div className="w-full flex flex-row px-6 py-4 justify-between items-center">
 				<h1 className="font-semibold tracking-tight text-xl inline-flex gap-4 items-center">
-					Accueil
+					Home
 					<Promisable data={users}>
 						{(data) => (
 							<>

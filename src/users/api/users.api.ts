@@ -1,5 +1,6 @@
 import { createContext } from "react-router";
 
+import { ActivityEnum, useActivity } from "@/activity/hooks/activity.hook";
 import { APIError, type ProblemDetail } from "@/api/problem_detail";
 
 import type { Role } from "../../admin/api/roles";
@@ -42,10 +43,12 @@ function normalizeUser(dto: UserDto): User {
 }
 
 export async function userLogout(): Promise<void> {
+	const activity = useActivity.getState();
 	const res = await fetch("/api/auth/logout");
 	if (!res.ok) {
 		throw new APIError((await res.json()) as ProblemDetail);
 	}
+	await activity.setSelfActivity(ActivityEnum.Offline);
 }
 
 export async function userFetcher(): Promise<User | null> {

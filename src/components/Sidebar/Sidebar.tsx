@@ -1,25 +1,31 @@
 /* eslint-disable no-bitwise */
 import { initDrawers } from "flowbite";
-import { type JSX, Suspense, useEffect } from "react";
+import { type JSX, Suspense, useEffect, useState } from "react";
 import { HiMenuAlt2 } from "react-icons/hi";
 import {
 	PiBookOpen,
 	PiCalendarBlank,
 	PiChat,
 	PiComputerTower,
+	PiGear,
 	PiHouse,
+	PiSignOut,
 	PiUser,
 } from "react-icons/pi";
-import { Await, useLocation } from "react-router";
+import { Await, Link, useFetcher, useLocation } from "react-router";
 import { useShallow } from "zustand/react/shallow";
 
-import { type Channel, fetchChannels } from "@/chat/api/chat.api";
+import type { Channel } from "@/chat/api/chat.api";
 import ChannelForm from "@/chat/components/ChannelForm";
 import { useChat } from "@/chat/hooks/chat.hook";
 
+import { PermEnum } from "../../admin/api/roles";
 import InvitationForm from "../../invitations/components/InvitationForm";
 import type { User } from "../../users/api/users.api";
+import CheckButton from "../CheckButton";
+import Modal from "../Modal";
 import ProfileLine from "../ProfileLine";
+import Section, { type LineInfos } from "../Section";
 import ItemCategory from "./ItemCategory";
 import ItemChannel from "./ItemChannel";
 
@@ -37,13 +43,22 @@ function ChannelListSkeleton(): JSX.Element {
 		</>
 	);
 }
-import { PermEnum } from "../../admin/api/roles";
 
-function Sidebar({ user }: { user: User }): JSX.Element {
+function Sidebar({
+	user,
+	channels: channelsInit,
+}: {
+	user: User;
+	channels: Channel[] | Promise<Channel[]>;
+}): JSX.Element {
 	const location = useLocation();
 	const channels = useChat(
 		useShallow((state) => Object.values(state.channels) as Channel[]),
 	);
+
+	const fetcher = useFetcher();
+
+	const [showUser, setShowUser] = useState(false);
 
 	useEffect(() => {
 		initDrawers();
@@ -64,8 +79,30 @@ function Sidebar({ user }: { user: User }): JSX.Element {
 		}
 	}, [location.pathname]);
 
+	const Lines: LineInfos[] = [
+		{ name: "Username", value: user.userName },
+		{ name: "Password", value: "***********" },
+	];
+
 	return (
 		<>
+			{showUser && (
+				<Modal
+					title="User Settings"
+					onClose={() => {
+						setShowUser(false);
+					}}
+				>
+					<div className="flex flex-col w-full 10 gap-4 ">
+						<ProfileLine size={3} user={user} edit></ProfileLine>
+						<Section title="Account Info" lines={Lines}></Section>
+						<div className="flex justify-around gap-5">
+							<CheckButton>Delete Account</CheckButton>
+							<CheckButton>Logout</CheckButton>
+						</div>
+					</div>
+				</Modal>
+			)}
 			<button
 				data-drawer-target="sidebar"
 				data-drawer-toggle="sidebar"
@@ -86,21 +123,17 @@ function Sidebar({ user }: { user: User }): JSX.Element {
 				aria-label="Sidebar"
 			>
 				<div className="h-full flex flex-col px-3 py-4 border-e border-border space-y-3 font-main font-medium text-muted text-[14.5px]">
-					<a href="#" className="flex items-center ps-1 mb-5">
-						<img
-							src="/logo/icon-tile.svg"
-							className="h-10 me-3"
-							alt="Flowbite Logo"
-						/>
+					<Link to="/" className="flex items-center ps-1 mb-5">
+						<img src="/logo/icon-tile.svg" className="h-10 me-3" />
 						<div className="flex flex-col self-center">
 							<span className="text-text font-head font-semibold text-[17px]">
 								Keep Grouped
 							</span>
 							<span className="text-muted font-main font-normal text-sm">
-								Transcendance Team
+								Transcendance Project
 							</span>
 						</div>
-					</a>
+					</Link>
 					{Boolean(user.role.permission & PermEnum.InviteUser) && (
 						<InvitationForm className=""></InvitationForm>
 					)}
@@ -119,7 +152,7 @@ function Sidebar({ user }: { user: User }): JSX.Element {
 						</ItemCategory>
 						<ChannelForm></ChannelForm>
 						<Suspense fallback={<ChannelListSkeleton />}>
-							<Await resolve={fetchChannels()}>
+							<Await resolve={channelsInit}>
 								{channels.map(
 									(channel) =>
 										!channel.eventId && (
@@ -135,7 +168,7 @@ function Sidebar({ user }: { user: User }): JSX.Element {
 							Upcoming
 						</li>
 					</ul>
-					<div className="border-b-2 border-t-2 border-border2 mt-auto">
+					<div className="border-b-2 border-t-2 border-border2 mt-auto font-main font-medium text-muted text-[14.5px]">
 						{Boolean(user.role.permission & PermEnum.HandleUsers) &&
 							(Boolean(
 								user.role.permission & PermEnum.HandleUsers,
@@ -169,7 +202,26 @@ function Sidebar({ user }: { user: User }): JSX.Element {
 								</ul>
 							)}
 					</div>
-					<ProfileLine user={user} status edit />
+					<div className="flex items-center justify-between">
+						<ProfileLine user={user} status edit />
+						<PiGear
+							className="text-muted ml-5 hover:text-text2 cursor-pointer"
+							size={20}
+							onClick={() => {
+								setShowUser(true);
+							}}
+						></PiGear>
+						<PiSignOut
+							className="mr-5 text-muted hover:cursor-pointer hover:text-accent"
+							size={20}
+							onClick={() => {
+								void fetcher.submit(null, {
+									method: "DELETE",
+									action: "/",
+								});
+							}}
+						></PiSignOut>
+					</div>
 				</div>
 			</aside>
 		</>

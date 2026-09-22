@@ -1,7 +1,7 @@
 import { data } from "react-router";
 
-import type { Route } from "../../routes/+types/admin_users";
 import { handleRemoveUser, resetPassword } from "../api/users";
+import type { Route } from "./+types/admin.user.route";
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
 export async function clientAction({ request }: Route.ClientActionArgs) {

@@ -1,9 +1,11 @@
 /* eslint-disable @eslint-react/no-array-index-key */
 import { useEffect, useState } from "react";
 import type { JSX } from "react/jsx-runtime";
-import { PiTrash } from "react-icons/pi";
-import { TbPencil } from "react-icons/tb";
+import { TbPencil, TbTrash } from "react-icons/tb";
 import { useFetcher } from "react-router";
+
+import HiddenValues from "@/components/HiddenValues";
+import { Input } from "@/components/Input";
 
 import CheckButton from "../../components/CheckButton";
 import Modal from "../../components/Modal";
@@ -55,18 +57,18 @@ export default function ListRoles({ role }: { role: Role }): JSX.Element {
 							method="PATCH"
 							action="/roles"
 						>
-							<input
-								type="hidden"
+							<HiddenValues
 								name="id"
-								value={role.id}
-							></input>
-							<input
+								values={[role.id]}
+							></HiddenValues>
+							<Input
+								maxLength={20}
 								name="name"
 								required
-								className="ring-0 focus:border-border border-border rounded-sm"
+								className="ring-0 focus:border-border border-border rounded-sm w-50"
 								type="text"
 								placeholder="New Name"
-							></input>
+							></Input>
 							<CheckButton active type="submit">
 								OK
 							</CheckButton>
@@ -89,11 +91,10 @@ export default function ListRoles({ role }: { role: Role }): JSX.Element {
 							className="inline-flex gap-8"
 							action="/roles"
 						>
-							<input
-								type="hidden"
+							<HiddenValues
 								name="id"
-								value={role.id}
-							></input>
+								values={[role.id]}
+							></HiddenValues>
 							<CheckButton
 								pending={fetcher.state !== "idle"}
 								type="submit"
@@ -118,23 +119,23 @@ export default function ListRoles({ role }: { role: Role }): JSX.Element {
 				<RolesBox role={role} perm={check} key={index}></RolesBox>
 			))}
 			<td className="flex flex-row items-center justify-between w-full h-full px-6 py-3 ">
-				<TbPencil
-					size={26}
-					color="var(--color-text2)"
-					className={`cursor-pointer hover:animate-rotate`}
-					onClick={() => {
-						setShowChangeRole(true);
-					}}
-				/>
 				{role.name !== "Member" && (
-					<PiTrash
-						size={26}
-						color="var(--color-text2)"
-						className="hover:cursor-pointer"
-						onClick={() => {
-							setShowConfirmation(true);
-						}}
-					/>
+					<>
+						<TbPencil
+							size={26}
+							className={` text-text2 hover:text-text cursor-pointer hover:animate-rotate`}
+							onClick={() => {
+								setShowChangeRole(true);
+							}}
+						/>
+						<TbTrash
+							size={26}
+							className="hover:cursor-pointer text-text2 hover:text-text"
+							onClick={() => {
+								setShowConfirmation(true);
+							}}
+						/>
+					</>
 				)}
 			</td>
 		</tr>

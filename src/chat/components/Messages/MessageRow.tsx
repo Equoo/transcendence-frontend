@@ -47,13 +47,13 @@ function MessageRow({
 			onMouseEnter={onActivate}
 			onFocus={onActivate}
 			onMouseLeave={onDeactivate}
-			className={`relative gap-3 ${showHeader ? "mt-4.5" : "mt-0.75"} px-5.5 hoer:bg-back2 aria-selected:bg-back2 data-[pending=true]:animate-pulse data-[focus=true]:bg-accent-soft`}
+			className={`relative gap-3 ${showHeader ? "mt-4.5" : "mt-0.75"} px-5.5 hover:bg-back2 aria-selected:bg-back2 data-[pending=true]:animate-pulse data-[focus=true]:bg-accent-soft`}
 		>
 			{showHeader && (
 				<ProfilePic
 					className="absolute"
 					user={message.sender}
-					size={10}
+					size={1}
 				/>
 			)}
 			<div className="ml-12">
@@ -75,7 +75,7 @@ function MessageRow({
 					{message.editAt && (
 						<span className="text-[11.5px] text-muted">
 							{" "}
-							(edtited)
+							(edited)
 						</span>
 					)}
 				</div>
