@@ -1,3 +1,8 @@
+/* eslint-disable no-undefined */
+import "blobatar/motion.css";
+
+import { Blobatar } from "@blobatar/react";
+import { type Expression, idle, sleepy, surprised } from "blobatar/expression";
 import { type JSX, useRef, useState } from "react";
 import { TbPencil } from "react-icons/tb";
 
@@ -5,23 +10,6 @@ import { ActivityEnum, useActivity } from "@/activity/hooks/activity.hook";
 import { useClickOutside } from "@/hooks/useClickOutside";
 
 import type { User } from "../users/api/users.api";
-
-function hashName(name: string): number {
-	let hash = 0;
-
-	for (let idx = 0; idx < name.length; idx += 1) {
-		// eslint-disable-next-line no-bitwise
-		hash = name.charCodeAt(idx) + ((hash << 5) - hash);
-	}
-	return hash;
-}
-
-function numberToRGB(num: number): string {
-	// eslint-disable-next-line no-bitwise
-	const col = (num & 0x00ffffff).toString(16).toLowerCase();
-
-	return "00000".substring(0, 6 - col.length) + col;
-}
 
 function getActivityColor(activity: ActivityEnum): string {
 	switch (activity) {
@@ -38,10 +26,25 @@ function getActivityColor(activity: ActivityEnum): string {
 	}
 }
 
+function getExpression(activity: ActivityEnum): Expression | undefined {
+	switch (activity) {
+		case ActivityEnum.Online:
+			return surprised;
+		case ActivityEnum.Afk:
+			return sleepy;
+		case ActivityEnum.Busy:
+			return idle;
+		case ActivityEnum.Offline:
+			return sleepy;
+		default:
+			return idle;
+	}
+}
+
 export default function ProfilePic({
 	user,
 	idx = 1,
-	size = 1,
+	size = 2,
 	className,
 	status = false,
 	edit = false,
@@ -62,7 +65,6 @@ export default function ProfilePic({
 	);
 	const activity = useActivity();
 
-	const backgroundColor = `#${numberToRGB(hashName(user.userName))}`;
 	const activities: [ActivityEnum, string][] = [
 		[ActivityEnum.Afk, "Afk"],
 		[ActivityEnum.Busy, "Busy"],
@@ -82,33 +84,30 @@ export default function ProfilePic({
 	const [editPic, setEditPic] = useState(false);
 
 	return (
-		<div className="flex">
+		<div className={`flex ${sizeStyle}`}>
 			{user.avatar ? (
 				<img
 					src={`/api/files/${user.avatar.key}`}
-					className={`rounded-full  mt-0.5 ${className} border-2 border-accent-text ${sizeStyle}`}
+					className={`rounded-full w-7/10 h-7/10 mt-0.5 ${className} border-2 border-accent-text ${sizeStyle}`}
 					style={{ zIndex: idx }}
 				/>
 			) : (
 				<>
-					<div
-						onMouseEnter={() => {
-							setEditPic(true);
-						}}
-
-						className={` text-accent-text flex items-center justify-center rounded-full pb-1
-					font-semibold text-lg border-2 border-accent-text ${sizeStyle} ${className}`}
-						style={{ zIndex: idx, backgroundColor }}
-					>
-						{user.userName.substring(0, 2)}
-					</div>
+					<Blobatar
+						name={user.userName}
+						animate="always"
+						className="w-full h-full"
+						expression={getExpression(
+							activity.getActivity(user.id),
+						)}
+					></Blobatar>
 					{editPic && edit && (
 						<div
 							onMouseLeave={() => {
 								setEditPic(false);
 							}}
-							className={` cursor-pointer bg-slate-400/60  absolute z-1  text-accent-text flex items-center justify-center rounded-full pb-1
-                        font-semibold text-lg border-2 border-accent-text ${sizeStyle} ${className}`}
+							className={`cursor-pointer bg-slate-400/60  absolute z-1  text-accent-text flex items-center justify-center rounded-full pb-1
+                        font-semibold text-lg border-2 border-accent-text ${className}`}
 						>
 							<TbPencil size={30}></TbPencil>
 						</div>
@@ -117,7 +116,7 @@ export default function ProfilePic({
 			)}
 			{status && (
 				<div
-					className={`w-4 h-4 rounded-full self-end -ml-3 border-3 border-back2`}
+					className={`min-w-4 min-h-4 rounded-full self-end -ml-3 border-3 border-back2`}
 					style={{
 						zIndex: idx + 1,
 						backgroundColor: getActivityColor(
