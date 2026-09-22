@@ -46,7 +46,9 @@ export async function clientAction({
 	return redirect("/");
 }
 
-export default function Register(): JSX.Element {
+export default function Register({
+	actionData,
+}: Route.ComponentProps): JSX.Element {
 	const location = useLocation();
 	const code = new URLSearchParams(location.search).get("invitation");
 
@@ -62,6 +64,11 @@ export default function Register(): JSX.Element {
 						nameLink="Log in"
 						link="/login"
 					/>
+					{actionData?.ok === false && (
+						<div className="text-error">
+							Invalid login or password.
+						</div>
+					)}
 					<AuthForm btnName={"Register"} register code={code} />
 				</Form>
 			</div>
