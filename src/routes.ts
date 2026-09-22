@@ -35,4 +35,5 @@ export default [
 	route("/roles/check", "admin/routes/admin.role.route.check.tsx"),
 	route("/users", "admin/routes/admin.user.route.tsx"),
 	route("/users/disconnect", "admin/routes/admin.user.routeDisconnect.tsx"),
+	route("/profile/action", "routes/profileAction.tsx"),
 ] satisfies RouteConfig;

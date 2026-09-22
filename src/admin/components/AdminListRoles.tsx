@@ -18,8 +18,8 @@ export interface Perm {
 }
 
 export default function ListRoles({ role }: { role: Role }): JSX.Element {
-	const [showConfirmation, setShowConfirmation] = useState<boolean>(false);
-	const [showChangeRole, setShowChangeRole] = useState<boolean>(false);
+	const [showConfirmation, setShowConfirmation] = useState(false);
+	const [showChangeRole, setShowChangeRole] = useState(false);
 
 	const fetcher = useFetcher();
 

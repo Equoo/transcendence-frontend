@@ -18,9 +18,7 @@ export default function LineInfo({
 			<div className="flex gap-5 h-5 justify-center items-center">
 				{value && <h1>{value}</h1>}
 				<TbPencil
-					onClick={() => {
-						action;
-					}}
+					onClick={action}
 					size={20}
 					className="hover:text-text text-text2 hover:cursor-pointer"
 				></TbPencil>

@@ -1,6 +1,8 @@
+/* eslint-disable capitalized-comments */
+/* eslint-disable max-lines */
 /* eslint-disable no-bitwise */
 import { initDrawers } from "flowbite";
-import { type JSX, Suspense, useEffect, useState } from "react";
+import { type JSX, Suspense, useEffect, useRef, useState } from "react";
 import { HiMenuAlt2 } from "react-icons/hi";
 import {
 	PiBookOpen,
@@ -9,7 +11,6 @@ import {
 	PiComputerTower,
 	PiGear,
 	PiHouse,
-	PiSignOut,
 	PiUser,
 } from "react-icons/pi";
 import { Await, Link, useFetcher, useLocation } from "react-router";
@@ -18,11 +19,14 @@ import { useShallow } from "zustand/react/shallow";
 import type { Channel } from "@/chat/api/chat.api";
 import ChannelForm from "@/chat/components/ChannelForm";
 import { useChat } from "@/chat/hooks/chat.hook";
+import { useClickOutside } from "@/hooks/useClickOutside";
 
 import { PermEnum } from "../../admin/api/roles";
 import InvitationForm from "../../invitations/components/InvitationForm";
 import type { User } from "../../users/api/users.api";
 import CheckButton from "../CheckButton";
+import HiddenValues from "../HiddenValues";
+import { Input } from "../Input";
 import Modal from "../Modal";
 import ProfileLine from "../ProfileLine";
 import Section, { type LineInfos } from "../Section";
@@ -52,13 +56,29 @@ function Sidebar({
 	channels: Channel[] | Promise<Channel[]>;
 }): JSX.Element {
 	const location = useLocation();
+	const fetcher = useFetcher();
 	const channels = useChat(
 		useShallow((state) => Object.values(state.channels) as Channel[]),
 	);
 
-	const fetcher = useFetcher();
-
 	const [showUser, setShowUser] = useState(false);
+	const [showDelete, setShowDelete] = useState(false);
+	const [showUsername, setShowUsername] = useState(false);
+	const [showPassword, setShowPassword] = useState(false);
+
+	const openUsername = (): void => {
+		setShowUsername(true);
+	};
+	const openPassword = (): void => {
+		setShowPassword(true);
+	};
+
+	const clickOutsideRef = useClickOutside(
+		useRef<HTMLDivElement>(null),
+		() => {
+			setShowUser(true);
+		},
+	);
 
 	useEffect(() => {
 		initDrawers();
@@ -79,30 +99,128 @@ function Sidebar({
 		}
 	}, [location.pathname]);
 
+	useEffect(() => {
+		if (fetcher.data) {
+			// eslint-disable-next-line @eslint-react/set-state-in-effect
+			setShowDelete(false);
+			// eslint-disable-next-line @eslint-react/set-state-in-effect
+			setShowPassword(false);
+			// eslint-disable-next-line @eslint-react/set-state-in-effect
+			setShowUsername(false);
+		}
+	}, [fetcher.data]);
+
 	const Lines: LineInfos[] = [
-		{ name: "Username", value: user.userName },
-		{ name: "Password", value: "***********" },
+		{
+			name: "Username",
+			value: user.userName,
+			action: openUsername,
+		},
+		{ name: "Password", value: "***********", action: openPassword },
 	];
 
 	return (
 		<>
-			{showUser && (
+			{showDelete && (
 				<Modal
-					title="User Settings"
+					title={`Delete your account ?`}
 					onClose={() => {
-						setShowUser(false);
+						setShowDelete(false);
 					}}
 				>
-					<div className="flex flex-col w-full 10 gap-4 ">
-						<ProfileLine size={3} user={user} edit></ProfileLine>
-						<Section title="Account Info" lines={Lines}></Section>
-						<div className="flex justify-around gap-5">
-							<CheckButton>Delete Account</CheckButton>
-							<CheckButton>Logout</CheckButton>
-						</div>
+					<p className="text-muted font-main font-light text-sm text-center w-100">
+						This cannot be cancelled.
+					</p>
+
+					<HiddenValues name="id" values={[user.id]}></HiddenValues>
+					<div className="flex gap-5">
+						<CheckButton
+							type="submit"
+							onClick={() => {
+								void fetcher.submit(null, {
+									method: "DELETE",
+									action: "/profile/action",
+								});
+							}}
+						>
+							Yes
+						</CheckButton>
+						<CheckButton
+							active
+							activeCheck={false}
+							onClick={() => {
+								setShowDelete(false);
+							}}
+						>
+							No
+						</CheckButton>
 					</div>
 				</Modal>
 			)}
+
+			{showUsername && (
+				<Modal
+					width="w-90"
+					title={`Change Username`}
+					onClose={() => {
+						setShowUsername(false);
+					}}
+				>
+					<fetcher.Form
+						className="flex flex-col items-center gap-5 w-7/10"
+						method="PATCH"
+						action="/profile/action"
+					>
+						<Input
+							maxLength={20}
+							name="Username"
+							required
+							className="ring-0 focus:border-border border-border rounded-sm"
+							type="text"
+							placeholder="New Username"
+						></Input>
+						<CheckButton active type="submit">
+							OK
+						</CheckButton>
+					</fetcher.Form>
+				</Modal>
+			)}
+
+			{showPassword && (
+				<Modal
+					width="w-90"
+					title={`Change Password`}
+					onClose={() => {
+						setShowPassword(false);
+					}}
+				>
+					<fetcher.Form
+						method="PATCH"
+						className="flex flex-col items-center gap-5 w-8/10"
+					>
+						<Input
+							name="Current password"
+							// maxLength={255}
+							required
+						></Input>
+						<Input
+							maxLength={255}
+							// minLength={8}
+							name="New password"
+							required
+							className="ring-0 focus:border-border border-border rounded-sm"
+							type="text"
+						></Input>
+
+						<div className="w-30">
+							<CheckButton active type="submit">
+								OK
+							</CheckButton>
+						</div>
+					</fetcher.Form>
+				</Modal>
+			)}
+
 			<button
 				data-drawer-target="sidebar"
 				data-drawer-toggle="sidebar"
@@ -202,8 +320,54 @@ function Sidebar({
 								</ul>
 							)}
 					</div>
-					<div className="flex items-center justify-between">
-						<ProfileLine user={user} status edit />
+					{showUser && (
+						<div
+							ref={clickOutsideRef}
+							className="flex items-center justify-center absolute z-1 bottom-15 left-55 flex-col border-border2 shadow-md bg-surface w-75 h-90 rounded-2xl"
+						>
+							<button
+								type="button"
+								onClick={() => {
+									setShowUser(false);
+								}}
+								className="absolute right-5 top-3  text-muted hover:text-text text-3xl cursor-pointer ml-auto"
+							>
+								×
+							</button>
+							<div className="flex flex-col justify-center w-18/21 h-full gap-3 ">
+								<ProfileLine
+									size={3}
+									user={user}
+									edit
+								></ProfileLine>
+								<Section
+									title="Account Info"
+									lines={Lines}
+								></Section>
+								<div className="mt-2 flex justify-around gap-5">
+									<CheckButton
+										discrete
+										onClick={() => {
+											setShowDelete(true);
+										}}
+									>
+										Delete Account
+									</CheckButton>
+									<CheckButton
+										onClick={() => {
+											void fetcher.submit(null, {
+												method: "DELETE",
+											});
+										}}
+									>
+										Logout
+									</CheckButton>
+								</div>
+							</div>
+						</div>
+					)}
+					<div className="mb-4 mt-4 flex items-center gap-8">
+						<ProfileLine user={user} />
 						<PiGear
 							className="text-muted ml-5 hover:text-text2 cursor-pointer"
 							size={20}
@@ -211,16 +375,6 @@ function Sidebar({
 								setShowUser(true);
 							}}
 						></PiGear>
-						<PiSignOut
-							className="mr-5 text-muted hover:cursor-pointer hover:text-accent"
-							size={20}
-							onClick={() => {
-								void fetcher.submit(null, {
-									method: "DELETE",
-									action: "/",
-								});
-							}}
-						></PiSignOut>
 					</div>
 				</div>
 			</aside>
