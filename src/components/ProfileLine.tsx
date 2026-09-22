@@ -6,7 +6,7 @@ import ProfilePic from "./ProfilePic";
 export default function ProfileLine({
 	user,
 	status = false,
-	size = 1,
+	size = 2,
 	edit = false,
 }: {
 	user: User;

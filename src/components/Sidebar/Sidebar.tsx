@@ -367,7 +367,7 @@ function Sidebar({
 						</div>
 					)}
 					<div className="mb-4 mt-4 flex items-center gap-8">
-						<ProfileLine user={user} />
+						<ProfileLine user={user} status edit size={3} />
 						<PiGear
 							className="text-muted ml-5 hover:text-text2 cursor-pointer"
 							size={20}
