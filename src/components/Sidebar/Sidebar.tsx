@@ -160,21 +160,22 @@ function Sidebar({
 
 			{showUsername && (
 				<Modal
+					width="w-90"
 					title={`Change Username`}
 					onClose={() => {
 						setShowUsername(false);
 					}}
 				>
 					<fetcher.Form
-						className="flex flex-col items-center gap-5"
+						className="flex flex-col items-center gap-5 w-7/10"
 						method="PATCH"
 						action="/profile/action"
 					>
 						<Input
 							maxLength={20}
-							name="username"
+							name="Username"
 							required
-							className="ring-0 focus:border-border border-border rounded-sm w-50"
+							className="ring-0 focus:border-border border-border rounded-sm"
 							type="text"
 							placeholder="New Username"
 						></Input>
@@ -187,6 +188,7 @@ function Sidebar({
 
 			{showPassword && (
 				<Modal
+					width="w-90"
 					title={`Change Password`}
 					onClose={() => {
 						setShowPassword(false);
@@ -194,21 +196,21 @@ function Sidebar({
 				>
 					<fetcher.Form
 						method="PATCH"
-						className="flex flex-col items-center gap-5"
+						className="flex flex-col items-center gap-5 w-8/10"
 					>
 						<Input
-							name="password"
+							name="Current password"
 							// maxLength={255}
 							required
 						></Input>
 						<Input
 							maxLength={255}
 							// minLength={8}
-							name="new password"
+							name="New password"
 							required
-							className="ring-0 focus:border-border border-border rounded-sm w-50"
+							className="ring-0 focus:border-border border-border rounded-sm"
 							type="text"
-						></Input>					className="w-90"
+						></Input>
 
 						<div className="w-30">
 							<CheckButton active type="submit">

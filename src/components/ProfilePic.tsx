@@ -71,15 +71,12 @@ export default function ProfilePic({
 	let sizeStyle: string;
 
 	if (size === 1) {
-		console.warn(1);
 		sizeStyle = "w-10 h-10";
 	} else if (size === 0.5) {
 		sizeStyle = "w-5 h-5";
 	} else if (size === 2) {
-		console.warn(2);
 		sizeStyle = "w-15 h-15";
 	} else {
-		console.warn(3);
 		sizeStyle = "w-20 h-20";
 	}
 	const [editPic, setEditPic] = useState(false);

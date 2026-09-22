@@ -53,14 +53,15 @@ function normalizeUser(dto: UserDto): User {
 
 function toUsernameRequest(formdata: FormData): UsernameRequest {
 	return {
-		UserName: formdata.get("username") as string,
+		UserName: formdata.get("Username") as string,
 	};
 }
 
 function toPasswordRequest(formdata: FormData): PasswordRequest {
+	formdata;
 	return {
-		Password: formdata.get("password") as string,
-		NewPassword: formdata.get("new password") as string,
+		Password: formdata.get("Current password") as string,
+		NewPassword: formdata.get("New password") as string,
 	};
 }
 
