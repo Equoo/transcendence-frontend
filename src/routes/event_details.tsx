@@ -176,6 +176,7 @@ export default function EventDetails({
 								key={reg.registeredAt}
 								user={reg.user}
 								idx={idx}
+								status
 								// eslint-disable-next-line no-negated-condition
 								className={idx !== 0 ? "-ml-3" : ""}
 							/>
