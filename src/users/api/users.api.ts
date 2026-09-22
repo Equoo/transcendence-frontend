@@ -27,6 +27,15 @@ interface UserDto {
 	avatar?: AppFile;
 }
 
+interface UsernameRequest {
+	UserName: string;
+}
+
+interface PasswordRequest {
+	Password: string;
+	NewPassword: string;
+}
+
 function normalizeUser(dto: UserDto): User {
 	return {
 		id: dto.id,
@@ -42,13 +51,65 @@ function normalizeUser(dto: UserDto): User {
 	};
 }
 
-export async function userLogout(): Promise<void> {
-	const activity = useActivity.getState();
+function toUsernameRequest(formdata: FormData): UsernameRequest {
+	return {
+		UserName: formdata.get("username") as string,
+	};
+}
+
+function toPasswordRequest(formdata: FormData): PasswordRequest {
+	return {
+		Password: formdata.get("password") as string,
+		NewPassword: formdata.get("new password") as string,
+	};
+}
+
+export async function userChangeUsername(
+	formdata: FormData,
+): Promise<Response> {
+	const req = toUsernameRequest(formdata);
+	const res = await fetch("/api/me", {
+		method: "PATCH",
+		headers: { "Content-Type": "application/json" },
+		body: JSON.stringify(req),
+	});
+	if (!res.ok) {
+		throw new APIError((await res.json()) as ProblemDetail);
+	}
+	return res;
+}
+
+export async function userDeleteAccount(): Promise<Response> {
+	const res = await fetch("/api/me", { method: "DELETE" });
+	if (!res.ok) {
+		throw new APIError((await res.json()) as ProblemDetail);
+	}
+	return res;
+}
+
+export async function userChangePassword(
+	formdata: FormData,
+): Promise<Response> {
+	const req = toPasswordRequest(formdata);
+	const res = await fetch("/api/me/password", {
+		method: "PATCH",
+		headers: { "Content-Type": "application/json" },
+		body: JSON.stringify(req),
+	});
+	if (!res.ok) {
+		throw new APIError((await res.json()) as ProblemDetail);
+	}
+	return res;
+}
+
+export async function userLogout(): Promise<Response> {
 	const res = await fetch("/api/auth/logout");
 	if (!res.ok) {
 		throw new APIError((await res.json()) as ProblemDetail);
 	}
+	const activity = useActivity.getState();
 	await activity.setSelfActivity(ActivityEnum.Offline);
+	return res;
 }
 
 export async function userFetcher(): Promise<User | null> {

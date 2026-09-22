@@ -16,9 +16,9 @@ export default function Section({
 	lines: LineInfos[];
 }): JSX.Element {
 	return (
-		<div className="text-text w-full flex flex-col gap-5 border-b border-border2 ">
+		<div className="text-text w-full flex flex-col gap-5 ">
 			<h1 className="text-xl font-bold text-muted">{title}</h1>
-			<div className="flex flex-col">
+			<div className="flex flex-col gap-3">
 				{lines.map((line) => (
 					<LineInfo
 						key={line.name}
@@ -28,6 +28,7 @@ export default function Section({
 					></LineInfo>
 				))}
 			</div>
+			<div className=" border-border2"></div>
 		</div>
 	);
 }

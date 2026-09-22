@@ -19,7 +19,9 @@ export default function LineInfo({
 				{value && <h1>{value}</h1>}
 				<TbPencil
 					onClick={() => {
-						action;
+						if (action) {
+							action();
+						}
 					}}
 					size={20}
 					className="hover:text-text text-text2 hover:cursor-pointer"

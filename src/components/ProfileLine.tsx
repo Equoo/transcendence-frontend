@@ -6,8 +6,8 @@ import ProfilePic from "./ProfilePic";
 export default function ProfileLine({
 	user,
 	status = false,
-	edit = false,
 	size = 1,
+	edit = false,
 }: {
 	user: User;
 	status?: boolean;
@@ -25,7 +25,6 @@ export default function ProfileLine({
 					{user.role.name}
 				</div>
 			</div>
-			
 		</div>
 	);
 }

@@ -1,11 +1,16 @@
 import { type JSX, useEffect } from "react";
-import { isRouteErrorResponse, Outlet } from "react-router";
+import { data, isRouteErrorResponse, Outlet } from "react-router";
 
 import { ActivityEnum, useActivity } from "@/activity/hooks/activity.hook";
 import { APIError } from "@/api/problem_detail";
 import { type Channel, fetchChannels } from "@/chat/api/chat.api";
 import { useChatHub } from "@/chat/hooks/chatHub.hook";
-import { type User, UserContext, userLogout } from "@/users/api/users.api";
+import {
+	type User,
+	userChangePassword,
+	UserContext,
+	userLogout,
+} from "@/users/api/users.api";
 import { UserReactContext } from "@/users/hooks/users.hooks";
 
 import Sidebar from "../components/Sidebar/Sidebar";
@@ -13,9 +18,16 @@ import type { Route } from "./+types/dashboard";
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
 export async function clientAction({ request }: Route.ClientLoaderArgs) {
+	let res;
+
 	if (request.method === "DELETE") {
-		await userLogout();
+		res = await userLogout();
 	}
+	if (request.method === "PATCH") {
+		res = await userChangePassword(await request.formData());
+	}
+
+	return data(res, { status: 201 });
 }
 
 export async function clientLoader({
