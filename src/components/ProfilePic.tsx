@@ -1,4 +1,3 @@
-/* eslint-disable no-undefined */
 import "blobatar/motion.css";
 
 import { Blobatar } from "@blobatar/react";
@@ -94,7 +93,7 @@ export default function ProfilePic({
 			) : (
 				<>
 					<Blobatar
-						name={user.userName}
+						name={user.id}
 						animate="always"
 						className="w-full h-full"
 						expression={getExpression(
