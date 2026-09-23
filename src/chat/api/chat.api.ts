@@ -18,11 +18,14 @@ export function normalizeMessage(msg: Message): Message {
 		...msg,
 		...({
 			sentAt: new Date(msg.sentAt),
-			editAt:
-				msg.editAt &&
-				new Date(msg.editAt ?? new Date()),
+			editAt: msg.editAt && new Date(msg.editAt ?? new Date()),
 		} as Message),
 	};
+}
+
+export interface ChannelRole {
+	id: string;
+	name: string;
 }
 
 export interface Channel {
@@ -34,7 +37,10 @@ export interface Channel {
 	category?: string | null;
 	messages: Message[];
 	ackTime?: Date | null;
+	rolesWhitelist: ChannelRole[];
+	cetegorySync: boolean;
 }
+
 export interface ChannelSummary {
 	id: string;
 	name: string;
@@ -57,7 +63,6 @@ export async function fetchChannels(): Promise<Channel[] | null> {
 		throw new APIError((await channelsRes.json()) as ProblemDetail);
 	}
 	const channels = (await channelsRes.json()) as Channel[];
-
 
 	const categoriesRes = await fetch("/api/categories");
 	if (!categoriesRes.ok) {
@@ -98,9 +103,48 @@ export async function createChannel(formData: FormData): Promise<Channel> {
 			"Content-Type": "application/json",
 		},
 		body: JSON.stringify({
-			name: formData.get("name") as string,
-			topic: formData.get("topic") as string,
+			name: formData.get("Name") as string,
+			topic: formData.get("Topic") as string,
+			whitelistRoles: formData.get("Roles") as string,
 		}),
+	});
+
+	if (!response.ok) {
+		throw new APIError((await response.json()) as ProblemDetail);
+	}
+
+	return (await response.json()) as Channel;
+}
+
+export async function updateChannel(formData: FormData): Promise<Channel> {
+	const response = await fetch(
+		`/api/channels/${formData.get("id") as string}`,
+		{
+			method: "PUT",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				name: formData.get("Name") as string,
+				topic: formData.get("Topic") as string,
+				whitelistRoles: formData.get("Roles") as string,
+			}),
+		},
+	);
+
+	if (!response.ok) {
+		throw new APIError((await response.json()) as ProblemDetail);
+	}
+
+	return (await response.json()) as Channel;
+}
+
+export async function deleteChannel(id: string): Promise<Channel> {
+	const response = await fetch(`/api/channels/${id}`, {
+		method: "DELETE",
+		headers: {
+			"Content-Type": "application/json",
+		},
 	});
 
 	if (!response.ok) {
@@ -113,7 +157,7 @@ export async function createChannel(formData: FormData): Promise<Channel> {
 export async function sendMessage(
 	channelId: string,
 	content: string,
-	messageReference: string | undefined
+	messageReference: string | undefined,
 ): Promise<Message> {
 	const response = await fetch(`/api/channels/${channelId}/messages`, {
 		method: "POST",
@@ -122,7 +166,7 @@ export async function sendMessage(
 		},
 		body: JSON.stringify({
 			content,
-			messageReference
+			messageReference,
 		}),
 	});
 
@@ -157,7 +201,7 @@ export async function updateMessage(
 
 export async function removeMessage(
 	channelId: string,
-	id: string
+	id: string,
 ): Promise<string> {
 	const response = await fetch(`/api/channels/${channelId}/messages/${id}`, {
 		method: "DELETE",
@@ -170,20 +214,20 @@ export async function removeMessage(
 		throw new APIError((await response.json()) as ProblemDetail);
 	}
 
-	return (response.text());
+	return response.text();
 }
 
-export async function ackMessage(
-	channelId: string,
-	id: string,
-): Promise<void> {
-	const response = await fetch(`/api/channels/${channelId}/messages/${id}/ack`, {
-		method: "POST",
-		headers: {
-			"Content-Type": "application/json",
+export async function ackMessage(channelId: string, id: string): Promise<void> {
+	const response = await fetch(
+		`/api/channels/${channelId}/messages/${id}/ack`,
+		{
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({}),
 		},
-		body: JSON.stringify({}),
-	});
+	);
 
 	if (!response.ok) {
 		throw new APIError((await response.json()) as ProblemDetail);

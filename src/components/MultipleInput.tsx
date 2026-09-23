@@ -14,6 +14,7 @@ const emptyArray: string[] = [];
 
 export default function MultipleInput({
 	suggestions = emptyArray,
+	onlySuggestions = false,
 	className,
 	name,
 	placeholder,
@@ -23,6 +24,7 @@ export default function MultipleInput({
 }: {
 	name: string;
 	suggestions?: string[];
+	onlySuggestions?: boolean;
 	values?: string[];
 	errors?: ValidationErrors;
 } & ComponentProps<"input">): JSX.Element {
@@ -73,6 +75,9 @@ export default function MultipleInput({
 		if (ev.key === "Enter") {
 			ev.preventDefault();
 			if (draft.length > 0) {
+				if (onlySuggestions && !sugg.find((su) => su === draft)) {
+					return;
+				}
 				addValue(draft);
 			}
 		}
