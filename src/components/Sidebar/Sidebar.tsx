@@ -25,7 +25,6 @@ import { PermEnum } from "../../admin/api/roles";
 import InvitationForm from "../../invitations/components/InvitationForm";
 import type { User } from "../../users/api/users.api";
 import CheckButton from "../CheckButton";
-import HiddenValues from "../HiddenValues";
 import { Input } from "../Input";
 import Modal from "../Modal";
 import ProfileLine from "../ProfileLine";
@@ -132,15 +131,16 @@ function Sidebar({
 						This cannot be cancelled.
 					</p>
 
-					<HiddenValues name="id" values={[user.id]}></HiddenValues>
 					<div className="flex gap-5">
 						<CheckButton
 							type="submit"
 							onClick={() => {
-								void fetcher.submit(null, {
-									method: "DELETE",
-									action: "/profile/action",
-								});
+								void fetcher.submit(
+									{ action: "/me/delete" },
+									{
+										method: "DELETE",
+									},
+								);
 							}}
 						>
 							Yes
@@ -169,7 +169,7 @@ function Sidebar({
 					<fetcher.Form
 						className="flex flex-col items-center gap-5 w-7/10"
 						method="PATCH"
-						action="/profile/action"
+						action="/me/username"
 					>
 						<Input
 							maxLength={20}
@@ -197,6 +197,7 @@ function Sidebar({
 					<fetcher.Form
 						method="PATCH"
 						className="flex flex-col items-center gap-5 w-8/10"
+						action="/me/password"
 					>
 						<Input
 							name="Current password"
@@ -323,7 +324,7 @@ function Sidebar({
 					{showUser && (
 						<div
 							ref={clickOutsideRef}
-							className="flex items-center justify-center absolute z-1 bottom-15 left-55 flex-col border-border2 shadow-md bg-surface w-75 h-90 rounded-2xl"
+							className="flex items-center justify-center absolute bottom-15 left-55 flex-col border-border2 shadow-md bg-surface w-75 h-90 rounded-2xl"
 						>
 							<button
 								type="button"
@@ -356,6 +357,7 @@ function Sidebar({
 									<CheckButton
 										onClick={() => {
 											void fetcher.submit(null, {
+												action: "/me/logout",
 												method: "DELETE",
 											});
 										}}
@@ -367,7 +369,7 @@ function Sidebar({
 						</div>
 					)}
 					<div className="mb-4 mt-4 flex items-center gap-8">
-						<ProfileLine user={user} status edit size={3} />
+						<ProfileLine user={user} status edit={false} size={3} />
 						<PiGear
 							className="text-muted ml-5 hover:text-text2 cursor-pointer"
 							size={20}

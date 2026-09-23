@@ -65,6 +65,14 @@ function toPasswordRequest(formdata: FormData): PasswordRequest {
 	};
 }
 
+export async function userChangeAvatar(data: FormData): Promise<Response> {
+	const res = await fetch("/api/me/avatar", {
+		method: "PATCH",
+		body: data,
+	});
+	return res;
+}
+
 export async function userChangeUsername(
 	formdata: FormData,
 ): Promise<Response> {
