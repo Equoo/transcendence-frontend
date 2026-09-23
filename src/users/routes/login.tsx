@@ -46,7 +46,7 @@ export default function Login({
 	actionData,
 }: Route.ComponentProps): JSX.Element {
 	return (
-		<div className="flex items-center justify-center w-full h-full bg-back gap-20">
+		<div className="flex items-center justify-center w-full h-full bg-back gap-20 login">
 			<AuthLogo side={"r"} />
 			<div className="flex flex-col w-2/3 h-6/10 justify-center items-end z-10 ">
 				<Form method="POST" className="flex flex-col gap-5 ">

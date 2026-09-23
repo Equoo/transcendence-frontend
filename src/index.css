@@ -57,6 +57,83 @@
 	}
 }
 
+::view-transition-old(root),
+::view-transition-new(root) {
+	animation: none;
+	mix-blend-mode: normal;
+}
+
+@keyframes slide-left-out {
+	from {
+		transform: translateX(0) scaleX(1);
+		opacity: 1;
+	}
+	to {
+		transform: translateX(-50vw) scaleX(0);
+		overflow-x: hidden;
+		opacity: 0;
+	}
+}
+
+@keyframes slide-left-in {
+	from {
+		transform: translateX(-50vw) scaleX(0);
+		overflow-x: hidden;
+		opacity: 0;
+	}
+	to {
+		transform: translateX(0) scaleX(1);
+		opacity: 1;
+	}
+}
+
+@keyframes slide-right-out {
+	from {
+		transform: translateX(0) scaleX(1);
+		opacity: 1;
+	}
+	to {
+		transform: translateX(50vw) scaleX(0);
+		overflow-x: hidden;
+		opacity: 0;
+	}
+}
+
+@keyframes slide-right-in {
+	from {
+		transform: translateX(50vw) scaleX(0);
+		overflow-x: hidden;
+		opacity: 0;
+	}
+	to {
+		transform: translateX(0) scaleX(1);
+		opacity: 1;
+	}
+}
+
+.login {
+	view-transition-name: login;
+}
+.signup {
+	view-transition-name: signup;
+}
+
+::view-transition-old(login) {
+	animation: slide-left-out 0.3s forwards;
+}
+::view-transition-new(login) {
+	animation: slide-left-in 0.3s forwards;
+	mix-blend-mode: normal;
+}
+
+::view-transition-old(signup) {
+	animation: slide-right-out 0.3s forwards;
+}
+::view-transition-new(signup) {
+	animation: slide-right-in 0.3s forwards;
+	mix-blend-mode: normal;
+}
+
 html,
 body,
 #root {

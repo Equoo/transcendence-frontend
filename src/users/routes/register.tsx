@@ -53,7 +53,7 @@ export default function Register({
 	const code = new URLSearchParams(location.search).get("invitation");
 
 	return (
-		<div className="flex items-center justify-center w-full h-full bg-back gap-20">
+		<div className="flex items-center justify-center w-full h-full bg-back gap-20 signup">
 			<AuthLogo side={"l"} />
 			<div className="flex flex-col w-2/3 h-6/10 justify-center items-start z-10 ">
 				<Form method="POST" className="flex flex-col gap-5 ">
