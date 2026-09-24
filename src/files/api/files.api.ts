@@ -83,3 +83,45 @@ export async function updateFileName(
 	}
 	return res;
 }
+
+export function listFolders(files: AppFile[]): string[] {
+	const folders = new Set<string>();
+	for (const file of files) {
+		let idx = file.name.indexOf("/");
+		while (idx !== -1) {
+			folders.add(file.name.slice(0, idx + 1));
+			idx = file.name.indexOf("/", idx + 1);
+		}
+	}
+	return Array.from(folders).sort((folderA, folderB) =>
+		folderA.localeCompare(folderB),
+	);
+}
+
+export async function renameFolder(
+	from: string,
+	to: string,
+): Promise<Response> {
+	if (to.startsWith(from)) {
+		throw new Error("Cannot move a folder into itself");
+	}
+	const files = await fetchFiles();
+	await Promise.all(
+		files
+			.filter((file) => file.name.startsWith(from))
+			.map(async (file) =>
+				updateFileName(file.key, to + file.name.slice(from.length)),
+			),
+	);
+	return new Response(null, { status: 204 });
+}
+
+export async function deleteFolder(folder: string): Promise<Response> {
+	const files = await fetchFiles();
+	await Promise.all(
+		files
+			.filter((file) => file.name.startsWith(folder))
+			.map(async (file) => deleteFile(file.key)),
+	);
+	return new Response(null, { status: 204 });
+}
