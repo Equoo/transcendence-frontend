@@ -11,16 +11,16 @@ export default function LineInfo({
 	action?: () => void;
 }): JSX.Element {
 	return (
-		<div className="flex justify-between w-full h-10">
-			<div className="flex justify-center">
+		<div className="flex justify-between w-full h-10 ">
+			<div className="flex">
 				<h1 className="">{name}</h1>
 			</div>
-			<div className="flex gap-5 h-5 justify-center items-center">
-				{value && <h1>{value}</h1>}
+			<div className="flex h-5 justify-center gap-2 items-center ">
+				{value && <h1 className="text-[11px]">{value}</h1>}
 				<TbPencil
 					onClick={action}
 					size={20}
-					className="hover:text-text text-text2 hover:cursor-pointer"
+					className=" hover:text-text text-text2 hover:cursor-pointer"
 				></TbPencil>
 			</div>
 		</div>

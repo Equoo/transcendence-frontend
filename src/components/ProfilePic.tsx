@@ -50,6 +50,7 @@ export default function ProfilePic({
 	idx = 1,
 	size = 2,
 	className,
+	changePicture = false,
 	status = false,
 	edit = false,
 }: {
@@ -58,6 +59,7 @@ export default function ProfilePic({
 	idx?: number;
 	className?: string;
 	status?: boolean;
+	changePicture?: boolean;
 	edit?: boolean;
 }): JSX.Element {
 	const filesFetcher = useFetcher<typeof filesAction>();
@@ -111,12 +113,23 @@ export default function ProfilePic({
 				<div
 					className={`absolute left-20 min-w-4 min-h-4 rounded-full self-end -ml-3 border-3 border-back2`}
 					style={{
-						zIndex: idx + 0,
+						zIndex: idx + 1,
 						backgroundColor: getActivityColor(
 							activity.getActivity(user.id),
 						),
 					}}
 				>
+					{edit && (
+						<div
+							className="opacity-0 hover:opacity-100 w-full h-full flex items-center justify-center cursor-pointer"
+							onClick={() => {
+								setShowSelect(true);
+							}}
+						>
+							<TbPencil size={8} />
+						</div>
+					)}
+
 					{showSelect && (
 						<PopupList
 							className="bottom-0 left-4"
@@ -169,7 +182,7 @@ export default function ProfilePic({
 					)}
 				</div>
 			)}
-			{edit && (
+			{changePicture && (
 				<div
 					onClick={() => {
 						setShowPics(true);

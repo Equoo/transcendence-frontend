@@ -337,6 +337,7 @@ function Sidebar({
 							</button>
 							<div className="flex flex-col justify-center w-18/21 h-full gap-3 ">
 								<ProfileLine
+									changePicture
 									size={3}
 									user={user}
 									edit
@@ -368,10 +369,10 @@ function Sidebar({
 							</div>
 						</div>
 					)}
-					<div className="mb-4 mt-4 flex items-center gap-8">
-						<ProfileLine user={user} status edit={false} size={3} />
+					<div className=" flex items-center gap-8  w-full">
+						<ProfileLine user={user} status edit size={3} />
 						<PiGear
-							className="text-muted ml-5 hover:text-text2 cursor-pointer"
+							className="absolute text-muted right-5 hover:text-text2 cursor-pointer"
 							size={20}
 							onClick={() => {
 								setShowUser(true);
