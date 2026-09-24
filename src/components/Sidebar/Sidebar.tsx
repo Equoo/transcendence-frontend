@@ -287,7 +287,7 @@ function Sidebar({
 							Upcoming
 						</li>
 					</ul>
-					<div className="border-b-2 border-t-2 border-border2 mt-auto font-main font-medium text-muted text-[14.5px]">
+					<div className="border-t-2 border-border2 mt-auto font-main font-medium text-muted text-[14.5px]">
 						{Boolean(user.role.permission & PermEnum.HandleUsers) &&
 							(Boolean(
 								user.role.permission & PermEnum.HandleUsers,
@@ -318,6 +318,7 @@ function Sidebar({
 											Roles
 										</ItemCategory>
 									)}
+									<div className="border-border2 border"></div>
 								</ul>
 							)}
 					</div>

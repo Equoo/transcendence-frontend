@@ -103,6 +103,7 @@ export default function ProfilePic({
 				/>
 			) : (
 				<Blobatar
+					
 					name={user.id}
 					animate="always"
 					className="w-full h-full"
@@ -121,12 +122,12 @@ export default function ProfilePic({
 				>
 					{edit && (
 						<div
-							className="opacity-0 hover:opacity-100 w-full h-full flex items-center justify-center cursor-pointer"
+							className="opacity-0 hover:opacity-100 hover:w-3 hover:h-3 w-full h-full flex items-center justify-center cursor-pointer"
 							onClick={() => {
 								setShowSelect(true);
 							}}
 						>
-							<TbPencil size={8} />
+							<TbPencil size={8} className="text-accent-text " />
 						</div>
 					)}
 
