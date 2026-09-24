@@ -1,20 +1,19 @@
 import type { JSX } from "react";
 import { FcFolder } from "react-icons/fc";
-import { PiDotsThreeVerticalBold } from "react-icons/pi";
 
-import {
-	ListAction,
-	ListActions,
-	ListCell,
-	ListRow,
-} from "../../components/List";
+import { ListAction, ListCell, ListRow } from "../../components/List";
+import ItemActions from "./ItemActions";
 
 export default function FolderItem({
 	name,
 	onClick,
+	parent,
+	folders,
 }: {
 	name: string;
 	onClick: (name: string) => void;
+	parent?: string;
+	folders?: string[];
 }): JSX.Element {
 	return (
 		<ListRow>
@@ -32,16 +31,13 @@ export default function FolderItem({
 			<ListCell>Folder</ListCell>
 			<ListCell>-</ListCell>
 			<ListCell>
-				<ListActions>
-					<ListAction
-						aria-label={`Open folder ${name}`}
-						onClick={() => {
-							onClick(name);
-						}}
-					>
-						<PiDotsThreeVerticalBold size={18} />
-					</ListAction>
-				</ListActions>
+				{typeof parent === "string" && folders && (
+					<ItemActions
+						parent={parent}
+						name={name}
+						folders={folders}
+					/>
+				)}
 			</ListCell>
 		</ListRow>
 	);

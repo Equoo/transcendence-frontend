@@ -1,6 +1,6 @@
 import type { JSX } from "react";
 import { PiLock, PiUser } from "react-icons/pi";
-import { useNavigation } from "react-router";
+import { Link, useNavigation } from "react-router";
 
 import CheckButton from "../../components/CheckButton";
 import { Input } from "../../components/Input";
@@ -29,9 +29,9 @@ export function AuthTitle({
 			</h1>
 			<h3 className="text-text font-head">
 				{bot}
-				<a href={link} className="text-accent">
+				<Link to={link} className="text-accent" viewTransition>
 					{nameLink}
-				</a>
+				</Link>
 			</h3>
 		</div>
 	);

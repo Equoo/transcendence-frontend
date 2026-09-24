@@ -67,7 +67,7 @@ export function Layout({ children }: { children: ReactNode }): JSX.Element {
 				<Meta />
 				<Links />
 			</head>
-			<body>
+			<body className="w-screen h-screen bg-back">
 				<ToastContainer
 					position="top-center"
 					newestOnTop

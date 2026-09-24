@@ -1,11 +1,21 @@
 import type { JSX } from "react";
-import { PiDotsThreeVerticalBold } from "react-icons/pi";
 import { Link } from "react-router";
 
-import { ListActions,ListCell, ListRow } from "../../components/List";
+import { ListCell, ListRow } from "../../components/List";
 import type { AppFile } from "../api/files.api";
+import ItemActions from "./ItemActions";
 
-export default function FileItem({ file }: { file: AppFile }): JSX.Element {
+export default function FileItem({
+	file,
+	parent,
+	folders,
+}: {
+	file: AppFile;
+	parent: string;
+	folders: string[];
+}): JSX.Element {
+	const name = file.name.slice(parent.length);
+
 	return (
 		<ListRow>
 			<ListCell rowHeader>
@@ -13,21 +23,22 @@ export default function FileItem({ file }: { file: AppFile }): JSX.Element {
 					className="hover:underline focus-visible:outline-accent"
 					to={`/knowledge/${file.key}`}
 				>
-					{file.name}
+					{name}
 				</Link>
 			</ListCell>
 			<ListCell>{file.contentType}</ListCell>
-			<ListCell>{file.length}</ListCell>
 			<ListCell>
-				<ListActions>
-					<Link
-						className="inline-flex rounded-sm p-1 text-text2 hover:text-accent focus-visible:outline-2 focus-visible:outline-accent"
-						aria-label={`View ${file.name}`}
-						to={`/knowledge/${file.key}`}
-					>
-						<PiDotsThreeVerticalBold size={18} />
-					</Link>
-				</ListActions>
+				{file.length / 1000000 < 1
+					? `${Math.floor(file.length / 1000)} Ko`
+					: `${Math.floor(file.length / 1000000)} Mo`}
+			</ListCell>
+			<ListCell>
+				<ItemActions
+					fileKey={file.key}
+					parent={parent}
+					name={name}
+					folders={folders}
+				/>
 			</ListCell>
 		</ListRow>
 	);

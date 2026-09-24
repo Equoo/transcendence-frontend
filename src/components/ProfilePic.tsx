@@ -2,13 +2,13 @@ import "blobatar/motion.css";
 
 import { Blobatar } from "@blobatar/react";
 import { type Expression, idle, sleepy, surprised } from "blobatar/expression";
-import { type JSX, useRef, useState } from "react";
+import { type JSX, useState } from "react";
 import { TbPencil } from "react-icons/tb";
 
 import { ActivityEnum, useActivity } from "@/activity/hooks/activity.hook";
-import { useClickOutside } from "@/hooks/useClickOutside";
 
 import type { User } from "../users/api/users.api";
+import PopupList from "./PopupList";
 
 function getActivityColor(activity: ActivityEnum): string {
 	switch (activity) {
@@ -56,12 +56,6 @@ export default function ProfilePic({
 	edit?: boolean;
 }): JSX.Element {
 	const [showSelect, setShowSelect] = useState(false);
-	const clickOutsideRef = useClickOutside(
-		useRef<HTMLUListElement>(null),
-		() => {
-			setShowSelect(false);
-		},
-	);
 	const activity = useActivity();
 
 	const activities: [ActivityEnum, string][] = [
@@ -115,7 +109,7 @@ export default function ProfilePic({
 			)}
 			{status && (
 				<div
-					className={`min-w-4 min-h-4 rounded-full self-end -ml-3 border-3 border-back2`}
+					className={`relative min-w-4 min-h-4 rounded-full self-end -ml-3 border-3 border-back2`}
 					style={{
 						zIndex: idx + 1,
 						backgroundColor: getActivityColor(
@@ -134,47 +128,54 @@ export default function ProfilePic({
 						</div>
 					)}
 					{showSelect && (
-						<ul
-							ref={clickOutsideRef}
-							className="absolute bottom-4 p-2 ml-4 bg-back rounded-md flex flex-col"
-						>
-							<li
-								onClick={() => {
-									activity.removePreference();
-									setShowSelect(false);
-								}}
-								className="inline-flex gap-2.5 items-center p-1 hover:bg-back2 rounded-md cursor-pointer"
-							>
-								<div
-									className={`w-3 h-3 rounded-full `}
-									style={{
-										backgroundColor: getActivityColor(
-											ActivityEnum.Online,
-										),
-									}}
-								/>
-								Auto
-							</li>
-							{activities.map(([act, name]) => (
-								<li
-									key={act}
-									onClick={() => {
+						<PopupList
+							className="bottom-0 left-4"
+							onClose={() => {
+								setShowSelect(false);
+							}}
+							rows={[
+								{
+									id: "online",
+									onClick: (): void => {
+										activity.removePreference();
+										setShowSelect(false);
+									},
+									content: (
+										<div className="inline-flex gap-2.5 items-center">
+											<div
+												className={`w-3 h-3 rounded-full `}
+												style={{
+													backgroundColor:
+														getActivityColor(
+															ActivityEnum.Online,
+														),
+												}}
+											/>
+											Auto
+										</div>
+									),
+								},
+								...activities.map(([act, name]) => ({
+									id: name,
+									onClick: (): void => {
 										activity.setPreference(act);
 										setShowSelect(false);
-									}}
-									className="inline-flex gap-2.5 items-center p-1 hover:bg-back2 rounded-md cursor-pointer"
-								>
-									<div
-										className={`w-3 h-3 rounded-full `}
-										style={{
-											backgroundColor:
-												getActivityColor(act),
-										}}
-									/>
-									{name}
-								</li>
-							))}
-						</ul>
+									},
+									content: (
+										<div className="inline-flex gap-2.5 items-center">
+											<div
+												className={`w-3 h-3 rounded-full `}
+												style={{
+													backgroundColor:
+														getActivityColor(act),
+												}}
+											/>
+											{name}
+										</div>
+									),
+								})),
+							]}
+						/>
 					)}
 				</div>
 			)}
