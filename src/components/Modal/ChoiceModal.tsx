@@ -1,6 +1,9 @@
 import type { JSX } from "react";
 import type { FetcherWithComponents, HTMLFormMethod } from "react-router";
 
+import type { APIError } from "@/api/problem_detail";
+import type { EventData } from "@/events/api/events.api";
+
 import CheckButton from "../CheckButton";
 import HiddenValues from "../HiddenValues";
 import Modal from "./Modal";
@@ -20,7 +23,7 @@ export default function ChoiceModal({
 	action: string;
 	method: HTMLFormMethod;
 	id?: string;
-	fetcher: FetcherWithComponents<Response>;
+	fetcher: FetcherWithComponents<EventData | Response | APIError | undefined>;
 }): JSX.Element {
 	return (
 		<Modal title={title} onClose={onClose}>

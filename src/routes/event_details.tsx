@@ -5,11 +5,10 @@ import { PiTrash } from "react-icons/pi";
 import { Link, useFetcher, useNavigate } from "react-router";
 
 import ChannelChat from "@/chat/components/ChannelChat";
+import ChoiceModal from "@/components/Modal/ChoiceModal";
 
 import { PermEnum } from "../admin/api/roles";
 import EventBadge from "../components/Badge";
-import CheckButton from "../components/CheckButton";
-import Modal from "../components/Modal/Modal";
 import ProfileLine from "../components/ProfileLine";
 import ProfilePic from "../components/ProfilePic";
 import { fetchEventRoles } from "../events/api/event_roles.api";
@@ -63,38 +62,16 @@ export default function EventDetails({
 	return (
 		<div className="flex flex-col w-full h-full">
 			{showConfirmation && (
-				<Modal
-					title={`Delete the event ${event.name} ?`}
+				<ChoiceModal
+					action={`/events/${event.id}`}
+					method="DELETE"
 					onClose={() => {
 						setShowConfirmation(false);
 					}}
-				>
-					<p className="text-muted font-main font-light w-4/5 text-sm text-center">
-						This cannot be cancelled.
-					</p>
-					<div className="inline-flex gap-8">
-						<CheckButton
-							pending={fetcher.state !== "idle"}
-							onClick={() => {
-								void fetcher.submit(null, {
-									action: `/events/${event.id}`,
-									method: "DELETE",
-								});
-							}}
-						>
-							Yes
-						</CheckButton>
-						<CheckButton
-							active
-							activeCheck={false}
-							onClick={() => {
-								setShowConfirmation(false);
-							}}
-						>
-							No
-						</CheckButton>
-					</div>
-				</Modal>
+					title={`Delete the event ${event.name}`}
+					desc="This cannot be cancelled."
+					fetcher={fetcher}
+				/>
 			)}
 			<div className="flex px-4 py-4 gap-4 items-center border-b border-border">
 				<FiChevronLeft
