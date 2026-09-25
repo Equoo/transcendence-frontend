@@ -88,7 +88,7 @@ export default function FileSelect({
 				>
 					{files.length > 0 && (
 						<div className="w-full flex flex-col bg-surface rounded p-2">
-							{currFolder.length > 0 && (
+							{currFolder !== "/" && (
 								<div
 									className="inline-flex items-center gap-2 rounded p-2 hover:bg-surface2 hover:cursor-pointer"
 									onClick={goUp}

@@ -15,28 +15,8 @@ export function clientLoader(): { files: Promise<AppFile[]> } {
 export default function Knowledge({
 	loaderData,
 }: Route.ComponentProps): JSX.Element {
-	const [showUpload, setShowUpload] = useState(false);
-
 	return (
-		<main className="w-7/10 justify-center flex flex-col gap-1">
-			<CheckButton
-				active
-				activeCheck={false}
-				className="self-end mt-20"
-				onClick={() => {
-					setShowUpload(true);
-				}}
-			>
-				<PiUploadSimple />
-				Upload
-			</CheckButton>
-			{showUpload && (
-				<FileUpload
-					onClose={() => {
-						setShowUpload(false);
-					}}
-				/>
-			)}
+		<main className="w-7/10 h-full flex flex-col gap-1">
 			<Promisable data={loaderData.files}>
 				{(files) => <FileList files={files}></FileList>}
 			</Promisable>
