@@ -29,6 +29,7 @@ export default function CheckButton({
 			<button
 				type={type}
 				{...rest}
+				disabled={pending}
 				aria-pressed={active}
 				className={`${active ? activeStyle : discrete ? discreteStyle : unactiveStyle} inline-flex items-center font-semibold duration-150 justify-center py-2 px-4 gap-2 rounded-full cursor-pointer`}
 			>
