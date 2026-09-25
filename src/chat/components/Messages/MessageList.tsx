@@ -74,9 +74,11 @@ function useNewMessagesDividerId(channelId: string): string | null {
 
 function MessageList({
 	channelId,
+	channelName,
 	ref,
 }: {
 	channelId: string;
+	channelName: string;
 	ref?: Ref<MessageListHandles>;
 }): JSX.Element {
 	const containerRef = useRef<HTMLDivElement>(null);
@@ -121,6 +123,10 @@ function MessageList({
 			<MessageActionBar ref={actionBarRef} channelId={channelId} />
 
 			<div className="mt-auto" />
+			<div className="relative gap-3 px-5.5 text-muted">
+				<h1 className="text-3xl font-medium text-text"><span className="font-bold">#</span> {channelName}</h1>
+				<p>Discussion start here</p>
+			</div>
 			{messages.map((msg, index) => {
 				const previous = messages[index - 1];
 				const isLast = index === messages.length - 1;

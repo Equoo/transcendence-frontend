@@ -76,6 +76,7 @@ function ChannelChat({ channelId }: { channelId: string }): JSX.Element {
 						ref={listRef}
 						key={channel?.id}
 						channelId={channel?.id ?? ""}
+						channelName={channel?.name ?? ""}
 					/>
 					<ChatComposer
 						ref={composerRef}

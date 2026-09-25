@@ -53,15 +53,23 @@ export const useChatHub = create<ChatHub>((set) => ({
 				useChat.getState().addChannel(channel);
 			});
 
+			conn.on("UpdateChannel", (channel: Channel) => {
+				useChat.getState().updateChannel(channel.id, channel);
+			});
+
 			conn.on("RemoveChannel", (channel: string) => {
 				useChat.getState().removeChannel(channel);
 			});
 
-			conn.on("NewChannelCategory", (category: ChannelCategory) => {
+			conn.on("NewCategory", (category: ChannelCategory) => {
 				useChat.getState().addCategory(category);
 			});
 
-			conn.on("RemoveChannelCategory", (category: string) => {
+			conn.on("UpdateCategory", (category: ChannelCategory) => {
+				useChat.getState().updateCategory(category.id, category);
+			});
+
+			conn.on("RemoveCategory", (category: string) => {
 				useChat.getState().removeCategory(category);
 			});
 

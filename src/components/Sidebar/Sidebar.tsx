@@ -43,7 +43,7 @@ function Sidebar({ user }: { user: User }): JSX.Element {
 	const location = useLocation();
 	const channels = useChat(
 		useShallow((state) => Object.values(state.channels) as Channel[]),
-	);
+	).filter((ch) => !ch.eventId);
 	const categories = useChat(
 		useShallow((state) => Object.values(state.categories) as ChannelCategory[]),
 	);
@@ -123,39 +123,28 @@ function Sidebar({ user }: { user: User }): JSX.Element {
 
 						<li className="flex justify-between items-center px-2 py-1.5 mt-3 text-[11px] text-muted font-bold tracking-wider uppercase group">
 							Channels{" "}
-							<ChannelForm></ChannelForm>
+							{Boolean(user.role.permission & PermEnum.HandleChannels) && (<ChannelForm></ChannelForm>)}
 						</li>
 						<Suspense fallback={<ChannelListSkeleton />}>
 							<Await resolve={fetchChannels()}>
 								{channels
 									.filter((ch) => ch.category === null)
-									.map((channel) =>
-										!channel.eventId && (
-											<ItemChannel
-												key={channel.id}
-												channel={channel}
-											></ItemChannel>
-										),
-									)}
-								{categories.map((category) => {
-									const channelsChild = channels
-										.filter((ch) => ch.category === category.id)
-										.map((channel) =>
-											!channel.eventId && (
-												<ItemChannel
-													key={channel.id}
-													channel={channel}
-												></ItemChannel>
-											),
-										);
-
-									return (
-										<ItemChannelCategory key={category.id} category={category}>
-											{channelsChild}
-										</ItemChannelCategory>
-									);
-								})}
-								{ }
+									.map((channel) => (
+										<ItemChannel
+											key={channel.id}
+											channel={channel}
+											user={user}
+										></ItemChannel>
+									))}
+								<li className="mb-3"></li>
+								{categories.map((category) => (
+									<ItemChannelCategory
+										key={category.id}
+										category={category}
+										channels={channels.filter((ch) => ch.category === category.id)}
+										user={user}
+									></ItemChannelCategory>
+								))}
 							</Await>
 						</Suspense>
 						<li className="flex justify-between items-center px-2 py-1.5 mt-3 text-[11px] text-muted font-bold tracking-wider uppercase group">
