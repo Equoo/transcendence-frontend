@@ -6,7 +6,7 @@ import CheckButton from "@/components/CheckButton";
 import { Field } from "@/components/Field";
 import { Input } from "@/components/Input";
 import { ListActions } from "@/components/List";
-import Modal from "@/components/Modal";
+import Modal from "@/components/Modal/Modal";
 import PopupList from "@/components/PopupList";
 
 import type { clientAction } from "../routes/files.route";

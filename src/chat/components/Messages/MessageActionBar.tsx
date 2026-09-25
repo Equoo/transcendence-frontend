@@ -4,7 +4,7 @@ import { PiArrowArcLeft, PiDotsThree, PiPencil, PiTrash } from "react-icons/pi";
 
 import CheckButton from "@/components/CheckButton";
 import IconBtn from "@/components/IconBtn";
-import Modal from "@/components/Modal";
+import Modal from "@/components/Modal/Modal";
 import { useUser } from "@/users/hooks/users.hooks";
 
 import { type Message, removeMessage } from "../../api/chat.api";
@@ -106,29 +106,39 @@ function MessageActionBar({
 			>
 				{actionBar.el.dataset.pending === "false" && (
 					<>
-						{actionBar.msg.sender.id === user?.id ? (<>
+						{actionBar.msg.sender.id === user?.id ? (
+							<>
+								<IconBtn
+									icon={PiPencil}
+									size={14}
+									onClick={() => {
+										if (composerRef.current) {
+											composerRef.current.enterEditMode(
+												actionBar.msg,
+												actionBar.el,
+											);
+										}
+									}}
+								></IconBtn>
+								<IconBtn
+									icon={PiTrash}
+									className="text-red-400"
+									size={14}
+									onClick={() => {
+										setShowRemoveForm(true);
+									}}
+								></IconBtn>
+							</>
+						) : (
 							<IconBtn
-								icon={PiPencil}
+								icon={PiArrowArcLeft}
 								size={14}
 								onClick={() => {
 									if (composerRef.current) {
-										composerRef.current.enterEditMode(actionBar.msg, actionBar.el);
-									}
-								}}
-							></IconBtn>
-							<IconBtn
-								icon={PiTrash}
-								className="text-red-400"
-								size={14}
-								onClick={() => {
-									setShowRemoveForm(true);
-								}}
-							></IconBtn>
-						</>) : (
-							<IconBtn icon={PiArrowArcLeft} size={14}
-								onClick={() => {
-									if (composerRef.current) {
-										composerRef.current.enterReplyMode(actionBar.msg, actionBar.el);
+										composerRef.current.enterReplyMode(
+											actionBar.msg,
+											actionBar.el,
+										);
 									}
 								}}
 							></IconBtn>

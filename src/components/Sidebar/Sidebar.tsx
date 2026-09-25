@@ -25,8 +25,8 @@ import { PermEnum } from "../../admin/api/roles";
 import InvitationForm from "../../invitations/components/InvitationForm";
 import type { User } from "../../users/api/users.api";
 import CheckButton from "../CheckButton";
-import { Input } from "../Input";
-import Modal from "../Modal";
+import ChangeModal from "../Modal/ChangeModal";
+import ChoiceModal from "../Modal/ChoiceModal";
 import ProfileLine from "../ProfileLine";
 import Section, { type LineInfos } from "../Section";
 import ItemCategory from "./ItemCategory";
@@ -121,105 +121,49 @@ function Sidebar({
 	return (
 		<>
 			{showDelete && (
-				<Modal
+				<ChoiceModal
 					title={`Delete your account ?`}
 					onClose={() => {
 						setShowDelete(false);
 					}}
-				>
-					<p className="text-muted font-main font-light text-sm text-center w-100">
-						This cannot be cancelled.
-					</p>
-
-					<div className="flex gap-5">
-						<CheckButton
-							type="submit"
-							onClick={() => {
-								void fetcher.submit(
-									{ action: "/me/delete" },
-									{
-										method: "DELETE",
-									},
-								);
-							}}
-						>
-							Yes
-						</CheckButton>
-						<CheckButton
-							active
-							activeCheck={false}
-							onClick={() => {
-								setShowDelete(false);
-							}}
-						>
-							No
-						</CheckButton>
-					</div>
-				</Modal>
+					desc="This cannot be cancelled."
+					action="/me/delete"
+					method="DELETE"
+					fetcher={fetcher}
+				></ChoiceModal>
 			)}
 
 			{showUsername && (
-				<Modal
-					width="w-90"
-					title={`Change Username`}
+				<ChangeModal
+					title="Change Username"
 					onClose={() => {
 						setShowUsername(false);
 					}}
-				>
-					<fetcher.Form
-						className="flex flex-col items-center gap-5 w-7/10"
-						method="PATCH"
-						action="/me/username"
-					>
-						<Input
-							maxLength={20}
-							name="Username"
-							required
-							className="ring-0 focus:border-border border-border rounded-sm"
-							type="text"
-							placeholder="New Username"
-						></Input>
-						<CheckButton active type="submit">
-							OK
-						</CheckButton>
-					</fetcher.Form>
-				</Modal>
+					action="/me/username"
+					method="PATCH"
+					inputName="Username"
+					placeholder="new Username"
+					minInput={1}
+					maxInput={20}
+					fetcher={fetcher}
+				></ChangeModal>
 			)}
 
 			{showPassword && (
-				<Modal
-					width="w-90"
-					title={`Change Password`}
+				<ChangeModal
+					title="Change Password"
 					onClose={() => {
 						setShowPassword(false);
 					}}
-				>
-					<fetcher.Form
-						method="PATCH"
-						className="flex flex-col items-center gap-5 w-8/10"
-						action="/me/password"
-					>
-						<Input
-							name="Current password"
-							// maxLength={255}
-							required
-						></Input>
-						<Input
-							maxLength={255}
-							// minLength={8}
-							name="New password"
-							required
-							className="ring-0 focus:border-border border-border rounded-sm"
-							type="text"
-						></Input>
-
-						<div className="w-30">
-							<CheckButton active type="submit">
-								OK
-							</CheckButton>
-						</div>
-					</fetcher.Form>
-				</Modal>
+					action="/me/password"
+					method="PATCH"
+					inputName="New password"
+					minInput={8}
+					maxInput={255}
+					fetcher={fetcher}
+					placeholder="new nassword"
+					password
+				></ChangeModal>
 			)}
 
 			<button

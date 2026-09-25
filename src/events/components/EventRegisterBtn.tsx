@@ -2,7 +2,7 @@ import { type ComponentProps, type JSX, useState } from "react";
 import { useFetcher } from "react-router";
 
 import CheckButton from "../../components/CheckButton";
-import Modal from "../../components/Modal";
+import Modal from "../../components/Modal/Modal";
 import type { EventSummary } from "../api/events.api";
 
 export default function EventRegisterBtn({

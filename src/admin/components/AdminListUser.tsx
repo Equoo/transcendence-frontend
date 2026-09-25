@@ -2,12 +2,10 @@
 import { type ComponentProps, type JSX, useEffect, useState } from "react";
 import { useFetcher } from "react-router";
 
-import HiddenValues from "@/components/HiddenValues";
-import { Input } from "@/components/Input";
+import ChangeModal from "@/components/Modal/ChangeModal";
+import ChoiceModal from "@/components/Modal/ChoiceModal";
 import ProfilePic from "@/components/ProfilePic";
 
-import CheckButton from "../../components/CheckButton";
-import Modal from "../../components/Modal";
 import type { User } from "../../users/api/users.api";
 import { PermEnum, type Role } from "../api/roles";
 import type { clientAction } from "../routes/admin.user.route";
@@ -57,109 +55,49 @@ export default function ListUsers({
 			</td>
 			<td className="px-6 py-3 font-medium ">
 				{showConfirmationDelete && (
-					<Modal
+					<ChoiceModal
 						title={`Delete ${user.userName} ?`}
 						onClose={() => {
 							setShowConfirmationDelete(false);
 						}}
-					>
-						<p className="text-muted font-main font-light w-4/5 text-sm text-center">
-							This cannot be cancelled.
-						</p>
-						<fetcher.Form
-							method="DELETE"
-							action="/users"
-							className="inline-flex gap-8"
-						>
-							<HiddenValues
-								name="id"
-								values={[user.id]}
-							></HiddenValues>
-							<CheckButton
-								type="submit"
-								pending={fetcher.state !== "idle"}
-							>
-								Yes
-							</CheckButton>
-							<CheckButton
-								active
-								activeCheck={false}
-								onClick={() => {
-									setShowConfirmationDelete(false);
-								}}
-							>
-								No
-							</CheckButton>
-						</fetcher.Form>
-					</Modal>
+						action="/users"
+						method="DELETE"
+						desc="The user will be remove from the database. This cannot be cancelled."
+						id={user.id}
+						fetcher={fetcher}
+					></ChoiceModal>
 				)}
 				{showConfirmationDisconnect && (
-					<Modal
+					<ChoiceModal
 						title={`Disconnect ${user.userName} ?`}
 						onClose={() => {
 							setShowConfirmationDisconnect(false);
 						}}
-					>
-						<p className="text-muted font-main font-light w-4/5 text-sm text-center">
-							The user will need to login again. This cannot be
-							cancelled.
-						</p>
-						<fetcher.Form
-							method="DELETE"
-							action="/users/disconnect"
-							className="inline-flex gap-8"
-						>
-							<HiddenValues
-								name="id"
-								values={[user.id]}
-							></HiddenValues>
-							<CheckButton
-								pending={fetcher.state !== "idle"}
-								type="submit"
-							>
-								Yes
-							</CheckButton>
-							<CheckButton
-								active
-								activeCheck={false}
-								onClick={() => {
-									setShowConfirmationDisconnect(false);
-								}}
-							>
-								No
-							</CheckButton>
-						</fetcher.Form>
-					</Modal>
+						action="/users/disconnect"
+						method="DELETE"
+						desc="The user will need to login again. This cannot be
+							cancelled."
+						id={user.id}
+						fetcher={fetcher}
+					></ChoiceModal>
 				)}
 				{showChangePass && (
-					<Modal
+					<ChangeModal
 						title={`Change ${user.userName}'s password`}
 						onClose={() => {
 							setShowChangePass(false);
 						}}
-					>
-						<fetcher.Form
-							className="flex flex-col items-center gap-5 w-4/8"
-							method="PATCH"
-							action="/users"
-						>
-							<HiddenValues
-								name="id"
-								values={[user.id]}
-							></HiddenValues>
-							<Input
-								name="password"
-								minLength={8}
-								maxLength={256}
-								required
-								type="text"
-								placeholder="New Password"
-							></Input>
-							<CheckButton active type="submit">
-								OK
-							</CheckButton>
-						</fetcher.Form>
-					</Modal>
+						action="/users"
+						method="PATCH"
+						desc="The user will need to login again. This cannot be
+							cancelled."
+						id={user.id}
+						inputName="password"
+						placeholder="New password"
+						minInput={8}
+						maxInput={256}
+						fetcher={fetcher}
+					></ChangeModal>
 				)}
 				{user.userName}
 			</td>

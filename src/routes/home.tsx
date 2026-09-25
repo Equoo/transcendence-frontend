@@ -2,7 +2,7 @@ import { type JSX, useState } from "react";
 
 import { ActivityEnum, useActivity } from "@/activity/hooks/activity.hook";
 import { PermEnum } from "@/admin/api/roles";
-import Modal from "@/components/Modal";
+import Modal from "@/components/Modal/Modal";
 import ProfileLine from "@/components/ProfileLine";
 import Promisable from "@/components/Promisable";
 

@@ -9,7 +9,7 @@ import ChannelChat from "@/chat/components/ChannelChat";
 import { PermEnum } from "../admin/api/roles";
 import EventBadge from "../components/Badge";
 import CheckButton from "../components/CheckButton";
-import Modal from "../components/Modal";
+import Modal from "../components/Modal/Modal";
 import ProfileLine from "../components/ProfileLine";
 import ProfilePic from "../components/ProfilePic";
 import { fetchEventRoles } from "../events/api/event_roles.api";

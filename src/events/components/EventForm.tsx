@@ -8,7 +8,7 @@ import Promisable from "@/components/Promisable";
 import { APIError, type ValidationErrors } from "../../api/problem_detail";
 import CheckButton from "../../components/CheckButton";
 import { Input } from "../../components/Input";
-import Modal from "../../components/Modal";
+import Modal from "../../components/Modal/Modal";
 import MultipleInput from "../../components/MultipleInput";
 import { TextArea } from "../../components/TextArea";
 import type { AppFile } from "../../files/api/files.api";

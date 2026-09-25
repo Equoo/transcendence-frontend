@@ -12,7 +12,7 @@ import type { clientAction as filesAction } from "../files/routes/files.route";
 import type { User } from "../users/api/users.api";
 import CheckButton from "./CheckButton";
 import { Input } from "./Input";
-import Modal from "./Modal";
+import Modal from "./Modal/Modal";
 import PopupList from "./PopupList";
 
 function getActivityColor(activity: ActivityEnum): string {
@@ -103,7 +103,6 @@ export default function ProfilePic({
 				/>
 			) : (
 				<Blobatar
-					
 					name={user.id}
 					animate="always"
 					className="w-full h-full"

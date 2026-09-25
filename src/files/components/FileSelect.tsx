@@ -1,4 +1,4 @@
-import { type JSX,useState } from "react";
+import { type JSX, useState } from "react";
 import { FcFolder } from "react-icons/fc";
 import { PiCheck } from "react-icons/pi";
 
@@ -7,7 +7,7 @@ import EventBadge from "../../components/Badge";
 import CheckButton from "../../components/CheckButton";
 import { Field } from "../../components/Field";
 import HiddenValues from "../../components/HiddenValues";
-import Modal from "../../components/Modal";
+import Modal from "../../components/Modal/Modal";
 import type { AppFile } from "../api/files.api";
 import { useFileBrowser } from "../hooks/useFileBrowser";
 

@@ -5,7 +5,7 @@ import { APIError, type ValidationErrors } from "../../api/problem_detail";
 import CheckButton from "../../components/CheckButton";
 import { Field } from "../../components/Field";
 import { Input } from "../../components/Input";
-import Modal from "../../components/Modal";
+import Modal from "../../components/Modal/Modal";
 import type { clientAction as filesAction } from "../routes/files.route";
 
 export default function FileUpload({

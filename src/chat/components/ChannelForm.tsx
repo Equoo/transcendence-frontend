@@ -4,7 +4,7 @@ import { useFetcher } from "react-router";
 
 import CheckButton from "@/components/CheckButton";
 import { Input } from "@/components/Input";
-import Modal from "@/components/Modal";
+import Modal from "@/components/Modal/Modal";
 
 import type { Channel } from "../api/chat.api";
 
