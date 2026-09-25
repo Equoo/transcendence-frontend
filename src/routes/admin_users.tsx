@@ -29,7 +29,7 @@ export default function AdminUsers({
 					</div>
 					<List
 						cols={[
-							{ id: "Profile" },
+							{ id: "Picture" },
 							{ id: "Username" },
 							{ id: "Role" },
 							{ id: "Action" },

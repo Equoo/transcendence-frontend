@@ -139,7 +139,7 @@ export default function ListUsers({
 						}}
 					>
 						<fetcher.Form
-							className="flex flex-col items-center gap-5"
+							className="flex flex-col items-center gap-5 w-4/8"
 							method="PATCH"
 							action="/users"
 						>
@@ -152,7 +152,6 @@ export default function ListUsers({
 								minLength={8}
 								maxLength={256}
 								required
-								className="ring-0 focus:border-border border-border w-50 rounded-sm"
 								type="text"
 								placeholder="New Password"
 							></Input>
