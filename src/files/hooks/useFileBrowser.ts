@@ -9,7 +9,7 @@ export function useFileBrowser(files: AppFile[]): {
 	enterFolder: (name: string) => void;
 	goUp: () => void;
 } {
-	const [currFolder, setCurrFolder] = useState("");
+	const [currFolder, setCurrFolder] = useState("/");
 
 	const folders = Array.from(
 		new Set(
@@ -34,7 +34,9 @@ export function useFileBrowser(files: AppFile[]): {
 
 	function goUp(): void {
 		setCurrFolder((prev) =>
-			prev.substring(0, prev.lastIndexOf("/", prev.length - 2) + 1),
+			prev === "/"
+				? prev
+				: prev.substring(0, prev.lastIndexOf("/", prev.length - 2) + 1),
 		);
 	}
 

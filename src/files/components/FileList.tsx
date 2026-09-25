@@ -1,21 +1,39 @@
-import type { JSX } from "react";
+import { type JSX, useState } from "react";
+import { PiUploadSimple } from "react-icons/pi";
+
+import CheckButton from "@/components/CheckButton";
 
 import List from "../../components/List";
 import { type AppFile, listFolders } from "../api/files.api";
 import { useFileBrowser } from "../hooks/useFileBrowser";
 import FileItem from "./FileItem";
 import FolderItem from "./FolderItem";
+import FileUpload from "./FileUpload";
 
 export default function FileList({ files }: { files: AppFile[] }): JSX.Element {
+	const [showUpload, setShowUpload] = useState(false);
 	const { currFolder, folders, rootFiles, enterFolder, goUp } =
 		useFileBrowser(files);
 	const allFolders = listFolders(files);
 
 	return (
-		<div>
-			<p className="font-main absolute top-24 text-text2 pl-1.5 text-base font-semibold">
-				/{currFolder}
-			</p>
+		<div className="mt-20">
+			<div className="inline-flex w-full justify-between items-end mb-2">
+				<p className="font-main text-text2 pl-1.5 text-base font-semibold">
+					{currFolder}
+				</p>
+				<CheckButton
+					active
+					activeCheck={false}
+					className=""
+					onClick={() => {
+						setShowUpload(true);
+					}}
+				>
+					<PiUploadSimple />
+					Upload
+				</CheckButton>
+			</div>
 			<List
 				cols={[
 					{ id: "Name" },
@@ -24,15 +42,13 @@ export default function FileList({ files }: { files: AppFile[] }): JSX.Element {
 					{ id: "Actions", pos: "text-right" },
 				]}
 				empty={
-					!currFolder &&
+					currFolder === "/" &&
 					folders.length === 0 &&
 					rootFiles.length === 0
 				}
 				emptyMessage="No files to display."
 			>
-				{currFolder.length > 0 && (
-					<FolderItem name=".." onClick={goUp} />
-				)}
+				{currFolder !== "/" && <FolderItem name=".." onClick={goUp} />}
 				{folders.map((folder) => (
 					<FolderItem
 						key={folder}
@@ -51,6 +67,13 @@ export default function FileList({ files }: { files: AppFile[] }): JSX.Element {
 					/>
 				))}
 			</List>
+			{showUpload && (
+				<FileUpload
+					onClose={() => {
+						setShowUpload(false);
+					}}
+				/>
+			)}
 		</div>
 	);
 }

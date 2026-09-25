@@ -9,8 +9,10 @@ import type { clientAction as filesAction } from "../routes/files.route";
 
 export default function FileUpload({
 	onClose,
+	currentPath = "/",
 }: {
 	onClose: () => void;
+	currentPath?: string;
 }): JSX.Element {
 	const [errors, setErrors] = useState<ValidationErrors>();
 	const [name, setName] = useState("");
@@ -51,7 +53,7 @@ export default function FileUpload({
 					maxLength={100}
 					name="Name"
 					required
-					value={name}
+					value={currentPath + name}
 					errors={errors}
 				/>
 				<CheckButton
