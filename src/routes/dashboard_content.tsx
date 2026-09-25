@@ -89,7 +89,7 @@ export function ErrorBoundary({
 						pending={revalidator.state === "loading"}
 					>
 						<PiArrowClockwise size={18} />
-						Retry
+						Go Back
 					</CheckButton>
 					<Link to="/">
 						<CheckButton active activeCheck={false}>
