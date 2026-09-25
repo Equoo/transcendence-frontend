@@ -8,7 +8,7 @@ import { Input } from "../../components/Input";
 import Modal from "../../components/Modal";
 import type { clientAction as filesAction } from "../routes/files.route";
 
-export default function FileUpload({
+export default function FolderUpload({
 	onClose,
 	currentPath = "/",
 	folders,
@@ -18,7 +18,6 @@ export default function FileUpload({
 	folders: string[];
 }): JSX.Element {
 	const [errors, setErrors] = useState<ValidationErrors>();
-	const [name, setName] = useState("");
 	const filesFetcher = useFetcher<typeof filesAction>();
 	const destinations = Array.from(new Set(["/", currentPath, ...folders]));
 
@@ -33,7 +32,7 @@ export default function FileUpload({
 		}
 	}, [filesFetcher.data, onClose]);
 	return (
-		<Modal title="Upload a file" onClose={onClose}>
+		<Modal title="New folder" onClose={onClose}>
 			<filesFetcher.Form
 				action="/files"
 				method="POST"
@@ -41,12 +40,12 @@ export default function FileUpload({
 				className="flex flex-col items-center w-4/5 gap-5 mb-4"
 				onSubmit={(event) => {
 					event.preventDefault();
-					const formData = new FormData(event.currentTarget);
-					formData.set(
-						"Name",
-						`${formData.get("Folder") as string}${formData.get("Name") as string}`,
-					);
-					formData.delete("Folder");
+					const form = new FormData(event.currentTarget);
+					const folder = form.get("Folder") as string;
+					const name = form.get("Name") as string;
+					const formData = new FormData();
+					formData.append("Name", `${folder}${name}/`);
+					formData.append("File", new File([], name));
 					void filesFetcher.submit(formData, {
 						action: "/files",
 						method: "POST",
@@ -55,25 +54,11 @@ export default function FileUpload({
 				}}
 			>
 				<Input
-					name="File"
-					type="file"
-					required
-					errors={errors}
-					onChange={(ev) => {
-						setName(
-							ev.target.value.substring(
-								ev.target.value.lastIndexOf("\\") + 1,
-							),
-						);
-					}}
-				/>
-				<Input
 					maxLength={100}
 					name="Name"
 					required
-					value={name}
 					pattern="[^\/]"
-					title="Must not contain a /"
+					title="Must not contain /"
 					errors={errors}
 				/>
 				<Field name="Folder" required>
@@ -92,10 +77,9 @@ export default function FileUpload({
 				</Field>
 				<CheckButton
 					type="submit"
-					active
 					pending={filesFetcher.state !== "idle"}
 				>
-					Upload
+					New Folder
 				</CheckButton>
 			</filesFetcher.Form>
 		</Modal>

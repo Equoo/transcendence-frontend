@@ -1,11 +1,8 @@
-import { type JSX, useState } from "react";
-import { PiUploadSimple } from "react-icons/pi";
+import type { JSX } from "react";
 
-import CheckButton from "../components/CheckButton";
 import Promisable from "../components/Promisable";
 import { type AppFile, fetchFiles } from "../files/api/files.api";
 import FileList from "../files/components/FileList";
-import FileUpload from "../files/components/FileUpload";
 import type { Route } from "./+types/knowledge";
 
 export function clientLoader(): { files: Promise<AppFile[]> } {

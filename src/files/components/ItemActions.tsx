@@ -35,8 +35,7 @@ export default function ItemActions({
 	const path = `${parent}${name}/`;
 	const kind = isFolder ? "folder" : "file";
 	const action = isFolder ? "/files" : `/files/${fileKey}`;
-	const destinations = [""]
-		.concat(folders)
+	const destinations = Array.from(new Set(["/", ...folders]))
 		.filter(
 			(folder) =>
 				folder !== parent && !(isFolder && folder.startsWith(path)),
@@ -112,8 +111,8 @@ export default function ItemActions({
 						<Input
 							name="Name"
 							value={name}
-							pattern={isFolder ? "[^/]+" : ".*"}
-							title={isFolder ? "Must not contain /" : ""}
+							pattern={isFolder ? "[^/]+" : ".*[^/]"}
+							title={isFolder ? "Must not contain /" : "Must not end with /"}
 							required
 						/>
 						<CheckButton
@@ -151,7 +150,7 @@ export default function ItemActions({
 							>
 								{destinations.map((folder) => (
 									<option key={folder} value={folder}>
-										{folder === "" ? "/" : folder}
+										{folder}
 									</option>
 								))}
 							</select>
