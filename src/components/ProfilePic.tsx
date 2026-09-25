@@ -2,12 +2,17 @@ import "blobatar/motion.css";
 
 import { Blobatar } from "@blobatar/react";
 import { type Expression, idle, sleepy, surprised } from "blobatar/expression";
-import { type JSX, useState } from "react";
+import { type JSX, useEffect, useState } from "react";
 import { TbPencil } from "react-icons/tb";
+import { useFetcher } from "react-router";
 
 import { ActivityEnum, useActivity } from "@/activity/hooks/activity.hook";
 
+import type { clientAction as filesAction } from "../files/routes/files.route";
 import type { User } from "../users/api/users.api";
+import CheckButton from "./CheckButton";
+import { Input } from "./Input";
+import Modal from "./Modal";
 import PopupList from "./PopupList";
 
 function getActivityColor(activity: ActivityEnum): string {
@@ -45,6 +50,7 @@ export default function ProfilePic({
 	idx = 1,
 	size = 2,
 	className,
+	changePicture = false,
 	status = false,
 	edit = false,
 }: {
@@ -53,9 +59,21 @@ export default function ProfilePic({
 	idx?: number;
 	className?: string;
 	status?: boolean;
+	changePicture?: boolean;
 	edit?: boolean;
 }): JSX.Element {
+	const filesFetcher = useFetcher<typeof filesAction>();
+
 	const [showSelect, setShowSelect] = useState(false);
+	const [showPics, setShowPics] = useState(false);
+
+	useEffect(() => {
+		if (filesFetcher.data) {
+			// eslint-disable-next-line @eslint-react/set-state-in-effect
+			setShowPics(false);
+		}
+	}, [filesFetcher.data]);
+
 	const activity = useActivity();
 
 	const activities: [ActivityEnum, string][] = [
@@ -74,42 +92,27 @@ export default function ProfilePic({
 	} else {
 		sizeStyle = "w-20 h-20";
 	}
-	const [editPic, setEditPic] = useState(false);
 
 	return (
 		<div className={`flex ${sizeStyle}`}>
 			{user.avatar ? (
 				<img
 					src={`/api/files/${user.avatar.key}`}
-					className={`rounded-full w-7/10 h-7/10 mt-0.5 ${className} border-2 border-accent-text ${sizeStyle}`}
+					className={`rounded-full w-full h-full ${className} border-2 border-accent-text`}
 					style={{ zIndex: idx }}
 				/>
 			) : (
-				<>
-					<Blobatar
-						name={user.id}
-						animate="always"
-						className="w-full h-full"
-						expression={getExpression(
-							activity.getActivity(user.id),
-						)}
-					></Blobatar>
-					{editPic && edit && (
-						<div
-							onMouseLeave={() => {
-								setEditPic(false);
-							}}
-							className={`cursor-pointer bg-slate-400/60  absolute z-1  text-accent-text flex items-center justify-center rounded-full pb-1
-                        font-semibold text-lg border-2 border-accent-text ${className}`}
-						>
-							<TbPencil size={30}></TbPencil>
-						</div>
-					)}
-				</>
+				<Blobatar
+					
+					name={user.id}
+					animate="always"
+					className="w-full h-full"
+					expression={getExpression(activity.getActivity(user.id))}
+				></Blobatar>
 			)}
 			{status && (
 				<div
-					className={`relative min-w-4 min-h-4 rounded-full self-end -ml-3 border-3 border-back2`}
+					className={`absolute left-20 min-w-4 min-h-4 rounded-full self-end -ml-3 border-3 border-back2`}
 					style={{
 						zIndex: idx + 1,
 						backgroundColor: getActivityColor(
@@ -119,14 +122,15 @@ export default function ProfilePic({
 				>
 					{edit && (
 						<div
-							className="opacity-0 hover:opacity-100 w-full h-full flex items-center justify-center cursor-pointer"
+							className="opacity-0 hover:opacity-100 hover:w-3 hover:h-3 w-full h-full flex items-center justify-center cursor-pointer"
 							onClick={() => {
 								setShowSelect(true);
 							}}
 						>
-							<TbPencil size={8} />
+							<TbPencil size={8} className="text-accent-text " />
 						</div>
 					)}
+
 					{showSelect && (
 						<PopupList
 							className="bottom-0 left-4"
@@ -178,6 +182,44 @@ export default function ProfilePic({
 						/>
 					)}
 				</div>
+			)}
+			{changePicture && (
+				<div
+					onClick={() => {
+						setShowPics(true);
+					}}
+					className={` ${sizeStyle} opacity-0 hover:opacity-100 absolute z-1 hover:cursor-pointer rounded-full flex justify-center items-center`}
+				>
+					<div className="w-full h-full rounded-full bg-black opacity-30"></div>
+					<TbPencil
+						size={25}
+						className="text-accent-text  absolute z-2"
+					></TbPencil>
+				</div>
+			)}
+			{showPics && (
+				<Modal
+					title="Change profile picture"
+					onClose={() => {
+						setShowPics(false);
+					}}
+				>
+					<filesFetcher.Form
+						method="PATCH"
+						encType="multipart/form-data"
+						className="flex flex-col items-center w-4/5 gap-5 mb-4"
+						action="/me/avatar"
+					>
+						<Input name="File" type="file" required />
+						<CheckButton
+							type="submit"
+							active
+							pending={filesFetcher.state !== "idle"}
+						>
+							Upload
+						</CheckButton>
+					</filesFetcher.Form>
+				</Modal>
 			)}
 		</div>
 	);

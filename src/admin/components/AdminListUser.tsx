@@ -4,6 +4,7 @@ import { useFetcher } from "react-router";
 
 import HiddenValues from "@/components/HiddenValues";
 import { Input } from "@/components/Input";
+import ProfilePic from "@/components/ProfilePic";
 
 import CheckButton from "../../components/CheckButton";
 import Modal from "../../components/Modal";
@@ -44,12 +45,16 @@ export default function ListUsers({
 		"border-0 bg-surface appearance-none focus:border-0 focus:ring-0 hover:cursor-pointer hover:text-accent";
 
 	if (!(currentUser.role.permission & PermEnum.HandleRoles)) {
-		classSelect =
-			"border-0  bg-none bg-surface focus:border-0 focus:ring-0";
+		classSelect = "border-0 bg-none bg-surface focus:border-0 focus:ring-0";
 	}
 
 	return (
 		<tr className="text-sm text-body  border-b rounded-base border-border">
+			<td>
+				<div className="ml-2">
+					<ProfilePic user={user}></ProfilePic>
+				</div>
+			</td>
 			<td className="px-6 py-3 font-medium ">
 				{showConfirmationDelete && (
 					<Modal
@@ -134,7 +139,7 @@ export default function ListUsers({
 						}}
 					>
 						<fetcher.Form
-							className="flex flex-col items-center gap-5"
+							className="flex flex-col items-center gap-5 w-4/8"
 							method="PATCH"
 							action="/users"
 						>
@@ -147,7 +152,6 @@ export default function ListUsers({
 								minLength={8}
 								maxLength={256}
 								required
-								className="ring-0 focus:border-border border-border w-50 rounded-sm"
 								type="text"
 								placeholder="New Password"
 							></Input>
@@ -159,7 +163,7 @@ export default function ListUsers({
 				)}
 				{user.userName}
 			</td>
-			<td className="px-6 py-3 font-medium text-center">
+			<td className="px-6 py-3 font-medium">
 				<select
 					disabled={
 						!(currentUser.role.permission & PermEnum.HandleRoles)
@@ -192,7 +196,7 @@ export default function ListUsers({
 					))}
 				</select>
 			</td>
-			<td className="space-x-10 w-10/20  px-6 py-3 font-medium text-center">
+			<td className="space-x-10 font-medium w-1/4 ">
 				<button
 					type="submit"
 					className="hover:text-accent hover:cursor-pointer"
