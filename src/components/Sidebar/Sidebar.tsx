@@ -1,5 +1,4 @@
-/* eslint-disable capitalized-comments */
-/* eslint-disable max-lines */
+
 /* eslint-disable no-bitwise */
 import { initDrawers } from "flowbite";
 import { type JSX, Suspense, useEffect, useState } from "react";
