@@ -76,7 +76,6 @@ export function useReadReceipts(
 
 	useEffect((): (() => void) => {
 		const el = lastMessageRef.current;
-		// eslint-disable-next-line no-inline-comments
 		if (!el) {
 			return (): void => {
 				/* Empty */
