@@ -1,7 +1,9 @@
+import callApi from "@/tokens/call_api";
+
 import { APIError, type ProblemDetail } from "../../api/problem_detail";
 
 export async function handleDisconnect(id: string): Promise<Response> {
-	const res = await fetch(`/api/auth/logout/${id}`, {
+	const res = await callApi(`/api/auth/logout/${id}`, {
 		method: "DELETE",
 		headers: {
 			"Content-Type": "application/json",
@@ -30,7 +32,7 @@ function toResetInput(formData: FormData): resetInput {
 export async function resetPassword(formdata: FormData): Promise<Response> {
 	const object = toResetInput(formdata);
 
-	const res = await fetch(`/api/auth/${object.id}/password`, {
+	const res = await callApi(`/api/auth/${object.id}/password`, {
 		method: "PATCH",
 		headers: {
 			"Content-Type": "application/json",
@@ -46,7 +48,7 @@ export async function resetPassword(formdata: FormData): Promise<Response> {
 }
 
 export async function handleRemoveUser(id: string): Promise<Response> {
-	const res = await fetch(`/api/users/${id}`, {
+	const res = await callApi(`/api/users/${id}`, {
 		method: "DELETE",
 		headers: {
 			"Content-Type": "application/json",
@@ -64,7 +66,7 @@ export async function handleChange(
 	UserId: string,
 	RoleId: string,
 ): Promise<Response> {
-	const res = await fetch(`/api/users/${UserId}/role/${RoleId}`, {
+	const res = await callApi(`/api/users/${UserId}/role/${RoleId}`, {
 		method: "PATCH",
 		headers: {
 			"Content-Type": "application/json",

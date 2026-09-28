@@ -1,4 +1,6 @@
 /* eslint-disable no-bitwise */
+import callApi from "@/tokens/call_api";
+
 import { APIError, type ProblemDetail } from "../../api/problem_detail";
 
 export interface RoleInput {
@@ -38,7 +40,7 @@ export function toRoleInput(formdata: FormData): RoleInput {
 }
 
 export async function fetchRoles(): Promise<Role[]> {
-	const res = await fetch("/api/roles");
+	const res = await callApi("/api/roles");
 
 	if (!res.ok) {
 		throw new APIError((await res.json()) as ProblemDetail);
@@ -50,7 +52,7 @@ export async function fetchRoles(): Promise<Role[]> {
 }
 
 export async function createRole(role: RoleInput): Promise<Response> {
-	const res = await fetch("/api/roles", {
+	const res = await callApi("/api/roles", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
@@ -62,7 +64,7 @@ export async function createRole(role: RoleInput): Promise<Response> {
 }
 
 export async function deleteRole(id: string): Promise<Response> {
-	const res = await fetch(`/api/roles/${id}`, {
+	const res = await callApi(`/api/roles/${id}`, {
 		method: "DELETE",
 		headers: {
 			"Content-Type": "application/json",
@@ -76,7 +78,7 @@ export async function changeRoleName(
 	id: string,
 	name: string,
 ): Promise<Response> {
-	const res = await fetch(`/api/roles/${id}/name`, {
+	const res = await callApi(`/api/roles/${id}/name`, {
 		method: "PATCH",
 		headers: {
 			"Content-Type": "application/json",
@@ -110,7 +112,7 @@ export async function handleCheckbox(
 		finalCode = RolePerm & ~CheckPerm;
 	}
 
-	const res = await fetch(`/api/roles/${RoleId}/permission`, {
+	const res = await callApi(`/api/roles/${RoleId}/permission`, {
 		method: "PATCH",
 		headers: {
 			"Content-Type": "application/json",

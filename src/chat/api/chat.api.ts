@@ -1,5 +1,6 @@
 import { APIError, type ProblemDetail } from "@/api/problem_detail";
 import { useChat } from "@/chat/hooks/chat.hook";
+import callApi from "@/tokens/call_api";
 import type { User } from "@/users/api/users.api";
 
 export interface Message {
@@ -44,7 +45,7 @@ export async function fetchChannels(): Promise<Channel[]> {
 		return [];
 	}
 
-	const response = await fetch("/api/channels");
+	const response = await callApi("/api/channels");
 	if (!response.ok) {
 		throw new APIError((await response.json()) as ProblemDetail);
 	}
@@ -66,7 +67,7 @@ export async function fetchMessages(
 		url += `&before=${before.toISOString()}`;
 	}
 
-	const response = await fetch(url);
+	const response = await callApi(url);
 	if (!response.ok) {
 		throw new APIError((await response.json()) as ProblemDetail);
 	}
@@ -77,7 +78,7 @@ export async function fetchMessages(
 }
 
 export async function createChannel(formData: FormData): Promise<Channel> {
-	const response = await fetch("/api/channels", {
+	const response = await callApi("/api/channels", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
@@ -100,7 +101,7 @@ export async function sendMessage(
 	content: string,
 	messageReference: string | undefined,
 ): Promise<Message> {
-	const response = await fetch(`/api/channels/${channelId}/messages`, {
+	const response = await callApi(`/api/channels/${channelId}/messages`, {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
@@ -123,15 +124,18 @@ export async function updateMessage(
 	id: string,
 	content: string,
 ): Promise<Message> {
-	const response = await fetch(`/api/channels/${channelId}/messages/${id}`, {
-		method: "PUT",
-		headers: {
-			"Content-Type": "application/json",
+	const response = await callApi(
+		`/api/channels/${channelId}/messages/${id}`,
+		{
+			method: "PUT",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				content,
+			}),
 		},
-		body: JSON.stringify({
-			content,
-		}),
-	});
+	);
 
 	if (!response.ok) {
 		throw new APIError((await response.json()) as ProblemDetail);
@@ -144,12 +148,15 @@ export async function removeMessage(
 	channelId: string,
 	id: string,
 ): Promise<string> {
-	const response = await fetch(`/api/channels/${channelId}/messages/${id}`, {
-		method: "DELETE",
-		headers: {
-			"Content-Type": "application/json",
+	const response = await callApi(
+		`/api/channels/${channelId}/messages/${id}`,
+		{
+			method: "DELETE",
+			headers: {
+				"Content-Type": "application/json",
+			},
 		},
-	});
+	);
 
 	if (!response.ok) {
 		throw new APIError((await response.json()) as ProblemDetail);
@@ -159,7 +166,7 @@ export async function removeMessage(
 }
 
 export async function ackMessage(channelId: string, id: string): Promise<void> {
-	const response = await fetch(
+	const response = await callApi(
 		`/api/channels/${channelId}/messages/${id}/ack`,
 		{
 			method: "POST",

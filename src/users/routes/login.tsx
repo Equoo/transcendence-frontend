@@ -1,6 +1,8 @@
 import type { JSX } from "react";
 import { Form, redirect } from "react-router";
 
+import callApi from "@/tokens/call_api";
+
 import { AuthForm, AuthLogo, AuthTitle } from "../components/AuthForm";
 import type { Route } from "./+types/login";
 import type { UserResult } from "./register";
@@ -20,7 +22,7 @@ function toLoginInput(formData: FormData): LoginInput {
 async function loginUser(formData: FormData): Promise<UserResult> {
 	const object = toLoginInput(formData);
 
-	const response = await fetch("/api/auth/login", {
+	const response = await callApi("/api/auth/login", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",

@@ -1,3 +1,5 @@
+import callApi from "@/tokens/call_api";
+
 import { APIError, type ProblemDetail } from "../../api/problem_detail";
 
 export interface Invitation {
@@ -21,7 +23,7 @@ export function toInvitationInput(formData: FormData): InvitationInput {
 export async function createInvitation(
 	input: InvitationInput,
 ): Promise<string> {
-	const res = await fetch("/api/auth/invitation", {
+	const res = await callApi("/api/auth/invitation", {
 		method: "POST",
 		body: JSON.stringify(input),
 		headers: {
@@ -37,7 +39,7 @@ export async function createInvitation(
 }
 
 export async function fetchInvitations(): Promise<Invitation[]> {
-	const res = await fetch("/api/auth/invitation");
+	const res = await callApi("/api/auth/invitation");
 
 	if (!res.ok) {
 		throw new APIError((await res.json()) as ProblemDetail);
@@ -47,7 +49,7 @@ export async function fetchInvitations(): Promise<Invitation[]> {
 }
 
 export async function deleteInvitation(id: string): Promise<Response> {
-	const res = await fetch(`/api/auth/invitation/${id}`, {
+	const res = await callApi(`/api/auth/invitation/${id}`, {
 		method: "DELETE",
 	});
 

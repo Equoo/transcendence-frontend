@@ -1,4 +1,5 @@
 import type { ChannelSummary } from "@/chat/api/chat.api";
+import callApi from "@/tokens/call_api";
 
 import { APIError, type ProblemDetail } from "../../api/problem_detail";
 import type { AppFile } from "../../files/api/files.api";
@@ -60,7 +61,7 @@ export function toEventInput(formData: FormData): EventInput {
 }
 
 export async function fetchEvents(): Promise<EventSummary[]> {
-	const response = await fetch("/api/events");
+	const response = await callApi("/api/events");
 	if (!response.ok) {
 		throw new APIError((await response.json()) as ProblemDetail);
 	}
@@ -71,7 +72,7 @@ export async function fetchEvents(): Promise<EventSummary[]> {
 }
 
 export async function fetchEvent(id: string): Promise<EventData> {
-	const res = await fetch(`/api/events/${id}`);
+	const res = await callApi(`/api/events/${id}`);
 	if (!res.ok) {
 		throw new APIError((await res.json()) as ProblemDetail);
 	}
@@ -79,7 +80,7 @@ export async function fetchEvent(id: string): Promise<EventData> {
 }
 
 export async function createEvent(event: EventInput): Promise<EventData> {
-	const res = await fetch("/api/events", {
+	const res = await callApi("/api/events", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
@@ -98,7 +99,7 @@ export async function updateEvent(
 	event: EventInput,
 	id: string,
 ): Promise<Response> {
-	const res = await fetch(`/api/events/${id}`, {
+	const res = await callApi(`/api/events/${id}`, {
 		method: "PUT",
 		headers: {
 			"Content-Type": "application/json",
@@ -114,7 +115,7 @@ export async function updateEvent(
 }
 
 export async function deleteEvent(id: string): Promise<Response> {
-	const res = await fetch(`/api/events/${id}`, {
+	const res = await callApi(`/api/events/${id}`, {
 		method: "DELETE",
 	});
 

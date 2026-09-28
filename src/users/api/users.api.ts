@@ -18,7 +18,6 @@ export interface User {
 // eslint-disable-next-line @eslint-react/no-missing-context-display-name
 export const UserContext = createContext<User>();
 
-
 interface UserDto {
 	id: string;
 	userName: string;
@@ -66,7 +65,7 @@ function toPasswordRequest(formdata: FormData): PasswordRequest {
 }
 
 export async function userChangeAvatar(data: FormData): Promise<Response> {
-	const res = await fetch("/api/me/avatar", {
+	const res = await callApi("/api/me/avatar", {
 		method: "PATCH",
 		body: data,
 	});
@@ -77,7 +76,7 @@ export async function userChangeUsername(
 	formdata: FormData,
 ): Promise<Response> {
 	const req = toUsernameRequest(formdata);
-	const res = await fetch("/api/me", {
+	const res = await callApi("/api/me", {
 		method: "PATCH",
 		headers: { "Content-Type": "application/json" },
 		body: JSON.stringify(req),
@@ -89,7 +88,7 @@ export async function userChangeUsername(
 }
 
 export async function userDeleteAccount(): Promise<Response> {
-	const res = await fetch("/api/me", { method: "DELETE" });
+	const res = await callApi("/api/me", { method: "DELETE" });
 	if (!res.ok) {
 		throw new APIError((await res.json()) as ProblemDetail);
 	}
@@ -100,7 +99,7 @@ export async function userChangePassword(
 	formdata: FormData,
 ): Promise<Response> {
 	const req = toPasswordRequest(formdata);
-	const res = await fetch("/api/me/password", {
+	const res = await callApi("/api/me/password", {
 		method: "PATCH",
 		headers: { "Content-Type": "application/json" },
 		body: JSON.stringify(req),
@@ -112,7 +111,7 @@ export async function userChangePassword(
 }
 
 export async function userLogout(): Promise<Response> {
-	const res = await fetch("/api/auth/logout");
+	const res = await callApi("/api/auth/logout");
 	if (!res.ok) {
 		throw new APIError((await res.json()) as ProblemDetail);
 	}
@@ -131,7 +130,7 @@ export async function userFetcher(): Promise<User | null> {
 }
 
 export async function fetchUsers(): Promise<User[]> {
-	const res = await fetch("/api/users");
+	const res = await callApi("/api/users");
 
 	if (!res.ok) {
 		throw new APIError((await res.json()) as ProblemDetail);

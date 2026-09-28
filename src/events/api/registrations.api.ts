@@ -1,3 +1,5 @@
+import callApi from "@/tokens/call_api";
+
 import { APIError, type ProblemDetail } from "../../api/problem_detail";
 import type { User } from "../../users/api/users.api";
 
@@ -21,7 +23,7 @@ export async function registerToEvent(
 	eventId: string,
 	reg: RegistrationInput,
 ): Promise<Response> {
-	const res = await fetch(`/api/events/${eventId}/registration`, {
+	const res = await callApi(`/api/events/${eventId}/registration`, {
 		method: "POST",
 		body: JSON.stringify(reg),
 		headers: {
@@ -36,7 +38,7 @@ export async function registerToEvent(
 }
 
 export async function unregisterFromEvent(eventId: string): Promise<Response> {
-	const res = await fetch(`/api/events/${eventId}/registration`, {
+	const res = await callApi(`/api/events/${eventId}/registration`, {
 		method: "DELETE",
 	});
 
