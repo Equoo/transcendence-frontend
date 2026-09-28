@@ -32,7 +32,6 @@ export default [
 	route("/channels", "chat/routes/channel.route.tsx"),
 
 	route("/roles/:action", "admin/routes/RolesAction.ts"),
-
 	route("/users/:action", "admin/routes/UsersAction.ts"),
 
 	route("/me/:action", "users/routes/me.ts"),

@@ -6,11 +6,11 @@ import { Link, useFetcher, useNavigate } from "react-router";
 
 import ChannelChat from "@/chat/components/ChannelChat";
 import ChoiceModal from "@/components/Modal/ChoiceModal";
+import ProfileLine from "@/components/Profile/ProfileLine";
+import ProfilePic from "@/components/Profile/ProfilePic";
 
 import { PermEnum } from "../admin/api/roles";
 import Badge from "../components/Badge";
-import ProfileLine from "../components/ProfileLine";
-import ProfilePic from "../components/ProfilePic";
 import { fetchEventRoles } from "../events/api/event_roles.api";
 import { fetchEvent } from "../events/api/events.api";
 import EventForm from "../events/components/EventForm";

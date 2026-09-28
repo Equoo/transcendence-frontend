@@ -2,7 +2,7 @@ import { createContext } from "react-router";
 
 import { ActivityEnum, useActivity } from "@/activity/hooks/activity.hook";
 import { APIError, type ProblemDetail } from "@/api/problem_detail";
-import callApi from "@/tokens/call_api";
+import callApi from "@/tokens/callApi";
 
 import type { Role } from "../../admin/api/roles";
 import type { AppFile } from "../../files/api/files.api";
@@ -70,10 +70,10 @@ function toPasswordRequest(formdata: FormData): PasswordRequest {
 
 // Function API
 
-export async function userChangeAvatar(data: FormData): Promise<Response> {
+export async function userChangeAvatar(formdata: FormData): Promise<Response> {
 	const res = await callApi("/api/me/avatar", {
 		method: "PATCH",
-		body: data,
+		body: formdata,
 	});
 	return res;
 }

@@ -1,6 +1,6 @@
 import { APIError, type ProblemDetail } from "@/api/problem_detail";
 import { useChat } from "@/chat/hooks/chat.hook";
-import callApi from "@/tokens/call_api";
+import callApi from "@/tokens/callApi";
 import type { User } from "@/users/api/users";
 
 export interface Message {

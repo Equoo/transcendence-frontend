@@ -1,5 +1,5 @@
 /* eslint-disable no-bitwise */
-import callApi from "@/tokens/call_api";
+import callApi from "@/tokens/callApi";
 
 import { APIError, type ProblemDetail } from "../../api/problem_detail";
 import { toUserId } from "./users";

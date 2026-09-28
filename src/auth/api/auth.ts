@@ -1,6 +1,6 @@
 // Interface Api
 
-import callApi from "@/tokens/call_api";
+import callApi from "@/tokens/callApi";
 
 export type UserResult = { ok: true } | { ok: false };
 
