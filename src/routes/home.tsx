@@ -11,7 +11,7 @@ import { type EventSummary, fetchEvents } from "../events/api/events.api";
 import EventForm from "../events/components/EventForm";
 import EventList from "../events/components/EventList";
 import { type AppFile, fetchFiles } from "../files/api/files.api";
-import { fetchUsers, type User, UserContext } from "../users/api/users.api";
+import { fetchUsers, type User, UserContext } from "../users/api/users";
 import type { Route } from "./+types/home";
 
 export function clientLoader({ context }: Route.ClientLoaderArgs): {

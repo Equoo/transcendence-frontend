@@ -1,7 +1,7 @@
 import { type RefObject, useCallback, useEffect, useRef } from "react";
 import { useShallow } from "zustand/react/shallow";
 
-import { useUser } from "@/users/hooks/users.hooks";
+import { useUser } from "@/users/hooks/users";
 
 import { ackMessage, type Channel } from "../api/chat.api";
 import { useChat } from "./chat.hook";
@@ -19,7 +19,9 @@ export function useReadReceipts(
 ): RefObject<HTMLDivElement | null> {
 	const user = useUser();
 	const messages = useChat(
-		useShallow((state) => Object.values(state.channels[channelId]?.messages ?? [])),
+		useShallow((state) =>
+			Object.values(state.channels[channelId]?.messages ?? []),
+		),
 	);
 	const ackDate = useChat(
 		useShallow((state) => state.channels[channelId]?.ackTime ?? null),
@@ -40,7 +42,9 @@ export function useReadReceipts(
 			}
 			debounceTimerRef.current = setTimeout(() => {
 				const pending = pendingAckRef.current;
-				if (!pending) { return; }
+				if (!pending) {
+					return;
+				}
 				void ackMessage(channelId, pending.msgId);
 				updateChannel(channelId, {
 					ackTime: pending.sentAt,
@@ -52,14 +56,20 @@ export function useReadReceipts(
 	);
 
 	const tryAck = useCallback((): void => {
-		if (!isIntersectingRef.current) { return; }
+		if (!isIntersectingRef.current) {
+			return;
+		}
 		if (document.visibilityState !== "visible" || !document.hasFocus()) {
 			return;
 		}
 
 		const lastMsg = messages.findLast((msg) => msg.sender.id !== user?.id);
-		if (!lastMsg) { return; }
-		if (ackDate && ackDate >= lastMsg.sentAt) { return; }
+		if (!lastMsg) {
+			return;
+		}
+		if (ackDate && ackDate >= lastMsg.sentAt) {
+			return;
+		}
 
 		scheduleAck(lastMsg.id, lastMsg.sentAt);
 	}, [messages, ackDate, user, scheduleAck]);
@@ -67,7 +77,11 @@ export function useReadReceipts(
 	useEffect((): (() => void) => {
 		const el = lastMessageRef.current;
 		// eslint-disable-next-line no-inline-comments
-		if (!el) { return (): void => { /* Empty */ }; }
+		if (!el) {
+			return (): void => {
+				/* Empty */
+			};
+		}
 
 		const observer = new IntersectionObserver(
 			([entry]) => {
@@ -77,11 +91,15 @@ export function useReadReceipts(
 			{ threshold: 1 },
 		);
 		observer.observe(el);
-		return (): void => { observer.disconnect(); };
+		return (): void => {
+			observer.disconnect();
+		};
 	}, [tryAck]);
 
 	useEffect(() => {
-		const onFocusChange = (): void => { tryAck(); };
+		const onFocusChange = (): void => {
+			tryAck();
+		};
 		window.addEventListener("focus", onFocusChange);
 		document.addEventListener("visibilitychange", onFocusChange);
 		return (): void => {

@@ -5,7 +5,7 @@ import { PiArrowArcLeft, PiDotsThree, PiPencil, PiTrash } from "react-icons/pi";
 import CheckButton from "@/components/CheckButton";
 import IconBtn from "@/components/IconBtn";
 import Modal from "@/components/Modal/Modal";
-import { useUser } from "@/users/hooks/users.hooks";
+import { useUser } from "@/users/hooks/users";
 
 import { type Message, removeMessage } from "../../api/chat.api";
 import { useChat } from "../../hooks/chat.hook";

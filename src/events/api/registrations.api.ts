@@ -1,7 +1,7 @@
 import callApi from "@/tokens/call_api";
 
 import { APIError, type ProblemDetail } from "../../api/problem_detail";
-import type { User } from "../../users/api/users.api";
+import type { User } from "../../users/api/users";
 
 export interface Registration {
 	user: User;

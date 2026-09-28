@@ -4,7 +4,7 @@ import { fetchInvitations } from "@/invitations/api/invitations.api";
 import InvitationList from "@/invitations/components/InvitationList";
 
 import List from "../../components/List";
-import { fetchUsers, UserContext } from "../../users/api/users.api";
+import { fetchUsers, UserContext } from "../../users/api/users";
 import { fetchRoles } from "../api/roles";
 import ListUsers from "../components/AdminListUser";
 import type { Route } from "./+types/Users";

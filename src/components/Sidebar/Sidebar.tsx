@@ -1,4 +1,3 @@
-
 /* eslint-disable no-bitwise */
 import { initDrawers } from "flowbite";
 import { type JSX, Suspense, useEffect, useState } from "react";
@@ -21,7 +20,7 @@ import Profile from "@/users/components/Profile";
 
 import { PermEnum } from "../../admin/api/roles";
 import InvitationForm from "../../invitations/components/InvitationForm";
-import type { User } from "../../users/api/users.api";
+import type { User } from "../../users/api/users";
 import ProfileLine from "../ProfileLine";
 import ItemCategory from "./ItemCategory";
 import ItemChannel from "./ItemChannel";

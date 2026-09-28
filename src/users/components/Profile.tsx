@@ -8,7 +8,7 @@ import ChoiceModal from "@/components/Modal/ChoiceModal";
 import ProfileLine from "@/components/ProfileLine";
 import Section, { type LineInfos } from "@/components/Section";
 
-import type { User } from "../api/users.api";
+import type { User } from "../api/users";
 
 export default function Profile({
 	onClose,
@@ -23,16 +23,16 @@ export default function Profile({
 	const [showUsername, setShowUsername] = useState(false);
 	const [showPassword, setShowPassword] = useState(false);
 
-    useEffect(() => {
-            if (fetcher.data) {
-                // eslint-disable-next-line @eslint-react/set-state-in-effect
-                setShowDelete(false);
-                // eslint-disable-next-line @eslint-react/set-state-in-effect
-                setShowPassword(false);
-                // eslint-disable-next-line @eslint-react/set-state-in-effect
-                setShowUsername(false);
-            }
-        }, [fetcher.data]);
+	useEffect(() => {
+		if (fetcher.data) {
+			// eslint-disable-next-line @eslint-react/set-state-in-effect
+			setShowDelete(false);
+			// eslint-disable-next-line @eslint-react/set-state-in-effect
+			setShowPassword(false);
+			// eslint-disable-next-line @eslint-react/set-state-in-effect
+			setShowUsername(false);
+		}
+	}, [fetcher.data]);
 
 	const openUsername = (): void => {
 		setShowUsername(true);
@@ -50,11 +50,9 @@ export default function Profile({
 		{ name: "Password", value: "***********", action: openPassword },
 	];
 
-
-
 	return (
-        <>
-        {showDelete && (
+		<>
+			{showDelete && (
 				<ChoiceModal
 					title="Delete your account ?"
 					onClose={() => {
@@ -99,45 +97,44 @@ export default function Profile({
 					password
 				></ChangeModal>
 			)}
-		<div className="flex items-center justify-center absolute bottom-15 left-55 flex-col border-border2 shadow-md bg-surface w-75 h-90 rounded-2xl">
-			<button
-				type="button"
-				onClick={onClose}
-				className="absolute right-5 top-3  text-muted hover:text-text text-3xl cursor-pointer ml-auto"
-			>
-				×
-			</button>
-			<div className="flex flex-col justify-center w-18/21 h-full gap-3 ">
-				<ProfileLine
-					changePicture
-					size={3}
-					user={user}
-					edit
-				></ProfileLine>
-				<Section title="Account Info" lines={Lines}></Section>
-				<div className="mt-2 flex justify-around gap-5">
-					<CheckButton
-						discrete
-						onClick={() => {
-							setShowDelete(true);
-						}}
-					>
-						Delete Account
-					</CheckButton>
-					<CheckButton
-						onClick={() => {
-							void fetcher.submit(null, {
-								action: "/me/logout",
-								method: "DELETE",
-							});
-						}}
-					>
-						Logout
-					</CheckButton>
+			<div className="flex items-center justify-center absolute bottom-15 left-55 flex-col border-border2 shadow-md bg-surface w-75 h-90 rounded-2xl">
+				<button
+					type="button"
+					onClick={onClose}
+					className="absolute right-5 top-3  text-muted hover:text-text text-3xl cursor-pointer ml-auto"
+				>
+					×
+				</button>
+				<div className="flex flex-col justify-center w-18/21 h-full gap-3 ">
+					<ProfileLine
+						changePicture
+						size={3}
+						user={user}
+						edit
+					></ProfileLine>
+					<Section title="Account Info" lines={Lines}></Section>
+					<div className="mt-2 flex justify-around gap-5">
+						<CheckButton
+							discrete
+							onClick={() => {
+								setShowDelete(true);
+							}}
+						>
+							Delete Account
+						</CheckButton>
+						<CheckButton
+							onClick={() => {
+								void fetcher.submit(null, {
+									action: "/me/logout",
+									method: "DELETE",
+								});
+							}}
+						>
+							Logout
+						</CheckButton>
+					</div>
 				</div>
 			</div>
-		</div>
-        </>
+		</>
 	);
-
 }

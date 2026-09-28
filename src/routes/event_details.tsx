@@ -17,7 +17,7 @@ import EventForm from "../events/components/EventForm";
 import EventRegisterBtn from "../events/components/EventRegisterBtn";
 import type { clientAction } from "../events/routes/events.route";
 import { fetchFiles } from "../files/api/files.api";
-import { UserContext } from "../users/api/users.api";
+import { UserContext } from "../users/api/users";
 import type { Route } from "./+types/event_details";
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types

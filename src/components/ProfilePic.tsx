@@ -9,7 +9,7 @@ import { useFetcher } from "react-router";
 import { ActivityEnum, useActivity } from "@/activity/hooks/activity.hook";
 
 import type { clientAction as filesAction } from "../files/routes/files.route";
-import type { User } from "../users/api/users.api";
+import type { User } from "../users/api/users";
 import CheckButton from "./CheckButton";
 import { Input } from "./Input";
 import Modal from "./Modal/Modal";

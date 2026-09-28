@@ -7,6 +7,12 @@ import callApi from "@/tokens/call_api";
 import type { Role } from "../../admin/api/roles";
 import type { AppFile } from "../../files/api/files.api";
 
+// eslint-disable-next-line @eslint-react/no-missing-context-display-name
+export const UserContext = createContext<User>();
+
+
+// Interface
+
 export interface User {
 	id: string;
 	userName: string;
@@ -14,9 +20,6 @@ export interface User {
 	role: Role;
 	avatar?: AppFile;
 }
-
-// eslint-disable-next-line @eslint-react/no-missing-context-display-name
-export const UserContext = createContext<User>();
 
 interface UserDto {
 	id: string;
@@ -34,6 +37,8 @@ interface PasswordRequest {
 	Password: string;
 	NewPassword: string;
 }
+
+// Function Interface
 
 function normalizeUser(dto: UserDto): User {
 	return {
@@ -63,6 +68,8 @@ function toPasswordRequest(formdata: FormData): PasswordRequest {
 		NewPassword: formdata.get("New password") as string,
 	};
 }
+
+// Function API
 
 export async function userChangeAvatar(data: FormData): Promise<Response> {
 	const res = await callApi("/api/me/avatar", {

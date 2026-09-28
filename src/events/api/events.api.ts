@@ -3,7 +3,7 @@ import callApi from "@/tokens/call_api";
 
 import { APIError, type ProblemDetail } from "../../api/problem_detail";
 import type { AppFile } from "../../files/api/files.api";
-import type { User } from "../../users/api/users.api";
+import type { User } from "../../users/api/users";
 import type { EventRole } from "./event_roles.api";
 import type { Registration } from "./registrations.api";
 
