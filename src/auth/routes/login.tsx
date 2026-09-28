@@ -2,8 +2,8 @@ import type { JSX } from "react";
 import { Form, redirect } from "react-router";
 
 import { AuthForm, AuthLogo, AuthTitle } from "../../auth/components/AuthForm";
-import type { Route } from "../../users/routes/+types/login";
 import { loginUser, type UserResult } from "../api/auth";
+import type { Route } from "./+types/login";
 
 export async function clientAction({
 	request,

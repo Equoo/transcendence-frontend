@@ -10,7 +10,6 @@ import type { AppFile } from "../../files/api/files.api";
 // eslint-disable-next-line @eslint-react/no-missing-context-display-name
 export const UserContext = createContext<User>();
 
-
 // Interface
 
 export interface User {
@@ -127,7 +126,7 @@ export async function userLogout(): Promise<Response> {
 	return res;
 }
 
-export async function userFetcher(): Promise<User | null> {
+export async function fetchUser(): Promise<User | null> {
 	const res = await callApi("/api/me");
 	if (!res.ok) {
 		return null;

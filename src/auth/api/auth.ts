@@ -1,5 +1,7 @@
 // Interface Api
 
+import callApi from "@/tokens/call_api";
+
 export type UserResult = { ok: true } | { ok: false };
 
 interface reqLoginInput {
@@ -35,7 +37,7 @@ function toRegisterInput(formData: FormData): reqRegisterInput {
 export async function loginUser(formData: FormData): Promise<UserResult> {
 	const req = toLoginInput(formData);
 
-	const response = await fetch("/api/auth/login", {
+	const response = await callApi("/api/auth/login", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
@@ -51,7 +53,7 @@ export async function loginUser(formData: FormData): Promise<UserResult> {
 export async function registerUser(formData: FormData): Promise<UserResult> {
 	const req = toRegisterInput(formData);
 
-	const res = await fetch("/api/auth/register", {
+	const res = await callApi("/api/auth/register", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",

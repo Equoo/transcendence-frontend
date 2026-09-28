@@ -45,7 +45,7 @@ function toChangeRole(formData: FormData): reqChangeRole {
 export async function handleDisconnect(formdata: FormData): Promise<Response> {
 	const req = toUserId(formdata);
 
-	const res = await fetch(`/api/auth/logout/${req.Id}`, {
+	const res = await callApi(`/api/auth/logout/${req.Id}`, {
 		method: "DELETE",
 		headers: {
 			"Content-Type": "application/json",
