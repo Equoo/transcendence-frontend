@@ -8,7 +8,6 @@ import ProfilePic from "@/components/ProfilePic";
 
 import type { User } from "../../users/api/users.api";
 import { PermEnum, type Role } from "../api/roles";
-import type { clientAction } from "../routes/admin.user.route";
 export type Props = ComponentProps<"h1"> & {
 	className?: string;
 };
@@ -26,7 +25,7 @@ export default function ListUsers({
 	const [showConfirmationDelete, setShowConfirmationDelete] = useState(false);
 	const [showConfirmationDisconnect, setShowConfirmationDisconnect] =
 		useState(false);
-	const fetcher = useFetcher<typeof clientAction>();
+	const fetcher = useFetcher();
 
 	useEffect(() => {
 		if (fetcher.data) {
@@ -60,7 +59,7 @@ export default function ListUsers({
 						onClose={() => {
 							setShowConfirmationDelete(false);
 						}}
-						action="/users"
+						action="/users/removeUser"
 						method="DELETE"
 						desc="The user will be remove from the database. This cannot be cancelled."
 						id={user.id}
@@ -73,7 +72,7 @@ export default function ListUsers({
 						onClose={() => {
 							setShowConfirmationDisconnect(false);
 						}}
-						action="/users/disconnect"
+						action="/users/disconnectUser"
 						method="DELETE"
 						desc="The user will need to login again. This cannot be
 							cancelled."
@@ -87,7 +86,7 @@ export default function ListUsers({
 						onClose={() => {
 							setShowChangePass(false);
 						}}
-						action="/users"
+						action="/users/passwordUser"
 						method="PATCH"
 						desc="The user will need to login again. This cannot be
 							cancelled."
@@ -120,7 +119,7 @@ export default function ListUsers({
 								UserId: user.id,
 								RoleId: role.id,
 							},
-							{ method: "PATCH", action: "/users/disconnect" },
+							{ method: "PATCH", action: "/users/roleUser" },
 						);
 					}}
 				>

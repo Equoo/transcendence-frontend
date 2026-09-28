@@ -53,7 +53,7 @@ export default function AdminRoles({
 					onClose={() => {
 						setShowRoleForm(false);
 					}}
-					action="/roles"
+					action="/roles/createRole"
 					method="POST"
 					inputName="name"
 					placeholder="name"

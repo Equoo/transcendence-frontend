@@ -29,7 +29,7 @@ export function RolesBox({
 							CheckPerm: perm.code,
 							IsChecked: box.currentTarget.checked,
 						},
-						{ method: "PATCH", action: "/roles/check" },
+						{ method: "PATCH", action: "/roles/checkRole" },
 					);
 				}}
 			></input>

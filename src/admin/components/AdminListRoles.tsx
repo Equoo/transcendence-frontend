@@ -49,7 +49,7 @@ export default function ListRoles({ role }: { role: Role }): JSX.Element {
 						onClose={() => {
 							setShowChangeRole(false);
 						}}
-						action="/roles"
+						action="/roles/changeRole"
 						method="PATCH"
 						inputName="name"
 						placeholder="name"
@@ -66,7 +66,7 @@ export default function ListRoles({ role }: { role: Role }): JSX.Element {
 							setShowConfirmation(false);
 						}}
 						desc="All users using this role will become member instead. This cannot be cancelled."
-						action="/roles"
+						action="/roles/deleteRole"
 						method="DELETE"
 						fetcher={fetcher}
 						id={role.id}

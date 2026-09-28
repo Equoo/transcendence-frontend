@@ -31,9 +31,9 @@ export default [
 	route("/invitations/:id?", "invitations/routes/invitations.route.tsx"),
 	route("/channels", "chat/routes/channel.route.tsx"),
 
-	route("/roles", "admin/routes/admin.role.route.tsx"),
-	route("/roles/check", "admin/routes/admin.role.route.check.tsx"),
-	route("/users", "admin/routes/admin.user.route.tsx"),
-	route("/users/disconnect", "admin/routes/admin.user.routeDisconnect.tsx"),
+	route("/roles/:action", "admin/routes/admin.role.route.ts"),
+
+	route("/users/:action", "admin/routes/admin.user.route.ts"),
+
 	route("/me/:action", "users/routes/me.ts"),
 ] satisfies RouteConfig;

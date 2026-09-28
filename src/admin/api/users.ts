@@ -2,8 +2,50 @@ import callApi from "@/tokens/call_api";
 
 import { APIError, type ProblemDetail } from "../../api/problem_detail";
 
-export async function handleDisconnect(id: string): Promise<Response> {
-	const res = await callApi(`/api/auth/logout/${id}`, {
+// Interface API
+
+export interface reqUserId {
+	Id: string;
+}
+
+interface reqResetInput {
+	Id: string;
+	Password: string;
+}
+
+interface reqChangeRole {
+	UserId: string;
+	RoleId: string;
+}
+
+// Function Interface
+
+export function toUserId(formdata: FormData): reqUserId {
+	return {
+		Id: formdata.get("id") as string,
+	};
+}
+
+function toResetInput(formData: FormData): reqResetInput {
+	return {
+		Id: formData.get("id") as string,
+		Password: formData.get("password") as string,
+	};
+}
+
+function toChangeRole(formData: FormData): reqChangeRole {
+	return {
+		UserId: formData.get("UserId") as string,
+		RoleId: formData.get("RoleId") as string,
+	};
+}
+
+// Function API
+
+export async function handleDisconnect(formdata: FormData): Promise<Response> {
+	const req = toUserId(formdata);
+
+	const res = await fetch(`/api/auth/logout/${req.Id}`, {
 		method: "DELETE",
 		headers: {
 			"Content-Type": "application/json",
@@ -17,27 +59,15 @@ export async function handleDisconnect(id: string): Promise<Response> {
 	return res;
 }
 
-interface resetInput {
-	id: string;
-	password: string;
-}
-
-function toResetInput(formData: FormData): resetInput {
-	return {
-		id: formData.get("id") as string,
-		password: formData.get("password") as string,
-	};
-}
-
 export async function resetPassword(formdata: FormData): Promise<Response> {
-	const object = toResetInput(formdata);
+	const req = toResetInput(formdata);
 
-	const res = await callApi(`/api/auth/${object.id}/password`, {
+	const res = await callApi(`/api/auth/${req.Id}/password`, {
 		method: "PATCH",
 		headers: {
 			"Content-Type": "application/json",
 		},
-		body: JSON.stringify(object.password),
+		body: JSON.stringify(req.Password),
 	});
 
 	if (!res.ok) {
@@ -47,8 +77,10 @@ export async function resetPassword(formdata: FormData): Promise<Response> {
 	return res;
 }
 
-export async function handleRemoveUser(id: string): Promise<Response> {
-	const res = await callApi(`/api/users/${id}`, {
+export async function handleRemoveUser(formdata: FormData): Promise<Response> {
+	const req = toUserId(formdata);
+
+	const res = await callApi(`/api/users/${req.Id}`, {
 		method: "DELETE",
 		headers: {
 			"Content-Type": "application/json",
@@ -62,11 +94,10 @@ export async function handleRemoveUser(id: string): Promise<Response> {
 	return res;
 }
 
-export async function handleChange(
-	UserId: string,
-	RoleId: string,
-): Promise<Response> {
-	const res = await callApi(`/api/users/${UserId}/role/${RoleId}`, {
+export async function handleChange(formdata: FormData): Promise<Response> {
+	const req = toChangeRole(formdata);
+
+	const res = await callApi(`/api/users/${req.UserId}/role/${req.RoleId}`, {
 		method: "PATCH",
 		headers: {
 			"Content-Type": "application/json",
