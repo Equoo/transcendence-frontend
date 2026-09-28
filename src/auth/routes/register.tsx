@@ -11,9 +11,9 @@ import { registerUser, type UserResult } from "../api/auth";
 export async function clientAction({
 	request,
 }: Route.ClientActionArgs): Promise<UserResult> {
-	const req = await request.formData();
+	const formdata = await request.formData();
 
-	if (!(await registerUser(req)).ok) {
+	if (!(await registerUser(formdata)).ok) {
 		return { ok: false };
 	}
 	return redirect("/");

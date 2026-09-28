@@ -1,14 +1,13 @@
 import type { JSX } from "react";
 
-import { fetchRoles } from "@/admin/api/roles";
-import ListUsers from "@/admin/components/AdminListUser";
-import List from "@/components/List";
 import { fetchInvitations } from "@/invitations/api/invitations.api";
 import InvitationList from "@/invitations/components/InvitationList";
-import { fetchUsers, UserContext } from "@/users/api/users.api";
 
-import type { Route } from "./+types/admin_users";
-
+import List from "../../components/List";
+import { fetchUsers, UserContext } from "../../users/api/users.api";
+import { fetchRoles } from "../api/roles";
+import ListUsers from "../components/AdminListUser";
+import type { Route } from "./+types/Users";
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
 export async function clientLoader({ context }: Route.ClientLoaderArgs) {

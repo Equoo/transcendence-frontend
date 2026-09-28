@@ -6,7 +6,7 @@ import {
 	handleRemoveUser,
 	resetPassword,
 } from "../api/users";
-import type { Route } from "./+types/admin.user.route";
+import type { Route } from "./+types/UsersAction";
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
 export async function clientAction({

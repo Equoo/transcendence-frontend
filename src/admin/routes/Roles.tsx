@@ -3,11 +3,11 @@ import { useFetcher } from "react-router";
 
 import ChangeModal from "@/components/Modal/ChangeModal";
 
-import { fetchRoles, PermEnum } from "../../admin/api/roles";
-import ListRoles from "../../admin/components/AdminListRoles";
 import CheckButton from "../../components/CheckButton";
 import List, { type ListColumn } from "../../components/List";
-import type { Route } from "./+types/admin_roles";
+import { fetchRoles, PermEnum } from "../api/roles";
+import ListRoles from "../components/AdminListRoles";
+import type { Route } from "./+types/Roles";
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
 export async function clientLoader() {
