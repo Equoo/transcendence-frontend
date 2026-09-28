@@ -4,8 +4,8 @@ import type { FetcherWithComponents, HTMLFormMethod } from "react-router";
 import type { APIError } from "@/api/problem_detail";
 import type { EventData } from "@/events/api/events.api";
 
-import CheckButton from "../CheckButton";
-import HiddenValues from "../HiddenValues";
+import CheckButton from "../Button/CheckButton";
+import HiddenValues from "../Input/HiddenValues";
 import Modal from "./Modal";
 
 export default function ChoiceModal({

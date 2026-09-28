@@ -4,7 +4,7 @@ import { useFetcher } from "react-router";
 
 import ChangeModal from "@/components/Modal/ChangeModal";
 import ChoiceModal from "@/components/Modal/ChoiceModal";
-import ProfilePic from "@/components/ProfilePic";
+import ProfilePic from "@/components/Profile/ProfilePic";
 
 import type { User } from "../../users/api/users";
 import { PermEnum, type Role } from "../api/roles";

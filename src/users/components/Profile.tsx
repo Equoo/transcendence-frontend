@@ -2,11 +2,11 @@ import { useEffect, useState } from "react";
 import type { JSX } from "react/jsx-runtime";
 import type { FetcherWithComponents } from "react-router";
 
-import CheckButton from "@/components/CheckButton";
+import CheckButton from "@/components/Button/CheckButton";
 import ChangeModal from "@/components/Modal/ChangeModal";
 import ChoiceModal from "@/components/Modal/ChoiceModal";
-import ProfileLine from "@/components/ProfileLine";
-import Section, { type LineInfos } from "@/components/Section";
+import ProfileLine from "@/components/Profile/ProfileLine";
+import Section, { type LineInfos } from "@/users/components/Section";
 
 import type { User } from "../api/users";
 

@@ -2,8 +2,8 @@ import { type JSX, useState } from "react";
 import { PiPlus } from "react-icons/pi";
 import { useFetcher } from "react-router";
 
-import CheckButton from "@/components/CheckButton";
-import { Input } from "@/components/Input";
+import CheckButton from "@/components/Button/CheckButton";
+import { Input } from "@/components/Input/Input";
 import Modal from "@/components/Modal/Modal";
 
 import type { Channel } from "../api/chat.api";

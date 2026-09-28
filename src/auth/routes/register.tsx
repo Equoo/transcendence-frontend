@@ -6,8 +6,6 @@ import type { Route } from "../../users/routes/+types/register";
 import { registerUser, type UserResult } from "../api/auth";
 
 
-
-
 export async function clientAction({
 	request,
 }: Route.ClientActionArgs): Promise<UserResult> {
@@ -39,7 +37,7 @@ export default function Register({
 					/>
 					{actionData?.ok === false && (
 						<div className="text-error">
-							Invalid login or password.
+							Invalid invitation code.
 						</div>
 					)}
 					<AuthForm btnName={"Register"} register code={code} />

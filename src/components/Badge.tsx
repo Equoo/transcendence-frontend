@@ -1,6 +1,6 @@
 import type { JSX, ReactNode } from "react";
 
-export default function EventBadge({
+export default function Badge({
 	children,
 	border = "border border-border2",
 	text = "text-text2",

@@ -2,8 +2,8 @@ import { type Ref, useImperativeHandle, useRef, useState } from "react";
 import type { JSX } from "react/jsx-runtime";
 import { PiArrowArcLeft, PiDotsThree, PiPencil, PiTrash } from "react-icons/pi";
 
-import CheckButton from "@/components/CheckButton";
-import IconBtn from "@/components/IconBtn";
+import CheckButton from "@/components/Button/CheckButton";
+import IconBtn from "@/components/Button/IconBtn";
 import Modal from "@/components/Modal/Modal";
 import { useUser } from "@/users/hooks/users";
 

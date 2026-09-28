@@ -8,7 +8,7 @@ import {
 } from "react-router";
 
 import { APIError } from "@/api/problem_detail";
-import CheckButton from "@/components/CheckButton";
+import CheckButton from "@/components/Button/CheckButton";
 
 import type { Route } from "./+types/dashboard_content";
 

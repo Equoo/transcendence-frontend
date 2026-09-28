@@ -3,8 +3,8 @@ import { useFetcher } from "react-router";
 
 import ChangeModal from "@/components/Modal/ChangeModal";
 
-import CheckButton from "../../components/CheckButton";
-import List, { type ListColumn } from "../../components/List";
+import CheckButton from "../../components/Button/CheckButton";
+import List, { type ListColumn } from "../../components/List/List";
 import { fetchRoles, PermEnum } from "../api/roles";
 import ListRoles from "../components/AdminListRoles";
 import type { Route } from "./+types/Roles";

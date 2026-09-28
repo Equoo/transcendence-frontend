@@ -1,9 +1,9 @@
 import type { JSX } from "react";
 import type { FetcherWithComponents, HTMLFormMethod } from "react-router";
 
-import CheckButton from "../CheckButton";
-import HiddenValues from "../HiddenValues";
-import { Input } from "../Input";
+import CheckButton from "../Button/CheckButton";
+import HiddenValues from "../Input/HiddenValues";
+import { Input } from "../Input/Input";
 import Modal from "./Modal";
 
 export default function ChangeModal({

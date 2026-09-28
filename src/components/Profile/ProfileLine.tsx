@@ -1,6 +1,7 @@
 import type { JSX } from "react";
 
-import type { User } from "../users/api/users";
+import type { User } from "@/users/api/users";
+
 import ProfilePic from "./ProfilePic";
 
 export default function ProfileLine({

@@ -2,12 +2,12 @@ import { type JSX, useEffect, useState } from "react";
 import { PiDotsThreeVerticalBold } from "react-icons/pi";
 import { useFetcher } from "react-router";
 
-import CheckButton from "@/components/CheckButton";
-import { Field } from "@/components/Field";
-import { Input } from "@/components/Input";
-import { ListActions } from "@/components/List";
+import CheckButton from "@/components/Button/CheckButton";
+import { Field } from "@/components/Input/Field";
+import { Input } from "@/components/Input/Input";
+import { ListActions } from "@/components/List/List";
+import PopupList from "@/components/List/PopupList";
 import Modal from "@/components/Modal/Modal";
-import PopupList from "@/components/PopupList";
 
 import type { clientAction } from "../routes/files.route";
 

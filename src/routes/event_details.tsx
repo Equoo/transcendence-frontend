@@ -8,7 +8,7 @@ import ChannelChat from "@/chat/components/ChannelChat";
 import ChoiceModal from "@/components/Modal/ChoiceModal";
 
 import { PermEnum } from "../admin/api/roles";
-import EventBadge from "../components/Badge";
+import Badge from "../components/Badge";
 import ProfileLine from "../components/ProfileLine";
 import ProfilePic from "../components/ProfilePic";
 import { fetchEventRoles } from "../events/api/event_roles.api";
@@ -139,7 +139,7 @@ export default function EventDetails({
 							</span>
 							<div className="flex flex-wrap gap-1">
 								{event.tags.map((tag) => (
-									<EventBadge key={tag}>{tag}</EventBadge>
+									<Badge key={tag}>{tag}</Badge>
 								))}
 							</div>
 						</>

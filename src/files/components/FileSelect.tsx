@@ -3,10 +3,10 @@ import { FcFolder } from "react-icons/fc";
 import { PiCheck } from "react-icons/pi";
 
 import type { ValidationErrors } from "../../api/problem_detail";
-import EventBadge from "../../components/Badge";
-import CheckButton from "../../components/CheckButton";
-import { Field } from "../../components/Field";
-import HiddenValues from "../../components/HiddenValues";
+import Badge from "../../components/Badge";
+import CheckButton from "../../components/Button/CheckButton";
+import { Field } from "../../components/Input/Field";
+import HiddenValues from "../../components/Input/HiddenValues";
 import Modal from "../../components/Modal/Modal";
 import type { AppFile } from "../api/files.api";
 import { useFileBrowser } from "../hooks/useFileBrowser";
@@ -54,7 +54,7 @@ export default function FileSelect({
 						) ?? selectedFileKey;
 
 					return (
-						<EventBadge key={selectedFileKey}>
+						<Badge key={selectedFileKey}>
 							{label}
 							<button
 								type="button"
@@ -65,7 +65,7 @@ export default function FileSelect({
 							>
 								x
 							</button>
-						</EventBadge>
+						</Badge>
 					);
 				})}
 				<button

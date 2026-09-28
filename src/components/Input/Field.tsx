@@ -1,6 +1,6 @@
 import type { JSX, ReactNode } from "react";
 
-import type { ValidationErrors } from "../api/problem_detail";
+import type { ValidationErrors } from "../../api/problem_detail";
 
 export function Field({
 	name,

@@ -21,7 +21,7 @@ import Profile from "@/users/components/Profile";
 import { PermEnum } from "../../admin/api/roles";
 import InvitationForm from "../../invitations/components/InvitationForm";
 import type { User } from "../../users/api/users";
-import ProfileLine from "../ProfileLine";
+import ProfileLine from "../Profile/ProfileLine";
 import ItemCategory from "./ItemCategory";
 import ItemChannel from "./ItemChannel";
 

@@ -1,7 +1,7 @@
 import { type ComponentProps, type JSX, useState } from "react";
 import { useFetcher } from "react-router";
 
-import CheckButton from "../../components/CheckButton";
+import CheckButton from "../../components/Button/CheckButton";
 import Modal from "../../components/Modal/Modal";
 import type { EventSummary } from "../api/events.api";
 

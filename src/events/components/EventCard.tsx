@@ -5,8 +5,8 @@ import { IoLocationOutline } from "react-icons/io5";
 import { PiClock } from "react-icons/pi";
 import { Link } from "react-router";
 
-import EventBadge from "../../components/Badge";
-import CheckButton from "../../components/CheckButton";
+import Badge from "../../components/Badge";
+import CheckButton from "../../components/Button/CheckButton";
 import type { EventSummary } from "../api/events.api";
 import EventRegisterBtn from "./EventRegisterBtn";
 
@@ -102,7 +102,7 @@ export default function EventCard({
 				{event.tags.length > 0 && (
 					<div className="flex flex-nowrap items-center gap-2.5 overflow-auto whitespace-nowrap scrollbar-thin pb-1.5">
 						{event.tags.map((tag) => (
-							<EventBadge key={tag}>{tag}</EventBadge>
+							<Badge key={tag}>{tag}</Badge>
 						))}
 					</div>
 				)}
@@ -110,10 +110,10 @@ export default function EventCard({
 			<div className="flex gap-3 items-end">
 				<Countdown key={event.id} date={new Date(event.date)} />
 				<div className="ml-auto">
-					<EventBadge border="" bg="bg-good-soft" text="text-good">
+					<Badge border="" bg="bg-good-soft" text="text-good">
 						<GoPeople />
 						{event.registeredCount}/{event.size} Registered
-					</EventBadge>
+					</Badge>
 				</div>
 			</div>
 			<div className="flex gap-2.5 items-center whitespace-nowrap">

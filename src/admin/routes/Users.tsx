@@ -3,7 +3,7 @@ import type { JSX } from "react";
 import { fetchInvitations } from "@/invitations/api/invitations.api";
 import InvitationList from "@/invitations/components/InvitationList";
 
-import List from "../../components/List";
+import List from "../../components/List/List";
 import { fetchUsers, UserContext } from "../../users/api/users";
 import { fetchRoles } from "../api/roles";
 import ListUsers from "../components/AdminListUser";

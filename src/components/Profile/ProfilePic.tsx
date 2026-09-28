@@ -7,13 +7,13 @@ import { TbPencil } from "react-icons/tb";
 import { useFetcher } from "react-router";
 
 import { ActivityEnum, useActivity } from "@/activity/hooks/activity.hook";
+import type { User } from "@/users/api/users";
 
-import type { clientAction as filesAction } from "../files/routes/files.route";
-import type { User } from "../users/api/users";
-import CheckButton from "./CheckButton";
-import { Input } from "./Input";
-import Modal from "./Modal/Modal";
-import PopupList from "./PopupList";
+import type { clientAction as filesAction } from "../../files/routes/files.route";
+import CheckButton from "../Button/CheckButton";
+import { Input } from "../Input/Input";
+import PopupList from "../List/PopupList";
+import Modal from "../Modal/Modal";
 
 function getActivityColor(activity: ActivityEnum): string {
 	switch (activity) {
