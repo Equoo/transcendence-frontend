@@ -1,3 +1,5 @@
+import callApi from "@/tokens/call_api";
+
 import { APIError, type ProblemDetail } from "../../api/problem_detail";
 
 export interface EventRole {
@@ -10,7 +12,7 @@ export interface EventRoleInput {
 }
 
 export async function createEventRole(reg: EventRoleInput): Promise<EventRole> {
-	const res = await fetch(`/api/events/roles`, {
+	const res = await callApi(`/api/events/roles`, {
 		method: "POST",
 		body: JSON.stringify(reg),
 		headers: {
@@ -25,7 +27,7 @@ export async function createEventRole(reg: EventRoleInput): Promise<EventRole> {
 }
 
 export async function fetchEventRoles(): Promise<EventRole[]> {
-	const res = await fetch(`/api/events/roles`);
+	const res = await callApi(`/api/events/roles`);
 
 	if (!res.ok) {
 		throw new APIError((await res.json()) as ProblemDetail);

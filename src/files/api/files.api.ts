@@ -1,3 +1,5 @@
+import callApi from "@/tokens/call_api";
+
 import { APIError, type ProblemDetail } from "../../api/problem_detail";
 
 export interface AppFile {
@@ -22,7 +24,7 @@ export function toFileInput(formData: FormData): FileInput {
 }
 
 export async function createFile(data: FormData): Promise<Response> {
-	const res = await fetch("/api/files", {
+	const res = await callApi("/api/files", {
 		method: "POST",
 		body: data,
 	});
@@ -31,7 +33,7 @@ export async function createFile(data: FormData): Promise<Response> {
 }
 
 export async function downloadFile(key: string): Promise<Blob> {
-	const res = await fetch(`/api/files/${key}`);
+	const res = await callApi(`/api/files/${key}`);
 
 	if (!res.ok) {
 		throw new APIError((await res.json()) as ProblemDetail);
@@ -40,7 +42,7 @@ export async function downloadFile(key: string): Promise<Blob> {
 }
 
 export async function fetchFile(key: string): Promise<AppFile> {
-	const res = await fetch(`/api/files/meta/${key}`);
+	const res = await callApi(`/api/files/meta/${key}`);
 	if (!res.ok) {
 		throw new APIError((await res.json()) as ProblemDetail);
 	}
@@ -48,7 +50,7 @@ export async function fetchFile(key: string): Promise<AppFile> {
 }
 
 export async function fetchFiles(): Promise<AppFile[]> {
-	const res = await fetch("/api/files");
+	const res = await callApi("/api/files");
 
 	if (!res.ok) {
 		throw new APIError((await res.json()) as ProblemDetail);
@@ -59,7 +61,7 @@ export async function fetchFiles(): Promise<AppFile[]> {
 }
 
 export async function deleteFile(key: string): Promise<Response> {
-	const res = await fetch(`/api/files/${key}`, { method: "DELETE" });
+	const res = await callApi(`/api/files/${key}`, { method: "DELETE" });
 
 	if (!res.ok) {
 		throw new APIError((await res.json()) as ProblemDetail);
@@ -71,7 +73,7 @@ export async function updateFileName(
 	key: string,
 	name: string,
 ): Promise<Response> {
-	const res = await fetch(`/api/files/${key}/name`, {
+	const res = await callApi(`/api/files/${key}/name`, {
 		method: "PATCH",
 		body: JSON.stringify({ name }),
 		headers: {

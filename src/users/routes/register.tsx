@@ -1,6 +1,8 @@
 import type { JSX } from "react";
 import { Form, redirect, useLocation } from "react-router";
 
+import callApi from "@/tokens/call_api";
+
 import { AuthForm, AuthLogo, AuthTitle } from "../components/AuthForm";
 import type { Route } from "./+types/register";
 
@@ -23,7 +25,7 @@ function toUserInput(formData: FormData): RegisterInput {
 async function registerUser(formData: FormData): Promise<UserResult> {
 	const object = toUserInput(formData);
 
-	const response = await fetch("/api/auth/register", {
+	const response = await callApi("/api/auth/register", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
