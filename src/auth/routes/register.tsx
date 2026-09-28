@@ -1,48 +1,19 @@
 import type { JSX } from "react";
 import { Form, redirect, useLocation } from "react-router";
 
-import callApi from "@/tokens/call_api";
+import { AuthForm, AuthLogo, AuthTitle } from "../../auth/components/AuthForm";
+import type { Route } from "../../users/routes/+types/register";
+import { registerUser, type UserResult } from "../api/auth";
 
-import { AuthForm, AuthLogo, AuthTitle } from "../components/AuthForm";
-import type { Route } from "./+types/register";
 
-interface RegisterInput {
-	username: string;
-	password: string;
-	invitationCode: string;
-}
 
-export type UserResult = { ok: true } | { ok: false };
-
-function toUserInput(formData: FormData): RegisterInput {
-	return {
-		username: formData.get("Username") as string,
-		password: formData.get("Password") as string,
-		invitationCode: formData.get("Code") as string,
-	};
-}
-
-async function registerUser(formData: FormData): Promise<UserResult> {
-	const object = toUserInput(formData);
-
-	const response = await callApi("/api/auth/register", {
-		method: "POST",
-		headers: {
-			"Content-Type": "application/json",
-		},
-		body: JSON.stringify(object),
-	});
-
-	if (!response.ok) {
-		return { ok: false };
-	}
-	return { ok: true };
-}
 
 export async function clientAction({
 	request,
 }: Route.ClientActionArgs): Promise<UserResult> {
-	if (!(await registerUser(await request.formData())).ok) {
+	const req = await request.formData();
+
+	if (!(await registerUser(req)).ok) {
 		return { ok: false };
 	}
 	return redirect("/");
