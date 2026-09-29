@@ -9,7 +9,7 @@ export function useFileBrowser(files: AppFile[]): {
 	enterFolder: (name: string) => void;
 	goUp: () => void;
 } {
-	const [currFolder, setCurrFolder] = useState("");
+	const [currFolder, setCurrFolder] = useState("/");
 
 	const folders = Array.from(
 		new Set(
@@ -25,7 +25,10 @@ export function useFileBrowser(files: AppFile[]): {
 		if (!file.name.startsWith(currFolder)) {
 			return false;
 		}
-		return !file.name.slice(currFolder.length).includes("/");
+		return (
+			!file.name.slice(currFolder.length).includes("/") &&
+			file.name.slice(currFolder.length).length !== 0
+		);
 	});
 
 	function enterFolder(name: string): void {
@@ -34,7 +37,9 @@ export function useFileBrowser(files: AppFile[]): {
 
 	function goUp(): void {
 		setCurrFolder((prev) =>
-			prev.substring(0, prev.lastIndexOf("/", prev.length - 2) + 1),
+			prev === "/"
+				? prev
+				: prev.substring(0, prev.lastIndexOf("/", prev.length - 2) + 1),
 		);
 	}
 

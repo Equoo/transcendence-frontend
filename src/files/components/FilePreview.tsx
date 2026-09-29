@@ -52,10 +52,22 @@ export function BlobView({
 }): JSX.Element {
 	if (type.startsWith("video")) {
 		return (
-			<video className={className} src={url} controls autoPlay></video>
+			<video
+				className={className}
+				// eslint-disable-next-line no-undefined
+				src={url.length === 0 ? undefined : url}
+				controls
+				autoPlay
+			></video>
 		);
 	} else if (type.startsWith("image")) {
-		return <img className={className} src={url}></img>;
+		return (
+			<img
+				className={className}
+				// eslint-disable-next-line no-undefined
+				src={url.length === 0 ? undefined : url}
+			></img>
+		);
 	} else if (isTextLikeFile(name, type)) {
 		return (
 			<Promisable data={blob.text()}>
