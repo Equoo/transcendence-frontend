@@ -28,7 +28,7 @@ export default [
 	),
 	route("/events/:eventId?", "events/routes/events.route.tsx"),
 	route("/files/:key?", "files/routes/files.route.tsx"),
-	route("/invitations", "invitations/routes/invitations.route.tsx"),
+	route("/invitations/:id?", "invitations/routes/invitations.route.tsx"),
 	route("/channels", "chat/routes/channel.route.tsx"),
 
 	route("/roles", "admin/routes/admin.role.route.tsx"),

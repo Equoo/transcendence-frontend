@@ -64,7 +64,7 @@ export function ListAction({
 		<button
 			{...props}
 			type={type}
-			className={`inline-flex items-center justify-center rounded-sm p-1 text-text hover:text-accent focus-visible:outline-2 focus-visible:outline-accent disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer ${className}`}
+			className={` inline-flex items-center justify-center rounded-sm p-1 text-text2 hover:text-accent focus-visible:outline-2 focus-visible:outline-accent disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer ${className}`}
 		/>
 	);
 }
