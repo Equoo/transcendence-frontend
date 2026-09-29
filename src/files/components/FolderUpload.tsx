@@ -57,7 +57,7 @@ export default function FolderUpload({
 					maxLength={100}
 					name="Name"
 					required
-					pattern="[^\/]"
+					pattern="^[^\/]*$"
 					title="Must not contain /"
 					errors={errors}
 				/>

@@ -72,7 +72,7 @@ export default function FileUpload({
 					name="Name"
 					required
 					value={name}
-					pattern="[^\/]"
+					pattern="^[^\/]*$"
 					title="Must not contain a /"
 					errors={errors}
 				/>

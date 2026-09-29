@@ -35,11 +35,9 @@ export default function ItemActions({
 	const path = `${parent}${name}/`;
 	const kind = isFolder ? "folder" : "file";
 	const action = isFolder ? "/files" : `/files/${fileKey}`;
-	const destinations = Array.from(new Set(["/", ...folders]))
-		.filter(
-			(folder) =>
-				folder !== parent && !(isFolder && folder.startsWith(path)),
-		);
+	const destinations = Array.from(new Set(["/", ...folders])).filter(
+		(folder) => folder !== parent && !(isFolder && folder.startsWith(path)),
+	);
 
 	useEffect(() => {
 		if (fetcher.data instanceof Response && fetcher.data.status < 300) {
@@ -111,8 +109,8 @@ export default function ItemActions({
 						<Input
 							name="Name"
 							value={name}
-							pattern={isFolder ? "[^/]+" : ".*[^/]"}
-							title={isFolder ? "Must not contain /" : "Must not end with /"}
+							pattern="^[^\/]*$"
+							title={"Must not contain /"}
 							required
 						/>
 						<CheckButton
