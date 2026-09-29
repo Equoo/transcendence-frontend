@@ -60,11 +60,27 @@ export default function FileUpload({
 					required
 					errors={errors}
 					onChange={(ev) => {
-						setName(
-							ev.target.value.substring(
-								ev.target.value.lastIndexOf("\\") + 1,
-							),
-						);
+						if (
+							ev.target.files &&
+							ev.target.files[0].size > 29000000
+						) {
+							ev.target.value = "";
+							setErrors({
+								File: [
+									"File too large, please select a file < 80mB",
+								],
+							});
+							return;
+						}
+						if (name.length === 0) {
+							setName(
+								ev.target.value.substring(
+									ev.target.value.lastIndexOf("\\") + 1,
+								),
+							);
+							return;
+						}
+						setErrors({});
 					}}
 				/>
 				<Input
