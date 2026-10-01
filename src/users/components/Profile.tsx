@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import type { JSX } from "react/jsx-runtime";
 import type { FetcherWithComponents } from "react-router";
 
+import type { Role } from "@/admin/api/roles";
 import CheckButton from "@/components/Button/CheckButton";
 import ChangeModal from "@/components/Modal/ChangeModal";
 import ChoiceModal from "@/components/Modal/ChoiceModal";
@@ -14,10 +15,12 @@ export default function Profile({
 	onClose,
 	fetcher,
 	user,
+	role,
 }: {
 	onClose: () => void;
 	fetcher: FetcherWithComponents<Response>;
 	user: User;
+	role: Role;
 }): JSX.Element {
 	const [showDelete, setShowDelete] = useState(false);
 	const [showUsername, setShowUsername] = useState(false);
@@ -112,16 +115,22 @@ export default function Profile({
 						user={user}
 						edit
 					></ProfileLine>
-					<Section title="Account Info" lines={Lines}></Section>
+					<Section
+						role={role}
+						title="Account Info"
+						lines={Lines}
+					></Section>
 					<div className="mt-2 flex justify-around gap-5">
-						<CheckButton
-							discrete
-							onClick={() => {
-								setShowDelete(true);
-							}}
-						>
-							Delete Account
-						</CheckButton>
+						{role.name !== "\\(*-*)/" && (
+							<CheckButton
+								discrete
+								onClick={() => {
+									setShowDelete(true);
+								}}
+							>
+								Delete Account
+							</CheckButton>
+						)}
 						<CheckButton
 							onClick={() => {
 								void fetcher.submit(null, {

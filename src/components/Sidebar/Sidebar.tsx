@@ -144,6 +144,7 @@ function Sidebar({
 					<AdminSidebar user={user} />
 					{showUser && (
 						<Profile
+							role={user.role}
 							fetcher={fetcher}
 							user={user}
 							onClose={() => {
