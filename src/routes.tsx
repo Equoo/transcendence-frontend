@@ -19,6 +19,9 @@ export default [
 			route("/admin/users", "admin/routes/Users.tsx"),
 		]),
 	]),
+
+	route("*", "routes/404Page.tsx"),
+
 	route("/register", "auth/routes/register.tsx"),
 	route("/login", "auth/routes/login.tsx"),
 	// Resources routes

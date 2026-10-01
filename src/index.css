@@ -36,6 +36,34 @@
 
 	--animate-in: fade-in 0.2s ease-out, zoom-in-95 0.2s ease-out;
 
+	--animate-checked: checked 0.3s forwards;
+
+	--animate-unchecked: unchecked 0.2s forwards;
+
+	@keyframes checked {
+		0%,
+		50% {
+			transform: scale(1.2);
+		}
+		50% {
+			transform: scale(1);
+		}
+	}
+
+	@keyframes unchecked {
+		0% {
+			opacity: 1;
+		}
+
+		50% {
+			opacity: 0;
+		}
+
+		100% {
+			opacity: 1;
+		}
+	}
+
 	@keyframes fade-in {
 		from {
 			opacity: 0;

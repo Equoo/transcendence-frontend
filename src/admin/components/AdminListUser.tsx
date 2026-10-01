@@ -102,6 +102,7 @@ export default function ListUsers({
 			</td>
 			<td className="px-6 py-3 font-medium">
 				<select
+					defaultValue={user.role.name}
 					disabled={
 						!(currentUser.role.permission & PermEnum.HandleRoles)
 					}
@@ -124,12 +125,7 @@ export default function ListUsers({
 					}}
 				>
 					{roles.map((rl) => (
-						<option
-							selected={rl.name === user.role.name}
-							key={rl.id}
-						>
-							{rl.name}
-						</option>
+						<option key={rl.id}>{rl.name}</option>
 					))}
 				</select>
 			</td>
