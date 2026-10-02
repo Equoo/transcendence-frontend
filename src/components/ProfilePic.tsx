@@ -103,7 +103,7 @@ export default function ProfilePic({
 				/>
 			) : (
 				<Blobatar
-					
+
 					name={user.id}
 					animate="always"
 					className="w-full h-full"

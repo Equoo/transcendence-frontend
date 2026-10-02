@@ -6,6 +6,8 @@ interface ChatState {
 	channels: Record<string, Channel | null>;
 	categories: Record<string, ChannelCategory | null>;
 	setChannels: (channels: Channel[], categories: ChannelCategory[]) => void;
+	addCategory: (category: ChannelCategory) => void;
+	removeCategory: (id: string) => void;
 	addChannel: (channel: Channel) => void;
 	removeChannel: (id: string) => void;
 	updateChannel: (id: string, updates: Channel) => void;
@@ -26,6 +28,23 @@ export const useChat = create<ChatState>((set, get) => ({
 			channels: Object.fromEntries(channels.map((ch) => [ch.id, ch])),
 			categories: Object.fromEntries(categories.map((cat) => [cat.id, cat])),
 		});
+	},
+
+	addCategory: (category): void => {
+		set((state) => ({
+			channels: state.channels,
+			categories: { ...state.categories, [category.id]: category }
+		}));
+	},
+
+	removeCategory: (id): void => {
+		set((state) => ({
+			channels: state.channels,
+			categories: {
+				...state.categories,
+				[id]: null,
+			}
+		}));
 	},
 
 	addChannel: (channel): void => {

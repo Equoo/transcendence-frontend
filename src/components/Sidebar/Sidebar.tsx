@@ -1,6 +1,4 @@
-/* eslint-disable capitalized-comments */
 /* eslint-disable max-lines */
-/* eslint-disable no-bitwise */
 import { initDrawers } from "flowbite";
 import { type JSX, Suspense, useEffect, useRef, useState } from "react";
 import { HiMenuAlt2 } from "react-icons/hi";
@@ -205,12 +203,12 @@ function Sidebar({
 					>
 						<Input
 							name="Current password"
-							// maxLength={255}
+							// MaxLength={255}
 							required
 						></Input>
 						<Input
 							maxLength={255}
-							// minLength={8}
+							// MinLength={8}
 							name="New password"
 							required
 							className="ring-0 focus:border-border border-border rounded-sm"
@@ -273,7 +271,11 @@ function Sidebar({
 						<ItemCategory to="/messages" icon={PiChat}>
 							Messages
 						</ItemCategory>
-						<ChannelForm></ChannelForm>
+
+						<li className="flex justify-between items-center px-2 py-1.5 mt-3 text-[11px] text-muted font-bold tracking-wider uppercase group">
+							Channels{" "}
+							<ChannelForm></ChannelForm>
+						</li>
 						<Suspense fallback={<ChannelListSkeleton />}>
 							<Await resolve={channelsInit}>
 								{channels

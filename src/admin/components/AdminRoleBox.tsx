@@ -1,4 +1,3 @@
-/* eslint-disable no-bitwise */
 import type { JSX } from "react";
 import { useFetcher } from "react-router";
 

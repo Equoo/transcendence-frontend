@@ -81,7 +81,6 @@ export default function Home({
 					</Promisable>
 				</h1>
 				{Boolean(
-					// eslint-disable-next-line no-bitwise
 					user.role.permission & PermEnum.HandleEvent,
 				) && <EventForm roles={roles} files={files} />}
 			</div>

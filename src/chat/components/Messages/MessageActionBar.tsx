@@ -2,6 +2,7 @@ import { type Ref, useImperativeHandle, useRef, useState } from "react";
 import type { JSX } from "react/jsx-runtime";
 import { PiArrowArcLeft, PiDotsThree, PiPencil, PiTrash } from "react-icons/pi";
 
+import { PermEnum } from "@/admin/api/roles";
 import CheckButton from "@/components/CheckButton";
 import IconBtn from "@/components/IconBtn";
 import Modal from "@/components/Modal";
@@ -106,7 +107,7 @@ function MessageActionBar({
 			>
 				{actionBar.el.dataset.pending === "false" && (
 					<>
-						{actionBar.msg.sender.id === user?.id ? (<>
+						{actionBar.msg.sender.id === user?.id ? (
 							<IconBtn
 								icon={PiPencil}
 								size={14}
@@ -116,15 +117,7 @@ function MessageActionBar({
 									}
 								}}
 							></IconBtn>
-							<IconBtn
-								icon={PiTrash}
-								className="text-red-400"
-								size={14}
-								onClick={() => {
-									setShowRemoveForm(true);
-								}}
-							></IconBtn>
-						</>) : (
+						) : (
 							<IconBtn icon={PiArrowArcLeft} size={14}
 								onClick={() => {
 									if (composerRef.current) {
@@ -133,6 +126,17 @@ function MessageActionBar({
 								}}
 							></IconBtn>
 						)}
+						{(actionBar.msg.sender.id === user?.id ||
+							actionBar.msg.sender.role.permission & PermEnum.ManageMessages) && (
+								<IconBtn
+									icon={PiTrash}
+									className="text-red-400"
+									size={14}
+									onClick={() => {
+										setShowRemoveForm(true);
+									}}
+								></IconBtn>
+							)}
 					</>
 				)}
 				<IconBtn icon={PiDotsThree} size={14}></IconBtn>
