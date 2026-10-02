@@ -3,7 +3,7 @@ import { createPortal } from "react-dom";
 import { PiGear, PiPlus } from "react-icons/pi";
 import { useFetcher } from "react-router";
 
-import { fetchRoles } from "@/admin/api/roles";
+import { fetchRoles, type Role } from "@/admin/api/roles";
 import { APIError, type ValidationErrors } from "@/api/problem_detail";
 import { Checkbox } from "@/components/Checkbox";
 import CheckButton from "@/components/CheckButton";
@@ -29,6 +29,9 @@ export default function ChannelForm({
 	const [showModal, setShowModal] = useState(false);
 	const [showDeleteModal, setShowDeleteModal] = useState(false);
 	const [prevFetcherState, setPrevFetcherState] = useState(fetcher.state);
+
+	const [sync, setSync] = useState(edit?.categorySync);
+	const [fetchedRoles, setFetchedRoles] = useState<Role[] | null>(null);
 
 	if (prevFetcherState !== fetcher.state) {
 		setPrevFetcherState(fetcher.state);
@@ -100,8 +103,13 @@ export default function ChannelForm({
 							<Checkbox name="Syncronised"
 								errors={errors}
 								placeholder="Category Sync"
-								defaultValue={edit?.categorySync ? "true" : "false"}
-							/>
+								defaultChecked={edit?.categorySync}
+								onChange={(ev) => { setSync(ev.currentTarget.checked); }}
+							>
+								<p className="text-muted font-main font-light w-4/5 text-sm">
+									Use category roles whitelist for this channel.
+								</p>
+							</Checkbox>
 
 							<Promisable
 
@@ -112,29 +120,32 @@ export default function ChannelForm({
 										placeholder="Whitelisted Roles"
 										errors={errors}
 										className="w-full px-2 py-1 font-main"
-										grayed={edit?.categorySync}
+										grayed={sync}
 										values={edit?.rolesWhitelist.map(
 											(role: ChannelRole) => role.name,
 										)}
 									/>
 
 								)}
-								data={fetchRoles()}
+								data={fetchedRoles ?? fetchRoles()}
 							>
-								{(roles) => (
-									<MultipleInput
-										name="Roles"
-										onlySuggestions
-										suggestions={roles.map((role) => role.name)}
-										placeholder="Whitelisted Roles"
-										errors={errors}
-										className="w-full px-2 py-1 font-main"
-										grayed={edit?.categorySync}
-										values={edit?.rolesWhitelist.map(
-											(role: ChannelRole) => role.name,
-										)}
-									/>
-								)}
+								{(roles) => {
+									setFetchedRoles(roles);
+									return (
+										<MultipleInput
+											name="Roles"
+											onlySuggestions
+											suggestions={roles.map((role) => role.name)}
+											placeholder="Whitelisted Roles"
+											errors={errors}
+											className="w-full px-2 py-1 font-main"
+											grayed={sync}
+											values={edit?.rolesWhitelist.map(
+												(role: ChannelRole) => role.name,
+											)}
+										/>
+									)
+								}}
 							</Promisable>
 							{edit && (
 								<input

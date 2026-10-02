@@ -6,6 +6,7 @@ import { PermEnum } from "@/admin/api/roles";
 import type { Channel, ChannelCategory } from "@/chat/api/chat.api";
 import CategoryForm from "@/chat/components/CategoryForm";
 import ChannelForm from "@/chat/components/ChannelForm";
+import { isWhitelisted } from "@/chat/utils/channel.util";
 import type { User } from "@/users/api/users.api";
 
 import ItemChannel from "./ItemChannel";
@@ -31,6 +32,10 @@ function ItemChannelCategory({
 			user={user}
 		></ItemChannel>)
 	);
+
+	if (childrens.length === 0 && !isWhitelisted(category, user)) {
+		return (<li></li>);
+	}
 
 	return (
 		<li className="mb-3">

@@ -3,7 +3,7 @@ import { createPortal } from "react-dom";
 import { PiGear, PiPlus } from "react-icons/pi";
 import { useFetcher } from "react-router";
 
-import { fetchRoles } from "@/admin/api/roles";
+import { fetchRoles, type Role } from "@/admin/api/roles";
 import { APIError, type ValidationErrors } from "@/api/problem_detail";
 import CheckButton from "@/components/CheckButton";
 import { Input } from "@/components/Input";
@@ -26,6 +26,8 @@ export default function CategoryForm({
 	const [showModal, setShowModal] = useState(false);
 	const [showDeleteModal, setShowDeleteModal] = useState(false);
 	const [prevFetcherState, setPrevFetcherState] = useState(fetcher.state);
+
+	const [fetchedRoles, setFetchedRoles] = useState<Role[] | null>(null);
 
 	if (prevFetcherState !== fetcher.state) {
 		setPrevFetcherState(fetcher.state);
@@ -103,22 +105,25 @@ export default function CategoryForm({
 									/>
 
 								)}
-								data={fetchRoles()}
+								data={fetchedRoles ?? fetchRoles()}
 							>
-								{(roles) => (
-									<MultipleInput
-										name="Roles"
-										onlySuggestions
-										suggestions={roles.map((role) => role.name)}
-										placeholder="Whitelisted Roles"
-										errors={errors}
-										className="w-full bg-surface border rounded-md border-border2  px-2 py-1 font-main text-text"
-										values={edit?.rolesWhitelist.map(
-											(role: ChannelRole) => role.name,
-										)}
-									/>
+								{(roles) => {
+									setFetchedRoles(roles);
+									return (
+										<MultipleInput
+											name="Roles"
+											onlySuggestions
+											suggestions={roles.map((role) => role.name)}
+											placeholder="Whitelisted Roles"
+											errors={errors}
+											className="w-full bg-surface border rounded-md border-border2  px-2 py-1 font-main text-text"
+											values={edit?.rolesWhitelist.map(
+												(role: ChannelRole) => role.name,
+											)}
+										/>
 
-								)}
+									)
+								}}
 							</Promisable>
 							{edit && (
 								<input

@@ -14,10 +14,10 @@ import {
 import { Await, Link, useFetcher, useLocation } from "react-router";
 import { useShallow } from "zustand/react/shallow";
 
-import type { Channel, ChannelCategory } from "@/chat/api/chat.api";
+import type { Channel } from "@/chat/api/chat.api";
 import CategoryForm from "@/chat/components/CategoryForm";
 import { useChat } from "@/chat/hooks/chat.hook";
-import { useClickOutside } from "@/hooks/useClickOutside";
+import { isWhitelisted } from "@/chat/utils/channel.util";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 import { PermEnum } from "../../admin/api/roles";
@@ -47,14 +47,6 @@ function ChannelListSkeleton(): JSX.Element {
 	);
 }
 
-const isWhitelisted = (ent: Channel | ChannelCategory, user: User): boolean => {
-	if ((user.role.permission & PermEnum.HandleChannels) !== 0) { return true; }
-	if (ent.rolesWhitelist.length > 0) {
-		if (ent.rolesWhitelist
-			.findIndex((role) => role.id === user.role.id) === -1) { return false; }
-	}
-	return true;
-}
 
 function Sidebar({
 	user,
@@ -65,15 +57,17 @@ function Sidebar({
 }): JSX.Element {
 	const location = useLocation();
 	const fetcher = useFetcher();
+	const dictCategories = useChat(
+		useShallow((state) => state.categories),
+	);
 	const channels = useChat(
 		useShallow((state) => Object.values(state.channels)),
 	).filter((ch) =>
-		!ch.eventId && isWhitelisted(ch, user));
+		!ch.eventId && isWhitelisted(ch, user,
+			(ch.categorySync && ch.categoryId !== null) ? dictCategories[ch.categoryId ?? ""] : null)
+	);
 	const categories = useChat(
 		useShallow((state) => Object.values(state.categories)),
-	);
-	const dictCategories = useChat(
-		useShallow((state) => state.categories),
 	);
 
 
@@ -307,7 +301,7 @@ function Sidebar({
 							<Suspense fallback={<ChannelListSkeleton />}>
 								<Await resolve={channelsInit}>
 									{channels
-										.filter((ch) => ch.category === null || !Object.hasOwn(dictCategories, ch.category ?? ""))
+										.filter((ch) => ch.categoryId === null || !Object.hasOwn(dictCategories, ch.categoryId ?? ""))
 										.map((channel) => (
 											<ItemChannel
 												key={channel.id}
@@ -320,7 +314,7 @@ function Sidebar({
 										<ItemChannelCategory
 											key={category.id}
 											category={category}
-											channels={channels.filter((ch) => ch.category === category.id)}
+											channels={channels.filter((ch) => ch.categoryId === category.id)}
 											user={user}
 										></ItemChannelCategory>
 									))}

@@ -36,7 +36,7 @@ export interface Channel {
 	topic: string;
 	createAt: Date;
 	eventId?: string;
-	category?: string | null;
+	categoryId?: string | null;
 	messages: Message[];
 	ackTime?: Date | null;
 	rolesWhitelist: ChannelRole[];
@@ -104,10 +104,11 @@ export async function fetchMessages(
 export async function createChannel(formData: FormData): Promise<Channel> {
 	const category = formData.get("category") as string;
 
-	const body: { name: string, topic: string, whitelistRoles: string[], category: string | null } = {
+	const body: { name: string, topic: string, whitelistRoles: string[], categorySync: boolean, category: string | null } = {
 		name: formData.get("Name") as string,
 		topic: formData.get("Topic") as string,
 		whitelistRoles: formData.getAll("Roles") as string[],
+		categorySync: formData.has("Syncronised"),
 		category: null
 	};
 	if (category) { body.category = category; }
@@ -130,10 +131,11 @@ export async function createChannel(formData: FormData): Promise<Channel> {
 export async function updateChannel(formData: FormData): Promise<Channel> {
 	const category = formData.get("category") as string;
 
-	const body: { name: string, topic: string, whitelistRoles: string[], category: string | null } = {
+	const body: { name: string, topic: string, whitelistRoles: string[], categorySync: boolean, category: string | null } = {
 		name: formData.get("Name") as string,
 		topic: formData.get("Topic") as string,
 		whitelistRoles: formData.getAll("Roles") as string[],
+		categorySync: formData.has("Syncronised"),
 		category: null
 	};
 	if (category) { body.category = category; }
