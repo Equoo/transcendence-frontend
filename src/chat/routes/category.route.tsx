@@ -1,10 +1,10 @@
-import { data, redirect } from "react-router";
+import { data } from "react-router";
 
 import { APIError } from "@/api/problem_detail";
 import { useChat } from "@/chat/hooks/chat.hook";
 
 import { createCategory, deleteCategory, updateCategory } from "../api/chat.api";
-import type { Route } from "./+types/channel.route";
+import type { Route } from "./+types/category.route";
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
 export async function clientAction({ request }: Route.ClientActionArgs) {
@@ -25,7 +25,6 @@ export async function clientAction({ request }: Route.ClientActionArgs) {
 
 			useChat.getState().addCategory(res);
 
-			return redirect(`/channels/${res.id}`);
 		} else if (request.method === "PUT") {
 			if (!formdata.get("id")) {
 				throw new Error("Channel ID is required for update");

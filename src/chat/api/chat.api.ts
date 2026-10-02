@@ -53,6 +53,7 @@ export interface ChannelCategory {
 	id: string;
 	name: string;
 	order: string;
+	rolesWhitelist: ChannelRole[];
 }
 
 export async function fetchChannels(): Promise<Channel[]> {
@@ -65,6 +66,8 @@ export async function fetchChannels(): Promise<Channel[]> {
 		throw new APIError((await channelsRes.json()) as ProblemDetail);
 	}
 	const channels = (await channelsRes.json()) as Channel[];
+
+	channels.forEach((ch) => { ch.messages = [] });
 
 	const categoriesRes = await fetch("/api/categories");
 	if (!categoriesRes.ok) {
@@ -167,7 +170,7 @@ export async function deleteChannel(id: string): Promise<void> {
 }
 
 export async function createCategory(formData: FormData): Promise<ChannelCategory> {
-	const response = await fetch("/api/category", {
+	const response = await fetch("/api/categories", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
@@ -187,7 +190,7 @@ export async function createCategory(formData: FormData): Promise<ChannelCategor
 
 export async function updateCategory(formData: FormData): Promise<ChannelCategory> {
 	const response = await fetch(
-		`/api/category/${formData.get("id") as string}`,
+		`/api/categories/${formData.get("id") as string}`,
 		{
 			method: "PUT",
 			headers: {
@@ -208,7 +211,7 @@ export async function updateCategory(formData: FormData): Promise<ChannelCategor
 }
 
 export async function deleteCategory(id: string): Promise<void> {
-	const response = await fetch(`/api/category/${id}`, {
+	const response = await fetch(`/api/categories/${id}`, {
 		method: "DELETE",
 		headers: {
 			"Content-Type": "application/json",
@@ -219,7 +222,6 @@ export async function deleteCategory(id: string): Promise<void> {
 		throw new APIError((await response.json()) as ProblemDetail);
 	}
 }
-
 
 export async function sendMessage(
 	channelId: string,

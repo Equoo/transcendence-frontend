@@ -35,7 +35,7 @@ export async function createInvitation(
 		throw new APIError((await res.json()) as ProblemDetail);
 	}
 
-	return res.json();
+	return res.json() as Promise<string>;
 }
 
 export async function fetchInvitations(): Promise<Invitation[]> {

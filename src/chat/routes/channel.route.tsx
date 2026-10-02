@@ -23,6 +23,7 @@ export async function clientAction({ request }: Route.ClientActionArgs) {
 		} else if (request.method === "POST") {
 			res = await createChannel(formdata);
 
+			res.messages = [];
 			useChat.getState().addChannel(res);
 
 			return redirect(`/channels/${res.id}`);

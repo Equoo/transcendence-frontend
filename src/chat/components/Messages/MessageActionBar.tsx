@@ -11,6 +11,7 @@ import { useUser } from "@/users/hooks/users.hooks";
 import { type Message, removeMessage } from "../../api/chat.api";
 import { useChat } from "../../hooks/chat.hook";
 import { useChatContext } from "../ChatProvider";
+import MessageRow from "./MessageRow";
 
 export interface MessageActionBarHandles {
 	show: (
@@ -150,9 +151,11 @@ function MessageActionBar({
 				>
 					<p>Are you sure to remove this message ?</p>
 
+					<MessageRow message={actionBar.msg} showHeader className="w-full hover:bg-transparent"></MessageRow>
+
 					<div className="flex flex-row gap-4">
 						<CheckButton
-							active
+							danger
 							onClick={() => {
 								removeMessage(channelId, actionBar.msg.id)
 									.then(() => {
@@ -167,14 +170,15 @@ function MessageActionBar({
 								setShowRemoveForm(false);
 							}}
 						>
-							Yes
+							Delete
 						</CheckButton>
 						<CheckButton
 							onClick={() => {
 								setShowRemoveForm(false);
 							}}
+							active
 						>
-							No
+							Cancel
 						</CheckButton>
 					</div>
 				</Modal>

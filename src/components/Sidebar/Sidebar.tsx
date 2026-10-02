@@ -14,10 +14,11 @@ import {
 import { Await, Link, useFetcher, useLocation } from "react-router";
 import { useShallow } from "zustand/react/shallow";
 
-import type { Channel, ChannelCategory } from "@/chat/api/chat.api";
-import ChannelForm from "@/chat/components/ChannelForm";
+import type { Channel } from "@/chat/api/chat.api";
+import CategoryForm from "@/chat/components/CategoryForm";
 import { useChat } from "@/chat/hooks/chat.hook";
 import { useClickOutside } from "@/hooks/useClickOutside";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 import { PermEnum } from "../../admin/api/roles";
 import InvitationForm from "../../invitations/components/InvitationForm";
@@ -56,11 +57,15 @@ function Sidebar({
 	const location = useLocation();
 	const fetcher = useFetcher();
 	const channels = useChat(
-		useShallow((state) => Object.values(state.channels) as Channel[]),
+		useShallow((state) => Object.values(state.channels)),
 	).filter((ch) => !ch.eventId);
 	const categories = useChat(
-		useShallow((state) => Object.values(state.categories) as ChannelCategory[]),
+		useShallow((state) => Object.values(state.categories)),
 	);
+	const dictCategories = useChat(
+		useShallow((state) => state.categories),
+	);
+
 
 	const [showUser, setShowUser] = useState(false);
 	const [showDelete, setShowDelete] = useState(false);
@@ -85,8 +90,8 @@ function Sidebar({
 		initDrawers();
 	}, []);
 
+	const isMobile = useMediaQuery("(max-width: 639px)");
 	useEffect(() => {
-		const isMobile = window.matchMedia("(max-width: 639px)").matches;
 		if (!isMobile) {
 			return;
 		}
@@ -98,7 +103,7 @@ function Sidebar({
 		if (sidebar?.classList.contains("transform-none") ?? false) {
 			toggleButton?.click();
 		}
-	}, [location.pathname]);
+	}, [isMobile, location.pathname]);
 
 	useEffect(() => {
 		if (fetcher.data) {
@@ -239,10 +244,11 @@ function Sidebar({
 
 			<aside
 				id="sidebar"
-				className="fixed top-0 left-0 z-40 w-64 h-full transition-transform -translate-x-full sm:translate-x-0
+				className="fixed top-0 left-0 z-40 w-64 h-full max-h-full  transition-transform -translate-x-full sm:translate-x-0
 				bg-back2"
 				aria-label="Sidebar"
 			>
+
 				<div className="h-full flex flex-col px-3 py-4 border-e border-border space-y-3 font-main font-medium text-muted text-[14.5px]">
 					<Link to="/" className="flex items-center ps-1 mb-5">
 						<img src="/logo/icon-tile.svg" className="h-10 me-3" />
@@ -271,38 +277,48 @@ function Sidebar({
 						<ItemCategory to="/messages" icon={PiChat}>
 							Messages
 						</ItemCategory>
+					</ul>
 
-						<li className="flex justify-between items-center px-2 py-1.5 mt-3 text-[11px] text-muted font-bold tracking-wider uppercase group">
+					<div className="flex-1 overflow-y-auto">
+						<ul>
+							<li className="flex justify-between items-center px-2 py-1.5 mt-3 text-[11px] text-muted font-bold tracking-wider uppercase group">
+								Upcoming
+								<span className="ml-auto">0</span>
+							</li>
+						</ul>
+
+						<div className="relative flex justify-between items-center px-2 py-1.5 mt-3 text-[11px] text-muted font-bold tracking-wider uppercase group">
 							Channels{" "}
-							{Boolean(user.role.permission & PermEnum.HandleChannels) && (<ChannelForm></ChannelForm>)}
-						</li>
-						<Suspense fallback={<ChannelListSkeleton />}>
-							<Await resolve={channelsInit}>
-								{channels
-									.filter((ch) => ch.category === null)
-									.map((channel) => (
-										<ItemChannel
-											key={channel.id}
-											channel={channel}
+							{Boolean(user.role.permission & PermEnum.HandleChannels) && (
+								<CategoryForm></CategoryForm>
+							)}
+						</div>
+						<ul>
+							<Suspense fallback={<ChannelListSkeleton />}>
+								<Await resolve={channelsInit}>
+									{channels
+										.filter((ch) => ch.category === null || !Object.hasOwn(dictCategories, ch.category ?? ""))
+										.map((channel) => (
+											<ItemChannel
+												key={channel.id}
+												channel={channel}
+												user={user}
+											></ItemChannel>
+										))}
+									<li className="mb-3"></li>
+									{categories.map((category) => (
+										<ItemChannelCategory
+											key={category.id}
+											category={category}
+											channels={channels.filter((ch) => ch.category === category.id)}
 											user={user}
-										></ItemChannel>
+										></ItemChannelCategory>
 									))}
-								<li className="mb-3"></li>
-								{categories.map((category) => (
-									<ItemChannelCategory
-										key={category.id}
-										category={category}
-										channels={channels.filter((ch) => ch.category === category.id)}
-										user={user}
-									></ItemChannelCategory>
-								))}
-							</Await>
-						</Suspense >
-						<li className="flex justify-between items-center px-2 py-1.5 mt-3 text-[11px] text-muted font-bold tracking-wider uppercase group">
-							Upcoming
-						</li>
-					</ul >
-					<div className="border-t-2 border-border2 mt-auto font-main font-medium text-muted text-[14.5px]">
+								</Await>
+							</Suspense>
+						</ul>
+					</div>
+					<div className="border-b-2 border-t-2 border-border2">
 						{Boolean(user.role.permission & PermEnum.HandleUsers) &&
 							(Boolean(
 								user.role.permission & PermEnum.HandleUsers,

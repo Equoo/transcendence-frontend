@@ -50,6 +50,7 @@ export const useChatHub = create<ChatHub>((set) => ({
 			);
 
 			conn.on("NewChannel", (channel: Channel) => {
+				channel.messages = [];
 				useChat.getState().addChannel(channel);
 			});
 

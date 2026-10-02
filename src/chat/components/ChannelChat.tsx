@@ -71,16 +71,16 @@ function ChannelChat({ channelId }: { channelId: string }): JSX.Element {
 	return (
 		<div className="flex min-h-0 flex-1">
 			<div className="flex min-w-0 flex-1 flex-col">
-				<ChatProvider chatId={channel?.id ?? ""} listRef={listRef} composerRef={composerRef}>
+				<ChatProvider chatId={channel.id} listRef={listRef} composerRef={composerRef}>
 					<MessageList
 						ref={listRef}
-						key={channel?.id}
-						channelId={channel?.id ?? ""}
-						channelName={channel?.name ?? ""}
+						key={channel.id}
+						channelId={channel.id}
+						channelName={channel.name}
 					/>
 					<ChatComposer
 						ref={composerRef}
-						placeholder={`Message to #${channel?.name}...`}
+						placeholder={`Message to #${channel.name}...`}
 						onSend={onSend}
 					/>
 				</ChatProvider>

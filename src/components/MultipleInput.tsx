@@ -115,7 +115,7 @@ export default function MultipleInput({
 				))}
 				<input
 					{...rest}
-					value={draft}
+					defaultValue={draft}
 					className="bg-transparent focus:outline-0 w-10 grow peer"
 					onKeyDown={inputType}
 					placeholder={values.length > 0 ? "" : placeholder}

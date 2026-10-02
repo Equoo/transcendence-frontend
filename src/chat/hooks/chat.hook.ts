@@ -3,8 +3,8 @@ import { create } from "zustand";
 import type { Channel, ChannelCategory, Message } from "@/chat/api/chat.api";
 
 interface ChatState {
-	channels: Record<string, Channel | null>;
-	categories: Record<string, ChannelCategory | null>;
+	channels: Record<string, Channel>;
+	categories: Record<string, ChannelCategory>;
 	setChannels: (channels: Channel[], categories: ChannelCategory[]) => void;
 	addCategory: (category: ChannelCategory) => void;
 	removeCategory: (id: string) => void;
@@ -20,165 +20,92 @@ interface ChatState {
 	getMessage: (channelId: string, id: string) => Message | undefined;
 }
 
+type Data = Pick<ChatState, "channels" | "categories">;
+
+const byId = <T extends { id: string }>(items: T[]): Record<string, T> =>
+	Object.fromEntries(items.map((item) => [item.id, item]));
+
+const withoutKey = <T>(record: Record<string, T>, key: string): Record<string, T> => {
+	const { [key]: _removed, ...rest } = record;
+	return rest;
+};
+
+const updateMessages = (
+	state: Data,
+	channelId: string,
+	fn: (messages: Message[]) => Message[],
+): Partial<Data> => {
+	const channel = state.channels[channelId];
+	// if (!channel) { return state; }
+	return {
+		channels: {
+			...state.channels,
+			[channelId]: { ...channel, messages: fn(channel.messages) },
+		},
+	};
+};
+
 export const useChat = create<ChatState>((set, get) => ({
 	channels: {},
 	categories: {},
 
-	setChannels: (channels, categories): void => {
-		set({
-			channels: Object.fromEntries(channels.map((ch) => [ch.id, ch])),
-			categories: Object.fromEntries(categories.map((cat) => [cat.id, cat])),
-		});
-	},
+	setChannels: (channels, categories): void => { set({ channels: byId(channels), categories: byId(categories) }); },
 
-	addCategory: (category): void => {
-		set((state) => ({
-			channels: state.channels,
-			categories: { ...state.categories, [category.id]: category }
-		}));
-	},
+	// Categories
+	addCategory: (category): void => { set((state) => ({ categories: { ...state.categories, [category.id]: category } })); },
 
 	removeCategory: (id): void => {
-		set((state) => ({
-			channels: state.channels,
-			categories: {
-				...state.categories,
-				[id]: null,
-			}
-		}));
+		set((state) =>
+			id in state.categories ? { categories: withoutKey(state.categories, id) } : state,
+		);
 	},
 
 	updateCategory: (id, updates): void => {
-		set((state) => ({
-			channels: state.channels,
-			categories: {
-				...state.categories,
-				[id]: {
-					...state.categories[id],
-					...updates,
-				},
-			}
-		}));
+		set((state) => {
+			const category = state.categories[id];
+			// if (!category) { return state; }
+			return { categories: { ...state.categories, [id]: { ...category, ...updates } } };
+		});
 	},
 
-	addChannel: (channel): void => {
-		set((state) => ({
-			channels: { ...state.channels, [channel.id]: channel },
-			categories: state.categories
-		}));
-	},
+	// Channels
+	addChannel: (channel): void => { set((state) => ({ channels: { ...state.channels, [channel.id]: channel } })); },
 
 	removeChannel: (id): void => {
-		set((state) => ({
-			channels: {
-				...state.channels,
-				[id]: null,
-			},
-			categories: state.categories
-		}));
+		set((state) =>
+			id in state.channels ? { channels: withoutKey(state.channels, id) } : state,
+		);
 	},
 
 	updateChannel: (id, updates): void => {
-		set((state) => ({
-			channels: {
-				...state.channels,
-				[id]: {
-					...state.channels[id],
-					...updates,
-				},
-			},
-			categories: state.categories
-		}));
+		set((state) => {
+			const channel = state.channels[id];
+			// if (!channel) { return state; }
+			return { channels: { ...state.channels, [id]: { ...channel, ...updates } } };
+		});
 	},
 
-	appendMsgs: (channelId, messages): void => {
-		set((state) => ({
-			channels: {
-				...state.channels,
-				[channelId]: {
-					...state.channels[channelId],
-					...({
-						messages: [
-							...messages,
-							...(state.channels[channelId]?.messages ?? []),
-						] as Message[],
-					} as Channel),
-				},
-			},
-			categories: state.categories
-		}));
-	},
+	// Messages
+	appendMsgs: (channelId, messages): void => { set((state) => updateMessages(state, channelId, (msgs) => [...messages, ...msgs])); },
 
-	addMsg: (channelId, message): void => {
-		set((state) => ({
-			channels: {
-				...state.channels,
-				[channelId]: {
-					...state.channels[channelId],
-					...({
-						messages: [
-							...(state.channels[channelId]?.messages ?? []),
-							message,
-						] as Message[],
-					} as Channel),
-				},
-			},
-			categories: state.categories
-		}));
-	},
+	addMsg: (channelId, message): void => { set((state) => updateMessages(state, channelId, (msgs) => [...msgs, message])); },
 
-	addMsgs: (channelId, messages): void => {
-		set((state) => ({
-			channels: {
-				...state.channels,
-				[channelId]: {
-					...state.channels[channelId],
-					...({
-						messages: [
-							...(state.channels[channelId]?.messages ?? []),
-							...messages,
-						] as Message[],
-					} as Channel),
-				},
-			},
-			categories: state.categories
-		}));
-	},
+	addMsgs: (channelId, messages): void => { set((state) => updateMessages(state, channelId, (msgs) => [...msgs, ...messages])); },
 
 	removeMsg: (channelId, id): void => {
-		set((state) => ({
-			channels: {
-				...state.channels,
-				[channelId]: {
-					...state.channels[channelId],
-					...({
-						messages: state.channels[channelId]?.messages.filter(
-							(msg) => msg.id !== id,
-						),
-					} as Channel),
-				},
-			},
-			categories: state.categories
-		}));
+		set((state) =>
+			updateMessages(state, channelId, (msgs) => msgs.filter((msg) => msg.id !== id)),
+		);
 	},
 
 	updateMsg: (channelId, id, updates): void => {
-		set((state) => ({
-			channels: {
-				...state.channels,
-				[channelId]: {
-					...state.channels[channelId],
-					...({
-						messages: state.channels[channelId]?.messages.map(
-							(msg) =>
-								msg.id === id ? { ...msg, ...updates } : msg,
-						),
-					} as Channel),
-				},
-			},
-			categories: state.categories
-		}));
+		set((state) =>
+			updateMessages(state, channelId, (msgs) =>
+				msgs.map((msg) => (msg.id === id ? { ...msg, ...updates } : msg)),
+			),
+		);
 	},
 
-	getMessage: (channelId: string, id: string): Message | undefined => get().channels[channelId]?.messages.find((msg) => msg.id === id)
+	getMessage: (channelId, id): Message | undefined =>
+		get().channels[channelId].messages.find((msg) => msg.id === id),
 }));
