@@ -1,10 +1,11 @@
 import { create } from "zustand";
 
-import type { Channel, Message } from "@/chat/api/chat.api";
+import type { Channel, ChannelCategory, Message } from "@/chat/api/chat.api";
 
 interface ChatState {
 	channels: Record<string, Channel | null>;
-	setChannels: (channels: Channel[]) => void;
+	categories: Record<string, ChannelCategory | null>;
+	setChannels: (channels: Channel[], categories: ChannelCategory[]) => void;
 	addChannel: (channel: Channel) => void;
 	removeChannel: (id: string) => void;
 	updateChannel: (id: string, updates: Channel) => void;
@@ -18,16 +19,19 @@ interface ChatState {
 
 export const useChat = create<ChatState>((set, get) => ({
 	channels: {},
+	categories: {},
 
-	setChannels: (channels): void => {
+	setChannels: (channels, categories): void => {
 		set({
 			channels: Object.fromEntries(channels.map((ch) => [ch.id, ch])),
+			categories: Object.fromEntries(categories.map((cat) => [cat.id, cat])),
 		});
 	},
 
 	addChannel: (channel): void => {
 		set((state) => ({
 			channels: { ...state.channels, [channel.id]: channel },
+			categories: state.categories
 		}));
 	},
 
@@ -37,6 +41,7 @@ export const useChat = create<ChatState>((set, get) => ({
 				...state.channels,
 				[id]: null,
 			},
+			categories: state.categories
 		}));
 	},
 
@@ -49,6 +54,7 @@ export const useChat = create<ChatState>((set, get) => ({
 					...updates,
 				},
 			},
+			categories: state.categories
 		}));
 	},
 
@@ -66,6 +72,7 @@ export const useChat = create<ChatState>((set, get) => ({
 					} as Channel),
 				},
 			},
+			categories: state.categories
 		}));
 	},
 
@@ -83,6 +90,7 @@ export const useChat = create<ChatState>((set, get) => ({
 					} as Channel),
 				},
 			},
+			categories: state.categories
 		}));
 	},
 
@@ -100,6 +108,7 @@ export const useChat = create<ChatState>((set, get) => ({
 					} as Channel),
 				},
 			},
+			categories: state.categories
 		}));
 	},
 
@@ -116,6 +125,7 @@ export const useChat = create<ChatState>((set, get) => ({
 					} as Channel),
 				},
 			},
+			categories: state.categories
 		}));
 	},
 
@@ -133,6 +143,7 @@ export const useChat = create<ChatState>((set, get) => ({
 					} as Channel),
 				},
 			},
+			categories: state.categories
 		}));
 	},
 

@@ -30,7 +30,7 @@ export interface Channel {
 	topic: string;
 	createAt: Date;
 	eventId?: string;
-	category?: string;
+	category?: string | null;
 	messages: Message[];
 	ackTime?: Date | null;
 }
@@ -40,18 +40,31 @@ export interface ChannelSummary {
 	createAt: Date;
 }
 
+export interface ChannelCategory {
+	id: string;
+	name: string;
+	order: string;
+}
+
 export async function fetchChannels(): Promise<Channel[]> {
 	if (Object.keys(useChat.getState().channels).length !== 0) {
 		return [];
 	}
 
-	const response = await callApi("/api/channels");
-	if (!response.ok) {
-		throw new APIError((await response.json()) as ProblemDetail);
+	const channelsRes = await fetch("/api/channels");
+	if (!channelsRes.ok) {
+		throw new APIError((await channelsRes.json()) as ProblemDetail);
 	}
+	const channels = (await channelsRes.json()) as Channel[];
 
-	const channels = (await response.json()) as Channel[];
-	useChat.getState().setChannels(channels);
+
+	const categoriesRes = await fetch("/api/channels/categories");
+	if (!categoriesRes.ok) {
+		throw new APIError((await categoriesRes.json()) as ProblemDetail);
+	}
+	const categories = (await categoriesRes.json()) as ChannelCategory[];
+
+	useChat.getState().setChannels(channels, categories);
 
 	return channels;
 }

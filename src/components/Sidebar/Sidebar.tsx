@@ -16,7 +16,7 @@ import {
 import { Await, Link, useFetcher, useLocation } from "react-router";
 import { useShallow } from "zustand/react/shallow";
 
-import type { Channel } from "@/chat/api/chat.api";
+import type { Channel, ChannelCategory } from "@/chat/api/chat.api";
 import ChannelForm from "@/chat/components/ChannelForm";
 import { useChat } from "@/chat/hooks/chat.hook";
 import { useClickOutside } from "@/hooks/useClickOutside";
@@ -31,6 +31,7 @@ import ProfileLine from "../ProfileLine";
 import Section, { type LineInfos } from "../Section";
 import ItemCategory from "./ItemCategory";
 import ItemChannel from "./ItemChannel";
+import ItemChannelCategory from "./ItemChannelCategory";
 
 function ChannelListSkeleton(): JSX.Element {
 	return (
@@ -58,6 +59,9 @@ function Sidebar({
 	const fetcher = useFetcher();
 	const channels = useChat(
 		useShallow((state) => Object.values(state.channels) as Channel[]),
+	);
+	const categories = useChat(
+		useShallow((state) => Object.values(state.categories) as ChannelCategory[]),
 	);
 
 	const [showUser, setShowUser] = useState(false);
@@ -272,21 +276,41 @@ function Sidebar({
 						<ChannelForm></ChannelForm>
 						<Suspense fallback={<ChannelListSkeleton />}>
 							<Await resolve={channelsInit}>
-								{channels.map(
-									(channel) =>
+								{channels
+									.filter((ch) => ch.category === null)
+									.map((channel) =>
 										!channel.eventId && (
 											<ItemChannel
 												key={channel.id}
 												channel={channel}
 											></ItemChannel>
 										),
-								)}
+									)}
+								{categories.map((category) => {
+									const channelsChild = channels
+										.filter((ch) => ch.category === category.id)
+										.map((channel) =>
+											!channel.eventId && (
+												<ItemChannel
+													key={channel.id}
+													channel={channel}
+												></ItemChannel>
+											),
+										);
+
+									return (
+										<ItemChannelCategory key={category.id} category={category}>
+											{channelsChild}
+										</ItemChannelCategory>
+									);
+								})}
+								{ }
 							</Await>
-						</Suspense>
+						</Suspense >
 						<li className="flex justify-between items-center px-2 py-1.5 mt-3 text-[11px] text-muted font-bold tracking-wider uppercase group">
 							Upcoming
 						</li>
-					</ul>
+					</ul >
 					<div className="border-t-2 border-border2 mt-auto font-main font-medium text-muted text-[14.5px]">
 						{Boolean(user.role.permission & PermEnum.HandleUsers) &&
 							(Boolean(
@@ -300,76 +324,78 @@ function Sidebar({
 										user.role.permission &
 										PermEnum.HandleUsers,
 									) && (
-										<ItemCategory
-											to="/admin/users"
-											icon={PiUser}
-										>
-											Users
-										</ItemCategory>
-									)}
+											<ItemCategory
+												to="/admin/users"
+												icon={PiUser}
+											>
+												Users
+											</ItemCategory>
+										)}
 									{Boolean(
 										user.role.permission &
 										PermEnum.HandleRoles,
 									) && (
-										<ItemCategory
-											to="/admin/roles"
-											icon={PiComputerTower}
-										>
-											Roles
-										</ItemCategory>
-									)}
+											<ItemCategory
+												to="/admin/roles"
+												icon={PiComputerTower}
+											>
+												Roles
+											</ItemCategory>
+										)}
 									<div className="border-border2 border"></div>
 								</ul>
 							)}
 					</div>
-					{showUser && (
-						<div
-							ref={clickOutsideRef}
-							className="flex items-center justify-center absolute bottom-15 left-55 flex-col border-border2 shadow-md bg-surface w-75 h-90 rounded-2xl"
-						>
-							<button
-								type="button"
-								onClick={() => {
-									setShowUser(false);
-								}}
-								className="absolute right-5 top-3  text-muted hover:text-text text-3xl cursor-pointer ml-auto"
+					{
+						showUser && (
+							<div
+								ref={clickOutsideRef}
+								className="flex items-center justify-center absolute bottom-15 left-55 flex-col border-border2 shadow-md bg-surface w-75 h-90 rounded-2xl"
 							>
-								×
-							</button>
-							<div className="flex flex-col justify-center w-18/21 h-full gap-3 ">
-								<ProfileLine
-									changePicture
-									size={3}
-									user={user}
-									edit
-								></ProfileLine>
-								<Section
-									title="Account Info"
-									lines={Lines}
-								></Section>
-								<div className="mt-2 flex justify-around gap-5">
-									<CheckButton
-										discrete
-										onClick={() => {
-											setShowDelete(true);
-										}}
-									>
-										Delete Account
-									</CheckButton>
-									<CheckButton
-										onClick={() => {
-											void fetcher.submit(null, {
-												action: "/me/logout",
-												method: "DELETE",
-											});
-										}}
-									>
-										Logout
-									</CheckButton>
+								<button
+									type="button"
+									onClick={() => {
+										setShowUser(false);
+									}}
+									className="absolute right-5 top-3  text-muted hover:text-text text-3xl cursor-pointer ml-auto"
+								>
+									×
+								</button>
+								<div className="flex flex-col justify-center w-18/21 h-full gap-3 ">
+									<ProfileLine
+										changePicture
+										size={3}
+										user={user}
+										edit
+									></ProfileLine>
+									<Section
+										title="Account Info"
+										lines={Lines}
+									></Section>
+									<div className="mt-2 flex justify-around gap-5">
+										<CheckButton
+											discrete
+											onClick={() => {
+												setShowDelete(true);
+											}}
+										>
+											Delete Account
+										</CheckButton>
+										<CheckButton
+											onClick={() => {
+												void fetcher.submit(null, {
+													action: "/me/logout",
+													method: "DELETE",
+												});
+											}}
+										>
+											Logout
+										</CheckButton>
+									</div>
 								</div>
 							</div>
-						</div>
-					)}
+						)
+					}
 					<div className=" flex items-center gap-8  w-full">
 						<ProfileLine user={user} status edit size={3} />
 						<PiGear
@@ -380,8 +406,8 @@ function Sidebar({
 							}}
 						></PiGear>
 					</div>
-				</div>
-			</aside>
+				</div >
+			</aside >
 		</>
 	);
 }
