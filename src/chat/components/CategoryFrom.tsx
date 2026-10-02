@@ -15,11 +15,9 @@ import type { clientAction } from "../routes/channel.route";
 
 export default function ChannelForm({
 	edit,
-	category,
 	className,
 }: {
 	edit?: Channel | null;
-	category?: string;
 	className?: string;
 }): JSX.Element {
 	const [errors, setErrors] = useState<ValidationErrors>();
@@ -55,7 +53,7 @@ export default function ChannelForm({
 			<button
 				className={`relative z-1 ml-auto p-0.5 cursor-pointer text-muted hover:text-text ${className}`}
 				type="button"
-				name="channelForm"
+				name="categoryForm"
 				onClick={() => {
 					setShowModal(true);
 				}}
@@ -68,8 +66,8 @@ export default function ChannelForm({
 					<Modal
 						title={
 							edit
-								? `Editing channel #${edit.name}`
-								: "Create a channel"
+								? `Editing category #${edit.name}`
+								: "Create a category"
 						}
 						onClose={() => {
 							setShowModal(false);
@@ -90,7 +88,7 @@ export default function ChannelForm({
 							</p>
 						)}
 						<fetcher.Form
-							action="/channels"
+							action="/category"
 							method={edit ? "put" : "post"}
 							className="flex flex-col items-center w-4/5 gap-5 mb-4"
 						>
@@ -98,14 +96,8 @@ export default function ChannelForm({
 								name="Name"
 								required
 								errors={errors}
-								placeholder="Channel Name"
+								placeholder="Category Name"
 								value={edit?.name}
-							/>
-							<Input
-								name="Topic"
-								errors={errors}
-								placeholder="Channel Topic"
-								value={edit?.topic}
 							/>
 							<MultipleInput
 								name="Roles"
@@ -126,12 +118,6 @@ export default function ChannelForm({
 									value={edit.id}
 								></input>
 							)}
-							<input
-								className="hidden"
-								type="text"
-								name="category"
-								value={category}
-							></input>
 							<div className="flex flex-row gap-2">
 								<CheckButton
 									active

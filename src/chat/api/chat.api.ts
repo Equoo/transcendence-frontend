@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { APIError, type ProblemDetail } from "@/api/problem_detail";
 import { useChat } from "@/chat/hooks/chat.hook";
 import callApi from "@/tokens/call_api";
@@ -98,16 +99,22 @@ export async function fetchMessages(
 }
 
 export async function createChannel(formData: FormData): Promise<Channel> {
-	const response = await callApi("/api/channels", {
+	const category = formData.get("category") as string;
+
+	const body: { name: string, topic: string, whitelistRoles: string, category: string | null } = {
+		name: formData.get("Name") as string,
+		topic: formData.get("Topic") as string,
+		whitelistRoles: formData.get("Roles") as string,
+		category: null
+	};
+	if (category) { body.category = category; }
+
+	const response = await fetch("/api/channels", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
 		},
-		body: JSON.stringify({
-			name: formData.get("Name") as string,
-			topic: formData.get("Topic") as string,
-			whitelistRoles: formData.get("Roles") as string,
-		}),
+		body: JSON.stringify(body),
 	});
 
 	if (!response.ok) {
@@ -118,6 +125,16 @@ export async function createChannel(formData: FormData): Promise<Channel> {
 }
 
 export async function updateChannel(formData: FormData): Promise<Channel> {
+	const category = formData.get("category") as string;
+
+	const body: { name: string, topic: string, whitelistRoles: string, category: string | null } = {
+		name: formData.get("Name") as string,
+		topic: formData.get("Topic") as string,
+		whitelistRoles: formData.get("Roles") as string,
+		category: null
+	};
+	if (category) { body.category = category; }
+
 	const response = await fetch(
 		`/api/channels/${formData.get("id") as string}`,
 		{
@@ -125,11 +142,7 @@ export async function updateChannel(formData: FormData): Promise<Channel> {
 			headers: {
 				"Content-Type": "application/json",
 			},
-			body: JSON.stringify({
-				name: formData.get("Name") as string,
-				topic: formData.get("Topic") as string,
-				whitelistRoles: formData.get("Roles") as string,
-			}),
+			body: JSON.stringify(body),
 		},
 	);
 
@@ -140,7 +153,7 @@ export async function updateChannel(formData: FormData): Promise<Channel> {
 	return (await response.json()) as Channel;
 }
 
-export async function deleteChannel(id: string): Promise<Channel> {
+export async function deleteChannel(id: string): Promise<void> {
 	const response = await fetch(`/api/channels/${id}`, {
 		method: "DELETE",
 		headers: {
@@ -151,9 +164,62 @@ export async function deleteChannel(id: string): Promise<Channel> {
 	if (!response.ok) {
 		throw new APIError((await response.json()) as ProblemDetail);
 	}
-
-	return (await response.json()) as Channel;
 }
+
+export async function createCategory(formData: FormData): Promise<ChannelCategory> {
+	const response = await fetch("/api/category", {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify({
+			name: formData.get("Name") as string,
+			whitelistRoles: formData.get("Roles") as string,
+		}),
+	});
+
+	if (!response.ok) {
+		throw new APIError((await response.json()) as ProblemDetail);
+	}
+
+	return (await response.json()) as ChannelCategory;
+}
+
+export async function updateCategory(formData: FormData): Promise<ChannelCategory> {
+	const response = await fetch(
+		`/api/category/${formData.get("id") as string}`,
+		{
+			method: "PUT",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				name: formData.get("Name") as string,
+				whitelistRoles: formData.get("Roles") as string,
+			}),
+		},
+	);
+
+	if (!response.ok) {
+		throw new APIError((await response.json()) as ProblemDetail);
+	}
+
+	return (await response.json()) as ChannelCategory;
+}
+
+export async function deleteCategory(id: string): Promise<void> {
+	const response = await fetch(`/api/category/${id}`, {
+		method: "DELETE",
+		headers: {
+			"Content-Type": "application/json",
+		},
+	});
+
+	if (!response.ok) {
+		throw new APIError((await response.json()) as ProblemDetail);
+	}
+}
+
 
 export async function sendMessage(
 	channelId: string,

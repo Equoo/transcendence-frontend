@@ -127,7 +127,7 @@ function MessageActionBar({
 							></IconBtn>
 						)}
 						{(actionBar.msg.sender.id === user?.id ||
-							actionBar.msg.sender.role.permission & PermEnum.ManageMessages) && (
+							user && (user.role.permission & PermEnum.ManageMessages)) && (
 								<IconBtn
 									icon={PiTrash}
 									className="text-red-400"
