@@ -40,7 +40,7 @@ export interface Channel {
 	messages: Message[];
 	ackTime?: Date | null;
 	rolesWhitelist: ChannelRole[];
-	cetegorySync: boolean;
+	categorySync: boolean;
 }
 
 export interface ChannelSummary {
@@ -104,10 +104,10 @@ export async function fetchMessages(
 export async function createChannel(formData: FormData): Promise<Channel> {
 	const category = formData.get("category") as string;
 
-	const body: { name: string, topic: string, whitelistRoles: string, category: string | null } = {
+	const body: { name: string, topic: string, whitelistRoles: string[], category: string | null } = {
 		name: formData.get("Name") as string,
 		topic: formData.get("Topic") as string,
-		whitelistRoles: formData.get("Roles") as string,
+		whitelistRoles: formData.getAll("Roles") as string[],
 		category: null
 	};
 	if (category) { body.category = category; }
@@ -130,10 +130,10 @@ export async function createChannel(formData: FormData): Promise<Channel> {
 export async function updateChannel(formData: FormData): Promise<Channel> {
 	const category = formData.get("category") as string;
 
-	const body: { name: string, topic: string, whitelistRoles: string, category: string | null } = {
+	const body: { name: string, topic: string, whitelistRoles: string[], category: string | null } = {
 		name: formData.get("Name") as string,
 		topic: formData.get("Topic") as string,
-		whitelistRoles: formData.get("Roles") as string,
+		whitelistRoles: formData.getAll("Roles") as string[],
 		category: null
 	};
 	if (category) { body.category = category; }
@@ -177,7 +177,7 @@ export async function createCategory(formData: FormData): Promise<ChannelCategor
 		},
 		body: JSON.stringify({
 			name: formData.get("Name") as string,
-			whitelistRoles: formData.get("Roles") as string,
+			whitelistRoles: formData.getAll("Roles") as string[],
 		}),
 	});
 
@@ -198,7 +198,7 @@ export async function updateCategory(formData: FormData): Promise<ChannelCategor
 			},
 			body: JSON.stringify({
 				name: formData.get("Name") as string,
-				whitelistRoles: formData.get("Roles") as string,
+				whitelistRoles: formData.getAll("Roles") as string[],
 			}),
 		},
 	);

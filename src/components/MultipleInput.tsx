@@ -22,6 +22,7 @@ export default function MultipleInput({
 	placeholder,
 	values: replaceValues,
 	errors,
+	grayed = false,
 	...rest
 }: {
 	name: string;
@@ -29,10 +30,13 @@ export default function MultipleInput({
 	onlySuggestions?: boolean;
 	values?: string[];
 	errors?: ValidationErrors;
+	grayed?: boolean;
 } & ComponentProps<"input">): JSX.Element {
 	const [values, setValues] = useState<string[]>(replaceValues ?? []);
 	const [draft, setDraft] = useState("");
 	const [selected, setSelected] = useState(0);
+
+	const isError = Boolean(errors?.[name] ?? false);
 
 	function addValue(val: string): void {
 		setValues((prev) => (prev.includes(val) ? prev : [...prev, val]));
@@ -46,6 +50,8 @@ export default function MultipleInput({
 	}
 
 	const inputType: KeyboardEventHandler<HTMLInputElement> = (ev) => {
+		if (grayed) { return; }
+
 		const sugg = getSuggestions();
 
 		if (sugg.length > 0) {
@@ -95,7 +101,9 @@ export default function MultipleInput({
 	return (
 		<Field name={name} required={rest.required} errors={errors}>
 			<div
-				className={`relative flex flex-wrap gap-1 focus-within:border-accent ${className}`}
+				className={`relative flex flex-wrap gap-1 focus-within:border-accent border rounded-md border-border2
+					${grayed ? "bg-muted/20 text-text2" : "bg-surface text-text"}
+					${isError ? "border-error" : "border-border2 focus-within:border-accent"} ${className}`}
 			>
 				{values.map((value) => (
 					<EventBadge key={value}>
@@ -103,6 +111,7 @@ export default function MultipleInput({
 						<button
 							type="button"
 							className="font-bold text-text cursor-pointer"
+							disabled={grayed}
 							onClick={() => {
 								setValues((prev) =>
 									prev.filter((val) => val !== value),
@@ -115,10 +124,11 @@ export default function MultipleInput({
 				))}
 				<input
 					{...rest}
-					defaultValue={draft}
+					value={draft}
 					className="bg-transparent focus:outline-0 w-10 grow peer"
 					onKeyDown={inputType}
 					placeholder={values.length > 0 ? "" : placeholder}
+					disabled={grayed}
 					onChange={(ev) => {
 						setDraft(ev.target.value);
 					}}

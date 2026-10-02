@@ -5,6 +5,7 @@ import { useFetcher } from "react-router";
 
 import { fetchRoles } from "@/admin/api/roles";
 import { APIError, type ValidationErrors } from "@/api/problem_detail";
+import { Checkbox } from "@/components/Checkbox";
 import CheckButton from "@/components/CheckButton";
 import { Input } from "@/components/Input";
 import Modal from "@/components/Modal";
@@ -96,6 +97,12 @@ export default function ChannelForm({
 								placeholder="Channel Topic"
 								defaultValue={edit?.topic}
 							/>
+							<Checkbox name="Syncronised"
+								errors={errors}
+								placeholder="Category Sync"
+								defaultValue={edit?.categorySync ? "true" : "false"}
+							/>
+
 							<Promisable
 
 								skeleton={(
@@ -104,7 +111,8 @@ export default function ChannelForm({
 										onlySuggestions
 										placeholder="Whitelisted Roles"
 										errors={errors}
-										className="w-full bg-surface border rounded-md border-border2  px-2 py-1 font-main text-text"
+										className="w-full px-2 py-1 font-main"
+										grayed={edit?.categorySync}
 										values={edit?.rolesWhitelist.map(
 											(role: ChannelRole) => role.name,
 										)}
@@ -120,12 +128,12 @@ export default function ChannelForm({
 										suggestions={roles.map((role) => role.name)}
 										placeholder="Whitelisted Roles"
 										errors={errors}
-										className="w-full bg-surface border rounded-md border-border2  px-2 py-1 font-main text-text"
+										className="w-full px-2 py-1 font-main"
+										grayed={edit?.categorySync}
 										values={edit?.rolesWhitelist.map(
 											(role: ChannelRole) => role.name,
 										)}
 									/>
-
 								)}
 							</Promisable>
 							{edit && (
