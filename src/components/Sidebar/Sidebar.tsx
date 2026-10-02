@@ -14,7 +14,7 @@ import {
 import { Await, Link, useFetcher, useLocation } from "react-router";
 import { useShallow } from "zustand/react/shallow";
 
-import type { Channel } from "@/chat/api/chat.api";
+import type { Channel, ChannelCategory } from "@/chat/api/chat.api";
 import CategoryForm from "@/chat/components/CategoryForm";
 import { useChat } from "@/chat/hooks/chat.hook";
 import { useClickOutside } from "@/hooks/useClickOutside";
@@ -47,6 +47,15 @@ function ChannelListSkeleton(): JSX.Element {
 	);
 }
 
+const isWhitelisted = (ent: Channel | ChannelCategory, user: User): boolean => {
+	if ((user.role.permission & PermEnum.HandleChannels) !== 0) { return true; }
+	if (ent.rolesWhitelist.length > 0) {
+		if (ent.rolesWhitelist
+			.findIndex((role) => role.id === user.role.id) === -1) { return false; }
+	}
+	return true;
+}
+
 function Sidebar({
 	user,
 	channels: channelsInit,
@@ -58,7 +67,8 @@ function Sidebar({
 	const fetcher = useFetcher();
 	const channels = useChat(
 		useShallow((state) => Object.values(state.channels)),
-	).filter((ch) => !ch.eventId);
+	).filter((ch) =>
+		!ch.eventId && isWhitelisted(ch, user));
 	const categories = useChat(
 		useShallow((state) => Object.values(state.categories)),
 	);
