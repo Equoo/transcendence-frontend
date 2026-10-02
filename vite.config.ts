@@ -7,7 +7,7 @@ import { reactCompilerPreset } from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 
 export default defineConfig(() => {
-	const proxyTarget = `http://keepgrouped-back-dev:8080`;
+	const proxyTarget = `http://keepgrouped-db-dev:8080`;
 
 	return {
 		plugins: [
