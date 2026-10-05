@@ -2,8 +2,8 @@ import { type JSX, useState } from "react";
 
 import { ActivityEnum, useActivity } from "@/activity/hooks/activity.hook";
 import { PermEnum } from "@/admin/api/roles";
-import Modal from "@/components/Modal";
-import ProfileLine from "@/components/ProfileLine";
+import Modal from "@/components/Modal/Modal";
+import ProfileLine from "@/components/Profile/ProfileLine";
 import Promisable from "@/components/Promisable";
 
 import { type EventRole, fetchEventRoles } from "../events/api/event_roles.api";
@@ -11,7 +11,7 @@ import { type EventSummary, fetchEvents } from "../events/api/events.api";
 import EventForm from "../events/components/EventForm";
 import EventList from "../events/components/EventList";
 import { type AppFile, fetchFiles } from "../files/api/files.api";
-import { fetchUsers, type User, UserContext } from "../users/api/users.api";
+import { fetchUsers, type User, UserContext } from "../users/api/users";
 import type { Route } from "./+types/home";
 
 export function clientLoader({ context }: Route.ClientLoaderArgs): {

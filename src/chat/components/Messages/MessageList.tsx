@@ -10,7 +10,7 @@ import {
 import { useShallow } from "zustand/react/shallow";
 
 import { useChat } from "@/chat/hooks/chat.hook";
-import { useUser } from "@/users/hooks/users.hooks";
+import { useUser } from "@/users/hooks/users";
 
 import type { Channel } from "../../api/chat.api";
 import { useAutoScroll } from "../../hooks/useAutoScroll.hook";

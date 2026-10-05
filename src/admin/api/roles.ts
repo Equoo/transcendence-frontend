@@ -1,17 +1,8 @@
 /* eslint-disable no-bitwise */
-import callApi from "@/tokens/call_api";
+import callApi from "@/tokens/callApi";
 
 import { APIError, type ProblemDetail } from "../../api/problem_detail";
-
-export interface RoleInput {
-	name: string;
-}
-
-export interface Role {
-	id: string;
-	name: string;
-	permission: number;
-}
+import { toUserId } from "./users";
 
 export enum PermEnum {
 	// Event
@@ -33,11 +24,63 @@ export enum PermEnum {
 	// Calendar
 }
 
-export function toRoleInput(formdata: FormData): RoleInput {
+export interface Role {
+	id: string;
+	name: string;
+	permission: number;
+}
+
+// Interface API
+
+interface reqCreateRole {
+	name: string;
+}
+
+interface reqCheckRole {
+	IsChecked: string;
+	RoleId: string;
+	RolePerm: number;
+	CheckPerm: number;
+}
+
+interface reqChangeRole {
+	Id: string;
+	Name: string;
+}
+
+interface PermInput {
+	permission: number;
+}
+
+// Function Interface
+
+function toChangeRole(formdata: FormData): reqChangeRole {
+	return {
+		Id: formdata.get("id") as string,
+		Name: formdata.get("name") as string,
+	};
+}
+
+function toCheckRole(formdata: FormData): reqCheckRole {
+	return {
+		IsChecked: formdata.get("IsChecked") as string,
+		RoleId: formdata.get("RoleId") as string,
+		RolePerm: Number(formdata.get("RolePerm")),
+		CheckPerm: Number(formdata.get("CheckPerm")),
+	};
+}
+
+function toRoleInput(formdata: FormData): reqCreateRole {
 	return {
 		name: formdata.get("name") as string,
 	};
 }
+
+function toPermInput(perm: number): PermInput {
+	return { permission: perm };
+}
+
+// Function API
 
 export async function fetchRoles(): Promise<Role[]> {
 	const res = await callApi("/api/roles");
@@ -51,20 +94,24 @@ export async function fetchRoles(): Promise<Role[]> {
 	return roles;
 }
 
-export async function createRole(role: RoleInput): Promise<Response> {
+export async function createRole(formdata: FormData): Promise<Response> {
+	const req = toRoleInput(formdata);
+
 	const res = await callApi("/api/roles", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
 		},
-		body: JSON.stringify(role.name),
+		body: JSON.stringify(req.name),
 	});
 
 	return res;
 }
 
-export async function deleteRole(id: string): Promise<Response> {
-	const res = await callApi(`/api/roles/${id}`, {
+export async function deleteRole(formdata: FormData): Promise<Response> {
+	const req = toUserId(formdata);
+
+	const res = await callApi(`/api/roles/${req.Id}`, {
 		method: "DELETE",
 		headers: {
 			"Content-Type": "application/json",
@@ -74,51 +121,37 @@ export async function deleteRole(id: string): Promise<Response> {
 	return res;
 }
 
-export async function changeRoleName(
-	id: string,
-	name: string,
-): Promise<Response> {
-	const res = await callApi(`/api/roles/${id}/name`, {
+export async function changeRoleName(formdata: FormData): Promise<Response> {
+	const req = toChangeRole(formdata);
+
+	const res = await callApi(`/api/roles/${req.Id}/name`, {
 		method: "PATCH",
 		headers: {
 			"Content-Type": "application/json",
 		},
-		body: JSON.stringify(name),
+		body: JSON.stringify(req.Name),
 	});
 
 	return res;
 }
 
-interface PermInput {
-	permission: number;
-}
+export async function handleCheckbox(formdata: FormData): Promise<Response> {
+	const req: reqCheckRole = toCheckRole(formdata);
 
-function toPermInput(perm: number): PermInput {
-	return { permission: perm };
-}
-
-// eslint-disable-next-line @typescript-eslint/max-params
-export async function handleCheckbox(
-	IsChecked: string,
-	RoleId: string,
-	RolePerm: number,
-	CheckPerm: number,
-): Promise<Response> {
 	let finalCode: number;
 
-	if (IsChecked === "true") {
-		finalCode = RolePerm | CheckPerm;
+	if (req.IsChecked === "true") {
+		finalCode = req.RolePerm | req.CheckPerm;
 	} else {
-		finalCode = RolePerm & ~CheckPerm;
+		finalCode = req.RolePerm & ~req.CheckPerm;
 	}
 
-	const res = await callApi(`/api/roles/${RoleId}/permission`, {
+	const res = await callApi(`/api/roles/${req.RoleId}/permission`, {
 		method: "PATCH",
 		headers: {
 			"Content-Type": "application/json",
 		},
 		body: JSON.stringify(toPermInput(finalCode).permission),
 	});
-
 	return res;
 }

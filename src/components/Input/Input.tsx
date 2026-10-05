@@ -7,7 +7,7 @@ import {
 } from "react";
 import { TbCopy, TbCopyCheck } from "react-icons/tb";
 
-import type { ValidationErrors } from "../api/problem_detail";
+import type { ValidationErrors } from "../../api/problem_detail";
 import { Field } from "./Field";
 
 export type InputProps = ComponentProps<"input"> & {

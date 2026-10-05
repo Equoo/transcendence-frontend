@@ -1,11 +1,12 @@
 import { type JSX, useEffect, useState } from "react";
 import { useFetcher } from "react-router";
 
+import CheckButton from "@/components/Button/CheckButton";
+import { Field } from "@/components/Input/Field";
+import { Input } from "@/components/Input/Input";
+import Modal from "@/components/Modal/Modal";
+
 import { APIError, type ValidationErrors } from "../../api/problem_detail";
-import CheckButton from "../../components/CheckButton";
-import { Field } from "../../components/Field";
-import { Input } from "../../components/Input";
-import Modal from "../../components/Modal";
 import type { clientAction as filesAction } from "../routes/files.route";
 
 export default function FolderUpload({

@@ -5,20 +5,19 @@ import { PiTrash } from "react-icons/pi";
 import { Link, useFetcher, useNavigate } from "react-router";
 
 import ChannelChat from "@/chat/components/ChannelChat";
+import ChoiceModal from "@/components/Modal/ChoiceModal";
+import ProfileLine from "@/components/Profile/ProfileLine";
+import ProfilePic from "@/components/Profile/ProfilePic";
 
 import { PermEnum } from "../admin/api/roles";
-import EventBadge from "../components/Badge";
-import CheckButton from "../components/CheckButton";
-import Modal from "../components/Modal";
-import ProfileLine from "../components/ProfileLine";
-import ProfilePic from "../components/ProfilePic";
+import Badge from "../components/Badge";
 import { fetchEventRoles } from "../events/api/event_roles.api";
 import { fetchEvent } from "../events/api/events.api";
 import EventForm from "../events/components/EventForm";
 import EventRegisterBtn from "../events/components/EventRegisterBtn";
 import type { clientAction } from "../events/routes/events.route";
 import { fetchFiles } from "../files/api/files.api";
-import { UserContext } from "../users/api/users.api";
+import { UserContext } from "../users/api/users";
 import type { Route } from "./+types/event_details";
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
@@ -63,38 +62,16 @@ export default function EventDetails({
 	return (
 		<div className="flex flex-col w-full h-full">
 			{showConfirmation && (
-				<Modal
-					title={`Delete the event ${event.name} ?`}
+				<ChoiceModal
+					action={`/events/${event.id}`}
+					method="DELETE"
 					onClose={() => {
 						setShowConfirmation(false);
 					}}
-				>
-					<p className="text-muted font-main font-light w-4/5 text-sm text-center">
-						This cannot be cancelled.
-					</p>
-					<div className="inline-flex gap-8">
-						<CheckButton
-							pending={fetcher.state !== "idle"}
-							onClick={() => {
-								void fetcher.submit(null, {
-									action: `/events/${event.id}`,
-									method: "DELETE",
-								});
-							}}
-						>
-							Yes
-						</CheckButton>
-						<CheckButton
-							active
-							activeCheck={false}
-							onClick={() => {
-								setShowConfirmation(false);
-							}}
-						>
-							No
-						</CheckButton>
-					</div>
-				</Modal>
+					title={`Delete the event ${event.name}`}
+					desc="This cannot be cancelled."
+					fetcher={fetcher}
+				/>
 			)}
 			<div className="flex px-4 py-4 gap-4 items-center border-b border-border">
 				<FiChevronLeft
@@ -162,7 +139,7 @@ export default function EventDetails({
 							</span>
 							<div className="flex flex-wrap gap-1">
 								{event.tags.map((tag) => (
-									<EventBadge key={tag}>{tag}</EventBadge>
+									<Badge key={tag}>{tag}</Badge>
 								))}
 							</div>
 						</>

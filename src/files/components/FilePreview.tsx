@@ -2,7 +2,7 @@ import type { JSX } from "react/jsx-runtime";
 import { AiFillFileUnknown } from "react-icons/ai";
 
 import BlobURL from "../../components/BlobURL";
-import CheckButton from "../../components/CheckButton";
+import CheckButton from "../../components/Button/CheckButton";
 import Promisable from "../../components/Promisable";
 import type { AppFile } from "../api/files.api";
 

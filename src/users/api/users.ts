@@ -2,10 +2,15 @@ import { createContext } from "react-router";
 
 import { ActivityEnum, useActivity } from "@/activity/hooks/activity.hook";
 import { APIError, type ProblemDetail } from "@/api/problem_detail";
-import callApi from "@/tokens/call_api";
+import callApi from "@/tokens/callApi";
 
 import type { Role } from "../../admin/api/roles";
 import type { AppFile } from "../../files/api/files.api";
+
+// eslint-disable-next-line @eslint-react/no-missing-context-display-name
+export const UserContext = createContext<User>();
+
+// Interface
 
 export interface User {
 	id: string;
@@ -14,9 +19,6 @@ export interface User {
 	role: Role;
 	avatar?: AppFile;
 }
-
-// eslint-disable-next-line @eslint-react/no-missing-context-display-name
-export const UserContext = createContext<User>();
 
 interface UserDto {
 	id: string;
@@ -34,6 +36,8 @@ interface PasswordRequest {
 	Password: string;
 	NewPassword: string;
 }
+
+// Function Interface
 
 function normalizeUser(dto: UserDto): User {
 	return {
@@ -64,10 +68,12 @@ function toPasswordRequest(formdata: FormData): PasswordRequest {
 	};
 }
 
-export async function userChangeAvatar(data: FormData): Promise<Response> {
+// Function API
+
+export async function userChangeAvatar(formdata: FormData): Promise<Response> {
 	const res = await callApi("/api/me/avatar", {
 		method: "PATCH",
-		body: data,
+		body: formdata,
 	});
 	return res;
 }
@@ -120,7 +126,7 @@ export async function userLogout(): Promise<Response> {
 	return res;
 }
 
-export async function userFetcher(): Promise<User | null> {
+export async function fetchUser(): Promise<User | null> {
 	const res = await callApi("/api/me");
 	if (!res.ok) {
 		return null;

@@ -1,13 +1,13 @@
 import { type JSX, useEffect, useState } from "react";
 import { useFetcher } from "react-router";
 
-import { fetchRoles, PermEnum } from "../admin/api/roles";
-import ListRoles from "../admin/components/AdminListRoles";
-import CheckButton from "../components/CheckButton";
-import { Input } from "../components/Input";
-import List, { type ListColumn } from "../components/List";
-import Modal from "../components/Modal";
-import type { Route } from "./+types/admin_roles";
+import ChangeModal from "@/components/Modal/ChangeModal";
+
+import CheckButton from "../../components/Button/CheckButton";
+import List, { type ListColumn } from "../../components/List/List";
+import { fetchRoles, PermEnum } from "../api/roles";
+import ListRoles from "../components/AdminListRoles";
+import type { Route } from "./+types/Roles";
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
 export async function clientLoader() {
@@ -48,27 +48,19 @@ export default function AdminRoles({
 	return (
 		<>
 			{showRoleForm && (
-				<Modal
+				<ChangeModal
 					title="Create Role"
 					onClose={() => {
 						setShowRoleForm(false);
 					}}
-				>
-					<fetcher.Form
-						className="flex flex-col items-center w-1/2  gap-5"
-						method="POST"
-						action="/roles"
-					>
-						<Input
-							maxLength={15}
-							name="name"
-							type="text"
-							required
-							placeholder="Name"
-						/>
-						<CheckButton type="submit">Ok</CheckButton>
-					</fetcher.Form>
-				</Modal>
+					action="/roles/createRole"
+					method="POST"
+					inputName="name"
+					placeholder="name"
+					minInput={1}
+					maxInput={20}
+					fetcher={fetcher}
+				></ChangeModal>
 			)}
 			<div className="flex w-full h-full justify-center bg-back">
 				<div className="w-11/12 my-10">

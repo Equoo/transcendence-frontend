@@ -5,8 +5,8 @@ import { ActivityEnum, useActivity } from "@/activity/hooks/activity.hook";
 import { APIError } from "@/api/problem_detail";
 import { type Channel, fetchChannels } from "@/chat/api/chat.api";
 import { useChatHub } from "@/chat/hooks/chatHub.hook";
-import { type User, UserContext } from "@/users/api/users.api";
-import { UserReactContext } from "@/users/hooks/users.hooks";
+import { type User, UserContext } from "@/users/api/users";
+import { UserReactContext } from "@/users/hooks/users";
 
 import Sidebar from "../components/Sidebar/Sidebar";
 import type { Route } from "./+types/dashboard";

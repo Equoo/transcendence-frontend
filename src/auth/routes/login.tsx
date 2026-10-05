@@ -1,44 +1,16 @@
 import type { JSX } from "react";
 import { Form, redirect } from "react-router";
 
-import callApi from "@/tokens/call_api";
-
-import { AuthForm, AuthLogo, AuthTitle } from "../components/AuthForm";
+import { AuthForm, AuthLogo, AuthTitle } from "../../auth/components/AuthForm";
+import { loginUser, type UserResult } from "../api/auth";
 import type { Route } from "./+types/login";
-import type { UserResult } from "./register";
-
-interface LoginInput {
-	username: string;
-	password: string;
-}
-
-function toLoginInput(formData: FormData): LoginInput {
-	return {
-		username: formData.get("Username") as string,
-		password: formData.get("Password") as string,
-	};
-}
-
-async function loginUser(formData: FormData): Promise<UserResult> {
-	const object = toLoginInput(formData);
-
-	const response = await callApi("/api/auth/login", {
-		method: "POST",
-		headers: {
-			"Content-Type": "application/json",
-		},
-		body: JSON.stringify(object),
-	});
-	if (!response.ok) {
-		return { ok: false };
-	}
-	return { ok: true };
-}
 
 export async function clientAction({
 	request,
 }: Route.ClientActionArgs): Promise<UserResult | Response> {
-	if (!(await loginUser(await request.formData())).ok) {
+	const formdata = await request.formData();
+
+	if (!(await loginUser(formdata)).ok) {
 		return { ok: false };
 	}
 	return redirect("/");

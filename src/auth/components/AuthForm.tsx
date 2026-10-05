@@ -2,16 +2,10 @@ import type { JSX } from "react";
 import { PiLock, PiUser } from "react-icons/pi";
 import { Link, useNavigation } from "react-router";
 
-import CheckButton from "../../components/CheckButton";
-import { Input } from "../../components/Input";
+import CheckButton from "../../components/Button/CheckButton";
+import { Input } from "../../components/Input/Input";
 
-interface Title {
-	top: string;
-	mid: string;
-	bot: string;
-	nameLink: string;
-	link: string;
-}
+type Side = "r" | "l";
 
 export function AuthTitle({
 	top,
@@ -19,7 +13,13 @@ export function AuthTitle({
 	bot,
 	nameLink,
 	link,
-}: Title): JSX.Element {
+}: {
+	top: string;
+	mid: string;
+	bot: string;
+	nameLink: string;
+	link: string;
+}): JSX.Element {
 	return (
 		<div className="flex flex-col ">
 			<h3 className="text-text2 font-bold tracking-tight">{top}</h3>
@@ -36,8 +36,6 @@ export function AuthTitle({
 		</div>
 	);
 }
-
-type Side = "r" | "l";
 
 export function AuthLogo({ side }: { side: Side }): JSX.Element {
 	// eslint-disable-next-line @eslint-react/purity, react-hooks/purity

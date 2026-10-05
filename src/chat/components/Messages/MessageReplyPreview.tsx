@@ -1,6 +1,6 @@
 import type { JSX } from "react/jsx-runtime";
 
-import ProfilePic from "@/components/ProfilePic";
+import ProfilePic from "@/components/Profile/ProfilePic";
 
 import type { Message } from "../../api/chat.api";
 
