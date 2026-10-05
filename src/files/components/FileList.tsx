@@ -1,7 +1,7 @@
 import { type JSX, useState } from "react";
 import { PiFolderPlus, PiUploadSimple } from "react-icons/pi";
 
-import CheckButton from "@/components/CheckButton";
+import CheckButton from "@/components/Button/CheckButton";
 
 import List from "../../components/List/List";
 import { type AppFile, listFolders } from "../api/files.api";
