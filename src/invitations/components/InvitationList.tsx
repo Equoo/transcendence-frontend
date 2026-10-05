@@ -1,7 +1,7 @@
 import type { JSX } from "react/jsx-runtime";
 import { useFetcher } from "react-router";
 
-import List, { ListAction, ListCell, ListRow } from "@/components/List";
+import List, { ListAction, ListCell, ListRow } from "@/components/List/List";
 import Promisable from "@/components/Promisable";
 
 import type { Invitation } from "../api/invitations.api";
