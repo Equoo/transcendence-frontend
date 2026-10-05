@@ -27,7 +27,7 @@ export default function CategoryForm({
 	const [showDeleteModal, setShowDeleteModal] = useState(false);
 	const [prevFetcherState, setPrevFetcherState] = useState(fetcher.state);
 
-	const [fetchedRoles, setFetchedRoles] = useState<Role[] | null>(null);
+	const promisedRoles: Role[] | Promise<Role[]> = fetchRoles();
 
 	if (prevFetcherState !== fetcher.state) {
 		setPrevFetcherState(fetcher.state);
@@ -67,15 +67,15 @@ export default function CategoryForm({
 						{edit ? (
 							<p className="text-muted font-main font-light w-4/5 text-sm">
 								You are editing category #{edit.name}. You can
-								change his name and whitelist roles. If
-								roles whitelist is empty, everyone can access to
+								change his name and whitelist roles. If roles
+								whitelist is empty, everyone can access to
 								channel.
 							</p>
 						) : (
 							<p className="text-muted font-main font-light w-4/5 text-sm">
-								Creating category, give his name and
-								whitelist roles. If roles whitelist is empty,
-								everyone can access to channel.
+								Creating category, give his name and whitelist
+								roles. If roles whitelist is empty, everyone can
+								access to channel.
 							</p>
 						)}
 						<fetcher.Form
@@ -91,8 +91,7 @@ export default function CategoryForm({
 								defaultValue={edit?.name}
 							/>
 							<Promisable
-
-								skeleton={(
+								skeleton={
 									<MultipleInput
 										name="Roles"
 										onlySuggestions
@@ -103,27 +102,24 @@ export default function CategoryForm({
 											(role: ChannelRole) => role.name,
 										)}
 									/>
-
-								)}
-								data={fetchedRoles ?? fetchRoles()}
+								}
+								data={promisedRoles}
 							>
-								{(roles) => {
-									setFetchedRoles(roles);
-									return (
-										<MultipleInput
-											name="Roles"
-											onlySuggestions
-											suggestions={roles.map((role) => role.name)}
-											placeholder="Whitelisted Roles"
-											errors={errors}
-											className="w-full bg-surface border rounded-md border-border2  px-2 py-1 font-main text-text"
-											values={edit?.rolesWhitelist.map(
-												(role: ChannelRole) => role.name,
-											)}
-										/>
-
-									)
-								}}
+								{(roles) => (
+									<MultipleInput
+										name="Roles"
+										onlySuggestions
+										suggestions={roles.map(
+											(role) => role.name,
+										)}
+										placeholder="Whitelisted Roles"
+										errors={errors}
+										className="w-full bg-surface border rounded-md border-border2  px-2 py-1 font-main text-text"
+										values={edit?.rolesWhitelist.map(
+											(role: ChannelRole) => role.name,
+										)}
+									/>
+								)}
 							</Promisable>
 							{edit && (
 								<input
@@ -134,7 +130,9 @@ export default function CategoryForm({
 							)}
 							<div className="flex flex-row gap-2">
 								<CheckButton
-									onClick={() => { setShowDeleteModal(true); }}
+									onClick={() => {
+										setShowDeleteModal(true);
+									}}
 									danger
 									pending={fetcher.state !== "idle"}
 								>
@@ -149,41 +147,49 @@ export default function CategoryForm({
 								</CheckButton>
 							</div>
 						</fetcher.Form>
-					</Modal >,
+					</Modal>,
 					document.body,
-				)
-			}
-			{edit && showDeleteModal && createPortal(
-				<Modal title={`Delete channel #${edit.name}`} onClose={() => { setShowDeleteModal(false); }}>
-					<fetcher.Form
-						action="/category"
-						method="DELETE"
-						className="flex flex-row gap-2"
+				)}
+			{edit &&
+				showDeleteModal &&
+				createPortal(
+					<Modal
+						title={`Delete channel #${edit.name}`}
+						onClose={() => {
+							setShowDeleteModal(false);
+						}}
 					>
-						<input
-							type="hidden"
-							name="id"
-							defaultValue={edit.id}
-						></input>
-						<CheckButton
-							type="submit"
-							danger
-							pending={fetcher.state !== "idle"}
+						<fetcher.Form
+							action="/category"
+							method="DELETE"
+							className="flex flex-row gap-2"
 						>
-							Delete
-						</CheckButton>
-						<CheckButton
-							type="button"
-							onClick={() => { setShowDeleteModal(false); }}
-							active
-							pending={fetcher.state !== "idle"}
-						>
-							Cancel
-						</CheckButton>
-					</fetcher.Form>
-				</Modal>,
-				document.body,
-			)}
+							<input
+								type="hidden"
+								name="id"
+								defaultValue={edit.id}
+							></input>
+							<CheckButton
+								type="submit"
+								danger
+								pending={fetcher.state !== "idle"}
+							>
+								Delete
+							</CheckButton>
+							<CheckButton
+								type="button"
+								onClick={() => {
+									setShowDeleteModal(false);
+								}}
+								active
+								pending={fetcher.state !== "idle"}
+							>
+								Cancel
+							</CheckButton>
+						</fetcher.Form>
+					</Modal>,
+					document.body,
+				)}
 		</>
 	);
 }

@@ -18,6 +18,7 @@ import type { Channel } from "@/chat/api/chat.api";
 import CategoryForm from "@/chat/components/CategoryForm";
 import { useChat } from "@/chat/hooks/chat.hook";
 import { isWhitelisted } from "@/chat/utils/channel.util";
+import { useClickOutside } from "@/hooks/useClickOutside";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 import { PermEnum } from "../../admin/api/roles";
@@ -47,7 +48,6 @@ function ChannelListSkeleton(): JSX.Element {
 	);
 }
 
-
 function Sidebar({
 	user,
 	channels: channelsInit,
@@ -57,19 +57,23 @@ function Sidebar({
 }): JSX.Element {
 	const location = useLocation();
 	const fetcher = useFetcher();
-	const dictCategories = useChat(
-		useShallow((state) => state.categories),
-	);
+	const dictCategories = useChat(useShallow((state) => state.categories));
 	const channels = useChat(
 		useShallow((state) => Object.values(state.channels)),
-	).filter((ch) =>
-		!ch.eventId && isWhitelisted(ch, user,
-			(ch.categorySync && ch.categoryId !== null) ? dictCategories[ch.categoryId ?? ""] : null)
+	).filter(
+		(ch) =>
+			!ch.eventId &&
+			isWhitelisted(
+				ch,
+				user,
+				ch.categorySync && ch.categoryId !== null
+					? dictCategories[ch.categoryId ?? ""]
+					: null,
+			),
 	);
 	const categories = useChat(
 		useShallow((state) => Object.values(state.categories)),
 	);
-
 
 	const [showUser, setShowUser] = useState(false);
 	const [showDelete, setShowDelete] = useState(false);
@@ -252,7 +256,6 @@ function Sidebar({
 				bg-back2"
 				aria-label="Sidebar"
 			>
-
 				<div className="h-full flex flex-col px-3 py-4 border-e border-border space-y-3 font-main font-medium text-muted text-[14.5px]">
 					<Link to="/" className="flex items-center ps-1 mb-5">
 						<img src="/logo/icon-tile.svg" className="h-10 me-3" />
@@ -293,15 +296,22 @@ function Sidebar({
 
 						<div className="relative flex justify-between items-center px-2 py-1.5 mt-3 text-[11px] text-muted font-bold tracking-wider uppercase group">
 							Channels{" "}
-							{Boolean(user.role.permission & PermEnum.HandleChannels) && (
-								<CategoryForm></CategoryForm>
-							)}
+							{Boolean(
+								user.role.permission & PermEnum.HandleChannels,
+							) && <CategoryForm></CategoryForm>}
 						</div>
 						<ul>
 							<Suspense fallback={<ChannelListSkeleton />}>
 								<Await resolve={channelsInit}>
 									{channels
-										.filter((ch) => ch.categoryId === null || !Object.hasOwn(dictCategories, ch.categoryId ?? ""))
+										.filter(
+											(ch) =>
+												ch.categoryId === null ||
+												!Object.hasOwn(
+													dictCategories,
+													ch.categoryId ?? "",
+												),
+										)
 										.map((channel) => (
 											<ItemChannel
 												key={channel.id}
@@ -314,7 +324,11 @@ function Sidebar({
 										<ItemChannelCategory
 											key={category.id}
 											category={category}
-											channels={channels.filter((ch) => ch.categoryId === category.id)}
+											channels={channels.filter(
+												(ch) =>
+													ch.categoryId ===
+													category.id,
+											)}
 											user={user}
 										></ItemChannelCategory>
 									))}
@@ -335,78 +349,76 @@ function Sidebar({
 										user.role.permission &
 										PermEnum.HandleUsers,
 									) && (
-											<ItemCategory
-												to="/admin/users"
-												icon={PiUser}
-											>
-												Users
-											</ItemCategory>
-										)}
+										<ItemCategory
+											to="/admin/users"
+											icon={PiUser}
+										>
+											Users
+										</ItemCategory>
+									)}
 									{Boolean(
 										user.role.permission &
 										PermEnum.HandleRoles,
 									) && (
-											<ItemCategory
-												to="/admin/roles"
-												icon={PiComputerTower}
-											>
-												Roles
-											</ItemCategory>
-										)}
+										<ItemCategory
+											to="/admin/roles"
+											icon={PiComputerTower}
+										>
+											Roles
+										</ItemCategory>
+									)}
 									<div className="border-border2 border"></div>
 								</ul>
 							)}
 					</div>
-					{
-						showUser && (
-							<div
-								ref={clickOutsideRef}
-								className="flex items-center justify-center absolute bottom-15 left-55 flex-col border-border2 shadow-md bg-surface w-75 h-90 rounded-2xl"
+					{showUser && (
+						<div
+							ref={clickOutsideRef}
+							className="flex items-center justify-center absolute bottom-15 left-55 flex-col border-border2 shadow-md bg-surface w-75 h-90 rounded-2xl"
+						>
+							<button
+								type="button"
+								onClick={() => {
+									setShowUser(false);
+								}}
+								className="absolute right-5 top-3  text-muted hover:text-text text-3xl cursor-pointer ml-auto"
 							>
-								<button
-									type="button"
-									onClick={() => {
-										setShowUser(false);
-									}}
-									className="absolute right-5 top-3  text-muted hover:text-text text-3xl cursor-pointer ml-auto"
-								>
-									×
-								</button>
-								<div className="flex flex-col justify-center w-18/21 h-full gap-3 ">
-									<ProfileLine
-										changePicture
-										size={3}
-										user={user}
-										edit
-									></ProfileLine>
-									<Section
-										title="Account Info"
-										lines={Lines}
-									></Section>
-									<div className="mt-2 flex justify-around gap-5">
-										<CheckButton
-											discrete
-											onClick={() => {
-												setShowDelete(true);
-											}}
-										>
-											Delete Account
-										</CheckButton>
-										<CheckButton
-											onClick={() => {
-												void fetcher.submit(null, {
-													action: "/me/logout",
-													method: "DELETE",
-												});
-											}}
-										>
-											Logout
-										</CheckButton>
-									</div>
+								×
+							</button>
+							<div className="flex flex-col justify-center w-18/21 h-full gap-3 ">
+								<ProfileLine
+									changePicture
+									size={3}
+									user={user}
+									edit
+								></ProfileLine>
+								<Section
+									title="Account Info"
+									lines={Lines}
+								></Section>
+								<div className="mt-2 flex justify-around gap-5">
+									<CheckButton
+										discrete
+										onClick={() => {
+											setShowDelete(true);
+										}}
+									>
+										Delete Account
+									</CheckButton>
+									<CheckButton
+										onClick={() => {
+											void fetcher.submit(null, {
+												action: "/me/logout",
+												method: "DELETE",
+											});
+										}}
+									>
+										Logout
+									</CheckButton>
 								</div>
 							</div>
-						)
-					}
+						</div>
+					)}
 					<div className=" flex items-center gap-8  w-full">
 						<ProfileLine user={user} status edit size={3} />
 						<PiGear
@@ -417,8 +429,8 @@ function Sidebar({
 							}}
 						></PiGear>
 					</div>
-				</div >
-			</aside >
+				</div>
+			</aside>
 		</>
 	);
 }
