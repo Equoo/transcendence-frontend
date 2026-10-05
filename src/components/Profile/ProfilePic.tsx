@@ -103,7 +103,7 @@ export default function ProfilePic({
 	}
 
 	return (
-		<div className={`flex ${sizeStyle} ${className}`}>
+		<div className={`relative flex ${sizeStyle} ${className}`}>
 			{user.avatar ? (
 				<img
 					src={`/api/files/${user.avatar.key}`}
@@ -120,7 +120,7 @@ export default function ProfilePic({
 			)}
 			{status && (
 				<div
-					className={`absolute left-20 min-w-4 min-h-4 rounded-full self-end -ml-3 border-3 border-back2`}
+					className={`absolute right-0 min-w-4 min-h-4 rounded-full self-end -ml-3 border-3 border-back2`}
 					style={{
 						zIndex: idx + 1,
 						backgroundColor: getActivityColor(
