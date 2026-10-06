@@ -5,6 +5,7 @@ import {
 	userChangePassword,
 	userChangeUsername,
 	userDeleteAccount,
+	userDeleteAvatar,
 	userLogout,
 } from "../api/users";
 import type { Route } from "./+types/me";
@@ -31,6 +32,9 @@ export async function clientAction({
 	}
 	if (params.action === "delete") {
 		res = await userDeleteAccount();
+	}
+	if (params.action === "blobatar") {
+		res = await userDeleteAvatar();
 	}
 
 	return data(res, { status: 200 });

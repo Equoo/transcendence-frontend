@@ -63,9 +63,11 @@ export default function ProfilePic({
 	edit?: boolean;
 }): JSX.Element {
 	const filesFetcher = useFetcher<typeof filesAction>();
+	const fetcher = useFetcher();
 
 	const [showSelect, setShowSelect] = useState(false);
 	const [showPics, setShowPics] = useState(false);
+	const [showPpMenu, setShowPpMenu] = useState(false);
 
 	useEffect(() => {
 		if (filesFetcher.data) {
@@ -73,6 +75,13 @@ export default function ProfilePic({
 			setShowPics(false);
 		}
 	}, [filesFetcher.data]);
+
+	useEffect(() => {
+		if (fetcher.data) {
+			// eslint-disable-next-line @eslint-react/set-state-in-effect
+			setShowPpMenu(false);
+		}
+	}, [fetcher.data]);
 
 	const activity = useActivity();
 
@@ -185,7 +194,11 @@ export default function ProfilePic({
 			{changePicture && (
 				<div
 					onClick={() => {
-						setShowPics(true);
+						if (user.avatar) {
+							setShowPpMenu(true);
+						} else {
+							setShowPics(true);
+						}
 					}}
 					className={` ${sizeStyle} opacity-0 hover:opacity-100 absolute z-1 hover:cursor-pointer rounded-full flex justify-center items-center`}
 				>
@@ -196,6 +209,46 @@ export default function ProfilePic({
 					></TbPencil>
 				</div>
 			)}
+			{showPpMenu && (
+				<PopupList
+					className="absolute z-4 right-15 top-5"
+					onClose={() => {
+						setShowPpMenu(false);
+					}}
+					rows={[
+						{
+							id: "picture",
+							content: (
+								<div
+									className="inline-flex gap-2.5 items-center"
+									onClick={() => {
+										setShowPics(true);
+									}}
+								>
+									Choose picture
+								</div>
+							),
+						},
+						{
+							id: "blobatar",
+							content: (
+								<div
+									className="inline-flex gap-2.5 items-center"
+									onClick={() => {
+										void fetcher.submit(null, {
+											method: "DELETE",
+											action: "/me/blobatar",
+										});
+									}}
+								>
+									Remove Avatar
+								</div>
+							),
+						},
+					]}
+				></PopupList>
+			)}
+
 			{showPics && (
 				<Modal
 					title="Change profile picture"

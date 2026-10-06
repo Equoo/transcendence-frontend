@@ -126,6 +126,14 @@ export async function userLogout(): Promise<Response> {
 	return res;
 }
 
+export async function userDeleteAvatar(): Promise<Response> {
+	const res = await callApi("/api/me/avatar", { method: "DELETE" });
+	if (!res.ok) {
+		throw new APIError((await res.json()) as ProblemDetail);
+	}
+	return res;
+}
+
 export async function fetchUser(): Promise<User | null> {
 	const res = await callApi("/api/me");
 	if (!res.ok) {
