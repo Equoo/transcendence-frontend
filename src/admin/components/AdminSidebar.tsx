@@ -17,20 +17,20 @@ export default function AdminSidebar({ user }: { user: User }): JSX.Element {
 						{Boolean(
 							user.role.permission & PermEnum.HandleUsers,
 						) && (
-							<ItemCategory to="/admin/users" icon={PiUser}>
-								Users
-							</ItemCategory>
-						)}
+								<ItemCategory to="/admin/users" icon={PiUser}>
+									Users
+								</ItemCategory>
+							)}
 						{Boolean(
 							user.role.permission & PermEnum.HandleRoles,
 						) && (
-							<ItemCategory
-								to="/admin/roles"
-								icon={PiComputerTower}
-							>
-								Roles
-							</ItemCategory>
-						)}
+								<ItemCategory
+									to="/admin/roles"
+									icon={PiComputerTower}
+								>
+									Roles
+								</ItemCategory>
+							)}
 						<div className="border-border2 border"></div>
 					</ul>
 				)}

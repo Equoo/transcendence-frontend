@@ -14,7 +14,7 @@ export default function ChannelRoute({
 
 	return (
 		<div className="flex flex-col w-full h-full">
-			<div className="flex flex-none items-center gap-3 border-b border-border px-5.5 py-3.75">
+			<div className="flex flex-none items-center gap-3 border-b border-border pl-16 lg:p-6 pr-6 py-4">
 				<div className="flex flex-col">
 					<div className="flex items-center gap-1.75 font-head text-[17px] font-[650]">
 						<span className="text-muted">#</span>

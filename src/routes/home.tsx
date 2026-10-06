@@ -37,7 +37,7 @@ export default function Home({
 	const activity = useActivity();
 	return (
 		<>
-			<div className="w-full flex flex-row px-6 py-4 justify-between items-center">
+			<div className="w-full flex flex-row pl-16 lg:p-6 pr-6 py-4 justify-between items-center">
 				<h1 className="font-semibold tracking-tight text-xl inline-flex gap-4 items-center">
 					Home
 					<Promisable data={users}>

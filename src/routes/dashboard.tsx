@@ -69,7 +69,7 @@ export default function Dashboard({
 	return (
 		<div className="relative w-full h-full overflow-hidden bg-back">
 			<Sidebar user={loaderData.user} channels={loaderData.channels} />
-			<div className="h-full sm:pl-64 flex flex-col w-full items-center overflow-y-scroll">
+			<div className="h-full lg:pl-64 flex flex-col w-full items-center overflow-y-scroll">
 				<UserReactContext value={loaderData.user}>
 					<Outlet />
 				</UserReactContext>

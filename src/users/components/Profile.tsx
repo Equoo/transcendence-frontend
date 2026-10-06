@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { JSX } from "react/jsx-runtime";
 import type { FetcherWithComponents } from "react-router";
 
@@ -7,6 +7,7 @@ import CheckButton from "@/components/Button/CheckButton";
 import ChangeModal from "@/components/Modal/ChangeModal";
 import ChoiceModal from "@/components/Modal/ChoiceModal";
 import ProfileLine from "@/components/Profile/ProfileLine";
+import { useClickOutside } from "@/hooks/useClickOutside";
 import Section, { type LineInfos } from "@/users/components/Section";
 
 import type { User } from "../api/users";
@@ -16,11 +17,14 @@ export default function Profile({
 	fetcher,
 	user,
 	role,
+	onClickOutside,
+	...rest
 }: {
 	onClose: () => void;
 	fetcher: FetcherWithComponents<Response>;
 	user: User;
 	role: Role;
+	onClickOutside: () => void;
 }): JSX.Element {
 	const [showDelete, setShowDelete] = useState(false);
 	const [showUsername, setShowUsername] = useState(false);
@@ -52,6 +56,14 @@ export default function Profile({
 		},
 		{ name: "Password", value: "***********", action: openPassword },
 	];
+
+	const clickOutsideRef = useClickOutside(
+		useRef<HTMLDivElement>(null),
+		() => {
+			if (showDelete || showUsername || showPassword) { return; }
+			onClickOutside();
+		},
+	);
 
 	return (
 		<>
@@ -100,7 +112,10 @@ export default function Profile({
 					password
 				></ChangeModal>
 			)}
-			<div className="flex items-center justify-center absolute bottom-15 left-55 flex-col border-border2 shadow-md bg-surface w-75 h-90 rounded-2xl">
+			<div
+				className="flex items-center justify-center absolute bottom-15 left-55 flex-col border-border2 shadow-md bg-surface w-75 h-90 rounded-2xl z-10"
+				ref={clickOutsideRef}
+				{...rest}>
 				<button
 					type="button"
 					onClick={onClose}
