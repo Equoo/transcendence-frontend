@@ -21,9 +21,9 @@ export function AuthTitle({
 	link: string;
 }): JSX.Element {
 	return (
-		<div className="flex flex-col ">
+		<div className="flex flex-col items-center lg:items-start">
 			<h3 className="text-text2 font-bold tracking-tight">{top}</h3>
-			<h1 className="text-6xl font-semibold font-head text-text tracking-tight">
+			<h1 className="text-6xl font-semibold font-head text-text tracking-tight text-center lg:text-left">
 				{mid}
 				<span className=" text-accent">.</span>
 			</h1>
@@ -65,7 +65,7 @@ export function AuthLogo({ side }: { side: Side }): JSX.Element {
 		<div className={`absolute z-0  mt-40 ${sideCss}`}>
 			<img
 				src="/logo/icon-mono.svg"
-				className={`scale-500 opacity-20 ${animChoice} ${animTime} `}
+				className={`min-w-100 scale-500 opacity-20 ${animChoice} ${animTime} `}
 			/>
 		</div>
 	);

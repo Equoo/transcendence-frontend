@@ -22,8 +22,11 @@ export default function Login({
 	return (
 		<div className="flex items-center justify-center w-full h-full bg-back gap-20 login">
 			<AuthLogo side={"r"} />
-			<div className="flex flex-col w-2/3 h-6/10 justify-center items-end z-10 ">
-				<Form method="POST" className="flex flex-col gap-5 ">
+			<div className="flex flex-col lg:w-2/3 h-6/10 justify-center z-10 items-center lg:items-end">
+				<Form
+					method="POST"
+					className="flex flex-col gap-5 items-center lg:items-start"
+				>
 					<AuthTitle
 						top="JOIN THE TEAM"
 						mid="Login your account"
