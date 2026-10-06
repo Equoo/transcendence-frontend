@@ -1,5 +1,7 @@
 import type { JSX } from "react";
 
+import ChatbotTest from "@/ai/components/ChatbotTest";
+
 import Promisable from "../components/Promisable";
 import { type AppFile, fetchFiles } from "../files/api/files.api";
 import FileList from "../files/components/FileList";
@@ -17,6 +19,7 @@ export default function Knowledge({
 			<Promisable data={loaderData.files}>
 				{(files) => <FileList files={files}></FileList>}
 			</Promisable>
+			<ChatbotTest />
 		</main>
 	);
 }
