@@ -33,6 +33,7 @@ export default [
 	route("/files/:key?", "files/routes/files.route.tsx"),
 	route("/invitations/:id?", "invitations/routes/invitations.route.tsx"),
 	route("/channels", "chat/routes/channel.route.tsx"),
+	route("/category", "chat/routes/category.route.tsx"),
 
 	route("/roles/:action", "admin/routes/RolesAction.ts"),
 	route("/users/:action", "admin/routes/UsersAction.ts"),

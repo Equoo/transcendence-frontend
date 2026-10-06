@@ -7,7 +7,7 @@ import type { Channel, ChannelCategory } from "@/chat/api/chat.api";
 import CategoryForm from "@/chat/components/CategoryForm";
 import ChannelForm from "@/chat/components/ChannelForm";
 import { isWhitelisted } from "@/chat/utils/channel.util";
-import type { User } from "@/users/api/users.api";
+import type { User } from "@/users/api/users";
 
 import ItemChannel from "./ItemChannel";
 
@@ -23,18 +23,23 @@ function ItemChannelCategory({
 	const [show, setShow] = useState(true);
 	const location = useLocation();
 
-	const childrens = channels.map((channel) =>
-		((new RegExp(`^/channels/${channel.id}/?$`, "u").test(location.pathname)) || show) &&
-		(<ItemChannel
-			key={channel.id}
-			channel={channel}
-			category={category.id}
-			user={user}
-		></ItemChannel>)
+	const childrens = channels.map(
+		(channel) =>
+			(new RegExp(`^/channels/${channel.id}/?$`, "u").test(
+				location.pathname,
+			) ||
+				show) && (
+				<ItemChannel
+					key={channel.id}
+					channel={channel}
+					category={category.id}
+					user={user}
+				></ItemChannel>
+			),
 	);
 
 	if (childrens.length === 0 && !isWhitelisted(category, user)) {
-		return (<li></li>);
+		return <li></li>;
 	}
 
 	return (
@@ -54,10 +59,18 @@ function ItemChannelCategory({
 					)}
 				</div>
 
-				{Boolean(user.role.permission & PermEnum.HandleChannels) && (<div className="ml-auto mr-1">
-					<CategoryForm edit={category} className="invisible"></CategoryForm>
-					<ChannelForm className="invisible" category={category.id}></ChannelForm>
-				</div>)}
+				{Boolean(user.role.permission & PermEnum.HandleChannels) && (
+					<div className="ml-auto mr-1">
+						<CategoryForm
+							edit={category}
+							className="invisible"
+						></CategoryForm>
+						<ChannelForm
+							className="invisible"
+							category={category.id}
+						></ChannelForm>
+					</div>
+				)}
 			</div>
 			<ul>{childrens}</ul>
 		</li>

@@ -4,9 +4,17 @@ import { NavLink, useLocation } from "react-router";
 import { PermEnum } from "@/admin/api/roles";
 import type { Channel } from "@/chat/api/chat.api";
 import ChannelForm from "@/chat/components/ChannelForm";
-import type { User } from "@/users/api/users.api";
+import type { User } from "@/users/api/users";
 
-function ItemChannel({ channel, category, user }: { channel: Channel, category?: string, user: User }): JSX.Element {
+function ItemChannel({
+	channel,
+	category,
+	user,
+}: {
+	channel: Channel;
+	category?: string;
+	user: User;
+}): JSX.Element {
 	const location = useLocation();
 	const active = new RegExp(`^/channels/${channel.id}/?$`, "u").test(
 		location.pathname,
@@ -37,7 +45,11 @@ function ItemChannel({ channel, category, user }: { channel: Channel, category?:
 				)}
 			</NavLink>
 			{Boolean(user.role.permission & PermEnum.HandleChannels) && (
-				<ChannelForm edit={channel} category={category} className={active ? "" : "invisible"}></ChannelForm>
+				<ChannelForm
+					edit={channel}
+					category={category}
+					className={active ? "" : "invisible"}
+				></ChannelForm>
 			)}
 		</li>
 	);
