@@ -25,16 +25,18 @@ export default function CheckButton({
 	const discreteStyle =
 		"text-text2 hover:bg-border border border-surface hover:border-border";
 	return (
-		<button
-			type={type}
-			{...rest}
-			disabled={pending}
-			aria-pressed={active}
-			className={`${active ? activeStyle : discrete ? discreteStyle : unactiveStyle} inline-flex items-center font-semibold duration-150 justify-center py-2 px-4 gap-2 rounded-full cursor-pointer ${rest.className}`}
-		>
-			{pending && <TbLoader2 className="animate-spin" />}
-			{active && activeCheck && !pending && <PiCheckFatFill />}
-			{children}
-		</button>
+		<div className={rest.className}>
+			<button
+				type={type}
+				{...rest}
+				disabled={pending}
+				aria-pressed={active}
+				className={`${active ? activeStyle : discrete ? discreteStyle : unactiveStyle} inline-flex items-center font-semibold duration-150 justify-center py-2 px-4 gap-2 rounded-full cursor-pointer ${rest.className}`}
+			>
+				{pending && <TbLoader2 className="animate-spin" />}
+				{active && activeCheck && !pending && <PiCheckFatFill />}
+				{children}
+			</button>
+		</div>
 	);
 }
