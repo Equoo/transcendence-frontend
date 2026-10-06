@@ -4,10 +4,12 @@ import type { Message } from "../api/chat.api";
 import type { ChatComposerHandles } from "./ChatComposer";
 import type { MessageListHandles } from "./Messages/MessageList";
 
+export type ChatMode = "default" | "edit" | "reply";
+
 interface ChatState {
 	textEntry: string;
 	lastEntry: string;
-	mode: "default" | "edit" | "reply";
+	mode: ChatMode;
 	targetMsg: Message | null;
 	targetEl: HTMLDivElement | null;
 }
@@ -19,11 +21,11 @@ interface ChatContextInner {
 	chatsStates: Map<string, ChatState>;
 	scrollRef: RefObject<Map<string, number>>;
 	setChatMode: (
-		mode: "default" | "edit" | "reply",
+		mode: ChatMode,
 		target: Message | null,
 		targetEl?: HTMLDivElement | null,
 	) => void;
-	getChatMode: () => ["default" | "edit" | "reply", Message | null, HTMLDivElement | null];
+	getChatMode: () => [ChatMode, Message | null, HTMLDivElement | null];
 	setChatText: (text: string) => void;
 	getChatText: () => string;
 	setChatLastText: (text: string) => void;
@@ -42,8 +44,7 @@ export function useChatContext(): ChatContextInner {
 }
 
 export function ChatProvider({ children, chatId, listRef, composerRef }: { children: ReactNode, chatId: string, listRef: RefObject<MessageListHandles | null>, composerRef: RefObject<ChatComposerHandles | null> }): JSX.Element {
-	const [states, setStates] = useState(
-		// eslint-disable-next-line @eslint-react/use-state
+	const [states, setStates] = useState(() =>
 		new Map<string, ChatState>(),
 	);
 	const scrollRef = useRef<Map<string, number>>(new Map());
@@ -55,60 +56,54 @@ export function ChatProvider({ children, chatId, listRef, composerRef }: { child
 		targetEl: null,
 	};
 
-	const setChatMode = (
-		mode: "default" | "edit" | "reply",
-		target: Message | null,
-		targetEl: HTMLDivElement | null = null,
-	): void => {
-		const state = states.get(chatId) ?? defaultState;
-		state.mode = mode;
-		state.targetMsg = target;
-		state.targetEl = targetEl;
+	const value = useMemo(() => {
+		const update = (patch: Partial<typeof defaultState>): void => {
+			setStates((prev) =>
+				new Map(prev).set(chatId, {
+					...(prev.get(chatId) ?? defaultState),
+					...patch,
+				}),
+			);
+		};
 
-		setStates((prevStates) => new Map(prevStates).set(chatId, state));
-	};
-	const getChatMode = (): ["default" | "edit" | "reply", Message | null, HTMLDivElement | null] => {
-		const state = states.get(chatId);
-		return state
-			? [state.mode, state.targetMsg, state.targetEl]
-			: [defaultState.mode, null, null];
-	};
-
-	const setChatText = (text: string): void => {
-		const state = states.get(chatId) ?? defaultState;
-		state.textEntry = text;
-
-		setStates((prevStates) => new Map(prevStates).set(chatId, state));
-	};
-	const getChatText = (): string =>
-		states.get(chatId)?.textEntry ?? defaultState.textEntry;
-
-	const setChatLastText = (text: string): void => {
-		const state = states.get(chatId) ?? defaultState;
-		state.lastEntry = text;
-
-		setStates((prevStates) => new Map(prevStates).set(chatId, state));
-	};
-	const getChatLastText = (): string =>
-		states.get(chatId)?.lastEntry ?? defaultState.lastEntry;
-
-	const value = useMemo(
-		() => ({
+		return {
 			id: chatId,
 			listRef,
 			composerRef,
-			chatsStates: states,
 			scrollRef,
-			setChatMode,
-			getChatMode,
-			setChatText,
-			getChatText,
-			setChatLastText,
-			getChatLastText
-		}),
+			chatsStates: states,
+
+			setChatMode: (
+				mode: ChatMode,
+				target: Message | null,
+				targetEl: HTMLDivElement | null = null,
+			): void => {
+				update({ mode, targetMsg: target, targetEl });
+			},
+
+			getChatMode: (): [ChatMode, Message | null, HTMLDivElement | null] => {
+				const state = states.get(chatId);
+				return state
+					? [state.mode, state.targetMsg, state.targetEl]
+					: [defaultState.mode, null, null];
+			},
+
+			setChatText: (text: string): void => {
+				update({ textEntry: text });
+			},
+
+			getChatText: (): string =>
+				states.get(chatId)?.textEntry ?? defaultState.textEntry,
+
+			setChatLastText: (text: string): void => {
+				update({ lastEntry: text });
+			},
+
+			getChatLastText: (): string =>
+				states.get(chatId)?.lastEntry ?? defaultState.lastEntry,
+		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-		[states, chatId],
-	);
+	}, [chatId, listRef, composerRef, states]);
 
 	return <ChatContext value={value}>{children}</ChatContext>;
 }

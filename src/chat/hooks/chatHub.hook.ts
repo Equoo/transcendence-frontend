@@ -7,7 +7,7 @@ import { create } from "zustand";
 
 import { type ActivityEnum, useActivity } from "@/activity/hooks/activity.hook";
 
-import { type Channel, type Message, normalizeMessage } from "../api/chat.api";
+import { type Channel, type ChannelCategory, type Message, normalizeMessage } from "../api/chat.api";
 import { useChat } from "./chat.hook";
 
 interface ChatHub {
@@ -50,7 +50,28 @@ export const useChatHub = create<ChatHub>((set) => ({
 			);
 
 			conn.on("NewChannel", (channel: Channel) => {
+				channel.messages = [];
 				useChat.getState().addChannel(channel);
+			});
+
+			conn.on("UpdateChannel", (channel: Channel) => {
+				useChat.getState().updateChannel(channel.id, channel);
+			});
+
+			conn.on("RemoveChannel", (channel: string) => {
+				useChat.getState().removeChannel(channel);
+			});
+
+			conn.on("NewCategory", (category: ChannelCategory) => {
+				useChat.getState().addCategory(category);
+			});
+
+			conn.on("UpdateCategory", (category: ChannelCategory) => {
+				useChat.getState().updateCategory(category.id, category);
+			});
+
+			conn.on("RemoveCategory", (category: string) => {
+				useChat.getState().removeCategory(category);
 			});
 
 			conn.on(

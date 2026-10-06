@@ -24,7 +24,7 @@ export function useAutoScroll(
 	containerRef: RefObject<HTMLDivElement | null>,
 ): { scrollToBottom: () => void } {
 	const messages = useChat(
-		useShallow((state) => Object.values(state.channels[channelId]?.messages ?? [])),
+		useShallow((state) => Object.values(state.channels[channelId].messages)),
 	);
 	const prevMessages = usePrevious(messages) as Message[] | null;
 

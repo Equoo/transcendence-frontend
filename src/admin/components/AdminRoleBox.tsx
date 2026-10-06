@@ -1,5 +1,4 @@
-/* eslint-disable no-bitwise */
-import { type JSX,useState } from "react";
+import { type JSX, useState } from "react";
 import { useFetcher } from "react-router";
 
 import type { Role } from "../api/roles";

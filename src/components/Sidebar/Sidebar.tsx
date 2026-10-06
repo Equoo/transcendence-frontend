@@ -1,4 +1,3 @@
-/* eslint-disable no-bitwise */
 import { initDrawers } from "flowbite";
 import { type JSX, Suspense, useEffect, useState } from "react";
 import { HiMenuAlt2 } from "react-icons/hi";
@@ -14,8 +13,10 @@ import { useShallow } from "zustand/react/shallow";
 
 import AdminSidebar from "@/admin/components/AdminSidebar";
 import type { Channel } from "@/chat/api/chat.api";
-import ChannelForm from "@/chat/components/ChannelForm";
+import CategoryForm from "@/chat/components/CategoryForm";
 import { useChat } from "@/chat/hooks/chat.hook";
+import { isWhitelisted } from "@/chat/utils/channel.util";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 import Profile from "@/users/components/Profile";
 
 import { PermEnum } from "../../admin/api/roles";
@@ -24,6 +25,7 @@ import type { User } from "../../users/api/users";
 import ProfileLine from "../Profile/ProfileLine";
 import ItemCategory from "./ItemCategory";
 import ItemChannel from "./ItemChannel";
+import ItemChannelCategory from "./ItemChannelCategory";
 
 function ChannelListSkeleton(): JSX.Element {
 	return (
@@ -49,8 +51,22 @@ function Sidebar({
 }): JSX.Element {
 	const location = useLocation();
 	const fetcher = useFetcher();
+	const dictCategories = useChat(useShallow((state) => state.categories));
 	const channels = useChat(
-		useShallow((state) => Object.values(state.channels) as Channel[]),
+		useShallow((state) => Object.values(state.channels)),
+	).filter(
+		(ch) =>
+			!ch.eventId &&
+			isWhitelisted(
+				ch,
+				user,
+				ch.categorySync && ch.categoryId !== null
+					? dictCategories[ch.categoryId ?? ""]
+					: null,
+			),
+	);
+	const categories = useChat(
+		useShallow((state) => Object.values(state.categories)),
 	);
 
 	const [showUser, setShowUser] = useState(false);
@@ -59,8 +75,8 @@ function Sidebar({
 		initDrawers();
 	}, []);
 
+	const isMobile = useMediaQuery("(max-width: 639px)");
 	useEffect(() => {
-		const isMobile = window.matchMedia("(max-width: 639px)").matches;
 		if (!isMobile) {
 			return;
 		}
@@ -72,7 +88,7 @@ function Sidebar({
 		if (sidebar?.classList.contains("transform-none") ?? false) {
 			toggleButton?.click();
 		}
-	}, [location.pathname]);
+	}, [isMobile, location.pathname]);
 
 	return (
 		<>
@@ -91,7 +107,7 @@ function Sidebar({
 
 			<aside
 				id="sidebar"
-				className="fixed top-0 left-0 z-40 w-64 h-full transition-transform -translate-x-full sm:translate-x-0
+				className="fixed top-0 left-0 z-40 w-64 h-full max-h-full  transition-transform -translate-x-full sm:translate-x-0
 				bg-back2"
 				aria-label="Sidebar"
 			>
@@ -123,35 +139,71 @@ function Sidebar({
 						<ItemCategory to="/messages" icon={PiChat}>
 							Messages
 						</ItemCategory>
-						<ChannelForm></ChannelForm>
-						<Suspense fallback={<ChannelListSkeleton />}>
-							<Await resolve={channelsInit}>
-								{channels.map(
-									(channel) =>
-										!channel.eventId && (
+					</ul>
+
+					<div className="flex-1 overflow-y-auto">
+						<ul>
+							<li className="flex justify-between items-center px-2 py-1.5 mt-3 text-[11px] text-muted font-bold tracking-wider uppercase group">
+								Upcoming
+								<span className="ml-auto">0</span>
+							</li>
+						</ul>
+
+						<div className="relative flex justify-between items-center px-2 py-1.5 mt-3 text-[11px] text-muted font-bold tracking-wider uppercase group">
+							Channels{" "}
+							{Boolean(
+								user.role.permission & PermEnum.HandleChannels,
+							) && <CategoryForm></CategoryForm>}
+						</div>
+						<ul>
+							<Suspense fallback={<ChannelListSkeleton />}>
+								<Await resolve={channelsInit}>
+									{channels
+										.filter(
+											(ch) =>
+												ch.categoryId === null ||
+												!Object.hasOwn(
+													dictCategories,
+													ch.categoryId ?? "",
+												),
+										)
+										.map((channel) => (
 											<ItemChannel
 												key={channel.id}
 												channel={channel}
+												user={user}
 											></ItemChannel>
-										),
-								)}
-							</Await>
-						</Suspense>
-						<li className="flex justify-between items-center px-2 py-1.5 mt-3 text-[11px] text-muted font-bold tracking-wider uppercase group">
-							Upcoming
-						</li>
-					</ul>
+										))}
+									<li className="mb-3"></li>
+									{categories.map((category) => (
+										<ItemChannelCategory
+											key={category.id}
+											category={category}
+											channels={channels.filter(
+												(ch) =>
+													ch.categoryId ===
+													category.id,
+											)}
+											user={user}
+										></ItemChannelCategory>
+									))}
+								</Await>
+							</Suspense>
+						</ul>
+					</div>
 					<AdminSidebar user={user} />
-					{showUser && (
-						<Profile
-							role={user.role}
-							fetcher={fetcher}
-							user={user}
-							onClose={() => {
-								setShowUser(false);
-							}}
-						/>
-					)}
+					{
+						showUser && (
+							<Profile
+								role={user.role}
+								fetcher={fetcher}
+								user={user}
+								onClose={() => {
+									setShowUser(false);
+								}}
+							/>
+						)
+					}
 					<div className="flex items-center gap-8  w-full h-20">
 						<ProfileLine user={user} status edit size={3} />
 						<PiGear
@@ -162,8 +214,8 @@ function Sidebar({
 							}}
 						></PiGear>
 					</div>
-				</div>
-			</aside>
+				</div >
+			</aside >
 		</>
 	);
 }

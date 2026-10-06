@@ -1,33 +1,56 @@
 import type { JSX } from "react";
-import { NavLink } from "react-router";
+import { NavLink, useLocation } from "react-router";
 
+import { PermEnum } from "@/admin/api/roles";
 import type { Channel } from "@/chat/api/chat.api";
+import ChannelForm from "@/chat/components/ChannelForm";
+import type { User } from "@/users/api/users";
 
-function ItemChannel({ channel }: { channel: Channel }): JSX.Element {
+function ItemChannel({
+	channel,
+	category,
+	user,
+}: {
+	channel: Channel;
+	category?: string;
+	user: User;
+}): JSX.Element {
+	const location = useLocation();
+	const active = new RegExp(`^/channels/${channel.id}/?$`, "u").test(
+		location.pathname,
+	);
+
 	return (
-		<li>
+		<li
+			className={[
+				"relative flex items-center px-2 py-1 text-[14.5px] rounded-base group duration-120 curssor-pointer hover:[&_button]:visible",
+				active
+					? "bg-accent-soft text-text"
+					: "hover:bg-hover hover:text-text",
+			].join(" ")}
+		>
 			<NavLink
 				to={`/channels/${channel.id}`}
-				className={({ isActive }) =>
-					[
-						"flex items-center px-2 py-1.5 text-[14px] rounded-base group duration-120",
-						isActive
-							? "bg-accent-soft text-text"
-							: "hover:bg-hover hover:text-text",
-					].join(" ")
-				}
+				className="after:absolute after:inset-0"
 			>
 				{({ isActive }) => (
 					<>
 						<span
-							className={`font-semibold ${isActive ? "text-accent" : "text-muted"}`}
+							className={`text-[16px] font-semibold ${isActive ? "text-accent" : "text-muted"}`}
 						>
 							#
 						</span>
-						<span className="ms-3">{channel.name}</span>
+						<span className="ms-2">{channel.name}</span>
 					</>
 				)}
 			</NavLink>
+			{Boolean(user.role.permission & PermEnum.HandleChannels) && (
+				<ChannelForm
+					edit={channel}
+					category={category}
+					className={active ? "" : "invisible"}
+				></ChannelForm>
+			)}
 		</li>
 	);
 }

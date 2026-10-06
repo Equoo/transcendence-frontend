@@ -5,6 +5,7 @@ import { init } from "emoji-mart";
 import {
 	type JSX,
 	type Ref,
+	useCallback,
 	useEffect,
 	useImperativeHandle,
 	useRef,
@@ -18,7 +19,7 @@ import { useClickOutside } from "@/hooks/useClickOutside";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 import type { Message } from "../api/chat.api";
-import { useChatContext } from "./ChatProvider";
+import { type ChatMode, useChatContext } from "./ChatProvider";
 
 await init({ data });
 
@@ -51,11 +52,7 @@ function ChatComposer({
 }: {
 	ref?: Ref<ChatComposerHandles>;
 	placeholder: string;
-	onSend: (
-		text: string,
-		mode: "default" | "edit" | "reply",
-		target: Message | null,
-	) => void;
+	onSend: (text: string, mode: ChatMode, target: Message | null) => void;
 }): JSX.Element {
 	const [isEmpty, setIsEmpty] = useState(true);
 	const [showPicker, setShowPicker] = useState(false);
@@ -63,14 +60,7 @@ function ChatComposer({
 	const editableRef = useRef<HTMLDivElement>(null);
 	const pickerRef = useRef<HTMLDivElement>(null);
 
-	const {
-		getChatMode,
-		setChatMode,
-		getChatText,
-		setChatText,
-		getChatLastText,
-		setChatLastText,
-	} = useChatContext();
+	const { id, getChatMode, setChatMode, getChatText, setChatText, getChatLastText, setChatLastText } = useChatContext();
 
 	const updateEmpty = (): void => {
 		if (editableRef.current) {
@@ -112,7 +102,7 @@ function ChatComposer({
 		setChatText(editable.textContent);
 	};
 
-	const setText = (text: string): void => {
+	const setText = useCallback((text: string): void => {
 		const editable = editableRef.current;
 		if (!editable) {
 			return;
@@ -133,7 +123,7 @@ function ChatComposer({
 		}
 
 		updateEmpty();
-	};
+	}, [setChatText])
 
 	const clearText = (): void => {
 		const editable = editableRef.current;
@@ -148,15 +138,11 @@ function ChatComposer({
 
 	const [chatMode, modeTarget, modeTargetEl] = getChatMode();
 
-	const closeChatMode = (): void => {
-		if (chatMode === "default") {
-			return;
-		}
-		if (chatMode === "edit") {
-			setText(getChatLastText());
-		}
+	const closeChatMode = useCallback((): void => {
+		if (chatMode === "default") { return; }
+		if (chatMode === "edit") { setText(getChatLastText()); }
 		setChatMode("default", null);
-	};
+	}, [chatMode, getChatLastText, setChatMode, setText]);
 
 	useImperativeHandle(ref, () => ({
 		enterEditMode: (msg: Message, el: HTMLDivElement): void => {
@@ -235,19 +221,17 @@ function ChatComposer({
 		return (): void => {
 			document.removeEventListener("keydown", handleEscape);
 		};
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [placeholder, chatMode, showPicker]);
+	}, [id, chatMode, showPicker, closeChatMode]);
 
+	const composerText = getChatText();
 	useEffect(() => {
 		if (!isTouch) {
 			editableRef.current?.focus();
 		}
 
-		const composerText = getChatText();
 		setText(composerText);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [isTouch, placeholder]);
-
+	}, [id, isTouch]);
 	return (
 		<div
 			className="relative mx-5.5 mt-3 mb-4.5 flex flex-col rounded-xl border border-border bg-surface shadow-sm transition-colors duration-140 hover:cursor-text focus-within:border-accent"
