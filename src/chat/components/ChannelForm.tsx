@@ -5,11 +5,11 @@ import { useFetcher } from "react-router";
 
 import { fetchRoles, type Role } from "@/admin/api/roles";
 import { APIError, type ValidationErrors } from "@/api/problem_detail";
-import { Checkbox } from "@/components/Checkbox";
-import CheckButton from "@/components/CheckButton";
-import { Input } from "@/components/Input";
-import Modal from "@/components/Modal";
-import MultipleInput from "@/components/MultipleInput";
+import CheckButton from "@/components/Button/CheckButton";
+import { Checkbox } from "@/components/Input/Checkbox";
+import { Input } from "@/components/Input/Input";
+import MultipleInput from "@/components/Input/MultipleInput";
+import Modal from "@/components/Modal/Modal";
 import Promisable from "@/components/Promisable";
 
 import type { Channel, ChannelRole } from "../api/chat.api";

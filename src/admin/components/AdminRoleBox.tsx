@@ -1,4 +1,4 @@
-import type { JSX } from "react";
+import { type JSX, useState } from "react";
 import { useFetcher } from "react-router";
 
 import type { Role } from "../api/roles";
@@ -13,14 +13,21 @@ export function RolesBox({
 }): JSX.Element {
 	const fetcher = useFetcher();
 
+	const [anim, setAnim] = useState("");
+
 	return (
 		<td className="text-center">
 			<input
 				name="perms"
 				type="checkbox"
 				defaultChecked={Boolean(perm.code & role.permission)}
-				className="text-accent cursor-pointer rounded-sm w-6 h-6 text-2xl hover:bg-gray-50 hover:inset-shadow-2xs focus:ring-0"
+				className={`text-accent cursor-pointer  rounded-sm w-6 h-6 text-2xl hover:bg-gray-50 hover:inset-shadow-2xs focus:ring-0 ${anim} `}
 				onClick={(box) => {
+					if (box.currentTarget.checked) {
+						setAnim("animate-checked");
+					} else {
+						setAnim("animate-unchecked");
+					}
 					void fetcher.submit(
 						{
 							RoleId: role.id,
@@ -28,7 +35,7 @@ export function RolesBox({
 							CheckPerm: perm.code,
 							IsChecked: box.currentTarget.checked,
 						},
-						{ method: "PATCH", action: "/roles/check" },
+						{ method: "PATCH", action: "/roles/checkRole" },
 					);
 				}}
 			></input>

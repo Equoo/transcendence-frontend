@@ -1,6 +1,7 @@
 import type { JSX } from "react";
 
-import type { User } from "../users/api/users.api";
+import type { User } from "@/users/api/users";
+
 import ProfilePic from "./ProfilePic";
 
 export default function ProfileLine({
@@ -29,7 +30,7 @@ export default function ProfileLine({
 				<p className="text-text text-[14px] font-semibold wrap-break-word ">
 					{user.userName}
 				</p>
-				<p className="text-text2 text-[10px] font-medium">
+				<p className="text-text2 text-2xs font-medium">
 					{user.role.name}
 				</p>
 			</div>

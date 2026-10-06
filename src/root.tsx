@@ -14,7 +14,7 @@ import { ToastContainer } from "react-toastify";
 import type { Route } from "./+types/root";
 import { PermEnum } from "./admin/api/roles";
 import HydratingScreen from "./components/HydratingScreen";
-import { UserContext, userFetcher } from "./users/api/users.api";
+import { fetchUser, UserContext } from "./users/api/users";
 
 const alertStyle = {
 	success: "bg-good-soft text-good",
@@ -28,7 +28,7 @@ const alertStyle = {
 export const clientMiddleware: Route.MiddlewareFunction[] = [
 	// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/explicit-function-return-type, @typescript-eslint/consistent-return
 	async ({ context, url }, next) => {
-		const user = await userFetcher();
+		const user = await fetchUser();
 		if (user) {
 			context.set(UserContext, user);
 			if (url.pathname === "/login" || url.pathname === "/register") {

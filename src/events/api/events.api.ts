@@ -1,9 +1,9 @@
 import type { ChannelSummary } from "@/chat/api/chat.api";
-import callApi from "@/tokens/call_api";
+import callApi from "@/tokens/callApi";
 
 import { APIError, type ProblemDetail } from "../../api/problem_detail";
 import type { AppFile } from "../../files/api/files.api";
-import type { User } from "../../users/api/users.api";
+import type { User } from "../../users/api/users";
 import type { EventRole } from "./event_roles.api";
 import type { Registration } from "./registrations.api";
 

@@ -15,12 +15,15 @@ export default [
 			route("knowledge/:key", "routes/file_view.tsx"),
 			route("messages", "routes/messages.tsx"),
 			route("channels/:channelId", "routes/channel.tsx"),
-			route("/admin/roles", "routes/admin_roles.tsx"),
-			route("/admin/users", "routes/admin_users.tsx"),
+			route("/admin/roles", "admin/routes/Roles.tsx"),
+			route("/admin/users", "admin/routes/Users.tsx"),
 		]),
 	]),
-	route("/register", "users/routes/register.tsx"),
-	route("/login", "users/routes/login.tsx"),
+
+	route("*", "routes/404Page.tsx"),
+
+	route("/register", "auth/routes/register.tsx"),
+	route("/login", "auth/routes/login.tsx"),
 	// Resources routes
 	route(
 		"/events/:eventId/registration",
@@ -31,9 +34,8 @@ export default [
 	route("/invitations/:id?", "invitations/routes/invitations.route.tsx"),
 	route("/channels", "chat/routes/channel.route.tsx"),
 
-	route("/roles", "admin/routes/admin.role.route.tsx"),
-	route("/roles/check", "admin/routes/admin.role.route.check.tsx"),
-	route("/users", "admin/routes/admin.user.route.tsx"),
-	route("/users/disconnect", "admin/routes/admin.user.routeDisconnect.tsx"),
+	route("/roles/:action", "admin/routes/RolesAction.ts"),
+	route("/users/:action", "admin/routes/UsersAction.ts"),
+
 	route("/me/:action", "users/routes/me.ts"),
 ] satisfies RouteConfig;

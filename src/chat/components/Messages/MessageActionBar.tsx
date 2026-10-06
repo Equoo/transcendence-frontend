@@ -1,12 +1,12 @@
 import { type Ref, useImperativeHandle, useRef, useState } from "react";
 import type { JSX } from "react/jsx-runtime";
-import { PiArrowArcLeft, PiDotsThree, PiPencil, PiTrash } from "react-icons/pi";
+import { PiArrowArcLeft, PiDotsThree, PiTrash } from "react-icons/pi";
 
 import { PermEnum } from "@/admin/api/roles";
-import CheckButton from "@/components/CheckButton";
-import IconBtn from "@/components/IconBtn";
-import Modal from "@/components/Modal";
-import { useUser } from "@/users/hooks/users.hooks";
+import CheckButton from "@/components/Button/CheckButton";
+import IconBtn from "@/components/Button/IconBtn";
+import Modal from "@/components/Modal/Modal";
+import { useUser } from "@/users/hooks/users";
 
 import { type Message, removeMessage } from "../../api/chat.api";
 import { useChat } from "../../hooks/chat.hook";
@@ -110,7 +110,7 @@ function MessageActionBar({
 					<>
 						{actionBar.msg.sender.id === user?.id ? (
 							<IconBtn
-								icon={PiPencil}
+								icon={PiArrowArcLeft}
 								size={14}
 								onClick={() => {
 									if (composerRef.current) {

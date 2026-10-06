@@ -6,7 +6,7 @@ import {
 	useState,
 } from "react";
 
-import type { ValidationErrors } from "../api/problem_detail";
+import type { ValidationErrors } from "../../api/problem_detail";
 
 export type InputProps = ComponentProps<"textarea"> & {
 	name: string;

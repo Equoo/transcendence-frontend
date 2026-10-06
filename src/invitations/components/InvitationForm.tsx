@@ -2,9 +2,9 @@ import { type JSX, useState } from "react";
 import { PiPlusBold } from "react-icons/pi";
 import { useFetcher } from "react-router";
 
-import CheckButton from "../../components/CheckButton";
-import { Input } from "../../components/Input";
-import Modal from "../../components/Modal";
+import CheckButton from "../../components/Button/CheckButton";
+import { Input } from "../../components/Input/Input";
+import Modal from "../../components/Modal/Modal";
 import type { clientAction as invitationAction } from "../routes/invitations.route";
 
 export default function InvitationForm({

@@ -4,7 +4,7 @@ import { useNavigate } from "react-router";
 
 import ChannelChat from "@/chat/components/ChannelChat";
 import { useChat } from "@/chat/hooks/chat.hook";
-import IconBtn from "@/components/IconBtn";
+import IconBtn from "@/components/Button/IconBtn";
 
 import type { Route } from "./+types/channel";
 

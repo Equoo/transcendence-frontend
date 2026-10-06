@@ -6,9 +6,9 @@ import {
 } from "react";
 import { toast } from "react-toastify";
 
-import type { ValidationErrors } from "../api/problem_detail";
-import Alert from "./Alert";
-import EventBadge from "./Badge";
+import type { ValidationErrors } from "../../api/problem_detail";
+import Alert from "../Alert";
+import Badge from "../Badge";
 import { Field } from "./Field";
 import HiddenValues from "./HiddenValues";
 
@@ -106,7 +106,7 @@ export default function MultipleInput({
 					${isError ? "border-error" : "border-border2 focus-within:border-accent"} ${className}`}
 			>
 				{values.map((value) => (
-					<EventBadge key={value}>
+					<Badge key={value}>
 						{value}
 						<button
 							type="button"
@@ -120,7 +120,7 @@ export default function MultipleInput({
 						>
 							x
 						</button>
-					</EventBadge>
+					</Badge>
 				))}
 				<input
 					{...rest}

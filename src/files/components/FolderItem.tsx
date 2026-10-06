@@ -1,7 +1,7 @@
 import type { JSX } from "react";
 import { FcFolder } from "react-icons/fc";
 
-import { ListAction, ListCell, ListRow } from "../../components/List";
+import { ListAction, ListCell, ListRow } from "../../components/List/List";
 import ItemActions from "./ItemActions";
 
 export default function FolderItem({

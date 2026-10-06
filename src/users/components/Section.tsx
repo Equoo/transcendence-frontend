@@ -1,5 +1,7 @@
 import type { JSX } from "react/jsx-runtime";
 
+import type { Role } from "@/admin/api/roles";
+
 import LineInfo from "./LineInfo";
 
 export interface LineInfos {
@@ -11,9 +13,11 @@ export interface LineInfos {
 export default function Section({
 	title,
 	lines,
+	role,
 }: {
 	title: string;
 	lines: LineInfos[];
+	role: Role;
 }): JSX.Element {
 	return (
 		<div className="text-text w-full flex flex-col gap-5 ">
@@ -25,6 +29,7 @@ export default function Section({
 						name={line.name}
 						value={line.value}
 						action={line.action}
+                        role={role}
 					></LineInfo>
 				))}
 			</div>

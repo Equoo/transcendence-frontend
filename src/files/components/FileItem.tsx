@@ -1,7 +1,7 @@
 import type { JSX } from "react";
 import { Link } from "react-router";
 
-import { ListCell, ListRow } from "../../components/List";
+import { ListCell, ListRow } from "../../components/List/List";
 import type { AppFile } from "../api/files.api";
 import ItemActions from "./ItemActions";
 

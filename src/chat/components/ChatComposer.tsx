@@ -1,12 +1,20 @@
-
+/* eslint-disable max-lines */
 import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
 import { init } from "emoji-mart";
-import { type JSX, type Ref, useCallback, useEffect, useImperativeHandle, useRef, useState } from "react";
+import {
+	type JSX,
+	type Ref,
+	useCallback,
+	useEffect,
+	useImperativeHandle,
+	useRef,
+	useState,
+} from "react";
 import { BsSend } from "react-icons/bs";
 import { PiImage, PiPaperclip, PiSmiley } from "react-icons/pi";
 
-import IconBtn from "@/components/IconBtn";
+import IconBtn from "@/components/Button/IconBtn";
 import { useClickOutside } from "@/hooks/useClickOutside";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 
@@ -62,7 +70,9 @@ function ChatComposer({
 
 	const insertText = (text: string): void => {
 		const editable = editableRef.current;
-		if (!editable) { return }
+		if (!editable) {
+			return;
+		}
 
 		const selection = window.getSelection();
 		if (selection) {
@@ -94,7 +104,9 @@ function ChatComposer({
 
 	const setText = useCallback((text: string): void => {
 		const editable = editableRef.current;
-		if (!editable) { return }
+		if (!editable) {
+			return;
+		}
 
 		editable.textContent = text;
 		setChatText(text);
@@ -115,13 +127,14 @@ function ChatComposer({
 
 	const clearText = (): void => {
 		const editable = editableRef.current;
-		if (!editable) { return }
+		if (!editable) {
+			return;
+		}
 
 		editable.textContent = "";
 		setChatText("");
 		setIsEmpty(true);
-	}
-
+	};
 
 	const [chatMode, modeTarget, modeTargetEl] = getChatMode();
 
@@ -133,7 +146,9 @@ function ChatComposer({
 
 	useImperativeHandle(ref, () => ({
 		enterEditMode: (msg: Message, el: HTMLDivElement): void => {
-			if (!editableRef.current) { return; }
+			if (!editableRef.current) {
+				return;
+			}
 
 			setChatMode("edit", msg, el);
 			setChatLastText(editableRef.current.textContent);
@@ -148,7 +163,6 @@ function ChatComposer({
 			editableRef.current.focus();
 		},
 	}));
-
 
 	const handleSubmit = (self: HTMLDivElement): void => {
 		const text = self.innerText.trim();
@@ -230,12 +244,24 @@ function ChatComposer({
 			)}
 			{chatMode !== "default" && (
 				<div className="flex rounded-t-xl bg-back px-4 items-center justify-between">
-					<a className="text-sm text-muted hover:text-text cursor-pointer" onClick={() => { modeTargetEl?.scrollIntoView({ behavior: "smooth", block: "center" }); }}>
-						{chatMode === "edit" ? (<>
-							Editing a message - *Escape* to cancel
-						</>) : (<>
-							Replying to @{modeTarget?.sender.userName ?? "Unknown"} - *Escap* to cancel
-						</>)}
+					<a
+						className="text-sm text-muted hover:text-text cursor-pointer"
+						onClick={() => {
+							modeTargetEl?.scrollIntoView({
+								behavior: "smooth",
+								block: "center",
+							});
+						}}
+					>
+						{chatMode === "edit" ? (
+							<>Editing a message - *Escape* to cancel</>
+						) : (
+							<>
+								Replying to @
+								{modeTarget?.sender.userName ?? "Unknown"} -
+								*Escap* to cancel
+							</>
+						)}
 					</a>
 					<button
 						type="button"
@@ -261,7 +287,7 @@ function ChatComposer({
 					suppressContentEditableWarning
 					onInput={(ev) => {
 						updateEmpty();
-						setChatText(ev.currentTarget.textContent)
+						setChatText(ev.currentTarget.textContent);
 					}}
 					onKeyDown={handleKeyDown}
 				/>
@@ -284,7 +310,6 @@ function ChatComposer({
 					size={16}
 					disabled={isEmpty}
 					onClick={() => {
-
 						if (editableRef.current) {
 							handleSubmit(editableRef.current);
 						}
@@ -292,7 +317,7 @@ function ChatComposer({
 					className="grid h-9 w-9 place-items-center rounded-[11px]"
 				/>
 			</div>
-		</div >
+		</div>
 	);
 }
 export default ChatComposer;

@@ -1,11 +1,7 @@
-import {
-	type JSX,
-	useRef,
-	useState,
-} from "react";
+import { type JSX, useRef, useState } from "react";
 
 import { useChat } from "@/chat/hooks/chat.hook";
-import { useUser } from "@/users/hooks/users.hooks";
+import { useUser } from "@/users/hooks/users";
 
 import { type Message, sendMessage, updateMessage } from "../api/chat.api";
 import ChatComposer, { type ChatComposerHandles } from "./ChatComposer";
@@ -23,7 +19,11 @@ function ChannelChat({ channelId }: { channelId: string }): JSX.Element {
 	const addMsg = useChat((state) => state.addMsg);
 	const updateMsg = useChat((state) => state.updateMsg);
 
-	const onSend = (text: string, mode: "default" | "edit" | "reply", target: Message | null): void => {
+	const onSend = (
+		text: string,
+		mode: "default" | "edit" | "reply",
+		target: Message | null,
+	): void => {
 		if (mode === "edit" && target) {
 			target.content = text;
 			target.editAt = new Date();
