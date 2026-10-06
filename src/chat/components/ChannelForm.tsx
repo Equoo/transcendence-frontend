@@ -92,13 +92,13 @@ export default function ChannelForm({
 								required
 								errors={errors}
 								placeholder="Channel Name"
-								defaultValue={edit?.name}
+								value={edit?.name}
 							/>
 							<Input
 								name="Topic"
 								errors={errors}
 								placeholder="Channel Topic"
-								defaultValue={edit?.topic}
+								value={edit?.topic}
 							/>
 							<Checkbox
 								name="Syncronised"
@@ -213,6 +213,7 @@ export default function ChannelForm({
 								onClick={() => {
 									setShowDeleteModal(false);
 								}}
+								activeCheck={false}
 								active
 								pending={fetcher.state !== "idle"}
 							>

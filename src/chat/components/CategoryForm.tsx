@@ -88,7 +88,7 @@ export default function CategoryForm({
 								required
 								errors={errors}
 								placeholder="Category Name"
-								defaultValue={edit?.name}
+								value={edit?.name}
 							/>
 							<Promisable
 								skeleton={
@@ -182,6 +182,7 @@ export default function CategoryForm({
 									setShowDeleteModal(false);
 								}}
 								active
+								activeCheck={false}
 								pending={fetcher.state !== "idle"}
 							>
 								Cancel
