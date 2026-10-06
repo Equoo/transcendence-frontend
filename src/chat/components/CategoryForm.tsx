@@ -154,7 +154,7 @@ export default function CategoryForm({
 				showDeleteModal &&
 				createPortal(
 					<Modal
-						title={`Delete channel #${edit.name}`}
+						title={`Delete category #${edit.name}`}
 						onClose={() => {
 							setShowDeleteModal(false);
 						}}
