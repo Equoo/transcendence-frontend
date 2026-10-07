@@ -5,6 +5,7 @@ import {
 	fetchInvitations,
 	type Invitation,
 } from "@/invitations/api/invitations.api";
+import InvitationPromisable from "@/invitations/components/InvitationPromisable";
 
 import { fetchUsers, type User, UserContext } from "../../users/api/users";
 import { fetchRoles, type Role } from "../api/roles";
