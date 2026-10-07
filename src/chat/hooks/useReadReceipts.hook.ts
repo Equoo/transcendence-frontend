@@ -19,12 +19,10 @@ export function useReadReceipts(
 ): RefObject<HTMLDivElement | null> {
 	const user = useUser();
 	const messages = useChat(
-		useShallow((state) =>
-			Object.values(state.channels[channelId]?.messages ?? []),
-		),
+		useShallow((state) => Object.values(state.channels[channelId].messages)),
 	);
 	const ackDate = useChat(
-		useShallow((state) => state.channels[channelId]?.ackTime ?? null),
+		useShallow((state) => state.channels[channelId].ackTime),
 	);
 	const updateChannel = useChat(useShallow((state) => state.updateChannel));
 

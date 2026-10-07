@@ -1,7 +1,8 @@
 import { type Ref, useImperativeHandle, useRef, useState } from "react";
 import type { JSX } from "react/jsx-runtime";
-import { PiArrowArcLeft, PiDotsThree, PiPencil, PiTrash } from "react-icons/pi";
+import { PiArrowArcLeft, PiDotsThree, PiTrash } from "react-icons/pi";
 
+import { PermEnum } from "@/admin/api/roles";
 import CheckButton from "@/components/Button/CheckButton";
 import IconBtn from "@/components/Button/IconBtn";
 import Modal from "@/components/Modal/Modal";
@@ -10,6 +11,7 @@ import { useUser } from "@/users/hooks/users";
 import { type Message, removeMessage } from "../../api/chat.api";
 import { useChat } from "../../hooks/chat.hook";
 import { useChatContext } from "../ChatProvider";
+import MessageRow from "./MessageRow";
 
 export interface MessageActionBarHandles {
 	show: (
@@ -107,19 +109,26 @@ function MessageActionBar({
 				{actionBar.el.dataset.pending === "false" && (
 					<>
 						{actionBar.msg.sender.id === user?.id ? (
-							<>
-								<IconBtn
-									icon={PiPencil}
-									size={14}
-									onClick={() => {
-										if (composerRef.current) {
-											composerRef.current.enterEditMode(
-												actionBar.msg,
-												actionBar.el,
-											);
-										}
-									}}
-								></IconBtn>
+							<IconBtn
+								icon={PiArrowArcLeft}
+								size={14}
+								onClick={() => {
+									if (composerRef.current) {
+										composerRef.current.enterEditMode(actionBar.msg, actionBar.el);
+									}
+								}}
+							></IconBtn>
+						) : (
+							<IconBtn icon={PiArrowArcLeft} size={14}
+								onClick={() => {
+									if (composerRef.current) {
+										composerRef.current.enterReplyMode(actionBar.msg, actionBar.el);
+									}
+								}}
+							></IconBtn>
+						)}
+						{(actionBar.msg.sender.id === user?.id ||
+							user && (user.role.permission & PermEnum.ManageMessages) !== 0) && (
 								<IconBtn
 									icon={PiTrash}
 									className="text-red-400"
@@ -128,21 +137,7 @@ function MessageActionBar({
 										setShowRemoveForm(true);
 									}}
 								></IconBtn>
-							</>
-						) : (
-							<IconBtn
-								icon={PiArrowArcLeft}
-								size={14}
-								onClick={() => {
-									if (composerRef.current) {
-										composerRef.current.enterReplyMode(
-											actionBar.msg,
-											actionBar.el,
-										);
-									}
-								}}
-							></IconBtn>
-						)}
+							)}
 					</>
 				)}
 				<IconBtn icon={PiDotsThree} size={14}></IconBtn>
@@ -156,9 +151,11 @@ function MessageActionBar({
 				>
 					<p>Are you sure to remove this message ?</p>
 
+					<MessageRow message={actionBar.msg} showHeader className="w-full hover:bg-transparent"></MessageRow>
+
 					<div className="flex flex-row gap-4">
 						<CheckButton
-							active
+							danger
 							onClick={() => {
 								removeMessage(channelId, actionBar.msg.id)
 									.then(() => {
@@ -173,14 +170,15 @@ function MessageActionBar({
 								setShowRemoveForm(false);
 							}}
 						>
-							Yes
+							Delete
 						</CheckButton>
 						<CheckButton
 							onClick={() => {
 								setShowRemoveForm(false);
 							}}
+							active
 						>
-							No
+							Cancel
 						</CheckButton>
 					</div>
 				</Modal>

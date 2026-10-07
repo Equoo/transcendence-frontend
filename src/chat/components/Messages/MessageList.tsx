@@ -12,7 +12,6 @@ import { useShallow } from "zustand/react/shallow";
 import { useChat } from "@/chat/hooks/chat.hook";
 import { useUser } from "@/users/hooks/users";
 
-import type { Channel } from "../../api/chat.api";
 import { useAutoScroll } from "../../hooks/useAutoScroll.hook";
 import { useMessagePagination } from "../../hooks/useMessagePagination.hook";
 import { useReadReceipts } from "../../hooks/useReadReceipts.hook";
@@ -34,14 +33,14 @@ function useNewMessagesDividerId(channelId: string): string | null {
 	const user = useUser();
 	const messages = useChat(
 		useShallow((state) =>
-			Object.values(state.channels[channelId]?.messages ?? []),
+			Object.values(state.channels[channelId].messages),
 		),
 	);
 	const channels = useChat(
-		useShallow((state) => Object.values(state.channels) as Channel[]),
+		useShallow((state) => Object.values(state.channels)),
 	);
 	const ackDate = useChat(
-		useShallow((state) => state.channels[channelId]?.ackTime ?? null),
+		useShallow((state) => state.channels[channelId].ackTime),
 	);
 
 	useEffect(() => {
@@ -74,9 +73,11 @@ function useNewMessagesDividerId(channelId: string): string | null {
 
 function MessageList({
 	channelId,
+	channelName,
 	ref,
 }: {
 	channelId: string;
+	channelName: string;
 	ref?: Ref<MessageListHandles>;
 }): JSX.Element {
 	const containerRef = useRef<HTMLDivElement>(null);
@@ -84,7 +85,7 @@ function MessageList({
 
 	const messages = useChat(
 		useShallow((state) =>
-			Object.values(state.channels[channelId]?.messages ?? []),
+			Object.values(state.channels[channelId].messages),
 		),
 	);
 
@@ -121,6 +122,10 @@ function MessageList({
 			<MessageActionBar ref={actionBarRef} channelId={channelId} />
 
 			<div className="mt-auto" />
+			<div className="relative gap-3 px-5.5 mt- text-muted">
+				<h1 className="text-3xl font-medium text-text"><span className="font-bold">#</span> {channelName}</h1>
+				<p>Discussion start here</p>
+			</div>
 			{messages.map((msg, index) => {
 				const previous = messages[index - 1];
 				const isLast = index === messages.length - 1;
@@ -138,6 +143,7 @@ function MessageList({
 							rowRef={isLast ? lastMessageRef : null}
 							onActivate={showActionBar}
 							onDeactivate={hideActionBar}
+							className="px-5.5"
 						/>
 					</Fragment>
 				);

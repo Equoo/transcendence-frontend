@@ -6,22 +6,19 @@ import { useFetcher } from "react-router";
 import { fetchRoles, type Role } from "@/admin/api/roles";
 import { APIError, type ValidationErrors } from "@/api/problem_detail";
 import CheckButton from "@/components/Button/CheckButton";
-import { Checkbox } from "@/components/Input/Checkbox";
 import { Input } from "@/components/Input/Input";
 import MultipleInput from "@/components/Input/MultipleInput";
 import Modal from "@/components/Modal/Modal";
 import Promisable from "@/components/Promisable";
 
-import type { Channel, ChannelRole } from "../api/chat.api";
+import type { ChannelCategory, ChannelRole } from "../api/chat.api";
 import type { clientAction } from "../routes/channel.route";
 
-export default function ChannelForm({
+export default function CategoryForm({
 	edit,
-	category,
 	className,
 }: {
-	edit?: Channel | null;
-	category?: string;
+	edit?: ChannelCategory | null;
 	className?: string;
 }): JSX.Element {
 	const [errors, setErrors] = useState<ValidationErrors>();
@@ -30,7 +27,6 @@ export default function ChannelForm({
 	const [showDeleteModal, setShowDeleteModal] = useState(false);
 	const [prevFetcherState, setPrevFetcherState] = useState(fetcher.state);
 
-	const [sync, setSync] = useState(edit?.categorySync);
 	const promisedRoles: Role[] | Promise<Role[]> = fetchRoles();
 
 	if (prevFetcherState !== fetcher.state) {
@@ -61,8 +57,8 @@ export default function ChannelForm({
 					<Modal
 						title={
 							edit
-								? `Editing channel #${edit.name}`
-								: "Create a channel"
+								? `Editing category #${edit.name}`
+								: "Create a category"
 						}
 						onClose={() => {
 							setShowModal(false);
@@ -70,20 +66,20 @@ export default function ChannelForm({
 					>
 						{edit ? (
 							<p className="text-muted font-main font-light w-4/5 text-sm">
-								You are editing channel #{edit.name}. You can
-								change his name, topic and whitelist roles. If
-								roles whitelist is empty, everyone can access to
+								You are editing category #{edit.name}. You can
+								change his name and whitelist roles. If roles
+								whitelist is empty, everyone can access to
 								channel.
 							</p>
 						) : (
 							<p className="text-muted font-main font-light w-4/5 text-sm">
-								Creating channel, give his name, topic and
-								whitelist roles. If roles whitelist is empty,
-								everyone can access to channel.
+								Creating category, give his name and whitelist
+								roles. If roles whitelist is empty, everyone can
+								access to channel.
 							</p>
 						)}
 						<fetcher.Form
-							action="/channels"
+							action="/category"
 							method={edit ? "put" : "post"}
 							className="flex flex-col items-center w-4/5 gap-5 mb-4"
 						>
@@ -91,30 +87,9 @@ export default function ChannelForm({
 								name="Name"
 								required
 								errors={errors}
-								placeholder="Channel Name"
+								placeholder="Category Name"
 								value={edit?.name}
 							/>
-							<Input
-								name="Topic"
-								errors={errors}
-								placeholder="Channel Topic"
-								value={edit?.topic}
-							/>
-							<Checkbox
-								name="Syncronised"
-								errors={errors}
-								placeholder="Category Sync"
-								defaultChecked={edit?.categorySync}
-								onChange={(ev) => {
-									setSync(ev.currentTarget.checked);
-								}}
-							>
-								<p className="text-muted font-main font-light w-4/5 text-sm">
-									Use category roles whitelist for this
-									channel.
-								</p>
-							</Checkbox>
-
 							<Promisable
 								skeleton={
 									<MultipleInput
@@ -122,8 +97,7 @@ export default function ChannelForm({
 										onlySuggestions
 										placeholder="Whitelisted Roles"
 										errors={errors}
-										className="w-full px-2 py-1 font-main"
-										grayed={sync}
+										className="w-full bg-surface border rounded-md border-border2  px-2 py-1 font-main text-text"
 										values={edit?.rolesWhitelist.map(
 											(role: ChannelRole) => role.name,
 										)}
@@ -140,8 +114,7 @@ export default function ChannelForm({
 										)}
 										placeholder="Whitelisted Roles"
 										errors={errors}
-										className="w-full px-2 py-1 font-main"
-										grayed={sync}
+										className="w-full bg-surface border rounded-md border-border2  px-2 py-1 font-main text-text"
 										values={edit?.rolesWhitelist.map(
 											(role: ChannelRole) => role.name,
 										)}
@@ -155,11 +128,6 @@ export default function ChannelForm({
 									defaultValue={edit.id}
 								></input>
 							)}
-							<input
-								type="hidden"
-								name="category"
-								defaultValue={category}
-							></input>
 							<div className="flex flex-row gap-2">
 								<CheckButton
 									onClick={() => {
@@ -186,13 +154,13 @@ export default function ChannelForm({
 				showDeleteModal &&
 				createPortal(
 					<Modal
-						title={`Delete channel #${edit.name}`}
+						title={`Delete category #${edit.name}`}
 						onClose={() => {
 							setShowDeleteModal(false);
 						}}
 					>
 						<fetcher.Form
-							action="/channels"
+							action="/category"
 							method="DELETE"
 							className="flex flex-row gap-2"
 						>
@@ -213,8 +181,8 @@ export default function ChannelForm({
 								onClick={() => {
 									setShowDeleteModal(false);
 								}}
-								activeCheck={false}
 								active
+								activeCheck={false}
 								pending={fetcher.state !== "idle"}
 							>
 								Cancel

@@ -22,7 +22,7 @@ export function useMessagePagination(
 	actionBarRef: RefObject<MessageActionBarHandles | null>,
 ): (ev: React.UIEvent<HTMLDivElement>) => void {
 	const messages = useChat(
-		useShallow((state) => Object.values(state.channels[channelId]?.messages ?? [])),
+		useShallow((state) => Object.values(state.channels[channelId].messages)),
 	);
 	const appendMsgs = useChat((state) => state.appendMsgs);
 

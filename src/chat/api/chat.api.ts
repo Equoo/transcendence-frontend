@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { APIError, type ProblemDetail } from "@/api/problem_detail";
 import { useChat } from "@/chat/hooks/chat.hook";
 import callApi from "@/tokens/callApi";
@@ -24,20 +25,35 @@ export function normalizeMessage(msg: Message): Message {
 	};
 }
 
+export interface ChannelRole {
+	id: string;
+	name: string;
+}
+
 export interface Channel {
 	id: string;
 	name: string;
 	topic: string;
 	createAt: Date;
 	eventId?: string;
-	category?: string;
+	categoryId?: string | null;
 	messages: Message[];
 	ackTime?: Date | null;
+	rolesWhitelist: ChannelRole[];
+	categorySync: boolean;
 }
+
 export interface ChannelSummary {
 	id: string;
 	name: string;
 	createAt: Date;
+}
+
+export interface ChannelCategory {
+	id: string;
+	name: string;
+	order: string;
+	rolesWhitelist: ChannelRole[];
 }
 
 export async function fetchChannels(): Promise<Channel[]> {
@@ -45,13 +61,21 @@ export async function fetchChannels(): Promise<Channel[]> {
 		return [];
 	}
 
-	const response = await callApi("/api/channels");
-	if (!response.ok) {
-		throw new APIError((await response.json()) as ProblemDetail);
+	const channelsRes = await fetch("/api/channels");
+	if (!channelsRes.ok) {
+		throw new APIError((await channelsRes.json()) as ProblemDetail);
 	}
+	const channels = (await channelsRes.json()) as Channel[];
 
-	const channels = (await response.json()) as Channel[];
-	useChat.getState().setChannels(channels);
+	channels.forEach((ch) => { ch.messages = [] });
+
+	const categoriesRes = await fetch("/api/categories");
+	if (!categoriesRes.ok) {
+		throw new APIError((await categoriesRes.json()) as ProblemDetail);
+	}
+	const categories = (await categoriesRes.json()) as ChannelCategory[];
+
+	useChat.getState().setChannels(channels, categories);
 
 	return channels;
 }
@@ -78,15 +102,23 @@ export async function fetchMessages(
 }
 
 export async function createChannel(formData: FormData): Promise<Channel> {
-	const response = await callApi("/api/channels", {
+	const category = formData.get("category") as string;
+
+	const body: { name: string, topic: string, whitelistRoles: string[], categorySync: boolean, category: string | null } = {
+		name: formData.get("Name") as string,
+		topic: formData.get("Topic") as string,
+		whitelistRoles: formData.getAll("Roles") as string[],
+		categorySync: formData.has("Syncronised"),
+		category: null
+	};
+	if (category) { body.category = category; }
+
+	const response = await fetch("/api/channels", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
 		},
-		body: JSON.stringify({
-			name: formData.get("name") as string,
-			topic: formData.get("topic") as string,
-		}),
+		body: JSON.stringify(body),
 	});
 
 	if (!response.ok) {
@@ -94,6 +126,103 @@ export async function createChannel(formData: FormData): Promise<Channel> {
 	}
 
 	return (await response.json()) as Channel;
+}
+
+export async function updateChannel(formData: FormData): Promise<Channel> {
+	const category = formData.get("category") as string;
+
+	const body: { name: string, topic: string, whitelistRoles: string[], categorySync: boolean, category: string | null } = {
+		name: formData.get("Name") as string,
+		topic: formData.get("Topic") as string,
+		whitelistRoles: formData.getAll("Roles") as string[],
+		categorySync: formData.has("Syncronised"),
+		category: null
+	};
+	if (category) { body.category = category; }
+
+	const response = await fetch(
+		`/api/channels/${formData.get("id") as string}`,
+		{
+			method: "PUT",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(body),
+		},
+	);
+
+	if (!response.ok) {
+		throw new APIError((await response.json()) as ProblemDetail);
+	}
+
+	return (await response.json()) as Channel;
+}
+
+export async function deleteChannel(id: string): Promise<void> {
+	const response = await fetch(`/api/channels/${id}`, {
+		method: "DELETE",
+		headers: {
+			"Content-Type": "application/json",
+		},
+	});
+
+	if (!response.ok) {
+		throw new APIError((await response.json()) as ProblemDetail);
+	}
+}
+
+export async function createCategory(formData: FormData): Promise<ChannelCategory> {
+	const response = await fetch("/api/categories", {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify({
+			name: formData.get("Name") as string,
+			whitelistRoles: formData.getAll("Roles") as string[],
+		}),
+	});
+
+	if (!response.ok) {
+		throw new APIError((await response.json()) as ProblemDetail);
+	}
+
+	return (await response.json()) as ChannelCategory;
+}
+
+export async function updateCategory(formData: FormData): Promise<ChannelCategory> {
+	const response = await fetch(
+		`/api/categories/${formData.get("id") as string}`,
+		{
+			method: "PUT",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				name: formData.get("Name") as string,
+				whitelistRoles: formData.getAll("Roles") as string[],
+			}),
+		},
+	);
+
+	if (!response.ok) {
+		throw new APIError((await response.json()) as ProblemDetail);
+	}
+
+	return (await response.json()) as ChannelCategory;
+}
+
+export async function deleteCategory(id: string): Promise<void> {
+	const response = await fetch(`/api/categories/${id}`, {
+		method: "DELETE",
+		headers: {
+			"Content-Type": "application/json",
+		},
+	});
+
+	if (!response.ok) {
+		throw new APIError((await response.json()) as ProblemDetail);
+	}
 }
 
 export async function sendMessage(
@@ -148,15 +277,12 @@ export async function removeMessage(
 	channelId: string,
 	id: string,
 ): Promise<string> {
-	const response = await callApi(
-		`/api/channels/${channelId}/messages/${id}`,
-		{
-			method: "DELETE",
-			headers: {
-				"Content-Type": "application/json",
-			},
+	const response = await fetch(`/api/channels/${channelId}/messages/${id}`, {
+		method: "DELETE",
+		headers: {
+			"Content-Type": "application/json",
 		},
-	);
+	});
 
 	if (!response.ok) {
 		throw new APIError((await response.json()) as ProblemDetail);
@@ -166,7 +292,7 @@ export async function removeMessage(
 }
 
 export async function ackMessage(channelId: string, id: string): Promise<void> {
-	const response = await callApi(
+	const response = await fetch(
 		`/api/channels/${channelId}/messages/${id}/ack`,
 		{
 			method: "POST",

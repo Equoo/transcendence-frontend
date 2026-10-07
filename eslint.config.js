@@ -27,9 +27,11 @@ export default defineConfig([
 			},
 		},
 		rules: {
+			// Stylistic rules from the "all" presets we don't want
 			"react-refresh/only-export-components": "off",
-			"sort-imports": "off",
+			"sort-imports": "off", // handled by simple-import-sort
 			"sort-keys": "off",
+			"capitalized-comments": "off",
 			"no-void": "off",
 			"max-statements": "off",
 			"max-lines-per-function": "off",
@@ -37,20 +39,41 @@ export default defineConfig([
 			"func-style": "off",
 			"no-ternary": "off",
 			"no-nested-ternary": "off",
+			"no-bitwise": "off",
+			"no-console": ["error", { allow: ["warn", "error"] }],
+
+			// TypeScript
+			"@typescript-eslint/prefer-literal-enum-member": "off",
 			"@typescript-eslint/no-unused-expressions": "off",
 			"@typescript-eslint/naming-convention": "off",
 			"@typescript-eslint/no-magic-numbers": "off",
-			"@typescript-eslint/no-unsafe-return": "off",
 			"@typescript-eslint/no-unsafe-type-assertion": "off",
-			"@typescript-eslint/no-unsafe-call": "off",
 			"@typescript-eslint/prefer-readonly-parameter-types": "off",
-			"@eslint-react/exhaustive-deps": "off",
-			"@eslint-react/jsx-no-children-prop": "off",
-			"no-console": ["error", { allow: ["warn", "error"] }],
 			"@typescript-eslint/strict-boolean-expressions": "off",
-			"simple-import-sort/imports": "error",
-			"simple-import-sort/exports": "error",
+
+			// @eslint-react
+			"@eslint-react/jsx-no-children-prop": "off",
+			"@eslint-react/exhaustive-deps": "off",
+
+			// Imports
+			"simple-import-sort/imports": "warn",
+			"simple-import-sort/exports": "warn",
+
+			// Unused code: unused-imports replaces both base and TS rules
+			"no-unused-vars": "off",
+			"@typescript-eslint/no-unused-vars": "off",
 			"unused-imports/no-unused-imports": "error",
+			"unused-imports/no-unused-vars": [
+				"error",
+				{
+					vars: "all",
+					varsIgnorePattern: "^_",
+					args: "after-used",
+					argsIgnorePattern: "^_",
+					caughtErrorsIgnorePattern: "^_",
+					ignoreRestSiblings: true,
+				},
+			],
 
 			// Core hooks rules
 			"react-hooks/rules-of-hooks": "error",

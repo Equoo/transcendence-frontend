@@ -21,6 +21,5 @@ export function useScrollRestoration(
 		};
 		el.addEventListener("scroll", persist, { passive: true });
 		return (): void => { el.removeEventListener("scroll", persist); };
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [channelId]);
+	}, [channelId, containerRef, scrollRef]);
 }

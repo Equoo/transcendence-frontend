@@ -1,4 +1,3 @@
-/* eslint-disable no-bitwise */
 import { type JSX, useEffect, useState } from "react";
 import { FiChevronLeft } from "react-icons/fi";
 import { PiTrash } from "react-icons/pi";

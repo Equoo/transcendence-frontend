@@ -1,4 +1,3 @@
-/* eslint-disable no-bitwise */
 import callApi from "@/tokens/callApi";
 
 import { APIError, type ProblemDetail } from "../../api/problem_detail";
@@ -6,20 +5,21 @@ import { toUserId } from "./users";
 
 export enum PermEnum {
 	// Event
-	HandleEvent = 1,
+	HandleEvent = 1 << 0,
 
 	// User
-	HandleUsers = 2,
-	InviteUser = 4,
+	HandleUsers = 1 << 1,
+	InviteUser = 1 << 2,
 
 	// Chat
-	HandleChannels = 8,
+	HandleChannels = 1 << 3,
+	ManageMessages = 1 << 4,
 
 	// Roles
-	HandleRoles = 16,
+	HandleRoles = 1 << 5,
 
 	// Knowledge
-	HandleKnowledge = 32,
+	HandleKnowledge = 1 << 6,
 
 	// Calendar
 }

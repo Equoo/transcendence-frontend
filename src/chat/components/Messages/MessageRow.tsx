@@ -14,10 +14,11 @@ interface MessageRowProps {
 	/** Show the avatar and sender/time header (first message of a group). */
 	showHeader: boolean;
 	/** Highlighted because it is the target of an edit or reply. */
-	isFocused: boolean;
-	rowRef: Ref<HTMLDivElement> | null;
-	onActivate: (ev: ActivateEvent) => void;
-	onDeactivate: () => void;
+	isFocused?: boolean;
+	rowRef?: Ref<HTMLDivElement> | null;
+	onActivate?: (ev: ActivateEvent) => void;
+	onDeactivate?: () => void;
+	className?: string;
 }
 
 function formatTimestamp(date: Date): string {
@@ -33,10 +34,11 @@ function formatTimestamp(date: Date): string {
 function MessageRow({
 	message,
 	showHeader,
-	isFocused,
+	isFocused = false,
 	rowRef,
 	onActivate,
 	onDeactivate,
+	className,
 }: MessageRowProps): JSX.Element {
 	return (
 		<div
@@ -47,7 +49,7 @@ function MessageRow({
 			onMouseEnter={onActivate}
 			onFocus={onActivate}
 			onMouseLeave={onDeactivate}
-			className={`relative gap-3 ${showHeader ? "mt-4.5" : "mt-0.75"} px-5.5 hover:bg-back2 aria-selected:bg-back2 data-[pending=true]:animate-pulse data-[focus=true]:bg-accent-soft`}
+			className={`relative gap-3 ${showHeader ? "mt-4.5" : "mt-0.75"} hover:bg-back2 aria-selected:bg-back2 data-[pending=true]:animate-pulse data-[focus=true]:bg-accent-soft ${className}`}
 		>
 			{showHeader && (
 				<ProfilePic
