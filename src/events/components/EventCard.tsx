@@ -7,6 +7,7 @@ import { Link } from "react-router";
 
 import Badge from "../../components/Badge";
 import CheckButton from "../../components/Button/CheckButton";
+import Tooltip from "../../components/Tooltip";
 import type { EventSummary } from "../api/events.api";
 import EventRegisterBtn from "./EventRegisterBtn";
 
@@ -43,6 +44,8 @@ function formatCountdown(countdown: CountdownType): string {
 	return `${pad(countdown.hours)}:${pad(countdown.minutes)}:${pad(countdown.seconds)}`;
 }
 
+const MAX_VISIBLE_TAGS = 3;
+
 function Countdown({ date }: { date: Date }): JSX.Element {
 	const [countdown, setCountdown] = useState(() => getCountdown(date));
 
@@ -59,12 +62,47 @@ function Countdown({ date }: { date: Date }): JSX.Element {
 	return (
 		<div
 			id="countdown"
-			className="flex flex-col font-head font-bold text-3xl"
+			className="flex flex-col font-head font-bold text-2xl @sm:text-3xl tabular-nums whitespace-nowrap"
 		>
 			{formatCountdown(countdown)}
-			<small className="text-muted font-semibold text-xs tracking-wider">
-				BEFORE START
-			</small>
+			{countdown.totalMs === 0 ? (
+				<small className="inline-flex items-center gap-1.5 text-good font-semibold text-xs tracking-wider">
+					<span className="size-1.5 rounded-full bg-good animate-pulse" />
+					LIVE NOW
+				</small>
+			) : (
+				<small className="text-muted font-semibold text-xs tracking-wider">
+					BEFORE START
+				</small>
+			)}
+		</div>
+	);
+}
+
+function EventTags({ tags }: { tags: string[] }): JSX.Element {
+	const visible = tags.slice(0, MAX_VISIBLE_TAGS);
+	const hidden = tags.slice(MAX_VISIBLE_TAGS);
+
+	return (
+		<div className="flex flex-nowrap items-center gap-2 min-w-0">
+			{visible.map((tag) => (
+				<Badge key={tag} className="max-w-36 min-w-0 shrink">
+					<Tooltip
+						content={tag}
+						onlyWhenTruncated
+						className="truncate"
+					>
+						{tag}
+					</Tooltip>
+				</Badge>
+			))}
+			{hidden.length > 0 && (
+				<Badge className="shrink-0">
+					<Tooltip content={hidden.join(", ")}>
+						+{hidden.length}
+					</Tooltip>
+				</Badge>
+			)}
 		</div>
 	);
 }
@@ -74,51 +112,83 @@ export default function EventCard({
 }: {
 	event: EventSummary;
 }): JSX.Element {
+	const date = new Date(event.date);
+	const formattedDate = date.toLocaleString([], {
+		hour: "2-digit",
+		minute: "2-digit",
+		month: "short",
+		day: "2-digit",
+		year: "numeric",
+	});
+
 	return (
-		<div className="bg-surface flex max-w-lg grow sm:min-w-md min-w-sm h-fit flex-col gap-4 overflow-hidden border border-border rounded-3xl p-6 shadow-main sm:p-8">
-			<h2 className=" text-3xl font-semibold font-head leading-8 text-text tracking-tight overflow-x-scroll overflow-y-hidden">
-				{event.name}
+		<div className="@container bg-surface flex w-full max-w-md shrink-0 min-w-0 flex-col gap-4 border border-border rounded-3xl p-5 shadow-main sm:p-8">
+			<h2 className="text-2xl @sm:text-3xl font-semibold font-head leading-tight text-text tracking-tight min-w-0">
+				<Tooltip
+					content={event.name}
+					onlyWhenTruncated
+					className="block truncate"
+				>
+					{event.name}
+				</Tooltip>
 			</h2>
-			<div className="inline-flex min-h-9 text-text2 text-sm gap-6 justify-between items-start">
-				<div className="flex flex-col gap-2">
-					<div className="inline-flex items-center gap-2">
-						<IoLocationOutline />
-						<span>{event.location}</span>
+
+			<div className="flex flex-col gap-3 text-text2 text-sm min-w-0">
+				<div className="flex flex-col gap-2 min-w-0">
+					<div className="flex items-center gap-2 min-w-0">
+						<IoLocationOutline className="shrink-0" />
+						<Tooltip
+							content={event.location}
+							onlyWhenTruncated
+							className="truncate"
+						>
+							{event.location}
+						</Tooltip>
 					</div>
-					<div className="inline-flex items-center gap-2 text-nowrap">
-						<PiClock />
-						<span>
-							{new Date(event.date).toLocaleString([], {
-								hour: "2-digit",
-								minute: "2-digit",
-								month: "short",
-								day: "2-digit",
-								year: "numeric",
-							})}
-						</span>
+					<div className="flex items-center gap-2 min-w-0">
+						<PiClock className="shrink-0" />
+						<Tooltip
+							content={formattedDate}
+							onlyWhenTruncated
+							className="truncate"
+						>
+							<time dateTime={date.toISOString()}>
+								{formattedDate}
+							</time>
+						</Tooltip>
 					</div>
 				</div>
 
-				{event.tags.length > 0 && (
-					<div className="flex flex-nowrap items-center gap-2.5 overflow-auto whitespace-nowrap scrollbar-thin pb-1.5">
-						{event.tags.map((tag) => (
-							<Badge key={tag}>{tag}</Badge>
-						))}
-					</div>
-				)}
-			</div>
-			<div className="flex gap-3 items-end">
-				<Countdown key={event.id} date={new Date(event.date)} />
-				<div className="ml-auto">
-					<Badge border="" bg="bg-good-soft" text="text-good">
-						<GoPeople />
-						{event.registeredCount}/{event.size} Registered
-					</Badge>
+				<div className="h-6 min-w-0">
+					{event.tags.length > 0 ? (
+						<EventTags tags={event.tags} />
+					) : (
+						<span className="text-muted text-xs italic leading-6">
+							No tags
+						</span>
+					)}
 				</div>
 			</div>
-			<div className="flex gap-2.5 items-center whitespace-nowrap">
-				<EventRegisterBtn event={event} />
-				<div className="ml-auto">
+
+			<div className="mt-auto flex flex-col gap-4 border-t border-border pt-4">
+				<div className="flex gap-3 items-end justify-between">
+					<Countdown key={event.id} date={date} />
+					<Badge
+						border=""
+						bg="bg-good-soft"
+						text="text-good"
+						className="whitespace-nowrap shrink-0"
+					>
+						<GoPeople className="shrink-0" />
+						{event.registeredCount}/{event.size}
+						<span className="hidden @xs:block">
+							Registered
+						</span>
+					</Badge>
+				</div>
+
+				<div className="flex gap-2.5 items-center justify-between whitespace-nowrap">
+					<EventRegisterBtn event={event} />
 					<Link to={`/calendar/${event.id}`}>
 						<CheckButton discrete>
 							Details <FiChevronRight />

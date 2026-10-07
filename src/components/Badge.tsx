@@ -5,16 +5,18 @@ export default function Badge({
 	border = "border border-border2",
 	text = "text-text2",
 	bg = "bg-transparent",
+	className = "",
 }: {
 	children: ReactNode;
 	border?: string;
 	text?: string;
 	bg?: string;
+	className?: string;
 }): JSX.Element {
 	return (
 		<span
 			className={`inline-flex items-center gap-2 rounded-full px-2 py-1
-				font-semibold text-xs ${border} ${text} ${bg}`}
+				font-semibold text-xs ${border} ${text} ${bg} ${className}`}
 		>
 			{children}
 		</span>
