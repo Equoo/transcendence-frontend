@@ -12,9 +12,7 @@ import {
 } from "date-fns";
 import { type JSX, useState } from "react";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
-import {
-	Link,
-} from "react-router";
+import { Link } from "react-router";
 
 import { PermEnum } from "../admin/api/roles";
 import Promisable from "../components/Promisable";
@@ -64,12 +62,12 @@ export default function Calendar({
 			{Boolean(
 				loaderData.user.role.permission & PermEnum.HandleEvent,
 			) && (
-					<EventForm
-						roles={loaderData.roles}
-						files={loaderData.files}
-						className="w-fit ml-auto mr-2 mt-2"
-					/>
-				)}
+				<EventForm
+					roles={loaderData.roles}
+					files={loaderData.files}
+					className="w-fit ml-auto mr-2 mt-2"
+				/>
+			)}
 			<div className="xl:w-8/10 w-9/10 mt-2">
 				<div className="flex w-full items-center justify-between p-4">
 					<FiChevronLeft
@@ -166,20 +164,7 @@ export default function Calendar({
 			</div>
 			<Promisable
 				data={loaderData.events}
-                skeleton={
-                    <>
-                        {loaderData.previousEvents &&
-                        (
-
-                            <EventList
-                            previousEvents={loaderData.previousEvents.filter((ev) =>
-							isSameDay(ev.date, selectedDay))}
-                            events={loaderData.events}
-                            
-                            />
-                        )}
-                    </>
-                }
+				cached_data={loaderData.previousEvents}
 			>
 				{(events) => (
 					<EventList

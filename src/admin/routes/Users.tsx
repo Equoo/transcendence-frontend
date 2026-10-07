@@ -12,9 +12,9 @@ import { fetchRoles, type Role } from "../api/roles";
 import UserTable from "../components/UserTable";
 import type { Route } from "./+types/Users";
 
-let cachedUsers: User[] | undefined;
-let cachedRoles: Role[] | undefined;
-let cachedInvitations: Invitation[] | undefined;
+let cachedUsers: User[] = [];
+let cachedRoles: Role[] = [];
+let cachedInvitations: Invitation[] = [];
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
 export function clientLoader({ context }: Route.ClientLoaderArgs) {
@@ -61,24 +61,14 @@ export default function AdminUsers({
 						User Management
 					</h1>
 					<Promisable
-						data={users}
-						skeleton={
-							<>
-								{previousUsers && previousRoles && (
-									<UserTable
-										currentUser={user}
-										roles={previousRoles}
-										users={previousUsers}
-									></UserTable>
-								)}
-							</>
-						}
+						data={Promise.all([users, roles])}
+						cached_data={[previousUsers, previousRoles]}
 					>
-						{(usrs) => (
+						{(data) => (
 							<UserTable
 								currentUser={user}
-								roles={roles}
-								users={usrs}
+								roles={data[1] as Role[]}
+								users={data[0] as User[]}
 							></UserTable>
 						)}
 					</Promisable>

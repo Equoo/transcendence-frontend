@@ -10,7 +10,7 @@ export default function InvitationPromisable({
 	invitations: invitationsPromise,
 	className,
 }: {
-	previousInvitations: Invitation[] | undefined;
+	previousInvitations?: Invitation[];
 	invitations: Invitation[] | Promise<Invitation[]>;
 	className?: string;
 }): JSX.Element {
@@ -18,15 +18,7 @@ export default function InvitationPromisable({
 		<div className={className}>
 			<Promisable
 				data={invitationsPromise}
-				skeleton={
-					<>
-						{previousInvitations && (
-							<InvitationList
-								invitations={previousInvitations}
-							></InvitationList>
-						)}
-					</>
-				}
+				cached_data={previousInvitations}
 			>
 				{(invitations) => (
 					<InvitationList invitations={invitations}></InvitationList>

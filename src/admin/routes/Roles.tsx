@@ -74,21 +74,16 @@ export default function AdminRoles({
 					<Promisable
 						data={roles}
 						skeleton={
-							loaderData.previousRole ? (
-								<RoleTable
-									role={loaderData.previousRole}
-								></RoleTable>
-							) : (
-								<div className="animate-pulse space-y-2 p-4">
-									{Array.from({ length: 5 }, (_, i) => (
-										<div
-											key={i}
-											className="h-10 rounded bg-gray-200"
-										/>
-									))}
-								</div>
-							)
+							<div className="animate-pulse space-y-2 p-4">
+								{Array.from({ length: 5 }, (_, i) => (
+									<div
+										key={i}
+										className="h-10 rounded bg-gray-200"
+									/>
+								))}
+							</div>
 						}
+						cached_data={loaderData.previousRole}
 					>
 						{(role) => <RoleTable role={role}></RoleTable>}
 					</Promisable>
