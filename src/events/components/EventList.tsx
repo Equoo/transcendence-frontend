@@ -45,9 +45,11 @@ function EventListSkeleton({ count = 3 }: { count?: number }): JSX.Element {
 }
 
 export default function EventList({
+	previousEvents,
 	events,
 	skeletonCount = 3,
 }: {
+	previousEvents: EventSummary[] | undefined;
 	events: Promise<EventSummary[]> | EventSummary[];
 	skeletonCount?: number;
 }): JSX.Element {
@@ -55,7 +57,17 @@ export default function EventList({
 		<div className=" w-full flex shrink-0 px-4 py-6 gap-6 overflow-x-scroll items-center justify-center-safe">
 			<Promisable
 				data={events}
-				skeleton={<EventListSkeleton count={skeletonCount} />}
+				skeleton={
+					<>
+						{previousEvents ? (
+							previousEvents.map((event) => (
+								<EventCard key={event.id} event={event} />
+							))
+						) : (
+							<EventListSkeleton count={skeletonCount} />
+						)}
+					</>
+				}
 			>
 				{(data) =>
 					data.map((event) => (

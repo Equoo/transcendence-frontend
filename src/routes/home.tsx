@@ -14,15 +14,23 @@ import { type AppFile, fetchFiles } from "../files/api/files.api";
 import { fetchUsers, type User, UserContext } from "../users/api/users";
 import type { Route } from "./+types/home";
 
+let cachedEvents: EventSummary[] | undefined;
+
 export function clientLoader({ context }: Route.ClientLoaderArgs): {
+	previousEvents: EventSummary[] | undefined;
 	events: Promise<EventSummary[]>;
 	roles: Promise<EventRole[]>;
 	files: Promise<AppFile[]>;
 	users: Promise<User[]>;
 	user: User;
 } {
+	const previousEvents = cachedEvents;
+
+	const events = fetchEvents().then((result) => (cachedEvents = result));
+
 	return {
-		events: fetchEvents(),
+		previousEvents,
+		events,
 		roles: fetchEventRoles(),
 		files: fetchFiles(),
 		users: fetchUsers(),
@@ -31,7 +39,7 @@ export function clientLoader({ context }: Route.ClientLoaderArgs): {
 }
 
 export default function Home({
-	loaderData: { events, roles, files, users, user },
+	loaderData: { previousEvents, events, roles, files, users, user },
 }: Route.ComponentProps): JSX.Element {
 	const [showOnline, setShowOnline] = useState(false);
 	const activity = useActivity();
@@ -84,7 +92,7 @@ export default function Home({
 					user.role.permission & PermEnum.HandleEvent,
 				) && <EventForm roles={roles} files={files} />}
 			</div>
-			<EventList events={events} />
+			<EventList events={events} previousEvents={previousEvents} />
 		</>
 	);
 }
