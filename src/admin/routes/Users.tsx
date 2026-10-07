@@ -1,26 +1,58 @@
 import type { JSX } from "react";
 
-import { fetchInvitations } from "@/invitations/api/invitations.api";
-import InvitationList from "@/invitations/components/InvitationList";
+import Promisable from "@/components/Promisable";
+import {
+	fetchInvitations,
+	type Invitation,
+} from "@/invitations/api/invitations.api";
+import InvitationPromisable from "@/invitations/components/InvitationPromisable";
 
-import List from "../../components/List/List";
-import { fetchUsers, UserContext } from "../../users/api/users";
-import { fetchRoles } from "../api/roles";
-import ListUsers from "../components/AdminListUser";
+import { fetchUsers, type User, UserContext } from "../../users/api/users";
+import { fetchRoles, type Role } from "../api/roles";
+import UserTable from "../components/UserTable";
 import type { Route } from "./+types/Users";
 
+let cachedUsers: User[] = [];
+let cachedRoles: Role[] = [];
+let cachedInvitations: Invitation[] = [];
+
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
-export async function clientLoader({ context }: Route.ClientLoaderArgs) {
-	const users = await fetchUsers();
-	const roles = await fetchRoles();
+export function clientLoader({ context }: Route.ClientLoaderArgs) {
+	const previousUsers = cachedUsers;
+	const previousRoles = cachedRoles;
+	const previousInvitations = cachedInvitations;
+
+	const users = fetchUsers().then((result) => (cachedUsers = result));
+	const roles = fetchRoles().then((result) => (cachedRoles = result));
+	const invitations = fetchInvitations().then(
+		(result) => (cachedInvitations = result),
+	);
 	const user = context.get(UserContext);
 
-	return { users, roles, user, invitations: fetchInvitations() };
+	return {
+		user,
+		previousUsers,
+		users,
+		previousRoles,
+		roles,
+		previousInvitations,
+		invitations,
+	};
 }
 
 export default function AdminUsers({
 	loaderData,
 }: Route.ComponentProps): JSX.Element {
+	const {
+		users,
+		previousUsers,
+		roles,
+		previousRoles,
+		user,
+		previousInvitations,
+		invitations,
+	} = loaderData;
+
 	return (
 		<div className="w-full h-full bg-back">
 			<div className="flex justify-center flex-row w-full h-full">
@@ -28,31 +60,25 @@ export default function AdminUsers({
 					<h1 className="text-3xl m-4 font-semibold font-head">
 						User Management
 					</h1>
-					<List
-						cols={[
-							{ id: "Picture" },
-							{ id: "Username" },
-							{ id: "Role" },
-							{ id: "Action" },
-						]}
-						empty={loaderData.users.length === 0}
-						emptyMessage="No user to display."
+					<Promisable
+						data={Promise.all([users, roles])}
+						cached_data={[previousUsers, previousRoles]}
 					>
-						{loaderData.users.map((usr) => (
-							<ListUsers
-								key={usr.id}
-								user={usr}
-								roles={loaderData.roles}
-								currentUser={loaderData.user}
-							></ListUsers>
-						))}
-					</List>
+						{(data) => (
+							<UserTable
+								currentUser={user}
+								roles={data[1] as Role[]}
+								users={data[0] as User[]}
+							></UserTable>
+						)}
+					</Promisable>
 					<h1 className="text-3xl ml-4 mb-4 mt-10 font-semibold font-head">
 						Invitations Management
 					</h1>
-					<InvitationList
+					<InvitationPromisable
 						className="overflow-y-auto max-h-3/10"
-						invitations={loaderData.invitations}
+						previousInvitations={previousInvitations}
+						invitations={invitations}
 					/>
 				</div>
 			</div>

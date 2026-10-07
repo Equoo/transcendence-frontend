@@ -24,14 +24,21 @@ import { type AppFile, fetchFiles } from "../files/api/files.api";
 import { type User, UserContext } from "../users/api/users";
 import type { Route } from "./+types/calendar_page";
 
+let cachedEvents: EventSummary[] | undefined;
+
 export function clientLoader({ context }: Route.LoaderArgs): {
+	previousEvents: EventSummary[] | undefined;
 	events: Promise<EventSummary[]>;
 	roles: Promise<EventRole[]>;
 	files: Promise<AppFile[]>;
 	user: User;
 } {
+	const previousEvents = cachedEvents;
+	const events = fetchEvents().then((result) => (cachedEvents = result));
+
 	return {
-		events: fetchEvents(),
+		previousEvents,
+		events,
 		roles: fetchEventRoles(),
 		files: fetchFiles(),
 		user: context.get(UserContext),
@@ -55,12 +62,12 @@ export default function Calendar({
 			{Boolean(
 				loaderData.user.role.permission & PermEnum.HandleEvent,
 			) && (
-					<EventForm
-						roles={loaderData.roles}
-						files={loaderData.files}
-						className="w-fit ml-auto mr-2 mt-2"
-					/>
-				)}
+				<EventForm
+					roles={loaderData.roles}
+					files={loaderData.files}
+					className="w-fit ml-auto mr-2 mt-2"
+				/>
+			)}
 			<div className="xl:w-8/10 w-9/10 mt-2">
 				<div className="flex w-full items-center justify-between p-4">
 					<FiChevronLeft
@@ -108,7 +115,28 @@ export default function Calendar({
 							<Promisable
 								data={loaderData.events}
 								skeleton={
-									<div className="mt-1 mb-2 w-9/10 h-full flex flex-col gap-0.5 bg-back2 animate-pulse rounded-xl" />
+									<>
+										{loaderData.previousEvents ? (
+											<div className="mt-1 mb-0.75 w-9/10 overflow-y-auto flex flex-col gap-0.5">
+												{loaderData.previousEvents
+													.filter((ev) =>
+														isSameDay(ev.date, day),
+													)
+													.map((ev) => (
+														<Link
+															to={`/calendar/${ev.id}`}
+															key={ev.id}
+															className={`text-xs px-1 w-full font-light text-white rounded-xs hover:bg-accent/90
+                                                    ${ev.size === ev.registeredCount ? "bg-muted" : "bg-accent"}`}
+														>
+															{ev.name}
+														</Link>
+													))}
+											</div>
+										) : (
+											<div className="mt-1 mb-2 w-9/10 h-full flex flex-col gap-0.5 bg-back2 animate-pulse rounded-xl" />
+										)}
+									</>
 								}
 							>
 								{(events) => (
@@ -136,12 +164,11 @@ export default function Calendar({
 			</div>
 			<Promisable
 				data={loaderData.events}
-				skeleton={
-					<div className="mt-1 mb-2 w-9/10 h-full flex flex-col gap-0.5 bg-back2 animate-pulse rounded-xl" />
-				}
+				cached_data={loaderData.previousEvents}
 			>
 				{(events) => (
 					<EventList
+						previousEvents={loaderData.previousEvents}
 						events={events.filter((ev) =>
 							isSameDay(ev.date, selectedDay),
 						)}

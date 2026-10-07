@@ -50,12 +50,7 @@ export default function EventForm({
 		<Promisable
 			skeleton={
 				edit || (
-					<CheckButton
-						type="button"
-						className={className}
-						disabled
-						pending
-					>
+					<CheckButton type="button"  className={className} disabled>
 						Event
 					</CheckButton>
 				)

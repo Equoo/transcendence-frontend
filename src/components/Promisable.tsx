@@ -4,19 +4,25 @@ import { Await } from "react-router";
 export default function Promisable<T>({
 	skeleton,
 	data,
+	cached_data: cachedData,
 	children,
 }: {
 	skeleton?: ReactNode;
 	data: T | Promise<T>;
+	cached_data?: T;
 	children: (data: Awaited<T> | T) => ReactNode;
 }): JSX.Element {
 	return (
-		<Suspense fallback={skeleton}>
+		<>
 			{data instanceof Promise ? (
-				<Await resolve={data}>{children}</Await>
+				<Suspense
+					fallback={cachedData ? children(cachedData) : skeleton}
+				>
+					<Await resolve={data}>{children}</Await>
+				</Suspense>
 			) : (
 				<>{children(data)}</>
 			)}
-		</Suspense>
+		</>
 	);
 }

@@ -1,19 +1,24 @@
+/* eslint-disable id-length */
 import { type JSX, useEffect, useState } from "react";
 import { useFetcher } from "react-router";
 
 import ChangeModal from "@/components/Modal/ChangeModal";
+import Promisable from "@/components/Promisable";
 
 import CheckButton from "../../components/Button/CheckButton";
-import List, { type ListColumn } from "../../components/List/List";
-import { fetchRoles, PermEnum } from "../api/roles";
-import ListRoles from "../components/AdminListRoles";
+import { fetchRoles, type Role } from "../api/roles";
+import RoleTable from "../components/RoleTable";
 import type { Route } from "./+types/Roles";
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
-export async function clientLoader() {
-	const roles = await fetchRoles();
+let cachedRoles: Role[] | undefined;
 
-	return { roles };
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
+export function clientLoader() {
+	const previousRole = cachedRoles;
+
+	const roles = fetchRoles().then((result) => (cachedRoles = result));
+
+	return { roles, previousRole };
 }
 
 export default function AdminRoles({
@@ -22,6 +27,7 @@ export default function AdminRoles({
 	const [showRoleForm, setShowRoleForm] = useState<boolean>(false);
 
 	const fetcher = useFetcher();
+	const roles: Promise<Role[]> | Role[] = loaderData.roles;
 
 	useEffect(() => {
 		if (fetcher.data) {
@@ -29,21 +35,6 @@ export default function AdminRoles({
 			setShowRoleForm(false);
 		}
 	}, [fetcher.data]);
-
-	const headers: ListColumn[] = [];
-
-	headers.push({ id: "Name" });
-
-	for (const key in PermEnum) {
-		if (!isNaN(Number(key))) {
-			// eslint-disable-next-line no-continue
-			continue;
-		}
-		const col = { id: key } as ListColumn;
-		headers.push(col);
-	}
-
-	headers.push({ id: "Action" });
 
 	return (
 		<>
@@ -68,6 +59,7 @@ export default function AdminRoles({
 						<h1 className="text-3xl m-4 font-semibold font-head">
 							Roles Management
 						</h1>
+
 						<CheckButton
 							type="button"
 							onClick={() => {
@@ -79,11 +71,22 @@ export default function AdminRoles({
 							Add Role
 						</CheckButton>
 					</div>
-					<List cols={headers}>
-						{loaderData.roles.map((rls) => (
-							<ListRoles key={rls.id} role={rls}></ListRoles>
-						))}
-					</List>
+					<Promisable
+						data={roles}
+						skeleton={
+							<div className="animate-pulse space-y-2 p-4">
+								{Array.from({ length: 5 }, (_, i) => (
+									<div
+										key={i}
+										className="h-10 rounded bg-gray-200"
+									/>
+								))}
+							</div>
+						}
+						cached_data={loaderData.previousRole}
+					>
+						{(role) => <RoleTable role={role}></RoleTable>}
+					</Promisable>
 				</div>
 			</div>
 		</>
