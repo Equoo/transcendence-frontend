@@ -4,6 +4,7 @@ import { useFetcher } from "react-router";
 import ChangeModal from "@/components/Modal/ChangeModal";
 import ChoiceModal from "@/components/Modal/ChoiceModal";
 import ProfilePic from "@/components/Profile/ProfilePic";
+import Promisable from "@/components/Promisable";
 
 import type { User } from "../../users/api/users";
 import { PermEnum, type Role } from "../api/roles";
@@ -17,7 +18,7 @@ export default function ListUsers({
 	currentUser,
 }: {
 	user: User;
-	roles: Role[];
+	roles: Role[] | Promise<Role[]>;
 	currentUser: User;
 }): JSX.Element {
 	const [showChangePass, setShowChangePass] = useState(false);
@@ -100,33 +101,43 @@ export default function ListUsers({
 				{user.userName}
 			</td>
 			<td className="px-6 py-3 font-medium">
-				<select
-					defaultValue={user.role.name}
-					disabled={
-						!(currentUser.role.permission & PermEnum.HandleRoles)
-					}
-					className={classSelect}
-					onChange={(event) => {
-						const role = roles.find(
-							(rl) => event.target.value === rl.name,
-						);
+				<Promisable data={roles}>
+					{(listRole) => (
+						<select
+							defaultValue={user.role.name}
+							disabled={
+								!(
+									currentUser.role.permission &
+									PermEnum.HandleRoles
+								)
+							}
+							className={classSelect}
+							onChange={(event) => {
+								const role = listRole.find(
+									(rl) => event.target.value === rl.name,
+								);
 
-						if (!role) {
-							return;
-						}
-						void fetcher.submit(
-							{
-								UserId: user.id,
-								RoleId: role.id,
-							},
-							{ method: "PATCH", action: "/users/roleUser" },
-						);
-					}}
-				>
-					{roles.map((rl) => (
-						<option key={rl.id}>{rl.name}</option>
-					))}
-				</select>
+								if (!role) {
+									return;
+								}
+								void fetcher.submit(
+									{
+										UserId: user.id,
+										RoleId: role.id,
+									},
+									{
+										method: "PATCH",
+										action: "/users/roleUser",
+									},
+								);
+							}}
+						>
+							{listRole.map((rl) => (
+								<option key={rl.id}>{rl.name}</option>
+							))}
+						</select>
+					)}
+				</Promisable>
 			</td>
 			<td className="space-x-10 font-medium w-1/4 ">
 				<button

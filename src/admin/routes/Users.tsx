@@ -1,5 +1,6 @@
 import type { JSX } from "react";
 
+import Promisable from "@/components/Promisable";
 import { fetchInvitations } from "@/invitations/api/invitations.api";
 import InvitationList from "@/invitations/components/InvitationList";
 
@@ -10,9 +11,9 @@ import ListUsers from "../components/AdminListUser";
 import type { Route } from "./+types/Users";
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
-export async function clientLoader({ context }: Route.ClientLoaderArgs) {
-	const users = await fetchUsers();
-	const roles = await fetchRoles();
+export function clientLoader({ context }: Route.ClientLoaderArgs) {
+	const users = fetchUsers();
+	const roles = fetchRoles();
 	const user = context.get(UserContext);
 
 	return { users, roles, user, invitations: fetchInvitations() };
@@ -28,25 +29,29 @@ export default function AdminUsers({
 					<h1 className="text-3xl m-4 font-semibold font-head">
 						User Management
 					</h1>
-					<List
-						cols={[
-							{ id: "Picture" },
-							{ id: "Username" },
-							{ id: "Role" },
-							{ id: "Action" },
-						]}
-						empty={loaderData.users.length === 0}
-						emptyMessage="No user to display."
-					>
-						{loaderData.users.map((usr) => (
-							<ListUsers
-								key={usr.id}
-								user={usr}
-								roles={loaderData.roles}
-								currentUser={loaderData.user}
-							></ListUsers>
-						))}
-					</List>
+					<Promisable data={loaderData.users}>
+						{(users) => (
+							<List
+								cols={[
+									{ id: "Picture" },
+									{ id: "Username" },
+									{ id: "Role" },
+									{ id: "Action" },
+								]}
+								empty={users.length === 0}
+								emptyMessage="No user to display."
+							>
+								{users.map((usr) => (
+									<ListUsers
+										key={usr.id}
+										user={usr}
+										roles={loaderData.roles}
+										currentUser={loaderData.user}
+									></ListUsers>
+								))}
+							</List>
+						)}
+					</Promisable>
 					<h1 className="text-3xl ml-4 mb-4 mt-10 font-semibold font-head">
 						Invitations Management
 					</h1>
