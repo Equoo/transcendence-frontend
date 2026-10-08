@@ -78,7 +78,7 @@ export default function AdminRoles({
 								{Array.from({ length: 5 }, (_, i) => (
 									<div
 										key={i}
-										className="h-10 rounded bg-gray-200"
+										className="h-10 rounded bg-border"
 									/>
 								))}
 							</div>
