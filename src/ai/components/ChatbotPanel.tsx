@@ -2,7 +2,14 @@ import type { TFunction } from "i18next";
 import { type JSX, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { BsSend } from "react-icons/bs";
-import { PiNotePencil, PiSparkle, PiStopFill, PiX } from "react-icons/pi";
+import {
+	PiArrowsInSimple,
+	PiNotePencil,
+	PiResize,
+	PiSparkle,
+	PiStopFill,
+	PiX,
+} from "react-icons/pi";
 import Markdown from "react-markdown";
 
 import IconBtn from "@/components/Button/IconBtn";
@@ -84,11 +91,15 @@ function Bubble({
 }
 
 export default function ChatbotPanel({
+	isFull,
+	onResize,
 	onClose,
 	suggestions,
 	className = "",
 }: {
-	onClose?: () => void;
+	isFull: boolean;
+	onResize: (isFull: boolean) => void;
+	onClose: () => void;
 	suggestions?: string[];
 	className?: string;
 }): JSX.Element {
@@ -151,16 +162,25 @@ export default function ChatbotPanel({
 						className="p-1.5!"
 					/>
 				)}
-				{onClose && (
-					<IconBtn
-						discrete
-						icon={PiX}
-						size={18}
-						aria-label={t("assistant.close")}
-						onClick={onClose}
-						className="p-1.5!"
-					/>
-				)}
+				<IconBtn
+					discrete
+					icon={isFull ? PiArrowsInSimple : PiResize}
+					size={18}
+					aria-label="Resize the assistant"
+					onClick={() => {
+						onResize(!isFull);
+					}}
+					className="p-1.5! lg:opacity-100 lg:hover:cursor-pointer sm:hover:cursor-pointer sm:opacity-100 opacity-0 hover:cursor-default"
+				/>
+
+				<IconBtn
+					discrete
+					icon={PiX}
+					size={18}
+					aria-label="Close assistant"
+					onClick={onClose}
+					className="p-1.5!"
+				/>
 			</header>
 
 			<div
