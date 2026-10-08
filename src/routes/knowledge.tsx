@@ -29,7 +29,12 @@ export default function Knowledge({
 }: Route.ComponentProps): JSX.Element {
 	const isLarge = useMediaQuery("(min-width: 64rem)");
 	const [showRag, setShowRag] = useState<boolean | null>(cachedOpen);
+	const [fullResize, setFullResize] = useState<boolean>(false);
 	const open = showRag ?? isLarge;
+
+	const fullStyle = fullResize
+		? "h-full"
+		: "lg:h-[min(440px,45%)] sm:h-[min(640px,calc(100dvh-2rem))] sm:inset-auto sm:right-4 sm:bottom-4 sm:w-100 sm:rounded-2xl sm:border sm:border-border sm:shadow-main";
 
 	return (
 		<div className="flex flex-col w-full h-full">
@@ -46,11 +51,15 @@ export default function Knowledge({
 
 			{open ? (
 				<ChatbotPanel
+					isFull={fullResize}
+					onResize={(isFull: boolean) => {
+						setFullResize(isFull);
+					}}
 					onClose={() => {
 						setShowRag(false);
 						cachedOpen = false;
 					}}
-					className="fixed inset-0 z-50 sm:inset-auto sm:right-4 sm:bottom-4 sm:h-[min(640px,calc(100dvh-2rem))] sm:w-100 sm:rounded-2xl sm:border sm:border-border sm:shadow-main lg:static lg:z-auto lg:h-[min(440px,45%)] lg:w-full lg:flex-none lg:rounded-none lg:border-0 lg:border-t lg:shadow-none"
+					className={`${fullStyle} absolute inset-0 z-50  lg:static lg:z-auto  lg:w-full lg:flex-none lg:rounded-none lg:border-0 lg:border-t lg:border-border lg:shadow-none`}
 				/>
 			) : (
 				<button
