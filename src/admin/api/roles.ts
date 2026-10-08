@@ -105,6 +105,11 @@ export async function createRole(formdata: FormData): Promise<Response> {
 		body: JSON.stringify(req.name),
 	});
 
+    if (!res.ok)
+    {
+        throw new APIError((await res.json()) as ProblemDetail);
+    }
+
 	return res;
 }
 
@@ -117,6 +122,11 @@ export async function deleteRole(formdata: FormData): Promise<Response> {
 			"Content-Type": "application/json",
 		},
 	});
+
+    if (!res.ok)
+    {
+        throw new APIError((await res.json()) as ProblemDetail);
+    }
 
 	return res;
 }
@@ -131,6 +141,11 @@ export async function changeRoleName(formdata: FormData): Promise<Response> {
 		},
 		body: JSON.stringify(req.Name),
 	});
+
+    if (!res.ok)
+    {
+        throw new APIError((await res.json()) as ProblemDetail);
+    }
 
 	return res;
 }
@@ -153,5 +168,11 @@ export async function handleCheckbox(formdata: FormData): Promise<Response> {
 		},
 		body: JSON.stringify(toPermInput(finalCode).permission),
 	});
+
+     if (!res.ok)
+    {
+        throw new APIError((await res.json()) as ProblemDetail);
+    }
+
 	return res;
 }

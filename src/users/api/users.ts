@@ -121,6 +121,8 @@ export async function userLogout(): Promise<Response> {
 	if (!res.ok) {
 		throw new APIError((await res.json()) as ProblemDetail);
 	}
+
+	window.location.assign("/login");
 	const activity = useActivity.getState();
 	await activity.setSelfActivity(ActivityEnum.Offline);
 	return res;

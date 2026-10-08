@@ -34,14 +34,14 @@ export const clientMiddleware: Route.MiddlewareFunction[] = [
 			if (url.pathname === "/login" || url.pathname === "/register") {
 				return redirect("/");
 			}
-			if (url.pathname === "/admin/roles") {
+			if (url.pathname.startsWith("/admin/roles")) {
 				if (!(user.role.permission & PermEnum.HandleRoles)) {
-					return redirect("/");
+					return redirect("*");
 				}
 			}
-			if (url.pathname === "/admin/users") {
+			if (url.pathname.startsWith("/admin/users")) {
 				if (!(user.role.permission & PermEnum.HandleUsers)) {
-					return redirect("/");
+					return redirect("*");
 				}
 			}
 		} else if (url.pathname !== "/login" && url.pathname !== "/register") {
@@ -71,7 +71,8 @@ export function Layout({ children }: { children: ReactNode }): JSX.Element {
 					newestOnTop
 					pauseOnHover
 					toastClassName={(context) =>
-						`${alertStyle[context?.type ?? "default"]
+						`${
+							alertStyle[context?.type ?? "default"]
 						} relative flex px-4 gap-1 py-2 min-h-10 rounded-lg justify-between overflow-hidden cursor-pointer`
 					}
 				/>

@@ -18,6 +18,7 @@ export function RolesBox({
 	return (
 		<td className="text-center">
 			<input
+				disabled={fetcher.state !== "idle"}
 				name="perms"
 				type="checkbox"
 				defaultChecked={Boolean(perm.code & role.permission)}
