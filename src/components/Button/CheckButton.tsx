@@ -21,11 +21,11 @@ export default function CheckButton({
 	...rest
 }: Props): JSX.Element {
 	let style =
-		"inline-flex items-center font-semibold duration-150 justify-center w-full py-2 px-4 gap-2 whitespace-nowrap [&>svg]:shrink-0 rounded-full cursor-pointer disabled:bg-muted disabled:hover:brightness-100";
+		"inline-flex items-center font-semibold duration-150 justify-center w-full py-2 px-4 gap-2 rounded-full border cursor-pointer disabled:bg-muted disabled:hover:brightness-100";
 
 	if (active) {
 		style +=
-			" text-accent-text hover:brightness-110 rounded-full active:translate-y-[1px] shadow-accent hover:shadow-xs";
+			" text-accent-text hover:brightness-110 rounded-full active:translate-y-[1px] shadow-accent hover:shadow-xs border";
 		if (danger) {
 			style += " bg-error";
 		} else {
