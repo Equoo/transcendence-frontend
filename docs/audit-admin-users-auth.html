@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Audit KeepGrouped — Admin, Users, Auth</title>
+<style>
+:root{
+  --bg:#f6f7fb; --card:#fff; --text:#1c2033; --muted:#646b85; --border:#e3e6f0;
+  --accent:#6c5ce7; --accent-soft:#eeebff;
+  --high:#e5484d; --high-soft:#fdecec;
+  --mid:#f5a623; --mid-soft:#fff5e1;
+  --low:#2f9e6e; --low-soft:#e4f6ee;
+  --code:#f0f2f8;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#12141d; --card:#1b1e2b; --text:#e8eaf3; --muted:#9aa1bb; --border:#2c3042;
+    --accent:#a29bfe; --accent-soft:#2a2650;
+    --high:#ff6b70; --high-soft:#3a1d22;
+    --mid:#ffc04d; --mid-soft:#3a2f17;
+    --low:#4cc38a; --low-soft:#16312a;
+    --code:#252839;
+  }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding:0 16px}
+.wrap{max-width:980px;margin:0 auto;padding-block:40px 80px}
+header{margin-bottom:28px}
+.eyebrow{color:var(--accent);font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:12px}
+h1{font-size:clamp(28px,5vw,42px);line-height:1.15;margin:6px 0 10px}
+h1 span{color:var(--accent)}
+.sub{color:var(--muted);max-width:68ch;margin:0}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.pill{background:var(--card);border:1px solid var(--border);border-radius:99px;padding:3px 12px;font-size:13px;color:var(--muted)}
+.pill b{color:var(--text)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:26px 0}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px}
+.stat .n{font-size:32px;font-weight:800;line-height:1}
+.stat .l{color:var(--muted);font-size:13px;margin-top:4px}
+.stat.high .n{color:var(--high)} .stat.mid .n{color:var(--mid)} .stat.low .n{color:var(--low)}
+.note{background:var(--accent-soft);border-radius:14px;padding:14px 18px;margin:0 0 26px;font-size:14px}
+h2{font-size:22px;margin:40px 0 6px}
+h2 + p{color:var(--muted);margin:0 0 16px}
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 6px;position:sticky;top:0;background:var(--bg);padding-block:10px;z-index:2}
+.filters button{border:1px solid var(--border);background:var(--card);color:var(--text);border-radius:99px;padding:6px 14px;font:inherit;font-size:13px;cursor:pointer}
+.filters button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
+.item{background:var(--card);border:1px solid var(--border);border-left:5px solid var(--sev);border-radius:14px;margin-bottom:12px}
+.item.high{--sev:var(--high)} .item.mid{--sev:var(--mid)} .item.low{--sev:var(--low)}
+.item summary{list-style:none;cursor:pointer;padding:14px 18px;display:flex;gap:12px;align-items:flex-start}
+.item summary::-webkit-details-marker{display:none}
+.item summary::after{content:"+";margin-left:auto;color:var(--muted);font-size:20px;line-height:1}
+.item[open] summary::after{content:"–"}
+.badge{flex:none;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;padding:3px 9px;border-radius:99px;margin-top:2px;background:var(--sev-soft);color:var(--sev)}
+.item.high .badge{--sev-soft:var(--high-soft)} .item.mid .badge{--sev-soft:var(--mid-soft)} .item.low .badge{--sev-soft:var(--low-soft)}
+.title{font-weight:650}
+.body{padding:0 18px 16px 18px;border-top:1px solid var(--border)}
+.body p{margin:12px 0 6px}
+.lbl{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-top:14px}
+code{background:var(--code);padding:1px 6px;border-radius:6px;font:13px ui-monospace,Menlo,Consolas,monospace}
+.files{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.cat{font-size:12px;color:var(--muted);margin-left:8px;font-weight:500}
+ol.plan{padding-left:20px} ol.plan li{margin:6px 0}
+.good{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.good div{background:var(--low-soft);border-radius:14px;padding:14px 16px;font-size:14px}
+.good b{color:var(--low)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+.tw{overflow-x:auto;background:var(--card);border:1px solid var(--border);border-radius:14px}
+th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--border);vertical-align:top}
+tr:last-child td{border-bottom:0}
+th{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.06em}
+footer{color:var(--muted);font-size:13px;margin-top:40px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">Audit de code · front-end</div>
+  <h1>KeepGrouped <span>— Admin, Users, Auth</span></h1>
+  <p class="sub">Revue des features admin (users, rôles, invitations), du profil utilisateur et de l'authentification, comparée au contrat Swagger du back. Le projet est solide pour un premier projet : ce rapport sert à choisir les quelques corrections qui comptent vraiment.</p>
+  <div class="meta">
+    <span class="pill">Branche <b>audit/admin-users-auth</b> (depuis <b>develop</b> à jour)</span>
+    <span class="pill">Back : <b>/swagger/v1/swagger.json</b> via proxy <code>/api</code></span>
+    <span class="pill">Généré le <b>07/10/2026</b></span>
+  </div>
+</header>
+
+<div class="stats" id="stats"></div>
+
+<div class="note">
+  <b>Méthode et limites.</b> Lecture complète du code de <code>src/admin</code>, <code>src/auth</code>, <code>src/users</code>, <code>src/tokens</code>, <code>src/invitations</code> et <code>root.tsx</code>, croisée avec le Swagger. J'ai lancé <code>eslint</code>, <code>prettier --check</code> et <code>tsc</code>. Je n'ai <b>pas</b> rejoué les scénarios dans l'app connectée (le back répond 401 sans session) : les bugs marqués « probable » sont à confirmer en 2 minutes dans le navigateur.
+</div>
+
+<h2>Ce qui est déjà bien</h2>
+<p>À garder comme référence pour le reste du projet.</p>
+<div class="good">
+  <div><b>Architecture lisible.</b> Découpage <code>api / components / routes</code> par feature, partout pareil.</div>
+  <div><b>Lint propre.</b> 0 erreur ESLint sur les dossiers audités (1 warning inutile), React Compiler activé.</div>
+  <div><b>Refresh de token dédupliqué.</b> <code>callApi</code> partage une seule requête de refresh entre appels concurrents.</div>
+  <div><b>Suspense + cache.</b> Le pattern <code>Promisable</code> est réutilisable et propre.</div>
+</div>
+
+<h2>Constats</h2>
+<p>Clique sur un constat pour voir le détail et la correction proposée.</p>
+<div class="filters" id="filters"></div>
+<div id="list"></div>
+
+<h2>Côté back / Swagger</h2>
+<p>Pas du code front, mais utile à transmettre à l'équipe back.</p>
+<div class="tw"><table>
+<thead><tr><th>Point</th><th>Détail</th></tr></thead>
+<tbody>
+<tr><td><code>GET /auth/logout</code>, <code>GET /auth/refresh</code></td><td>Des GET qui modifient l'état : un lien ou une image tierce peut déconnecter l'utilisateur. À passer en POST.</td></tr>
+<tr><td>Erreurs non documentées</td><td><code>/roles*</code>, <code>/users/{id}</code>, <code>/me/password</code>, <code>/auth/{id}/password</code> ne déclarent que « 200 » : pas de 400/401/403/404, pas de schéma de réponse pour <code>GET /roles</code>. Le front est obligé de deviner. Aucun <code>securitySchemes</code> non plus.</td></tr>
+<tr><td>Permissions à vérifier</td><td>Les gardes du front sont cosmétiques. Vérifier que le back refuse : supprimer/déconnecter/changer le mot de passe de soi-même ou d'un admin supérieur, se donner des permissions via <code>PATCH /roles/{id}/permission</code>, supprimer le dernier admin.</td></tr>
+<tr><td>Endpoints non utilisés</td><td><code>GET /me/tokens</code> (liste des sessions) et <code>GET /users/{id}</code>. Idée de feature : « Mes sessions actives » dans le profil.</td></tr>
+<tr><td><code>channelsAckMsg</code></td><td>Déclaré <code>nullable</code> dans <code>GetMeResponse</code> et absent de <code>ListUsersResponse</code>. Le front doit gérer les deux cas (voir constat « normalizeUser »).</td></tr>
+</tbody></table></div>
+
+<h2>Plan d'action proposé</h2>
+<p>Dans cet ordre, c'est environ une demi-journée pour les 4 premiers points.</p>
+<ol class="plan">
+  <li><b>Un helper d'erreur unique</b> (<code>assertOk(res)</code>) et des actions qui renvoient <code>{ ok, error }</code> au lieu de lancer : règle les constats 1, 2, 3 et la duplication <code>APIError</code> d'un coup.</li>
+  <li><b>ChangeModal</b> : champs <code>type="password"</code> et <code>minLength</code> séparé pour le mot de passe actuel.</li>
+  <li><b>Petits bugs rapides</b> : <code>normalizeUser</code> null-safe, date d'invitation en ISO, condition de <code>AdminSidebar</code>, caches initiaux <code>undefined</code>.</li>
+  <li><b>Garde-fous admin</b> : désactiver les actions sur soi-même, sélecteur de rôle par <code>id</code>, checkbox désactivée pendant l'envoi.</li>
+  <li>Ensuite seulement : cohérence (nommage, format Prettier) et accessibilité.</li>
+</ol>
+
+<footer>Aucune modification de code source n'a été faite : ce fichier est le seul ajout sur la branche. Dis-moi quels constats tu veux que je corrige.</footer>
+</div>
+
+<script>
+const SEV={high:"Important",mid:"Moyen",low:"Cohérence / confort"};
+const ITEMS=[
+{sev:"high",cat:"Erreurs",title:"Une erreur d'API (mauvais mot de passe, pseudo déjà pris, 403…) casse l'écran",
+ files:["users/api/users.ts:81-117","admin/api/users.ts","users/routes/me.ts","admin/routes/UsersAction.ts"],
+ what:"Les fonctions <code>userChangePassword</code>, <code>userChangeUsername</code>, <code>handleRemoveUser</code>… font <code>throw new APIError</code>. Une action de fetcher qui lève remonte à l'<code>ErrorBoundary</code> de sa route : <code>/me/:action</code> et <code>/users/:action</code> sont au niveau racine, et <code>root.tsx</code> n'en exporte aucune. Probable : écran d'erreur React Router plein page pour un simple « mot de passe incorrect » ou pseudo en 409 (documenté dans le Swagger pour <code>PATCH /me</code>).",
+ fix:"Faire renvoyer <code>{ ok:false, error }</code> par les actions, afficher le message dans la modale ou via <code>toast.error()</code> (le <code>ToastContainer</code> est déjà monté dans <code>root.tsx</code> mais presque jamais utilisé). Réserver <code>throw</code> aux loaders."},
+{sev:"high",cat:"Erreurs",title:"Les actions sur les rôles ignorent les erreurs et répondent toujours « succès »",
+ files:["admin/api/roles.ts:97-156","admin/routes/RolesAction.ts:35"],
+ what:"<code>createRole</code>, <code>deleteRole</code>, <code>changeRoleName</code>, <code>handleCheckbox</code> renvoient <code>res</code> sans tester <code>res.ok</code>, puis <code>data(res,{status:201})</code>. En cas de 403/404/500 la modale se ferme comme si tout avait marché. C'est aussi incohérent avec <code>admin/api/users.ts</code> qui vérifie.",
+ fix:"Même helper que ci-dessus. Au passage : un <code>201</code> sur des DELETE/PATCH est trompeur, <code>200</code> suffit."},
+{sev:"high",cat:"Auth",title:"Inscription : « Invalid invitation code » affiché pour toutes les erreurs",
+ files:["auth/api/auth.ts:37-67","auth/routes/register.tsx:37-41","auth/routes/login.tsx:34-38"],
+ what:"<code>registerUser</code> et <code>loginUser</code> retournent juste <code>{ok:false}</code>. Le Swagger donne 409 (pseudo déjà utilisé) et 400 (validation) pour <code>/auth/register</code>, 400 et 406 pour <code>/auth/login</code>. Un pseudo déjà pris affiche donc « code d'invitation invalide ». Une panne serveur affiche « mauvais login ou mot de passe ».",
+ fix:"Retourner le <code>ProblemDetail</code> et afficher <code>detail</code> ; le composant <code>Input</code> accepte déjà une prop <code>errors</code> (validation par champ) qui n'est pas branchée sur <code>AuthForm</code>."},
+{sev:"high",cat:"Sécurité / UX",title:"Changement de mot de passe : mots de passe visibles en clair, et formulaire bloqué si l'ancien est court",
+ files:["components/Modal/ChangeModal.tsx:49-66","users/components/Profile.tsx:87-101","admin/components/AdminListUser.tsx:83-100"],
+ what:"Dans <code>ChangeModal</code>, le champ « Current password » n'a pas de <code>type</code> (donc texte) et le nouveau mot de passe est en <code>type=\"text\"</code> (modale de reset admin incluse). De plus <code>minLength={minInput}</code> (8) est appliqué au mot de passe <i>actuel</i> : or l'inscription accepte 1 caractère (<code>AuthForm</code> n'a pas de <code>minLength</code>). Un utilisateur dont le mot de passe fait moins de 8 caractères ne peut jamais en changer.",
+ fix:"<code>type=\"password\"</code> + <code>autoComplete</code> (<code>current-password</code> / <code>new-password</code>) quand <code>password</code> est vrai, <code>minLength</code> propre au champ « nouveau ». Aligner la règle d'inscription sur 8 caractères."},
+{sev:"high",cat:"Robustesse",title:"<code>normalizeUser</code> plante si <code>channelsAckMsg</code> est null ; <code>fetchUsers</code> ne normalise pas",
+ files:["users/api/users.ts:42-55","users/api/users.ts:146-153"],
+ what:"Le Swagger déclare <code>channelsAckMsg</code> <code>nullable</code> : <code>Object.entries(null)</code> lève une <code>TypeError</code> dans le middleware racine, donc dans toute l'app. À l'inverse <code>fetchUsers</code> caste la réponse en <code>User[]</code> alors que <code>ListUsersResponse</code> n'a pas ce champ : le type ment (<code>channelsAckMsg</code> typé <code>Map</code> mais absent).",
+ fix:"<code>Object.entries(dto.channelsAckMsg ?? {})</code>. Créer un type <code>UserSummary</code> (sans <code>channelsAckMsg</code>) pour la liste admin."},
+{sev:"high",cat:"Invitations",title:"Date d'expiration d'invitation envoyée sans fuseau horaire",
+ files:["invitations/api/invitations.api.ts:16-21","invitations/components/InvitationForm.tsx:63-68"],
+ what:"La valeur brute d'un <code>datetime-local</code> (<code>2026-10-08T12:00</code>) est envoyée telle quelle : le back peut l'interpréter en UTC et décaler l'expiration de plusieurs heures. Pas de <code>min</code> sur le champ : choisir une date passée donne un 400, qui est ensuite lancé en exception (voir constat 1).",
+ fix:"<code>new Date(value).toISOString()</code> et <code>min</code> = maintenant."},
+{sev:"mid",cat:"Admin",title:"Le lien « Roles » disparaît pour un utilisateur qui a seulement <code>HandleRoles</code>",
+ files:["admin/components/AdminSidebar.tsx:13-15"],
+ what:"La condition est <code>HandleUsers && (HandleUsers || HandleRoles)</code>, donc elle exige toujours <code>HandleUsers</code>. Quelqu'un avec uniquement <code>HandleRoles</code> peut ouvrir <code>/admin/roles</code> à la main (le guard l'autorise) mais n'a aucun lien. C'est aussi la seule alerte ESLint (directive <code>no-bitwise</code> inutile).",
+ fix:"Remplacer par <code>HandleUsers || HandleRoles</code> pour le conteneur, et supprimer la ligne <code>eslint-disable</code>."},
+{sev:"mid",cat:"Admin",title:"Flash « No user to display. » au premier chargement",
+ files:["admin/routes/Users.tsx:15-17","components/Promisable.tsx:19"],
+ what:"<code>cachedUsers</code>, <code>cachedRoles</code>, <code>cachedInvitations</code> valent <code>[]</code> au départ. Or un tableau vide est « truthy » : <code>Promisable</code> affiche le cache vide au lieu du skeleton, donc le message « aucun utilisateur » pendant le chargement. <code>Roles.tsx</code> initialise avec <code>undefined</code> et fonctionne bien : les deux pages ne suivent pas la même règle.",
+ fix:"Initialiser les caches à <code>undefined</code> (comme Roles) et passer un <code>skeleton</code> à la page Users."},
+{sev:"mid",cat:"Admin",title:"Un admin peut se supprimer, se déconnecter ou changer son propre mot de passe depuis la table",
+ files:["admin/components/AdminListUser.tsx:142-170"],
+ what:"Les trois boutons sont affichés pour toutes les lignes, y compris la sienne. Ils ont <code>type=\"submit\"</code> sans formulaire autour (inoffensif, mais incorrect). Le back doit aussi refuser, mais l'interface devrait l'empêcher.",
+ fix:"<code>disabled={user.id === currentUser.id}</code> et <code>type=\"button\"</code> (ou le composant <code>ListAction</code> qui existe déjà dans <code>List.tsx</code>)."},
+{sev:"mid",cat:"Admin",title:"Le sélecteur de rôle identifie les rôles par leur nom",
+ files:["admin/components/AdminListUser.tsx:107-137"],
+ what:"<code>&lt;option&gt;</code> sans <code>value</code> et recherche avec <code>find(rl =&gt; rl.name === value)</code>. Rien n'empêche deux rôles de même nom (<code>createRole</code> ne vérifie rien) : le premier trouvé est attribué. Le select est aussi non contrôlé : si la requête échoue, il affiche un rôle que l'utilisateur n'a pas.",
+ fix:"<code>&lt;option value={rl.id}&gt;</code> et <code>defaultValue={user.role.id}</code>."},
+{sev:"mid",cat:"Admin",title:"Clics rapides sur les cases de permissions : une modification peut en écraser une autre",
+ files:["admin/components/AdminRoleBox.tsx:25-39","admin/api/roles.ts:138-156"],
+ what:"Chaque case envoie <code>role.permission</code> tel qu'il était au rendu, et le front calcule le nouveau masque. Deux clics avant la revalidation partent donc du même ancien masque : le second écrase le premier. Les cases sont aussi non contrôlées (<code>defaultChecked</code>) : si le back refuse, la case reste cochée.",
+ fix:"Désactiver la case pendant <code>fetcher.state !== \"idle\"</code> ; ou, mieux, demander au back un endpoint qui reçoit « permission + état » plutôt que le masque complet."},
+{sev:"mid",cat:"Sécurité",title:"Les caches de pages survivent à la déconnexion",
+ files:["admin/routes/Users.tsx","admin/routes/Roles.tsx","routes/home.tsx","routes/calendar_page.tsx"],
+ what:"Les variables <code>let cached…</code> vivent au niveau du module. Après un logout, la navigation est une redirection React Router (pas de rechargement) : si quelqu'un d'autre se connecte dans le même onglet, il peut voir brièvement les données du compte précédent avant la réponse du back.",
+ fix:"Exposer une fonction <code>clearCaches()</code> appelée dans <code>userLogout</code>, ou faire un <code>window.location.assign(\"/login\")</code> après déconnexion."},
+{sev:"mid",cat:"Auth",title:"Garde des pages admin fragile et appel <code>/api/me</code> à chaque navigation",
+ files:["root.tsx:30-51"],
+ what:"Le test est <code>url.pathname === \"/admin/roles\"</code> : <code>/admin/roles/</code> (slash final) passe sans vérification. De plus <code>fetchUser()</code> est appelé à chaque navigation. Probable : aussi à chaque action de fetcher, donc chaque case cochée fait un <code>GET /api/me</code>. Enfin une erreur 500 sur <code>/me</code> est traitée comme « non connecté » et renvoie vers <code>/login</code>.",
+ fix:"Utiliser <code>startsWith(\"/admin/\")</code> ou un layout <code>admin</code> avec son propre <code>clientMiddleware</code>. Ne rediriger vers <code>/login</code> que sur 401. Créer un helper <code>hasPermission(user, PermEnum.X)</code> : le motif <code>!(user.role.permission &amp; …)</code> est recopié une dizaine de fois."},
+{sev:"mid",cat:"Auth",title:"Déconnexion : l'ordre des appels et la connexion SignalR",
+ files:["users/api/users.ts:119-127","chat/hooks/chatHub.hook.ts"],
+ what:"<code>userLogout</code> appelle <code>setSelfActivity(Offline)</code> <i>après</i> avoir déconnecté la session : l'appel hub peut échouer faute de jeton, et s'il lève l'exception, le logout paraît en erreur alors qu'il est fait. Je n'ai trouvé aucun <code>disconnect/stop</code> du hub à la déconnexion : la connexion de l'ancien utilisateur reste ouverte jusqu'au rechargement.",
+ fix:"Passer <code>Offline</code> avant l'appel <code>/auth/logout</code> (dans un <code>try/catch</code>) et arrêter la connexion du hub."},
+{sev:"mid",cat:"Profil",title:"Upload d'avatar : les erreurs sont ignorées",
+ files:["users/api/users.ts:73-79","components/Profile/ProfilePic.tsx:257-275"],
+ what:"<code>userChangeAvatar</code> ne teste pas <code>res.ok</code> alors que le Swagger prévoit 422 (fichier invalide) et 502. La modale se ferme sans rien dire. Le champ fichier n'a pas <code>accept=\"image/*\"</code>.",
+ fix:"Tester <code>res.ok</code>, afficher un toast d'erreur, ajouter <code>accept=\"image/*\"</code>."},
+{sev:"low",cat:"Cohérence",title:"Le bloc <code>if (!res.ok) throw new APIError(await res.json())</code> est copié 29 fois",
+ files:["admin/api/*","users/api/users.ts","events/api/*","files/api/*","invitations/api/*"],
+ what:"Même code dans 9 fichiers. Si le back (ou le proxy) répond avec un corps non JSON (502 HTML, 401 vide), <code>res.json()</code> lève une <code>SyntaxError</code> au lieu d'une <code>APIError</code>. Dans <code>APIError</code>, <code>this.name</code> reçoit le titre du problème, ce qui empêche de tester <code>error.name</code>.",
+ fix:"Un seul helper dans <code>src/api/problem_detail.ts</code> qui lit le corps de façon sûre. C'est le meilleur levier de cohérence du projet."},
+{sev:"low",cat:"Cohérence",title:"Nommage des champs envoyés au back",
+ files:["auth/api/auth.ts:7-16","users/api/users.ts:31-38","admin/api/*.ts"],
+ what:"Le Swagger utilise <code>userName</code>, <code>newPassword</code>. Le front mélange <code>username</code> (auth), <code>UserName</code>/<code>NewPassword</code> (users) et <code>Id</code>/<code>RoleId</code> (admin). Ça marche parce que ASP.NET ignore la casse, mais c'est piégeux. <code>roles.ts</code> réutilise <code>toUserId</code> pour supprimer un rôle, et deux interfaces s'appellent <code>reqChangeRole</code> avec des formes différentes.",
+ fix:"Suivre exactement les noms du Swagger (camelCase) et renommer <code>toUserId</code> en <code>toId</code>."},
+{sev:"low",cat:"Cohérence",title:"Chaînes magiques pour les rôles spéciaux",
+ files:["users/components/LineInfo.tsx:24","users/components/Profile.tsx:124","admin/components/AdminListRoles.tsx:81"],
+ what:"<code>\"\\\\(*-*)/\"</code> (×2) et <code>\"Member\"</code> sont codés en dur : renommer un rôle côté back casse l'interface sans erreur.",
+ fix:"Constantes partagées (<code>SYSTEM_ROLE_NAME</code>…) ou, mieux, un booléen <code>isSystem</code> fourni par le back."},
+{sev:"low",cat:"Cohérence",title:"Format, imports et petits restes",
+ files:["users/components/Section.tsx:32","root.tsx","components/Input/Checkbox.tsx","components/Input/MultipleInput.tsx"],
+ what:"<code>prettier --check</code> signale 4 fichiers (indentation par espaces dans <code>Section.tsx</code>). <code>JSX</code> est importé tantôt de <code>react</code>, tantôt de <code>react/jsx-runtime</code>. Restes : instruction <code>formdata;</code> seule (<code>users.ts:64</code>), export <code>Props</code> inutilisé (<code>AdminListUser.tsx</code>), <code>&lt;div className=\" border-border2\"&gt;</code> vide (<code>Section.tsx</code>), <code>${className}</code> qui produit la classe « undefined » (<code>ProfilePic.tsx</code>), coquilles « new nassword » et « Delete your role ? » (copié de « Delete your account »).",
+ fix:"<code>npx prettier --write</code> sur ces fichiers, puis un nettoyage rapide."},
+{sev:"low",cat:"Cohérence",title:"Deux façons d'obtenir l'utilisateur courant, et un skeleton hors charte",
+ files:["users/api/users.ts:11","users/hooks/users.ts","admin/routes/Roles.tsx:77-84"],
+ what:"<code>UserContext</code> (React Router, via loaders) et <code>UserReactContext</code>/<code>useUser()</code> coexistent. Le skeleton de Roles utilise <code>bg-gray-200</code> alors que le reste du site utilise des tokens (<code>bg-muted</code>, <code>bg-surface</code>), qui suivent le thème.",
+ fix:"Documenter la règle (« loader → <code>UserContext</code>, composant → <code>useUser</code> ») et utiliser un token pour le skeleton."},
+{sev:"low",cat:"Accessibilité",title:"Icônes cliquables et cases sans nom accessible",
+ files:["users/components/LineInfo.tsx:26","admin/components/AdminListRoles.tsx:83-96","admin/components/AdminRoleBox.tsx:20"],
+ what:"Les crayons et poubelles sont des <code>&lt;svg onClick&gt;</code> : pas de focus clavier ni de label. Les cases de permissions n'ont ni <code>aria-label</code> ni libellé. Les en-têtes de colonne affichent les noms bruts de l'enum (<code>HandleEvent</code>…).",
+ fix:"Utiliser <code>ListAction</code> (déjà un vrai bouton) avec <code>aria-label</code>, et <code>aria-label={`${perm.name} pour ${role.name}`}</code> sur les cases."}
+];
+
+const open=new Set();
+let filter="all";
+const list=document.getElementById("list");
+function render(){
+  list.innerHTML="";
+  ITEMS.forEach((it,i)=>{
+    if(filter!=="all"&&it.sev!==filter)return;
+    const d=document.createElement("details");
+    d.className="item "+it.sev;
+    d.open=open.has(i);
+    d.addEventListener("toggle",()=>{d.open?open.add(i):open.delete(i)});
+    d.innerHTML=`<summary><span class="badge">${SEV[it.sev].split(" ")[0]}</span><span class="title">${it.title}<span class="cat">${it.cat}</span></span></summary>
+    <div class="body">
+      <div class="lbl">Constat</div><p>${it.what}</p>
+      <div class="lbl">Fichiers</div><div class="files">${it.files.map(f=>`<code>src/${f}</code>`).join("")}</div>
+      <div class="lbl">Correction proposée</div><p>${it.fix}</p>
+    </div>`;
+    list.appendChild(d);
+  });
+}
+const counts={high:0,mid:0,low:0};ITEMS.forEach(i=>counts[i.sev]++);
+document.getElementById("stats").innerHTML=
+ `<div class="stat"><div class="n">${ITEMS.length}</div><div class="l">constats au total</div></div>
+  <div class="stat high"><div class="n">${counts.high}</div><div class="l">importants (bugs réels)</div></div>
+  <div class="stat mid"><div class="n">${counts.mid}</div><div class="l">moyens (fragilités)</div></div>
+  <div class="stat low"><div class="n">${counts.low}</div><div class="l">cohérence / confort</div></div>`;
+const fb=document.getElementById("filters");
+[["all","Tout"],["high","Important"],["mid","Moyen"],["low","Cohérence / confort"]].forEach(([k,l])=>{
+  const b=document.createElement("button");b.textContent=l;b.setAttribute("aria-pressed",k==="all");
+  b.onclick=()=>{filter=k;[...fb.children].forEach(c=>c.setAttribute("aria-pressed",c===b));render()};
+  fb.appendChild(b);
+});
+render();
+</script>
+</body>
+</html>
