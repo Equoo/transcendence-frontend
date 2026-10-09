@@ -95,10 +95,10 @@ export function AuthForm({
 				<PiUser className="ml-2 mr-2" />
 			</Input>
 			<Input
+				password
 				maxLength={256}
 				className="h-12"
 				placeholder="Password"
-				type="password"
 				name="Password"
 				required
 			>

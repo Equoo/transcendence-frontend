@@ -82,6 +82,7 @@ export default function ListUsers({
 				)}
 				{showChangePass && (
 					<ChangeModal
+						password
 						title={`Change ${user.userName}'s password`}
 						onClose={() => {
 							setShowChangePass(false);

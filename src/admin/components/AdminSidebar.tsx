@@ -1,4 +1,3 @@
-/* eslint-disable no-bitwise */
 import type { JSX } from "react";
 import { PiComputerTower, PiUser } from "react-icons/pi";
 
