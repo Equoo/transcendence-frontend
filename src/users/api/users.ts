@@ -12,12 +12,19 @@ export const UserContext = createContext<User>();
 
 // Interface
 
+export enum Language {
+	Francais = 0,
+	English = 1,
+	汉语 = 2,
+}
+
 export interface User {
 	id: string;
 	userName: string;
 	channelsAckMsg: Map<string, Date>;
 	role: Role;
 	avatar?: AppFile;
+	language: Language;
 }
 
 interface UserDto {
@@ -26,6 +33,7 @@ interface UserDto {
 	channelsAckMsg: Record<string, string>;
 	role: Role;
 	avatar?: AppFile;
+	language: Language;
 }
 
 interface UsernameRequest {
@@ -43,6 +51,7 @@ function normalizeUser(dto: UserDto): User {
 	return {
 		id: dto.id,
 		userName: dto.userName,
+		language: dto.language,
 		channelsAckMsg: new Map(
 			Object.entries(dto.channelsAckMsg).map(([key, val]) => [
 				key,
@@ -98,6 +107,21 @@ export async function userDeleteAccount(): Promise<Response> {
 	if (!res.ok) {
 		throw new APIError((await res.json()) as ProblemDetail);
 	}
+	return res;
+}
+
+export async function userChangeLanguage(
+	formdata: FormData,
+): Promise<Response> {
+	const res = await callApi("/api/me/language", {
+		method: "PATCH",
+		headers: { "Content-Type": "application/json" },
+		body: JSON.stringify(Number(formdata.get("language"))),
+	});
+	if (!res.ok) {
+		throw new APIError((await res.json()) as ProblemDetail);
+	}
+
 	return res;
 }
 

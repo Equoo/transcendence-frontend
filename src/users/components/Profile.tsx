@@ -4,12 +4,13 @@ import type { FetcherWithComponents } from "react-router";
 
 import type { Role } from "@/admin/api/roles";
 import CheckButton from "@/components/Button/CheckButton";
+import PopupList from "@/components/List/PopupList";
 import ChangeModal from "@/components/Modal/ChangeModal";
 import ChoiceModal from "@/components/Modal/ChoiceModal";
 import ProfileLine from "@/components/Profile/ProfileLine";
 import Section, { type LineInfos } from "@/users/components/Section";
 
-import type { User } from "../api/users";
+import { Language, type User } from "../api/users";
 
 export default function Profile({
 	onClose,
@@ -25,6 +26,7 @@ export default function Profile({
 	const [showDelete, setShowDelete] = useState(false);
 	const [showUsername, setShowUsername] = useState(false);
 	const [showPassword, setShowPassword] = useState(false);
+	const [showLanguage, setShowLanguage] = useState(false);
 
 	useEffect(() => {
 		if (fetcher.data) {
@@ -34,6 +36,8 @@ export default function Profile({
 			setShowPassword(false);
 			// eslint-disable-next-line @eslint-react/set-state-in-effect
 			setShowUsername(false);
+			// eslint-disable-next-line @eslint-react/set-state-in-effect
+			setShowLanguage(false);
 		}
 	}, [fetcher.data]);
 
@@ -51,6 +55,13 @@ export default function Profile({
 			action: openUsername,
 		},
 		{ name: "Password", value: "***********", action: openPassword },
+		{
+			name: "Language",
+			value: Language[user.language],
+			action: (): void => {
+				setShowLanguage(true);
+			},
+		},
 	];
 
 	return (
@@ -101,6 +112,59 @@ export default function Profile({
 				></ChangeModal>
 			)}
 			<div className="flex items-center justify-center absolute bottom-15 left-55 flex-col border-border2 shadow-md bg-surface w-75 h-90 rounded-2xl">
+				{showLanguage && (
+					<PopupList
+						className="absolute"
+						onClose={() => {
+							setShowLanguage(false);
+						}}
+						rows={[
+							{
+								id: "Francais",
+								onClick: (): void => {
+									console.warn("Francais");
+									void fetcher.submit(
+										{ language: Language.Francais },
+										{
+											method: "PATCH",
+											action: "/me/language",
+										},
+									);
+								},
+								content: <h1>Francais</h1>,
+							},
+							{
+								id: "English",
+								onClick: (): void => {
+									console.warn("English");
+									void fetcher.submit(
+										{ language: Language.English },
+										{
+											method: "PATCH",
+											action: "/me/language",
+										},
+									);
+								},
+								content: <h1>English</h1>,
+							},
+							{
+								id: "汉语",
+								onClick: (): void => {
+									console.warn("汉语");
+									void fetcher.submit(
+										{ language: Language.汉语 },
+										{
+											method: "PATCH",
+											action: "/me/language",
+										},
+									);
+								},
+								content: <h1>汉语</h1>,
+							},
+						]}
+					></PopupList>
+				)}
+
 				<button
 					type="button"
 					onClick={onClose}
@@ -120,6 +184,7 @@ export default function Profile({
 						title="Account Info"
 						lines={Lines}
 					></Section>
+
 					<div className="mt-2 flex justify-around gap-5">
 						{role.name !== "\\(*-*)/" && (
 							<CheckButton

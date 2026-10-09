@@ -2,6 +2,7 @@ import { data } from "react-router";
 
 import {
 	userChangeAvatar,
+	userChangeLanguage,
 	userChangePassword,
 	userChangeUsername,
 	userDeleteAccount,
@@ -32,6 +33,9 @@ export async function clientAction({
 	}
 	if (params.action === "delete") {
 		res = await userDeleteAccount();
+	}
+	if (params.action === "language") {
+		res = await userChangeLanguage(formdata);
 	}
 	if (params.action === "blobatar") {
 		res = await userDeleteAvatar();
