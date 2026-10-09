@@ -4,8 +4,10 @@ import type { FetcherWithComponents } from "react-router";
 
 import type { Role } from "@/admin/api/roles";
 import CheckButton from "@/components/Button/CheckButton";
+import { Input } from "@/components/Input/Input";
 import ChangeModal from "@/components/Modal/ChangeModal";
 import ChoiceModal from "@/components/Modal/ChoiceModal";
+import Modal from "@/components/Modal/Modal";
 import ProfileLine from "@/components/Profile/ProfileLine";
 import Section, { type LineInfos } from "@/users/components/Section";
 
@@ -85,20 +87,59 @@ export default function Profile({
 			)}
 
 			{showPassword && (
-				<ChangeModal
-					title="Change Password"
+				<Modal
 					onClose={() => {
 						setShowPassword(false);
 					}}
-					action="/me/password"
-					method="PATCH"
-					inputName="New password"
-					minInput={8}
-					maxInput={255}
-					fetcher={fetcher}
-					placeholder="new nassword"
-					password
-				></ChangeModal>
+					title="Change Password"
+				>
+					<p className="text-muted font-main font-light text-sm text-center w-full">
+						Your password will change, this cannot be cancelled.
+					</p>
+					<fetcher.Form
+						action={"/me/password"}
+						method={"PATCH"}
+						className="flex flex-col items-center gap-5 w-7/10"
+					>
+						<Input
+							password
+							maxLength={255}
+							minLength={8}
+							name={"Current Password"}
+							required
+							className="ring-0 focus:border-border border-border rounded-sm"
+							placeholder={"current password"}
+						></Input>
+
+						<Input
+							password
+							maxLength={255}
+							minLength={8}
+							name={"New Password"}
+							required
+							className="ring-0 focus:border-border border-border rounded-sm"
+							placeholder={"new password"}
+						></Input>
+						<CheckButton active type="submit">
+							OK
+						</CheckButton>
+					</fetcher.Form>
+				</Modal>
+
+				// <Modal
+				// 	title="Change Password"
+				// 	onClose={() => {
+				// 		setShowPassword(false);
+				// 	}}
+				// 	action="/me/password"
+				// 	method="PATCH"
+				// 	inputName="New password"
+				// 	minInput={8}
+				// 	maxInput={255}
+				// 	fetcher={fetcher}
+				// 	placeholder="new password"
+				// 	password
+				// ></Modal>
 			)}
 			<div className="flex items-center justify-center absolute bottom-15 left-55 flex-col border-border2 shadow-md bg-surface w-75 h-90 rounded-2xl">
 				<button

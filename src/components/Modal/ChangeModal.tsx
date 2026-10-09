@@ -46,22 +46,13 @@ export default function ChangeModal({
 				className="flex flex-col items-center gap-5 w-7/10"
 			>
 				{id && <HiddenValues name="id" values={[id]}></HiddenValues>}
-				{password && (
-					<Input
-						name="Current password"
-						placeholder="current password"
-						minLength={minInput}
-						maxLength={maxInput}
-						required
-					></Input>
-				)}
 				<Input
+					password={password}
 					maxLength={maxInput}
 					minLength={minInput}
 					name={inputName}
 					required
 					className="ring-0 focus:border-border border-border rounded-sm"
-					type="text"
 					placeholder={placeholder}
 				></Input>
 				<CheckButton active type="submit">
