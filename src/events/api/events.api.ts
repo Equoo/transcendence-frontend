@@ -1,7 +1,6 @@
+import { request, requestJson } from "@/api/request";
 import type { ChannelSummary } from "@/chat/api/chat.api";
-import callApi from "@/tokens/callApi";
 
-import { APIError, type ProblemDetail } from "../../api/problem_detail";
 import type { AppFile } from "../../files/api/files.api";
 import type { User } from "../../users/api/users";
 import type { EventRole } from "./event_roles.api";
@@ -61,66 +60,26 @@ export function toEventInput(formData: FormData): EventInput {
 }
 
 export async function fetchEvents(): Promise<EventSummary[]> {
-	const response = await callApi("/api/events");
-	if (!response.ok) {
-		throw new APIError((await response.json()) as ProblemDetail);
-	}
-
-	const events = (await response.json()) as EventSummary[];
+	const events = await requestJson<EventSummary[]>("/api/events");
 	events.sort((evA, evB) => evA.date.localeCompare(evB.date));
 	return events;
 }
 
 export async function fetchEvent(id: string): Promise<EventData> {
-	const res = await callApi(`/api/events/${id}`);
-	if (!res.ok) {
-		throw new APIError((await res.json()) as ProblemDetail);
-	}
-	return (await res.json()) as EventData;
+	return requestJson<EventData>(`/api/events/${id}`);
 }
 
 export async function createEvent(event: EventInput): Promise<EventData> {
-	const res = await callApi("/api/events", {
-		method: "POST",
-		headers: {
-			"Content-Type": "application/json",
-		},
-		body: JSON.stringify(event),
-	});
-
-	if (!res.ok) {
-		throw new APIError((await res.json()) as ProblemDetail);
-	}
-
-	return (await res.json()) as EventData;
+	return requestJson<EventData>("/api/events", "POST", event);
 }
 
 export async function updateEvent(
 	event: EventInput,
 	id: string,
 ): Promise<Response> {
-	const res = await callApi(`/api/events/${id}`, {
-		method: "PUT",
-		headers: {
-			"Content-Type": "application/json",
-		},
-		body: JSON.stringify(event),
-	});
-
-	if (!res.ok) {
-		throw new APIError((await res.json()) as ProblemDetail);
-	}
-
-	return res;
+	return request(`/api/events/${id}`, "PUT", event);
 }
 
 export async function deleteEvent(id: string): Promise<Response> {
-	const res = await callApi(`/api/events/${id}`, {
-		method: "DELETE",
-	});
-
-	if (!res.ok) {
-		throw new APIError((await res.json()) as ProblemDetail);
-	}
-	return res;
+	return request(`/api/events/${id}`, "DELETE");
 }

@@ -1,6 +1,5 @@
+import { request, requestJson } from "@/api/request";
 import callApi from "@/tokens/callApi";
-
-import { APIError, type ProblemDetail } from "../../api/problem_detail";
 
 export interface AppFile {
 	key: string;
@@ -33,57 +32,29 @@ export async function createFile(data: FormData): Promise<Response> {
 }
 
 export async function downloadFile(key: string): Promise<Blob> {
-	const res = await callApi(`/api/files/${key}`);
-
-	if (!res.ok) {
-		throw new APIError((await res.json()) as ProblemDetail);
-	}
+	const res = await request(`/api/files/${key}`);
 	return res.blob();
 }
 
 export async function fetchFile(key: string): Promise<AppFile> {
-	const res = await callApi(`/api/files/meta/${key}`);
-	if (!res.ok) {
-		throw new APIError((await res.json()) as ProblemDetail);
-	}
-	return (await res.json()) as AppFile;
+	return requestJson<AppFile>(`/api/files/meta/${key}`);
 }
 
 export async function fetchFiles(): Promise<AppFile[]> {
-	const res = await callApi("/api/files");
-
-	if (!res.ok) {
-		throw new APIError((await res.json()) as ProblemDetail);
-	}
-	const files = (await res.json()) as AppFile[];
+	const files = await requestJson<AppFile[]>("/api/files");
 	files.sort((fileA, fileB) => fileA.name.localeCompare(fileB.name));
 	return files;
 }
 
 export async function deleteFile(key: string): Promise<Response> {
-	const res = await callApi(`/api/files/${key}`, { method: "DELETE" });
-
-	if (!res.ok) {
-		throw new APIError((await res.json()) as ProblemDetail);
-	}
-	return res;
+	return request(`/api/files/${key}`, "DELETE");
 }
 
 export async function updateFileName(
 	key: string,
 	name: string,
 ): Promise<Response> {
-	const res = await callApi(`/api/files/${key}/name`, {
-		method: "PATCH",
-		body: JSON.stringify({ name }),
-		headers: {
-			"Content-Type": "application/json",
-		},
-	});
-	if (!res.ok) {
-		throw new APIError((await res.json()) as ProblemDetail);
-	}
-	return res;
+	return request(`/api/files/${key}/name`, "PATCH", { name });
 }
 
 export function listFolders(files: AppFile[]): string[] {

@@ -93,17 +93,17 @@ export default function ProfilePic({
 	let sizeStyle: string;
 
 	if (size === 1) {
-		sizeStyle = "w-10 h-10";
+		sizeStyle = "w-10 h-10 min-w-10 min-h-10";
 	} else if (size === 0.5) {
-		sizeStyle = "w-5 h-5";
+		sizeStyle = "w-5 h-5 min-w-5 min-h-5";
 	} else if (size === 2) {
-		sizeStyle = "w-15 h-15";
+		sizeStyle = "w-15 h-15 min-w-15 min-h-15";
 	} else {
-		sizeStyle = "w-20 h-20";
+		sizeStyle = "w-20 h-20 min-w-20 min-h-20";
 	}
 
 	return (
-		<div className={`flex ${sizeStyle}`}>
+		<div className={`relative flex ${sizeStyle}`}>
 			{user.avatar ? (
 				<img
 					src={`/api/files/${user.avatar.key}`}
@@ -120,7 +120,7 @@ export default function ProfilePic({
 			)}
 			{status && (
 				<div
-					className={`absolute left-20 min-w-4 min-h-4 rounded-full self-end -ml-3 border-3 border-back2`}
+					className={`absolute right-0 min-w-4 min-h-4 rounded-full self-end -ml-3 border-3 border-back2`}
 					style={{
 						zIndex: idx + 1,
 						backgroundColor: getActivityColor(

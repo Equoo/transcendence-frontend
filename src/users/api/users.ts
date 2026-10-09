@@ -1,7 +1,7 @@
 import { createContext } from "react-router";
 
 import { ActivityEnum, useActivity } from "@/activity/hooks/activity.hook";
-import { APIError, type ProblemDetail } from "@/api/problem_detail";
+import { request, requestJson } from "@/api/request";
 import callApi from "@/tokens/callApi";
 
 import type { Role } from "../../admin/api/roles";
@@ -82,56 +82,29 @@ export async function userChangeUsername(
 	formdata: FormData,
 ): Promise<Response> {
 	const req = toUsernameRequest(formdata);
-	const res = await callApi("/api/me", {
-		method: "PATCH",
-		headers: { "Content-Type": "application/json" },
-		body: JSON.stringify(req),
-	});
-	if (!res.ok) {
-		throw new APIError((await res.json()) as ProblemDetail);
-	}
-	return res;
+	return request("/api/me", "PATCH", req);
 }
 
 export async function userDeleteAccount(): Promise<Response> {
-	const res = await callApi("/api/me", { method: "DELETE" });
-	if (!res.ok) {
-		throw new APIError((await res.json()) as ProblemDetail);
-	}
-	return res;
+	return request("/api/me", "DELETE");
 }
 
 export async function userChangePassword(
 	formdata: FormData,
 ): Promise<Response> {
 	const req = toPasswordRequest(formdata);
-	const res = await callApi("/api/me/password", {
-		method: "PATCH",
-		headers: { "Content-Type": "application/json" },
-		body: JSON.stringify(req),
-	});
-	if (!res.ok) {
-		throw new APIError((await res.json()) as ProblemDetail);
-	}
-	return res;
+	return request("/api/me/password", "PATCH", req);
 }
 
 export async function userLogout(): Promise<Response> {
-	const res = await callApi("/api/auth/logout");
-	if (!res.ok) {
-		throw new APIError((await res.json()) as ProblemDetail);
-	}
+	const res = await request("/api/auth/logout");
 	const activity = useActivity.getState();
 	await activity.setSelfActivity(ActivityEnum.Offline);
 	return res;
 }
 
 export async function userDeleteAvatar(): Promise<Response> {
-	const res = await callApi("/api/me/avatar", { method: "DELETE" });
-	if (!res.ok) {
-		throw new APIError((await res.json()) as ProblemDetail);
-	}
-	return res;
+	return request("/api/me/avatar", "DELETE");
 }
 
 export async function fetchUser(): Promise<User | null> {
@@ -144,10 +117,5 @@ export async function fetchUser(): Promise<User | null> {
 }
 
 export async function fetchUsers(): Promise<User[]> {
-	const res = await callApi("/api/users");
-
-	if (!res.ok) {
-		throw new APIError((await res.json()) as ProblemDetail);
-	}
-	return (await res.json()) as User[];
+	return requestJson<User[]>("/api/users");
 }

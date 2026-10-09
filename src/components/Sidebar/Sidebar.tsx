@@ -97,7 +97,7 @@ function Sidebar({
 				data-drawer-toggle="sidebar"
 				aria-controls="sidebar"
 				type="button"
-				className="fixed z-39 text-heading bg-transparent box-border border border-transparent hover:bg-back2
+				className="fixed z-39 text-heading bg-transparent box-border border border-border hover:bg-back2
 				focus:ring-4 focus:ring-border2 font-medium leading-5 rounded-xl top-0 left-0 text-sm p-1
 				focus:outline-none inline-flex sm:hidden"
 			>
@@ -137,7 +137,7 @@ function Sidebar({
 							Knowledge
 						</ItemCategory>
 						<ItemCategory to="/messages" icon={PiChat}>
-							Messages
+							Private Messages
 						</ItemCategory>
 					</ul>
 
