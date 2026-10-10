@@ -1,23 +1,23 @@
+import { useQueryClient } from "@tanstack/react-query";
 import { type JSX, useRef, useState } from "react";
 
-import { useChat } from "@/chat/hooks/chat.hook";
 import { useUser } from "@/users/hooks/users";
 
-import { type Message, sendMessage, updateMessage } from "../api/chat.api";
+import { type Message, normalizeMessage, sendMessage, updateMessage as putMessage } from "../api/chat.api";
+import { addMessage, resolvePendingMessage, updateMessage } from "../cache/chat.cache";
+import { useChannel } from "../hooks/useChannels";
 import ChatComposer, { type ChatComposerHandles } from "./ChatComposer";
 import { ChatProvider } from "./ChatProvider";
 import MessageList, { type MessageListHandles } from "./Messages/MessageList";
 
-function ChannelChat({ channelId }: { channelId: string }): JSX.Element {
-	const channel = useChat((state) => state.channels[channelId]);
+function ChannelChat({ channelId }: { channelId: string }): JSX.Element | null {
+	const { data: channel } = useChannel(channelId);
+	const qc = useQueryClient();
 	const listRef = useRef<MessageListHandles>(null);
 	const composerRef = useRef<ChatComposerHandles>(null);
 
 	const [counter, setCounter] = useState(0);
 	const user = useUser();
-
-	const addMsg = useChat((state) => state.addMsg);
-	const updateMsg = useChat((state) => state.updateMsg);
 
 	const onSend = (
 		text: string,
@@ -25,10 +25,8 @@ function ChannelChat({ channelId }: { channelId: string }): JSX.Element {
 		target: Message | null,
 	): void => {
 		if (mode === "edit" && target) {
-			target.content = text;
-			target.editAt = new Date();
-			updateMsg(channelId, target.id, target);
-			updateMessage(channelId, target.id, text).catch(() => {
+			updateMessage(qc, channelId, { id: target.id, content: text, editAt: new Date() });
+			putMessage(channelId, target.id, text).catch(() => {
 				// eslint-disable-next-line no-warning-comments
 				// TODO: error
 			});
@@ -37,7 +35,7 @@ function ChannelChat({ channelId }: { channelId: string }): JSX.Element {
 		}
 
 		const pendingId = new Date().toString() + counter;
-		let message = {
+		const message = {
 			id: pendingId,
 			content: text,
 			channel: { id: channelId },
@@ -48,25 +46,23 @@ function ChannelChat({ channelId }: { channelId: string }): JSX.Element {
 		} as Message;
 
 		setCounter(counter + 1);
-		addMsg(channelId, message);
+		addMessage(qc, channelId, message);
 
 		sendMessage(channelId, text, target?.id)
 			.then((msg) => {
-				message = {
-					...msg,
-					sentAt: new Date(msg.sentAt),
-					editAt: msg.editAt && new Date(msg.editAt),
-					status: "sended",
-				};
-				updateMsg(channelId, pendingId, message);
+				resolvePendingMessage(qc, channelId, {
+					pendingId,
+					message: { ...normalizeMessage(msg), status: "sended" },
+				});
 			})
 			.catch(() => {
-				message.status = "error";
-				updateMsg(channelId, pendingId, message);
+				updateMessage(qc, channelId, { id: pendingId, status: "error" });
 			});
 
 		listRef.current?.scrollBack();
 	};
+
+	if (!channel) { return null; }
 
 	return (
 		<div className="flex min-h-0 flex-1">

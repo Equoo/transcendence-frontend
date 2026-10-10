@@ -32,7 +32,6 @@ export async function clientAction({ request }: Route.ClientActionArgs) {
 		} else if (request.method === "POST") {
 			res = await createConv(conversation);
 
-			res.messages = [];
 			// useChat.getState().addConversation(res);
 
 			return redirect(`/conversations/${res.id}`);

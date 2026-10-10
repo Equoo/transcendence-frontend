@@ -1,10 +1,8 @@
 import { type RefObject, useEffect } from "react";
-import { useShallow } from "zustand/react/shallow";
 
 import { usePrevious } from "@/hooks/usePrevious";
 
 import type { Message } from "../api/chat.api";
-import { useChat } from "./chat.hook";
 
 const NEAR_BOTTOM_PX = 150;
 const SCROLL_DELAY_MS = 100;
@@ -15,17 +13,10 @@ async function sleep(ms: number): Promise<void> {
 	});
 }
 
-/**
- * Exposes `scrollToBottom` and automatically follows new messages, but only
- * when the viewport is already close to the bottom.
- */
 export function useAutoScroll(
-	channelId: string,
+	messages: Message[],
 	containerRef: RefObject<HTMLDivElement | null>,
 ): { scrollToBottom: () => void } {
-	const messages = useChat(
-		useShallow((state) => Object.values(state.channels[channelId].messages)),
-	);
 	const prevMessages = usePrevious(messages) as Message[] | null;
 
 	const scrollToBottom = (): void => {

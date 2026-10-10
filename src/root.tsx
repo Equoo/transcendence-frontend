@@ -1,6 +1,6 @@
 import "./index.css";
 
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import type { JSX, ReactNode } from "react";
 import {
@@ -16,6 +16,7 @@ import { ToastContainer } from "react-toastify";
 import type { Route } from "./+types/root";
 import { PermEnum } from "./admin/api/roles";
 import HydratingScreen from "./components/HydratingScreen";
+import { queryClient } from "./queryClient";
 import { fetchUser, UserContext } from "./users/api/users";
 
 const alertStyle = {
@@ -26,17 +27,6 @@ const alertStyle = {
 	dark: "",
 	default: "bg-bg",
 };
-
-const queryClient = new QueryClient({
-	defaultOptions: {
-		queries: {
-			// data counts as "fresh" for 1 min → no refetch on navigation
-			staleTime: 10 * 60_000,
-			// unused cache entries are kept 5 min before garbage collection
-			gcTime: 30 * 60_000,
-		},
-	},
-});
 
 export const clientMiddleware: Route.MiddlewareFunction[] = [
 	// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/explicit-function-return-type, @typescript-eslint/consistent-return

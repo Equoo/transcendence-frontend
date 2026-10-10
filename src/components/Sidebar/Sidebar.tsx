@@ -1,5 +1,5 @@
 import { initDrawers } from "flowbite";
-import { type JSX, Suspense, useEffect, useState } from "react";
+import { type JSX, useEffect, useState } from "react";
 import { HiMenuAlt2 } from "react-icons/hi";
 import {
 	PiBookOpen,
@@ -8,13 +8,11 @@ import {
 	PiGear,
 	PiHouse,
 } from "react-icons/pi";
-import { Await, Link, useFetcher, useLocation } from "react-router";
-import { useShallow } from "zustand/react/shallow";
+import { Link, useFetcher, useLocation } from "react-router";
 
 import AdminSidebar from "@/admin/components/AdminSidebar";
-import type { Channel } from "@/chat/api/chat.api";
 import CategoryForm from "@/chat/components/CategoryForm";
-import { useChat } from "@/chat/hooks/chat.hook";
+import { useCategories, useChannels } from "@/chat/hooks/useChannels";
 import { isWhitelisted } from "@/chat/utils/channel.util";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import Profile from "@/users/components/Profile";
@@ -42,19 +40,14 @@ function ChannelListSkeleton(): JSX.Element {
 	);
 }
 
-function Sidebar({
-	user,
-	channels: channelsInit,
-}: {
-	user: User;
-	channels: Channel[] | Promise<Channel[]>;
-}): JSX.Element {
+function Sidebar({ user }: { user: User }): JSX.Element {
 	const location = useLocation();
 	const fetcher = useFetcher();
-	const dictCategories = useChat(useShallow((state) => state.categories));
-	const channels = useChat(
-		useShallow((state) => Object.values(state.channels)),
-	).filter(
+	const channelsQuery = useChannels();
+	const categoriesQuery = useCategories();
+	const categories = categoriesQuery.data ?? [];
+	const dictCategories = Object.fromEntries(categories.map((cat) => [cat.id, cat]));
+	const channels = (channelsQuery.data ?? []).filter(
 		(ch) =>
 			!ch.eventId &&
 			isWhitelisted(
@@ -65,10 +58,6 @@ function Sidebar({
 					: null,
 			),
 	);
-	const categories = useChat(
-		useShallow((state) => Object.values(state.categories)),
-	);
-
 	const [showUser, setShowUser] = useState(false);
 
 	useEffect(() => {
@@ -156,39 +145,39 @@ function Sidebar({
 							) && <CategoryForm></CategoryForm>}
 						</div>
 						<ul>
-							<Suspense fallback={<ChannelListSkeleton />}>
-								<Await resolve={channelsInit}>
-									{channels
-										.filter(
-											(ch) =>
-												ch.categoryId === null ||
-												!Object.hasOwn(
-													dictCategories,
-													ch.categoryId ?? "",
-												),
-										)
-										.map((channel) => (
-											<ItemChannel
-												key={channel.id}
-												channel={channel}
-												user={user}
-											></ItemChannel>
-										))}
-									<li className="mb-3"></li>
-									{categories.map((category) => (
-										<ItemChannelCategory
-											key={category.id}
-											category={category}
-											channels={channels.filter(
-												(ch) =>
-													ch.categoryId ===
-													category.id,
-											)}
+							{channelsQuery.isPending || categoriesQuery.isPending ? (
+								<ChannelListSkeleton />
+							) : (<>
+								{channels
+									.filter(
+										(ch) =>
+											ch.categoryId === null ||
+											!Object.hasOwn(
+												dictCategories,
+												ch.categoryId ?? "",
+											),
+									)
+									.map((channel) => (
+										<ItemChannel
+											key={channel.id}
+											channel={channel}
 											user={user}
-										></ItemChannelCategory>
+										></ItemChannel>
 									))}
-								</Await>
-							</Suspense>
+								<li className="mb-3"></li>
+								{categories.map((category) => (
+									<ItemChannelCategory
+										key={category.id}
+										category={category}
+										channels={channels.filter(
+											(ch) =>
+												ch.categoryId ===
+												category.id,
+										)}
+										user={user}
+									></ItemChannelCategory>
+								))}
+							</>)}
 						</ul>
 					</div>
 					<AdminSidebar user={user} />

@@ -1,7 +1,8 @@
 import { data, redirect } from "react-router";
 
 import type { Channel } from "@/chat/api/chat.api";
-import { useChat } from "@/chat/hooks/chat.hook";
+import { upsertChannel } from "@/chat/cache/chat.cache";
+import { queryClient } from "@/queryClient";
 
 import { APIError } from "../../api/problem_detail";
 import {
@@ -63,7 +64,7 @@ export async function clientAction({
 
 		if (request.method === "POST") {
 			res = await createEvent(event);
-			useChat.getState().addChannel(res.channel as unknown as Channel);
+			upsertChannel(queryClient, res.channel as unknown as Channel);
 		} else if (request.method === "PUT") {
 			if (!params.eventId) {
 				throw new Error("Event ID is required for update");

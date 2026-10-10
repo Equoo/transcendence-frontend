@@ -2,7 +2,8 @@ import { data, redirect } from "react-router";
 
 import { APIError } from "@/api/problem_detail";
 import { type ChannelBody, createChannel, deleteChannel, updateChannel } from "@/chat/api/chat.api";
-import { useChat } from "@/chat/hooks/chat.hook";
+import { removeChannel, upsertChannel } from "@/chat/cache/chat.cache";
+import { queryClient } from "@/queryClient";
 
 import type { Route } from "./+types/channel.route";
 
@@ -33,12 +34,11 @@ export async function clientAction({ request }: Route.ClientActionArgs) {
 			}
 			await deleteChannel(id);
 
-			useChat.getState().removeChannel(id);
+			removeChannel(queryClient, id);
 		} else if (request.method === "POST") {
 			res = await createChannel(channel);
 
-			res.messages = [];
-			useChat.getState().addChannel(res);
+			upsertChannel(queryClient, res);
 
 			return redirect(`/channels/${res.id}`);
 		} else if (request.method === "PUT") {
@@ -47,7 +47,7 @@ export async function clientAction({ request }: Route.ClientActionArgs) {
 			}
 			res = await updateChannel(id, channel);
 
-			useChat.getState().updateChannel(res.id, res);
+			upsertChannel(queryClient, res);
 		}
 	} catch (err) {
 		if (err instanceof APIError) {

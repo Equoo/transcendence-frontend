@@ -1,5 +1,4 @@
 import { request, requestJson } from "@/api/request";
-import { useChat } from "@/chat/hooks/chat.hook";
 import type { User } from "@/users/api/users";
 
 export interface Message {
@@ -39,8 +38,6 @@ export interface ChannelBase {
 	name: string;
 	topic: string;
 	createAt: Date;
-	messages: Message[];
-	ackTime?: Date | null;
 }
 
 export interface Channel extends ChannelBase {
@@ -78,18 +75,11 @@ export interface CategoryBody {
 }
 
 export async function fetchChannels(): Promise<Channel[]> {
-	if (Object.keys(useChat.getState().channels).length !== 0) {
-		return [];
-	}
+	return requestJson<Channel[]>("/api/channels");
+}
 
-	const channels = await requestJson<Channel[]>("/api/channels");
-	channels.forEach((ch) => { ch.messages = [] });
-
-	const categories = await requestJson<ChannelCategory[]>("/api/categories");
-
-	useChat.getState().setChannels(channels, categories);
-
-	return channels;
+export async function fetchCategories(): Promise<ChannelCategory[]> {
+	return requestJson<ChannelCategory[]>("/api/categories");
 }
 
 export async function fetchMessages(
@@ -160,7 +150,7 @@ export async function updateMessage(
 	});
 }
 
-export async function removeMessage(
+export async function deleteMessage(
 	channelId: string,
 	id: string,
 ): Promise<string> {

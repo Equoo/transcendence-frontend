@@ -3,7 +3,7 @@ import { PiPushPin, PiUsers } from "react-icons/pi";
 import { useNavigate } from "react-router";
 
 import ChannelChat from "@/chat/components/ChannelChat";
-import { useChat } from "@/chat/hooks/chat.hook";
+import { useChannel } from "@/chat/hooks/useChannels";
 import IconBtn from "@/components/Button/IconBtn";
 
 import type { Route } from "./+types/channel";
@@ -11,8 +11,8 @@ import type { Route } from "./+types/channel";
 export default function ChannelRoute({
 	params,
 }: Route.ComponentProps): JSX.Element {
-	const hasChannel = useChat((state) => params.channelId in state.channels);
-	const channel = useChat((state) => state.channels[params.channelId]);
+	const { data: channel, isPending } = useChannel(params.channelId);
+	const hasChannel = Boolean(channel);
 
 	const navigate = useNavigate();
 	const seenIdRef = useRef<string | null>(null);
@@ -34,10 +34,10 @@ export default function ChannelRoute({
 				<div className="flex flex-col">
 					<div className="flex items-center gap-1.75 font-head text-[17px] font-[650]">
 						<span className="text-muted">#</span>
-						{hasChannel ? channel.name : "404 no such channel"}
+						{isPending ? "" : channel?.name ?? "404 no such channel"}
 					</div>
 					<div className="text-[12.5px] text-muted">
-						{hasChannel ? channel.topic : ""}
+						{channel?.topic ?? ""}
 					</div>
 				</div>
 				<span className="flex-1" />
@@ -47,9 +47,9 @@ export default function ChannelRoute({
 				</>)}
 			</div>
 
-			{hasChannel ? (
+			{channel ? (
 				<ChannelChat channelId={channel.id}></ChannelChat>
-			) : (<div className="absolute flex flex-col items-center top-1/2 left-1/2 -translate-1/2">
+			) : !isPending && (<div className="absolute flex flex-col items-center top-1/2 left-1/2 -translate-1/2">
 				<h1 className="font-bold text-6xl text-text2">404</h1>
 				<h2 className="font-bold text-3xl text-text2">No such channel</h2>
 				<p className="text-text2">May be deleted or never exist.</p>

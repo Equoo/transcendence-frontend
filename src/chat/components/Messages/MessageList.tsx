@@ -7,13 +7,14 @@ import {
 	useRef,
 	useState,
 } from "react";
-import { useShallow } from "zustand/react/shallow";
 
-import { useChat } from "@/chat/hooks/chat.hook";
+import { useScrollPagination } from "@/hooks/usePagination";
 import { useUser } from "@/users/hooks/users";
 
-import { useMessagePagination } from "../../../hooks/useMessagePagination";
+import type { Message } from "../../api/chat.api";
 import { useAutoScroll } from "../../hooks/useAutoScroll.hook";
+import { useAckTime } from "../../hooks/useChannels";
+import { useMessages } from "../../hooks/useMessages";
 import { useReadReceipts } from "../../hooks/useReadReceipts.hook";
 import { useScrollRestoration } from "../../hooks/useScrollRestoration.hook";
 import { startsNewDay, startsNewGroup } from "../../utils/message.util";
@@ -29,31 +30,9 @@ export interface MessageListHandles {
 	scrollBack: () => void;
 }
 
-function useNewMessagesDividerId(channelId: string): string | null {
+function useNewMessagesDividerId(channelId: string, messages: Message[]): string | null {
 	const user = useUser();
-	const messages = useChat(
-		useShallow((state) =>
-			Object.values(state.channels[channelId].messages),
-		),
-	);
-	const channels = useChat(
-		useShallow((state) => Object.values(state.channels)),
-	);
-	const ackDate = useChat(
-		useShallow((state) => state.channels[channelId].ackTime),
-	);
-
-	useEffect(() => {
-		if (!user) {
-			return;
-		}
-		channels.forEach((channel) => {
-			if (channel.ackTime) {
-				return;
-			}
-			channel.ackTime = user.channelsAckMsg.get(channel.id) ?? null;
-		});
-	}, [user, channels]);
+	const ackDate = useAckTime(channelId);
 
 	const [dividerMsgId, setDividerMsgId] = useState<string | null>(null);
 	useEffect(() => {
@@ -83,21 +62,27 @@ function MessageList({
 	const containerRef = useRef<HTMLDivElement>(null);
 	const actionBarRef = useRef<MessageActionBarHandles>(null);
 
-	const messages = useChat(
-		useShallow((state) =>
-			Object.values(state.channels[channelId].messages),
-		),
-	);
+	const { data, isPending, fetchNextPage, hasNextPage, isFetchingNextPage } = useMessages(channelId);
+	const messages = data ?? [];
 
-	const handleScroll = useMessagePagination(
-		channelId,
+	const paginate = useScrollPagination({
 		containerRef,
-		actionBarRef,
-	);
-	useScrollRestoration(channelId, containerRef);
-	const { scrollToBottom } = useAutoScroll(channelId, containerRef);
-	const lastMessageRef = useReadReceipts(channelId);
-	const dividerMsgId = useNewMessagesDividerId(channelId);
+		fetchNextPage,
+		hasNextPage,
+		isFetchingNextPage,
+		direction: "up",
+		enabled: !isPending,
+		resetKey: channelId,
+	});
+	const handleScroll = (ev: React.UIEvent<HTMLDivElement>): void => {
+		paginate(ev);
+		actionBarRef.current?.hide();
+	};
+
+	useScrollRestoration(channelId, containerRef, !isPending);
+	const { scrollToBottom } = useAutoScroll(messages, containerRef);
+	const lastMessageRef = useReadReceipts(channelId, messages);
+	const dividerMsgId = useNewMessagesDividerId(channelId, messages);
 
 	useImperativeHandle(ref, () => ({ scrollBack: scrollToBottom }), [
 		scrollToBottom,

@@ -1,7 +1,7 @@
 import { type InfiniteData, useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 
-import { connection } from '@/realtime';
+import { getConnection } from '@/realtime';
 
 import type { Conversation } from '../api/conversations.api';
 
@@ -9,6 +9,7 @@ export function useConversationRealtime(): void {
 	const qc = useQueryClient();
 
 	useEffect(() => {
+		const connection = getConnection();
 		const onConversationCreated = (conv: Conversation): void => {
 			qc.setQueryData<InfiniteData<Conversation[]>>(['conversations', conv.id], old => {
 				if (!old) { return old; }
