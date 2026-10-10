@@ -1,5 +1,7 @@
 import "./index.css";
 
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import type { JSX, ReactNode } from "react";
 import {
 	Links,
@@ -24,6 +26,17 @@ const alertStyle = {
 	dark: "",
 	default: "bg-bg",
 };
+
+const queryClient = new QueryClient({
+	defaultOptions: {
+		queries: {
+			// data counts as "fresh" for 1 min → no refetch on navigation
+			staleTime: 10 * 60_000,
+			// unused cache entries are kept 5 min before garbage collection
+			gcTime: 30 * 60_000,
+		},
+	},
+});
 
 export const clientMiddleware: Route.MiddlewareFunction[] = [
 	// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/explicit-function-return-type, @typescript-eslint/consistent-return
@@ -75,7 +88,10 @@ export function Layout({ children }: { children: ReactNode }): JSX.Element {
 						} relative flex px-4 gap-1 py-2 min-h-10 rounded-lg justify-between overflow-hidden cursor-pointer`
 					}
 				/>
-				{children}
+				<QueryClientProvider client={queryClient}>
+					{children}
+					<ReactQueryDevtools initialIsOpen={false} />
+				</QueryClientProvider>
 				<ScrollRestoration />
 				<Scripts />
 			</body>

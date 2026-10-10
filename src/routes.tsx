@@ -34,6 +34,8 @@ export default [
 	route("/invitations/:id?", "invitations/routes/invitations.route.tsx"),
 	route("/channels", "chat/routes/channel.route.tsx"),
 	route("/category", "chat/routes/category.route.tsx"),
+	route("/conversations", "friends/routes/conversation.route.tsx"),
+	route("/relationships", "friends/routes/relationship.route.tsx"),
 
 	route("/roles/:action", "admin/routes/RolesAction.ts"),
 	route("/users/:action", "admin/routes/UsersAction.ts"),

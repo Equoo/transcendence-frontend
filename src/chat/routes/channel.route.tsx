@@ -1,10 +1,22 @@
 import { data, redirect } from "react-router";
 
 import { APIError } from "@/api/problem_detail";
-import { createChannel, deleteChannel, updateChannel } from "@/chat/api/chat.api";
+import { type ChannelBody, createChannel, deleteChannel, updateChannel } from "@/chat/api/chat.api";
 import { useChat } from "@/chat/hooks/chat.hook";
 
 import type { Route } from "./+types/channel.route";
+
+function channelBodyFromForm(formData: FormData): ChannelBody {
+	const category = formData.get("category") as string | null;
+
+	return {
+		name: formData.get("Name") as string,
+		topic: formData.get("Topic") as string,
+		whitelistRoles: formData.getAll("Roles") as string[],
+		categorySync: formData.has("Syncronised"),
+		category: category === "" ? null : category,
+	};
+}
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
 export async function clientAction({ request }: Route.ClientActionArgs) {
@@ -12,26 +24,28 @@ export async function clientAction({ request }: Route.ClientActionArgs) {
 
 	try {
 		const formdata = await request.formData();
+		const channel = channelBodyFromForm(formdata);
+		const id = formdata.get("id") as string | null;
 
 		if (request.method === "DELETE") {
-			if (!formdata.get("id")) {
+			if (!id) {
 				throw new Error("Channel ID is required for deletion");
 			}
-			await deleteChannel(formdata.get("id") as string);
+			await deleteChannel(id);
 
-			useChat.getState().removeChannel(formdata.get("id") as string);
+			useChat.getState().removeChannel(id);
 		} else if (request.method === "POST") {
-			res = await createChannel(formdata);
+			res = await createChannel(channel);
 
 			res.messages = [];
 			useChat.getState().addChannel(res);
 
 			return redirect(`/channels/${res.id}`);
 		} else if (request.method === "PUT") {
-			if (!formdata.get("id")) {
+			if (!id) {
 				throw new Error("Channel ID is required for update");
 			}
-			res = await updateChannel(formdata);
+			res = await updateChannel(id, channel);
 
 			useChat.getState().updateChannel(res.id, res);
 		}

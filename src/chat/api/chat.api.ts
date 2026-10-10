@@ -28,15 +28,25 @@ export interface ChannelRole {
 	name: string;
 }
 
-export interface Channel {
+export enum ChannelType {
+	Text = 0,
+	DirectMessage = 1,
+	GroupDirectMessage = 2
+}
+
+export interface ChannelBase {
 	id: string;
 	name: string;
 	topic: string;
 	createAt: Date;
-	eventId?: string;
-	categoryId?: string | null;
 	messages: Message[];
 	ackTime?: Date | null;
+}
+
+export interface Channel extends ChannelBase {
+	eventId?: string;
+	categoryId?: string | null;
+	type: ChannelType;
 	rolesWhitelist: ChannelRole[];
 	categorySync: boolean;
 }
@@ -54,7 +64,7 @@ export interface ChannelCategory {
 	rolesWhitelist: ChannelRole[];
 }
 
-interface ChannelBody {
+export interface ChannelBody {
 	name: string;
 	topic: string;
 	whitelistRoles: string[];
@@ -62,28 +72,9 @@ interface ChannelBody {
 	category: string | null;
 }
 
-interface CategoryBody {
+export interface CategoryBody {
 	name: string;
 	whitelistRoles: string[];
-}
-
-function channelBodyFromForm(formData: FormData): ChannelBody {
-	const category = formData.get("category") as string | null;
-
-	return {
-		name: formData.get("Name") as string,
-		topic: formData.get("Topic") as string,
-		whitelistRoles: formData.getAll("Roles") as string[],
-		categorySync: formData.has("Syncronised"),
-		category: category === "" ? null : category,
-	};
-}
-
-function categoryBodyFromForm(formData: FormData): CategoryBody {
-	return {
-		name: formData.get("Name") as string,
-		whitelistRoles: formData.getAll("Roles") as string[],
-	};
 }
 
 export async function fetchChannels(): Promise<Channel[]> {
@@ -116,15 +107,15 @@ export async function fetchMessages(
 	return raw.map((msg) => normalizeMessage(msg));
 }
 
-export async function createChannel(formData: FormData): Promise<Channel> {
-	return requestJson<Channel>("/api/channels", "POST", channelBodyFromForm(formData));
+export async function createChannel(channel: ChannelBody): Promise<Channel> {
+	return requestJson<Channel>("/api/channels", "POST", channel);
 }
 
-export async function updateChannel(formData: FormData): Promise<Channel> {
+export async function updateChannel(id: string, channel: ChannelBody): Promise<Channel> {
 	return requestJson<Channel>(
-		`/api/channels/${formData.get("id") as string}`,
+		`/api/channels/${id}`,
 		"PUT",
-		channelBodyFromForm(formData),
+		channel,
 	);
 }
 
@@ -132,15 +123,15 @@ export async function deleteChannel(id: string): Promise<void> {
 	await request(`/api/channels/${id}`, "DELETE");
 }
 
-export async function createCategory(formData: FormData): Promise<ChannelCategory> {
-	return requestJson<ChannelCategory>("/api/categories", "POST", categoryBodyFromForm(formData));
+export async function createCategory(category: CategoryBody): Promise<ChannelCategory> {
+	return requestJson<ChannelCategory>("/api/categories", "POST", category);
 }
 
-export async function updateCategory(formData: FormData): Promise<ChannelCategory> {
+export async function updateCategory(id: string, category: CategoryBody): Promise<ChannelCategory> {
 	return requestJson<ChannelCategory>(
-		`/api/categories/${formData.get("id") as string}`,
+		`/api/categories/${id}`,
 		"PUT",
-		categoryBodyFromForm(formData),
+		category,
 	);
 }
 

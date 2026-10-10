@@ -12,8 +12,8 @@ import { useShallow } from "zustand/react/shallow";
 import { useChat } from "@/chat/hooks/chat.hook";
 import { useUser } from "@/users/hooks/users";
 
+import { useMessagePagination } from "../../../hooks/useMessagePagination";
 import { useAutoScroll } from "../../hooks/useAutoScroll.hook";
-import { useMessagePagination } from "../../hooks/useMessagePagination.hook";
 import { useReadReceipts } from "../../hooks/useReadReceipts.hook";
 import { useScrollRestoration } from "../../hooks/useScrollRestoration.hook";
 import { startsNewDay, startsNewGroup } from "../../utils/message.util";

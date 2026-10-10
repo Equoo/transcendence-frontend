@@ -3,8 +3,15 @@ import { data } from "react-router";
 import { APIError } from "@/api/problem_detail";
 import { useChat } from "@/chat/hooks/chat.hook";
 
-import { createCategory, deleteCategory, updateCategory } from "../api/chat.api";
+import { type CategoryBody, createCategory, deleteCategory, updateCategory } from "../api/chat.api";
 import type { Route } from "./+types/category.route";
+
+function categoryBodyFromForm(formData: FormData): CategoryBody {
+	return {
+		name: formData.get("Name") as string,
+		whitelistRoles: formData.getAll("Roles") as string[],
+	};
+}
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
 export async function clientAction({ request }: Route.ClientActionArgs) {
@@ -12,24 +19,26 @@ export async function clientAction({ request }: Route.ClientActionArgs) {
 
 	try {
 		const formdata = await request.formData();
+		const category = categoryBodyFromForm(formdata);
+		const id = formdata.get("id") as string | null;
 
 		if (request.method === "DELETE") {
-			if (!formdata.get("id")) {
+			if (!id) {
 				throw new Error("Channel ID is required for deletion");
 			}
-			await deleteCategory(formdata.get("id") as string);
+			await deleteCategory(id);
 
-			useChat.getState().removeCategory(formdata.get("id") as string);
+			useChat.getState().removeCategory(id);
 		} else if (request.method === "POST") {
-			res = await createCategory(formdata);
+			res = await createCategory(category);
 
 			useChat.getState().addCategory(res);
 
 		} else if (request.method === "PUT") {
-			if (!formdata.get("id")) {
+			if (!id) {
 				throw new Error("Channel ID is required for update");
 			}
-			res = await updateCategory(formdata);
+			res = await updateCategory(id, category);
 
 			useChat.getState().updateCategory(res.id, res);
 		}

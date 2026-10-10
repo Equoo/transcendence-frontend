@@ -1,8 +1,10 @@
-import type { JSX } from "react";
+import { type JSX, useRef } from "react";
 import { NavLink } from "react-router";
 
 import { SearchBar } from "@/components/Input/Search";
 import ProfilePic from "@/components/Profile/ProfilePic";
+import { useConversations } from "@/friends/hooks/useConversations";
+import { useScrollPagination } from "@/hooks/usePagination";
 import type { User } from "@/users/api/users";
 import { useUser } from "@/users/hooks/users";
 
@@ -38,9 +40,9 @@ function PrivateChatItem({
 						{/* 	<TbLoader2 className="animate-spin min-w-5" /> */}
 						{/* )} */}
 						<ProfilePic user={user} size={1} status></ProfilePic>
-						<div className="flex flex-col justify-center">
+						<div className="flex truncate flex-col justify-center">
 							<p className="text-text text-[14px] font-semibold">{user.userName}</p>
-							<p className="text-muted text-[14px] truncate text-nowrap">{user.userName}: last message blbalba lfe freg lg er</p>
+							<p className="text-muted text-[14px] block truncate min-w-0">{user.userName}: last message blbalba lfe freg lg er</p>
 						</div>
 					</>
 				)}
@@ -50,8 +52,29 @@ function PrivateChatItem({
 }
 
 export default function Messages(): JSX.Element {
+	const containerRef = useRef(null);
+
+	const { data, isPending, error, fetchNextPage, hasNextPage, isFetchingNextPage } = useConversations();
+	const onScroll = useScrollPagination({
+		containerRef,
+		fetchNextPage,
+		hasNextPage,
+		isFetchingNextPage,
+		direction: "down",
+		enabled: !isPending,
+	});
+
 	const user = useUser();
 	if (!user) { return (<></>); }
+
+	if (isPending) { return <div>LOADING</div>; }
+	if (error) { return <div>ERROR</div>; }
+
+	const seen = new Set<string>();
+	const convs = data.pages.toReversed().flat()
+		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+		.filter(cn => !seen.has(cn.id) && seen.add(cn.id));
+
 
 	return (
 		<aside
@@ -69,12 +92,11 @@ export default function Messages(): JSX.Element {
 				<div className="relative flex justify-between items-center px-2 py-1.5 mt-3 text-[11px] text-muted font-bold tracking-wider uppercase group">
 					Messages
 				</div>
-				<div className="flex-1 overflow-hidden overflow-y-auto w-full">
-					<ul>
-						<PrivateChatItem chatId="feur" user={user}></PrivateChatItem>
-						<PrivateChatItem chatId="feur2" user={user}></PrivateChatItem>
-					</ul>
-				</div>
+				<ul className="flex-1 overflow-hidden overflow-y-auto w-full" onScroll={onScroll} ref={containerRef}>
+					{convs.map((conv) => (
+						<PrivateChatItem key={conv.id} chatId={conv.id} user={conv.recipients[0]}></PrivateChatItem>
+					))}
+				</ul>
 
 				<div className="relative flex justify-between items-center px-2 py-1.5 mt-3 text-[11px] text-muted font-bold tracking-wider uppercase group">
 					Friends
