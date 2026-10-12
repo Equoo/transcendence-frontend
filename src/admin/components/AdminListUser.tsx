@@ -1,4 +1,5 @@
 import { type ComponentProps, type JSX, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useFetcher } from "react-router";
 
 import ChangeModal from "@/components/Modal/ChangeModal";
@@ -21,6 +22,8 @@ export default function ListUsers({
 	roles: Role[] | Promise<Role[]>;
 	currentUser: User;
 }): JSX.Element {
+	// eslint-disable-next-line id-length
+	const { t } = useTranslation();
 	const [showChangePass, setShowChangePass] = useState(false);
 	const [showConfirmationDelete, setShowConfirmationDelete] = useState(false);
 	const [showConfirmationDisconnect, setShowConfirmationDisconnect] =
@@ -55,27 +58,30 @@ export default function ListUsers({
 			<td className="px-6 py-3 font-medium ">
 				{showConfirmationDelete && (
 					<ChoiceModal
-						title={`Delete ${user.userName} ?`}
+						title={t("admin.deleteUserTitle", {
+							name: user.userName,
+						})}
 						onClose={() => {
 							setShowConfirmationDelete(false);
 						}}
 						action="/users/removeUser"
 						method="DELETE"
-						desc="The user will be remove from the database. This cannot be cancelled."
+						desc={t("admin.deleteUserDesc")}
 						id={user.id}
 						fetcher={fetcher}
 					></ChoiceModal>
 				)}
 				{showConfirmationDisconnect && (
 					<ChoiceModal
-						title={`Disconnect ${user.userName} ?`}
+						title={t("admin.disconnectTitle", {
+							name: user.userName,
+						})}
 						onClose={() => {
 							setShowConfirmationDisconnect(false);
 						}}
 						action="/users/disconnectUser"
 						method="DELETE"
-						desc="The user will need to login again. This cannot be
-							cancelled."
+						desc={t("admin.reloginDesc")}
 						id={user.id}
 						fetcher={fetcher}
 					></ChoiceModal>
@@ -83,17 +89,19 @@ export default function ListUsers({
 				{showChangePass && (
 					<ChangeModal
 						password
-						title={`Change ${user.userName}'s password`}
+						title={t("admin.changePasswordTitle", {
+							name: user.userName,
+						})}
 						onClose={() => {
 							setShowChangePass(false);
 						}}
 						action="/users/passwordUser"
 						method="PATCH"
-						desc="The user will need to login again. This cannot be
-							cancelled."
+						desc={t("admin.reloginDesc")}
 						id={user.id}
 						inputName="password"
-						placeholder="New password"
+						inputLabel={t("profile.password")}
+						placeholder={t("profile.newPassword")}
 						minInput={8}
 						maxInput={256}
 						fetcher={fetcher}
@@ -140,34 +148,36 @@ export default function ListUsers({
 					)}
 				</Promisable>
 			</td>
-			<td className="space-x-10 font-medium w-1/4 ">
-				<button
-					type="submit"
-					className="hover:text-accent hover:cursor-pointer"
-					onClick={() => {
-						setShowConfirmationDelete(true);
-					}}
-				>
-					Remove User
-				</button>
-				<button
-					type="submit"
-					className="hover:text-accent hover:cursor-pointer"
-					onClick={() => {
-						setShowChangePass(true);
-					}}
-				>
-					Reset Password
-				</button>
-				<button
-					type="submit"
-					className="hover:text-accent hover:cursor-pointer"
-					onClick={() => {
-						setShowConfirmationDisconnect(true);
-					}}
-				>
-					Disconnect
-				</button>
+			<td className="px-6 py-3 font-medium">
+				<div className="flex flex-wrap items-center gap-x-6 gap-y-1">
+					<button
+						type="submit"
+						className="whitespace-nowrap hover:text-accent hover:cursor-pointer"
+						onClick={() => {
+							setShowConfirmationDelete(true);
+						}}
+					>
+						{t("admin.removeUser")}
+					</button>
+					<button
+						type="submit"
+						className="whitespace-nowrap hover:text-accent hover:cursor-pointer"
+						onClick={() => {
+							setShowChangePass(true);
+						}}
+					>
+						{t("admin.resetPassword")}
+					</button>
+					<button
+						type="submit"
+						className="whitespace-nowrap hover:text-accent hover:cursor-pointer"
+						onClick={() => {
+							setShowConfirmationDisconnect(true);
+						}}
+					>
+						{t("admin.disconnect")}
+					</button>
+				</div>
 			</td>
 		</tr>
 	);

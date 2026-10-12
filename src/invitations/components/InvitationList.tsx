@@ -1,4 +1,5 @@
 import type { JSX } from "react";
+import { useTranslation } from "react-i18next";
 import { useFetcher } from "react-router";
 
 import List, { ListAction, ListCell, ListRow } from "@/components/List/List";
@@ -11,14 +12,19 @@ export default function InvitationList({
 }: {
 	invitations: Invitation[];
 }): JSX.Element {
+	// eslint-disable-next-line id-length
+	const { t } = useTranslation();
 	const fetcher = useFetcher<typeof clientAction>();
 	return (
 		<List
 			cols={[
-				{ id: "Invitation Code", pos: "text-left" },
-				{ id: "Expiration", pos: "text-center" },
-				{ id: "Remaining Usages", pos: "text-center" },
-				{ id: "Actions", pos: "text-right" },
+				{ id: t("auth.invitationCode"), pos: "text-left" },
+				{ id: t("invitations.expiration"), pos: "text-left" },
+				{
+					id: t("invitations.remainingUsages"),
+					pos: "text-center",
+				},
+				{ id: t("common.actions"), pos: "text-right" },
 			]}
 		>
 			{invitations.map((invitation) => (
@@ -43,7 +49,7 @@ export default function InvitationList({
 								});
 							}}
 						>
-							Remove
+							{t("invitations.remove")}
 						</ListAction>
 					</ListCell>
 				</ListRow>

@@ -1,4 +1,5 @@
 import { type JSX, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { FiChevronLeft } from "react-icons/fi";
 import { PiTrash } from "react-icons/pi";
 import { Link, useFetcher, useNavigate } from "react-router";
@@ -37,15 +38,20 @@ export async function clientLoader({
 export default function EventDetails({
 	loaderData: { event, roles, files, user },
 }: Route.ComponentProps): JSX.Element {
+    // eslint-disable-next-line id-length
+    const { t } = useTranslation();
 	const fetcher = useFetcher<typeof clientAction>();
 	const navigate = useNavigate();
-	const dateString: string = new Date(event.date).toLocaleString([], {
-		hour: "2-digit",
-		minute: "2-digit",
-		month: "short",
-		day: "2-digit",
-		year: "numeric",
-	});
+	const dateString: string = new Date(event.date).toLocaleString(
+		[],
+		{
+			hour: "2-digit",
+			minute: "2-digit",
+			month: "short",
+			day: "2-digit",
+			year: "numeric",
+		},
+	);
 	const [showConfirmation, setShowConfirmation] = useState(false);
 
 	useEffect(() => {
@@ -67,8 +73,10 @@ export default function EventDetails({
 					onClose={() => {
 						setShowConfirmation(false);
 					}}
-					title={`Delete the event ${event.name}`}
-					desc="This cannot be cancelled."
+					title={t("eventDetails.deleteTitle", {
+						name: event.name,
+					})}
+					desc={t("common.irreversible")}
 					fetcher={fetcher}
 				/>
 			)}
@@ -114,17 +122,17 @@ export default function EventDetails({
 			<div className="flex h-full">
 				<div className="flex flex-col gap-1 border-r border-border w-1/3 p-6">
 					<span className="font-bold text-muted text-xs tracking-wider">
-						WHEN
+						{t("eventDetails.when")}
 					</span>
 					<span className="text-text">{dateString}</span>
 					<span className="font-bold text-muted text-xs tracking-wider mt-4">
-						WHERE
+						{t("eventDetails.where")}
 					</span>
 					<span className="text-text">{event.location}</span>
 					{(event.description ?? "") && (
 						<>
 							<span className="font-bold text-muted text-xs tracking-wider mt-4">
-								DESCRIPTION
+								{t("eventDetails.description")}
 							</span>
 							<span className="text-text">
 								{event.description}
@@ -134,7 +142,7 @@ export default function EventDetails({
 					{event.tags.length > 0 && (
 						<>
 							<span className="font-bold text-muted text-xs tracking-wider mt-4">
-								TAGS
+								{t("eventDetails.tags")}
 							</span>
 							<div className="flex flex-wrap gap-1">
 								{event.tags.map((tag) => (
@@ -144,7 +152,10 @@ export default function EventDetails({
 						</>
 					)}
 					<span className="font-bold text-muted text-xs tracking-wider mt-4">
-						PARTICIPANTS - {event.registrations.length}/{event.size}
+						{t("eventDetails.participants", {
+							registered: event.registrations.length,
+							size: event.size,
+						})}
 					</span>
 					<div className="min-h-10 flex">
 						{event.registrations.map((reg, idx) => (
@@ -159,11 +170,11 @@ export default function EventDetails({
 						))}
 					</div>
 					<span className="font-bold text-muted text-xs tracking-wider mt-4">
-						ORGANIZED BY
+						{t("eventDetails.organizedBy")}
 					</span>
 					<ProfileLine user={event.organizer} status />
 					<span className="font-bold text-muted text-xs tracking-wider mt-4">
-						RESOURCES
+						{t("eventDetails.resources")}
 					</span>
 					<div className="flex mt-1 items-center gap-3">
 						{event.files.map((file) => (

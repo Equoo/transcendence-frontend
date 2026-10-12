@@ -1,4 +1,5 @@
 import { type JSX, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useFetcher } from "react-router";
 
 import { Field } from "@/components/Input/Field";
@@ -18,6 +19,8 @@ export default function FileUpload({
 	currentPath?: string;
 	folders: string[];
 }): JSX.Element {
+	// eslint-disable-next-line id-length
+	const { t } = useTranslation();
 	const [errors, setErrors] = useState<ValidationErrors>();
 	const [name, setName] = useState("");
 	const filesFetcher = useFetcher<typeof filesAction>();
@@ -34,7 +37,7 @@ export default function FileUpload({
 		}
 	}, [filesFetcher.data, onClose]);
 	return (
-		<Modal title="Upload a file" onClose={onClose}>
+		<Modal title={t("files.uploadTitle")} onClose={onClose}>
 			<filesFetcher.Form
 				action="/files"
 				method="POST"
@@ -57,6 +60,7 @@ export default function FileUpload({
 			>
 				<Input
 					name="File"
+					label={t("files.file")}
 					type="file"
 					required
 					errors={errors}
@@ -67,9 +71,7 @@ export default function FileUpload({
 						) {
 							ev.target.value = "";
 							setErrors({
-								File: [
-									"File too large, please select a file < 80mB",
-								],
+								File: [t("files.tooLarge")],
 							});
 							return;
 						}
@@ -87,13 +89,14 @@ export default function FileUpload({
 				<Input
 					maxLength={100}
 					name="Name"
+					label={t("common.name")}
 					required
 					value={name}
 					pattern="^[^\/]*$"
-					title="Must not contain a /"
+					title={t("files.noSlash")}
 					errors={errors}
 				/>
-				<Field name="Folder" required>
+				<Field name="Folder" label={t("files.folder")} required>
 					<select
 						name="Folder"
 						required
@@ -112,7 +115,7 @@ export default function FileUpload({
 					active
 					pending={filesFetcher.state !== "idle"}
 				>
-					Upload
+					{t("common.upload")}
 				</CheckButton>
 			</filesFetcher.Form>
 		</Modal>

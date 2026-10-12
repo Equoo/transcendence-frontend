@@ -1,4 +1,5 @@
 import { type ComponentProps, type JSX, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useFetcher } from "react-router";
 
 import CheckButton from "../../components/Button/CheckButton";
@@ -11,6 +12,8 @@ export default function EventRegisterBtn({
 }: ComponentProps<"form"> & {
 	event: EventSummary;
 }): JSX.Element {
+	// eslint-disable-next-line id-length
+	const { t } = useTranslation();
 	const [showRegister, setShowRegister] = useState(false);
 	const fetcher = useFetcher();
 
@@ -40,7 +43,11 @@ export default function EventRegisterBtn({
 						}
 					}}
 				>
-					{isRegistered ? "Registered" : isFull ? "Full" : "Register"}
+					{isRegistered
+						? t("events.registered")
+						: isFull
+							? t("events.full")
+							: t("events.register")}
 				</CheckButton>
 			</div>
 			<fetcher.Form
@@ -52,14 +59,13 @@ export default function EventRegisterBtn({
 			>
 				{showRegister && (
 					<Modal
-						title="Register"
+						title={t("events.register")}
 						onClose={() => {
 							setShowRegister(false);
 						}}
 					>
 						<p className="text-muted font-main text-wrap font-light w-4/5 text-sm">
-							Choose your preferred role for the event, an admin
-							may still change your role.
+							{t("events.registerHint")}
 						</p>
 						<select
 							name="eventRoleId"
@@ -74,7 +80,9 @@ export default function EventRegisterBtn({
 								</option>
 							))}
 						</select>
-						<CheckButton type="submit">OK</CheckButton>
+						<CheckButton type="submit">
+							{t("common.ok")}
+						</CheckButton>
 					</Modal>
 				)}
 			</fetcher.Form>

@@ -3,6 +3,7 @@ import "blobatar/motion.css";
 import { Blobatar } from "@blobatar/react";
 import { type Expression, idle, sleepy, surprised } from "blobatar/expression";
 import { type JSX, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { TbPencil } from "react-icons/tb";
 import { useFetcher } from "react-router";
 
@@ -62,6 +63,8 @@ export default function ProfilePic({
 	changePicture?: boolean;
 	edit?: boolean;
 }): JSX.Element {
+	// eslint-disable-next-line id-length
+	const { t } = useTranslation();
 	const filesFetcher = useFetcher<typeof filesAction>();
 	const fetcher = useFetcher();
 
@@ -86,9 +89,9 @@ export default function ProfilePic({
 	const activity = useActivity();
 
 	const activities: [ActivityEnum, string][] = [
-		[ActivityEnum.Afk, "Afk"],
-		[ActivityEnum.Busy, "Busy"],
-		[ActivityEnum.Offline, "Offline"],
+		[ActivityEnum.Afk, t("activity.afk")],
+		[ActivityEnum.Busy, t("activity.busy")],
+		[ActivityEnum.Offline, t("activity.offline")],
 	];
 	let sizeStyle: string;
 
@@ -99,11 +102,11 @@ export default function ProfilePic({
 	} else if (size === 2) {
 		sizeStyle = "w-15 h-15";
 	} else {
-		sizeStyle = "w-20 h-20";
+		sizeStyle = "w-18 h-18";
 	}
 
 	return (
-		<div className={`flex ${sizeStyle}`}>
+		<div className={`flex shrink-0 ${sizeStyle}`}>
 			{user.avatar ? (
 				<img
 					src={`/api/files/${user.avatar.key}`}
@@ -120,7 +123,7 @@ export default function ProfilePic({
 			)}
 			{status && (
 				<div
-					className={`absolute left-20 min-w-4 min-h-4 rounded-full self-end -ml-3 border-3 border-back2`}
+					className="absolute left-20 size-4 shrink-0 aspect-square rounded-full self-end -ml-3 border-3 border-back2"
 					style={{
 						zIndex: idx + 1,
 						backgroundColor: getActivityColor(
@@ -141,7 +144,7 @@ export default function ProfilePic({
 
 					{showSelect && (
 						<PopupList
-							className="bottom-0 left-4"
+							className="bottom-0 left-4 bg-surface2 border border-border"
 							onClose={() => {
 								setShowSelect(false);
 							}}
@@ -153,9 +156,9 @@ export default function ProfilePic({
 										setShowSelect(false);
 									},
 									content: (
-										<div className="inline-flex gap-2.5 items-center">
+										<div className="inline-flex gap-2.5 items-center whitespace-nowrap">
 											<div
-												className={`w-3 h-3 rounded-full `}
+												className="size-3 shrink-0 aspect-square rounded-full"
 												style={{
 													backgroundColor:
 														getActivityColor(
@@ -163,20 +166,20 @@ export default function ProfilePic({
 														),
 												}}
 											/>
-											Auto
+											{t("activity.auto")}
 										</div>
 									),
 								},
 								...activities.map(([act, name]) => ({
-									id: name,
+									id: String(act),
 									onClick: (): void => {
 										activity.setPreference(act);
 										setShowSelect(false);
 									},
 									content: (
-										<div className="inline-flex gap-2.5 items-center">
+										<div className="inline-flex gap-2.5 items-center whitespace-nowrap">
 											<div
-												className={`w-3 h-3 rounded-full `}
+												className="size-3 shrink-0 aspect-square rounded-full"
 												style={{
 													backgroundColor:
 														getActivityColor(act),
@@ -211,7 +214,7 @@ export default function ProfilePic({
 			)}
 			{showPpMenu && (
 				<PopupList
-					className="absolute z-4 right-15 top-5"
+					className="absolute z-4 right-13 top-4  bg-surface2 border border-border"
 					onClose={() => {
 						setShowPpMenu(false);
 					}}
@@ -225,7 +228,7 @@ export default function ProfilePic({
 										setShowPics(true);
 									}}
 								>
-									Choose picture
+									{t("profilePic.choosePicture")}
 								</div>
 							),
 						},
@@ -241,7 +244,7 @@ export default function ProfilePic({
 										});
 									}}
 								>
-									Remove Avatar
+									{t("profilePic.removeAvatar")}
 								</div>
 							),
 						},
@@ -251,7 +254,7 @@ export default function ProfilePic({
 
 			{showPics && (
 				<Modal
-					title="Change profile picture"
+					title={t("profilePic.changeTitle")}
 					onClose={() => {
 						setShowPics(false);
 					}}
@@ -262,13 +265,18 @@ export default function ProfilePic({
 						className="flex flex-col items-center w-4/5 gap-5 mb-4"
 						action="/me/avatar"
 					>
-						<Input name="File" type="file" required />
+						<Input
+							name="File"
+							label={t("files.file")}
+							type="file"
+							required
+						/>
 						<CheckButton
 							type="submit"
 							active
 							pending={filesFetcher.state !== "idle"}
 						>
-							Upload
+							{t("common.upload")}
 						</CheckButton>
 					</filesFetcher.Form>
 				</Modal>

@@ -1,5 +1,6 @@
 /* eslint-disable id-length */
 import { type JSX, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useFetcher } from "react-router";
 
 import ChangeModal from "@/components/Modal/ChangeModal";
@@ -24,6 +25,7 @@ export function clientLoader() {
 export default function AdminRoles({
 	loaderData,
 }: Route.ComponentProps): JSX.Element {
+	const { t } = useTranslation();
 	const [showRoleForm, setShowRoleForm] = useState<boolean>(false);
 
 	const fetcher = useFetcher();
@@ -40,14 +42,15 @@ export default function AdminRoles({
 		<>
 			{showRoleForm && (
 				<ChangeModal
-					title="Create Role"
+					title={t("admin.createRole")}
 					onClose={() => {
 						setShowRoleForm(false);
 					}}
 					action="/roles/createRole"
 					method="POST"
 					inputName="name"
-					placeholder="name"
+					inputLabel={t("common.name")}
+					placeholder={t("common.name")}
 					minInput={1}
 					maxInput={20}
 					fetcher={fetcher}
@@ -57,7 +60,7 @@ export default function AdminRoles({
 				<div className="w-11/12 my-10">
 					<div className="flex justify-between items-center w-full ">
 						<h1 className="text-3xl m-4 font-semibold font-head">
-							Roles Management
+							{t("admin.rolesManagement")}
 						</h1>
 
 						<CheckButton
@@ -68,7 +71,7 @@ export default function AdminRoles({
 							activeCheck={false}
 							active
 						>
-							Add Role
+							{t("admin.addRole")}
 						</CheckButton>
 					</div>
 					<Promisable

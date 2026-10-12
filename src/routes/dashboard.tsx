@@ -1,11 +1,17 @@
+/* eslint-disable id-length */
 import { type JSX, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { isRouteErrorResponse, Outlet } from "react-router";
 
 import { ActivityEnum, useActivity } from "@/activity/hooks/activity.hook";
 import { APIError } from "@/api/problem_detail";
 import { type Channel, fetchChannels } from "@/chat/api/chat.api";
 import { useChatHub } from "@/chat/hooks/chatHub.hook";
-import { type User, UserContext } from "@/users/api/users";
+import {
+	Language,
+	type User,
+	UserContext,
+} from "@/users/api/users";
 import { UserReactContext } from "@/users/hooks/users";
 
 import Sidebar from "../components/Sidebar/Sidebar";
@@ -51,6 +57,16 @@ export default function Dashboard({
 }: Route.ComponentProps): JSX.Element {
 	const activity = useActivity();
 
+	const { i18n } = useTranslation();
+
+	const userLanguage = Language[loaderData.user.language];
+
+	useEffect(() => {
+		if (userLanguage !== i18n.languages[0]) {
+			void i18n.changeLanguage(userLanguage);
+		}
+	}, [userLanguage, i18n]);
+
 	useEffect(() => {
 		activity.setSelfId(loaderData.user.id);
 		unloading = false;
@@ -81,6 +97,7 @@ export default function Dashboard({
 export function ErrorBoundary({
 	error,
 }: Route.ErrorBoundaryProps): JSX.Element {
+	const { t } = useTranslation();
 	if (isRouteErrorResponse(error)) {
 		return (
 			<div className="w-full p-6 text-red-500 font-main">
@@ -99,7 +116,7 @@ export function ErrorBoundary({
 	}
 	return (
 		<div className="w-full p-6 text-red-500 font-main">
-			Server error during page loading
+			{t("errors.serverLoading")}
 		</div>
 	);
 }

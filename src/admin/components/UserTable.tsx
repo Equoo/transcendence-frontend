@@ -1,4 +1,5 @@
 import type { JSX } from "react";
+import { useTranslation } from "react-i18next";
 
 import List from "@/components/List/List";
 import type { User } from "@/users/api/users";
@@ -15,16 +16,18 @@ export default function UserTable({
 	roles: Role[] | Promise<Role[]>;
 	currentUser: User;
 }): JSX.Element {
+	// eslint-disable-next-line id-length
+	const { t } = useTranslation();
 	return (
 		<List
 			cols={[
-				{ id: "Picture" },
-				{ id: "Username" },
-				{ id: "Role" },
-				{ id: "Action" },
+				{ id: t("admin.picture") },
+				{ id: t("profile.username") },
+				{ id: t("admin.role") },
+				{ id: t("common.actions") },
 			]}
 			empty={users.length === 0}
-			emptyMessage="No user to display."
+			emptyMessage={t("admin.noUser")}
 		>
 			{users.map((usr) => (
 				<ListUsers

@@ -25,9 +25,13 @@
 	--color-good-soft: #e2f0e6;
 
 	--font-*: initial;
-	--font-head: "Bricolage Grotesque", system-ui, sans-serif;
+	--font-head:
+		"Bricolage Grotesque", system-ui, "PingFang TC", "Noto Sans TC",
+		"Microsoft JhengHei", sans-serif;
 	--font-main:
-		"Figtree", "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji";
+		"Figtree", "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji",
+		system-ui, "PingFang TC", "Noto Sans TC", "Microsoft JhengHei",
+		sans-serif;
 
 	--font-sans: var(--font-main);
 

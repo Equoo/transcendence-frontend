@@ -13,8 +13,8 @@ export default function Badge({
 }): JSX.Element {
 	return (
 		<span
-			className={`inline-flex items-center gap-2 rounded-full px-2 py-1
-				font-semibold text-xs ${border} ${text} ${bg}`}
+			className={`inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full px-2 py-1
+				font-semibold text-xs [&>svg]:shrink-0 ${border} ${text} ${bg}`}
 		>
 			{children}
 		</span>

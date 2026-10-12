@@ -1,4 +1,5 @@
 import { type JSX, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { PiSparkle } from "react-icons/pi";
 
 import ChatbotPanel from "@/ai/components/ChatbotPanel";
@@ -16,6 +17,8 @@ export function clientLoader(): { files: Promise<AppFile[]> } {
 export default function Knowledge({
 	loaderData,
 }: Route.ComponentProps): JSX.Element {
+    // eslint-disable-next-line id-length
+    const { t } = useTranslation();
 	const isLarge = useMediaQuery("(min-width: 64rem)");
 	const [showRag, setShowRag] = useState<boolean | null>(null);
 	const open = showRag ?? isLarge;
@@ -40,14 +43,14 @@ export default function Knowledge({
 			) : (
 				<button
 					type="button"
-					aria-label="Open assistant"
+					aria-label={t("knowledge.openAssistant")}
 					className="fixed right-4 bottom-4 z-30 inline-flex cursor-pointer items-center gap-2 rounded-full bg-accent px-4 py-3 font-semibold text-accent-text shadow-main transition-transform duration-75 hover:brightness-110 active:translate-y-px"
 					onClick={() => {
 						setShowRag(true);
 					}}
 				>
 					<PiSparkle size={18} />
-					Assistant
+					{t("knowledge.assistant")}
 				</button>
 			)}
 		</div>

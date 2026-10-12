@@ -6,6 +6,7 @@ import { Field } from "./Field";
 
 export type InputProps = ComponentProps<"input"> & {
 	name: string;
+	label?: string;
 	className?: string;
 	children?: ReactNode;
 	errors?: ValidationErrors;
@@ -14,6 +15,7 @@ export type InputProps = ComponentProps<"input"> & {
 
 export function Checkbox({
 	name,
+	label,
 	errors,
 	className,
 	children,
@@ -32,7 +34,13 @@ export function Checkbox({
 	}, [checked]);
 
 	return (
-		<Field name={name} required={rest.required} errors={errors} className="items-start">
+		<Field
+			name={name}
+			label={label}
+			required={rest.required}
+			errors={errors}
+			className="items-start"
+		>
 			<div className="flex flex-row gap-3">
 				<div
 					className={`relative border rounded-md max-w-8 max-h-8
