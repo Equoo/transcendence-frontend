@@ -7,11 +7,12 @@ import type { Route } from "./+types/register";
 
 export async function clientAction({
 	request,
-}: Route.ClientActionArgs): Promise<UserResult> {
+}: Route.ClientActionArgs): Promise<UserResult | Response> {
 	const formdata = await request.formData();
+	const res = await registerUser(formdata);
 
-	if (!(await registerUser(formdata)).ok) {
-		return { ok: false };
+	if (!res.ok) {
+		return res;
 	}
 	return redirect("/");
 }
@@ -35,9 +36,7 @@ export default function Register({
 						link="/login"
 					/>
 					{actionData?.ok === false && (
-						<div className="text-error">
-							Invalid invitation code.
-						</div>
+						<div className="text-error">{actionData.error}</div>
 					)}
 					<AuthForm btnName={"Register"} register code={code} />
 				</Form>

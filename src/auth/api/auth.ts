@@ -2,7 +2,7 @@
 
 import callApi from "@/tokens/callApi";
 
-export type UserResult = { ok: true } | { ok: false };
+export type UserResult = { ok: true } | { ok: false; error: string };
 
 interface reqLoginInput {
 	username: string;
@@ -45,7 +45,7 @@ export async function loginUser(formData: FormData): Promise<UserResult> {
 		body: JSON.stringify(req),
 	});
 	if (!response.ok) {
-		return { ok: false };
+		return { ok: false, error: await response.text() };
 	}
 	return { ok: true };
 }
@@ -62,7 +62,7 @@ export async function registerUser(formData: FormData): Promise<UserResult> {
 	});
 
 	if (!res.ok) {
-		return { ok: false };
+		return { ok: false, error: await res.text() };
 	}
 	return { ok: true };
 }
