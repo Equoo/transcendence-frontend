@@ -1,6 +1,7 @@
 /* eslint-disable @eslint-react/no-array-index-key */
 import { useEffect, useState } from "react";
 import type { JSX } from "react/jsx-runtime";
+import { useTranslation } from "react-i18next";
 import { TbPencil, TbTrash } from "react-icons/tb";
 import { useFetcher } from "react-router";
 
@@ -16,6 +17,8 @@ export interface Perm {
 }
 
 export default function ListRoles({ role }: { role: Role }): JSX.Element {
+	// eslint-disable-next-line id-length
+	const { t } = useTranslation();
 	const [showConfirmation, setShowConfirmation] = useState(false);
 	const [showChangeRole, setShowChangeRole] = useState(false);
 
@@ -45,14 +48,15 @@ export default function ListRoles({ role }: { role: Role }): JSX.Element {
 			<td className="px-6 font-medium py-5">
 				{showChangeRole && (
 					<ChangeModal
-						title="Change role's name"
+						title={t("admin.changeRoleName")}
 						onClose={() => {
 							setShowChangeRole(false);
 						}}
 						action="/roles/changeRole"
 						method="PATCH"
 						inputName="name"
-						placeholder="name"
+						inputLabel={t("common.name")}
+						placeholder={t("common.name")}
 						minInput={1}
 						maxInput={20}
 						fetcher={fetcher}
@@ -61,11 +65,11 @@ export default function ListRoles({ role }: { role: Role }): JSX.Element {
 				)}
 				{showConfirmation && (
 					<ChoiceModal
-						title={`Delete your role ?`}
+						title={t("admin.deleteRoleTitle")}
 						onClose={() => {
 							setShowConfirmation(false);
 						}}
-						desc="All users using this role will become member instead. This cannot be cancelled."
+						desc={t("admin.deleteRoleDesc")}
 						action="/roles/deleteRole"
 						method="DELETE"
 						fetcher={fetcher}

@@ -1,4 +1,5 @@
 import {
+	addDays,
 	addMonths,
 	eachDayOfInterval,
 	endOfMonth,
@@ -48,9 +49,14 @@ export function clientLoader({ context }: Route.LoaderArgs): {
 export default function Calendar({
 	loaderData,
 }: Route.ComponentProps): JSX.Element {
-	const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 	const [selectedDay, setSelectedDay] = useState(() => startOfToday());
 	const [month, setMonth] = useState(() => startOfMonth(selectedDay));
+
+	const weekStart = startOfWeek(month, { weekStartsOn: 1 });
+	const days = eachDayOfInterval({
+		start: weekStart,
+		end: addDays(weekStart, 6),
+	}).map((day) => format(day, "EEE"));
 
 	const monthDays = eachDayOfInterval({
 		start: startOfWeek(month, { weekStartsOn: 1 }),
@@ -105,7 +111,7 @@ export default function Calendar({
 							}}
 						>
 							<div
-								className={`rounded-full w-8 h-8 text-center place-content-center
+								className={`rounded-full size-8 shrink-0 aspect-square text-center place-content-center
 								${isSameMonth(day, month) || "text-muted"}
 								${isSameDay(day, selectedDay) ? "bg-accent text-white" : "group-hover:bg-accent/20"}
 								`}
@@ -126,7 +132,7 @@ export default function Calendar({
 														<Link
 															to={`/calendar/${ev.id}`}
 															key={ev.id}
-															className={`text-xs px-1 w-full font-light text-white rounded-xs hover:bg-accent/90
+															className={`text-xs px-1 w-full truncate font-light text-white rounded-xs hover:bg-accent/90
                                                     ${ev.size === ev.registeredCount ? "bg-muted" : "bg-accent"}`}
 														>
 															{ev.name}
@@ -149,7 +155,7 @@ export default function Calendar({
 												<Link
 													to={`/calendar/${ev.id}`}
 													key={ev.id}
-													className={`text-xs px-1 w-full font-light text-white rounded-xs hover:bg-accent/90
+													className={`text-xs px-1 w-full truncate font-light text-white rounded-xs hover:bg-accent/90
 												${ev.size === ev.registeredCount ? "bg-muted" : "bg-accent"}`}
 												>
 													{ev.name}

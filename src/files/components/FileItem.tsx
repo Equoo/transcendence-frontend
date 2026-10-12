@@ -1,4 +1,5 @@
 import type { JSX } from "react";
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
 
 import { ListCell, ListRow } from "../../components/List/List";
@@ -14,6 +15,8 @@ export default function FileItem({
 	parent: string;
 	folders: string[];
 }): JSX.Element {
+	// eslint-disable-next-line id-length
+	const { t } = useTranslation();
 	const name = file.name.slice(parent.length);
 
 	return (
@@ -29,8 +32,12 @@ export default function FileItem({
 			<ListCell>{file.contentType}</ListCell>
 			<ListCell>
 				{file.length / 1000000 < 1
-					? `${Math.floor(file.length / 1000)} Ko`
-					: `${Math.floor(file.length / 1000000)} Mo`}
+					? t("files.sizeKb", {
+							size: Math.floor(file.length / 1000),
+						})
+					: t("files.sizeMb", {
+							size: Math.floor(file.length / 1000000),
+						})}
 			</ListCell>
 			<ListCell>
 				<ItemActions

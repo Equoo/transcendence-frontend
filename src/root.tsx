@@ -1,4 +1,5 @@
 import "./index.css";
+import  './translation/i18n'
 
 import type { JSX, ReactNode } from "react";
 import {
@@ -71,7 +72,8 @@ export function Layout({ children }: { children: ReactNode }): JSX.Element {
 					newestOnTop
 					pauseOnHover
 					toastClassName={(context) =>
-						`${alertStyle[context?.type ?? "default"]
+						`${
+							alertStyle[context?.type ?? "default"]
 						} relative flex px-4 gap-1 py-2 min-h-10 rounded-lg justify-between overflow-hidden cursor-pointer`
 					}
 				/>

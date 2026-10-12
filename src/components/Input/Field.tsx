@@ -4,12 +4,14 @@ import type { ValidationErrors } from "../../api/problem_detail";
 
 export function Field({
 	name,
+	label,
 	required,
 	errors,
 	className,
 	children,
 }: {
 	name: string;
+	label?: string;
 	required?: boolean;
 	errors?: ValidationErrors;
 	className?: string;
@@ -19,7 +21,7 @@ export function Field({
 		<div className={`inline-flex flex-col w-full ${className ?? ""}`}>
 			<div className="text-red-500">
 				<label className="text-text font-main font-medium">
-					{name}
+					{label ?? name}
 				</label>
 				{(required ?? false) && "*"}
 			</div>

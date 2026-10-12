@@ -1,3 +1,4 @@
+import i18n from "i18next";
 import { data } from "react-router";
 
 import { APIError, type ProblemDetail } from "../../api/problem_detail";
@@ -35,7 +36,7 @@ export async function clientAction({
 					`${folder}${name}/`,
 				);
 	} else {
-		throw new Error("Unexpected error during file action");
+		throw new Error(i18n.t("files.unexpectedAction"));
 	}
 
 	if (!res.ok) {

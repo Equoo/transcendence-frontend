@@ -2,6 +2,7 @@ import {
 	EventStreamContentType,
 	fetchEventSource,
 } from "@microsoft/fetch-event-source";
+import i18n from "i18next";
 import { create } from "zustand";
 
 class RetryError extends Error {}
@@ -122,12 +123,16 @@ export const useChatbot = create<ChatbotState>((set) => {
 							const refresh = await fetch("/api/auth/refresh");
 
 							if (!refresh.ok) {
-								throw new Error("Session expired");
+								throw new Error(
+									i18n.t("assistant.sessionExpired"),
+								);
 							}
 							throw new RetryError();
 						}
 						throw new Error(
-							`The assistant is unavailable (${res.status})`,
+							i18n.t("assistant.unavailable", {
+								status: res.status,
+							}),
 						);
 					},
 					onclose() {
@@ -146,7 +151,7 @@ export const useChatbot = create<ChatbotState>((set) => {
 					error:
 						err instanceof Error && err.message !== ""
 							? err.message
-							: "Something went wrong",
+							: i18n.t("errors.somethingWrong"),
 				}));
 			}
 			set({ pending: false });

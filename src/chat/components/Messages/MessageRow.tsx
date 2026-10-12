@@ -1,4 +1,5 @@
 import type { JSX, Ref } from "react";
+import { useTranslation } from "react-i18next";
 
 import ProfilePic from "@/components/Profile/ProfilePic";
 
@@ -22,7 +23,7 @@ interface MessageRowProps {
 }
 
 function formatTimestamp(date: Date): string {
-	return date.toLocaleString("en-EN", {
+	return date.toLocaleString([], {
 		hour: "2-digit",
 		minute: "2-digit",
 		month: "2-digit",
@@ -40,6 +41,8 @@ function MessageRow({
 	onDeactivate,
 	className,
 }: MessageRowProps): JSX.Element {
+	// eslint-disable-next-line id-length
+	const { t } = useTranslation();
 	return (
 		<div
 			ref={rowRef}
@@ -77,7 +80,7 @@ function MessageRow({
 					{message.editAt && (
 						<span className="text-[11.5px] text-muted">
 							{" "}
-							(edited)
+							{t("chat.edited")}
 						</span>
 					)}
 				</div>

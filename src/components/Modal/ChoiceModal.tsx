@@ -1,4 +1,5 @@
 import type { JSX } from "react";
+import { useTranslation } from "react-i18next";
 import type { FetcherWithComponents, HTMLFormMethod } from "react-router";
 
 import type { APIError } from "@/api/problem_detail";
@@ -25,6 +26,8 @@ export default function ChoiceModal({
 	id?: string;
 	fetcher: FetcherWithComponents<EventData | Response | APIError | undefined>;
 }): JSX.Element {
+	// eslint-disable-next-line id-length
+	const { t } = useTranslation();
 	return (
 		<Modal title={title} onClose={onClose}>
 			{desc && (
@@ -43,10 +46,10 @@ export default function ChoiceModal({
 						type="submit"
 						pending={fetcher.state !== "idle"}
 					>
-						Yes
+						{t("common.yes")}
 					</CheckButton>
 					<CheckButton active activeCheck={false} onClick={onClose}>
-						No
+						{t("common.no")}
 					</CheckButton>
 				</div>
 			</fetcher.Form>

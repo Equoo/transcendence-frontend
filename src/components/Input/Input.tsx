@@ -12,6 +12,7 @@ import { Field } from "./Field";
 
 export type InputProps = ComponentProps<"input"> & {
 	name: string;
+	label?: string;
 	className?: string;
 	children?: ReactNode;
 	errors?: ValidationErrors;
@@ -30,6 +31,7 @@ function copyContent(content: string): void {
 
 export function Input({
 	name,
+	label,
 	errors,
 	className,
 	children,
@@ -51,7 +53,12 @@ export function Input({
 	}, [value]);
 
 	return (
-		<Field name={name} required={rest.required} errors={errors}>
+		<Field
+			name={name}
+			label={label}
+			required={rest.required}
+			errors={errors}
+		>
 			<div
 				className={`relative flex flex-wrap items-center w-full border rounded-md
                     px-2 py-1 font-main ${(grayed ?? false) ? "bg-muted/20 text-text2" : "bg-surface text-text"}  

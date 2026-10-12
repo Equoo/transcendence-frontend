@@ -1,3 +1,5 @@
+import "../../translation/i18n";
+
 import { createContext } from "react-router";
 
 import { ActivityEnum, useActivity } from "@/activity/hooks/activity.hook";
@@ -13,9 +15,9 @@ export const UserContext = createContext<User>();
 // Interface
 
 export enum Language {
-	Francais = 0,
-	English = 1,
-	汉语 = 2,
+	fr = 0,
+	en = 1,
+	tc = 2,
 }
 
 export interface User {

@@ -1,4 +1,5 @@
 import type { JSX } from "react";
+import { useTranslation } from "react-i18next";
 
 import Promisable from "@/components/Promisable";
 import {
@@ -43,6 +44,8 @@ export function clientLoader({ context }: Route.ClientLoaderArgs) {
 export default function AdminUsers({
 	loaderData,
 }: Route.ComponentProps): JSX.Element {
+	// eslint-disable-next-line id-length
+	const { t } = useTranslation();
 	const {
 		previousUsers,
 		usersRoles,
@@ -57,7 +60,7 @@ export default function AdminUsers({
 			<div className="flex justify-center flex-row w-full h-full">
 				<div className="flex flex-col w-11/12 my-10">
 					<h1 className="text-3xl m-4 font-semibold font-head">
-						User Management
+						{t("admin.userManagement")}
 					</h1>
 					<Promisable
 						data={usersRoles}
@@ -72,7 +75,7 @@ export default function AdminUsers({
 						)}
 					</Promisable>
 					<h1 className="text-3xl ml-4 mb-4 mt-10 font-semibold font-head">
-						Invitations Management
+						{t("admin.invitationsManagement")}
 					</h1>
 					<InvitationPromisable
 						className="overflow-y-auto max-h-3/10"

@@ -1,4 +1,6 @@
+import type { TFunction } from "i18next";
 import type { JSX } from "react";
+import { useTranslation } from "react-i18next";
 import { PiArrowClockwise, PiHouse, PiWarningCircle } from "react-icons/pi";
 import {
 	isRouteErrorResponse,
@@ -23,42 +25,48 @@ interface ErrorInfos {
 	trace: string | null;
 }
 
-function describeError(error: unknown): ErrorInfos {
+// eslint-disable-next-line id-length
+function describeError(error: unknown, t: TFunction): ErrorInfos {
 	if (isRouteErrorResponse(error)) {
 		return {
 			trace: null,
 			code: error.status,
-			title: error.status === 404 ? "Page not found" : error.statusText,
+			title:
+				error.status === 404
+					? t("errors.pageNotFound")
+					: error.statusText,
 			detail:
 				error.status === 404
-					? "This page doesn't exist or has been moved."
-					: "The page couldn't be loaded.",
+					? t("errors.pageNotFoundDetail")
+					: t("errors.pageLoadFailed"),
 		};
 	}
 	if (error instanceof APIError) {
 		return {
 			code: error.problem.status,
-			title: error.name || "Request failed",
-			detail: error.message || "The server rejected the request.",
+			title: error.name || t("errors.requestFailed"),
+			detail: error.message || t("errors.requestRejected"),
 			trace: error.problem.traceId,
 		};
 	}
 	return {
 		code: null,
 		trace: null,
-		title: "Something went wrong",
+		title: t("errors.somethingWrong"),
 		detail:
 			error instanceof Error && error.message
 				? error.message
-				: "An unexpected error occurred while loading this page.",
+				: t("errors.unexpected"),
 	};
 }
 
 export function ErrorBoundary({
 	error,
 }: Route.ErrorBoundaryProps): JSX.Element {
+    // eslint-disable-next-line id-length
+    const { t } = useTranslation();
 	const revalidator = useRevalidator();
-	const { code, title, detail, trace } = describeError(error);
+	const { code, title, detail, trace } = describeError(error, t);
 
 	return (
 		<div className="flex h-full items-center justify-center w-full p-6 font-main">
@@ -70,7 +78,7 @@ export function ErrorBoundary({
 				<div className="flex flex-col items-center gap-1.5">
 					{code !== null && (
 						<span className="text-sm font-semibold text-muted tracking-wide">
-							Error {code}
+							{t("errors.code", { code })}
 						</span>
 					)}
 					<h1 className="text-2xl font-semibold font-head text-text tracking-tight">
@@ -89,19 +97,19 @@ export function ErrorBoundary({
 						pending={revalidator.state === "loading"}
 					>
 						<PiArrowClockwise size={18} />
-						Go Back
+						{t("common.goBack")}
 					</CheckButton>
 					<Link to="/">
 						<CheckButton active activeCheck={false}>
 							<PiHouse size={18} />
-							Home
+							{t("common.home")}
 						</CheckButton>
 					</Link>
 				</div>
 
 				{trace !== null && (
 					<span className="text-xs text-muted font-mono break-all">
-						Trace: {trace}
+						{t("errors.trace", { trace })}
 					</span>
 				)}
 			</div>

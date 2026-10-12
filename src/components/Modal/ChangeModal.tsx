@@ -1,4 +1,5 @@
 import type { JSX } from "react";
+import { useTranslation } from "react-i18next";
 import type { FetcherWithComponents, HTMLFormMethod } from "react-router";
 
 import CheckButton from "../Button/CheckButton";
@@ -13,6 +14,7 @@ export default function ChangeModal({
 	action,
 	method,
 	inputName,
+	inputLabel,
 	placeholder,
 	id,
 	minInput,
@@ -26,6 +28,7 @@ export default function ChangeModal({
 	action: string;
 	method: HTMLFormMethod;
 	inputName: string;
+	inputLabel?: string;
 	placeholder?: string;
 	id?: string;
 	minInput: number;
@@ -33,6 +36,8 @@ export default function ChangeModal({
 	fetcher: FetcherWithComponents<Response>;
 	password?: boolean;
 }): JSX.Element {
+	// eslint-disable-next-line id-length
+	const { t } = useTranslation();
 	return (
 		<Modal title={title} onClose={onClose}>
 			{desc && (
@@ -51,12 +56,13 @@ export default function ChangeModal({
 					maxLength={maxInput}
 					minLength={minInput}
 					name={inputName}
+					label={inputLabel}
 					required
 					className="ring-0 focus:border-border border-border rounded-sm"
 					placeholder={placeholder}
 				></Input>
 				<CheckButton active type="submit">
-					OK
+					{t("common.ok")}
 				</CheckButton>
 			</fetcher.Form>
 		</Modal>

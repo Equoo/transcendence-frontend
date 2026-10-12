@@ -1,4 +1,5 @@
 import { type JSX, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { useChat } from "@/chat/hooks/chat.hook";
 import { useUser } from "@/users/hooks/users";
@@ -9,6 +10,8 @@ import { ChatProvider } from "./ChatProvider";
 import MessageList, { type MessageListHandles } from "./Messages/MessageList";
 
 function ChannelChat({ channelId }: { channelId: string }): JSX.Element {
+	// eslint-disable-next-line id-length
+	const { t } = useTranslation();
 	const channel = useChat((state) => state.channels[channelId]);
 	const listRef = useRef<MessageListHandles>(null);
 	const composerRef = useRef<ChatComposerHandles>(null);
@@ -71,7 +74,11 @@ function ChannelChat({ channelId }: { channelId: string }): JSX.Element {
 	return (
 		<div className="flex min-h-0 flex-1">
 			<div className="flex min-w-0 flex-1 flex-col">
-				<ChatProvider chatId={channel.id} listRef={listRef} composerRef={composerRef}>
+				<ChatProvider
+					chatId={channel.id}
+					listRef={listRef}
+					composerRef={composerRef}
+				>
 					<MessageList
 						ref={listRef}
 						key={channel.id}
@@ -80,7 +87,9 @@ function ChannelChat({ channelId }: { channelId: string }): JSX.Element {
 					/>
 					<ChatComposer
 						ref={composerRef}
-						placeholder={`Message to #${channel.name}...`}
+						placeholder={t("chat.messageTo", {
+							name: channel.name,
+						})}
 						onSend={onSend}
 					/>
 				</ChatProvider>

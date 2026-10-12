@@ -1,4 +1,5 @@
 import { type JSX, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { PiDotsThreeVerticalBold } from "react-icons/pi";
 import { useFetcher } from "react-router";
 
@@ -28,12 +29,13 @@ export default function ItemActions({
 	name: string;
 	folders: string[];
 }): JSX.Element {
+	// eslint-disable-next-line id-length
+	const { t } = useTranslation();
 	const [showSelect, setShowSelect] = useState(false);
 	const [dialog, setDialog] = useState<Dialog | null>(null);
 	const fetcher = useFetcher<typeof clientAction>();
 	const isFolder = !fileKey;
 	const path = `${parent}${name}/`;
-	const kind = isFolder ? "folder" : "file";
 	const action = isFolder ? "/files" : `/files/${fileKey}`;
 	const destinations = Array.from(new Set(["/", ...folders])).filter(
 		(folder) => folder !== parent && !(isFolder && folder.startsWith(path)),
@@ -50,7 +52,11 @@ export default function ItemActions({
 		<>
 			<ListActions className="relative">
 				<PiDotsThreeVerticalBold
-					aria-label={`Actions for ${kind} ${name}`}
+					aria-label={
+						isFolder
+							? t("files.actionsForFolder", { name })
+							: t("files.actionsForFile", { name })
+					}
 					onClick={() => {
 						setShowSelect(true);
 					}}
@@ -69,21 +75,21 @@ export default function ItemActions({
 								onClick: (): void => {
 									setDialog("rename");
 								},
-								content: <div>Rename</div>,
+								content: <div>{t("files.rename")}</div>,
 							},
 							{
 								id: "move",
 								onClick: (): void => {
 									setDialog("move");
 								},
-								content: <div>Move</div>,
+								content: <div>{t("files.move")}</div>,
 							},
 							{
 								id: "delete",
 								onClick: (): void => {
 									setDialog("delete");
 								},
-								content: <div>Delete</div>,
+								content: <div>{t("files.delete")}</div>,
 							},
 						]}
 					/>
@@ -91,7 +97,11 @@ export default function ItemActions({
 			</ListActions>
 			{dialog === "rename" && (
 				<Modal
-					title={`Rename ${kind}`}
+					title={
+						isFolder
+							? t("files.renameFolder")
+							: t("files.renameFile")
+					}
 					width="w-4/10"
 					onClose={() => {
 						setDialog(null);
@@ -108,9 +118,10 @@ export default function ItemActions({
 						<input type="hidden" name="Folder" value={parent} />
 						<Input
 							name="Name"
+							label={t("common.name")}
 							value={name}
 							pattern="^[^\/]*$"
-							title={"Must not contain /"}
+							title={t("files.noSlash")}
 							required
 						/>
 						<CheckButton
@@ -118,14 +129,18 @@ export default function ItemActions({
 							active
 							pending={fetcher.state !== "idle"}
 						>
-							Rename
+							{t("files.rename")}
 						</CheckButton>
 					</fetcher.Form>
 				</Modal>
 			)}
 			{dialog === "move" && (
 				<Modal
-					title={`Move ${kind}`}
+					title={
+						isFolder
+							? t("files.moveFolder")
+							: t("files.moveFile")
+					}
 					width="w-4/10"
 					onClose={() => {
 						setDialog(null);
@@ -140,7 +155,11 @@ export default function ItemActions({
 							<input type="hidden" name="From" value={path} />
 						)}
 						<input type="hidden" name="Name" value={name} />
-						<Field name="Folder" required>
+						<Field
+							name="Folder"
+							label={t("files.folder")}
+							required
+						>
 							<select
 								name="Folder"
 								required
@@ -158,7 +177,7 @@ export default function ItemActions({
 							active
 							pending={fetcher.state !== "idle"}
 						>
-							Move
+							{t("files.move")}
 						</CheckButton>
 					</fetcher.Form>
 				</Modal>
@@ -166,15 +185,19 @@ export default function ItemActions({
 			{dialog === "delete" && (
 				<Modal
 					width="w-fit"
-					title={`Delete this ${kind} ?`}
+					title={
+						isFolder
+							? t("files.deleteFolderTitle")
+							: t("files.deleteFileTitle")
+					}
 					onClose={() => {
 						setDialog(null);
 					}}
 				>
 					<p className="text-muted font-main font-light w-4/5 text-sm text-center">
 						{isFolder
-							? "All files in this folder will be deleted. This cannot be cancelled."
-							: "This cannot be cancelled."}
+							? t("files.deleteFolderDesc")
+							: t("common.irreversible")}
 					</p>
 					<div className="inline-flex gap-8">
 						<CheckButton
@@ -186,7 +209,7 @@ export default function ItemActions({
 								);
 							}}
 						>
-							Yes
+							{t("common.yes")}
 						</CheckButton>
 						<CheckButton
 							active
@@ -195,7 +218,7 @@ export default function ItemActions({
 								setDialog(null);
 							}}
 						>
-							No
+							{t("common.no")}
 						</CheckButton>
 					</div>
 				</Modal>

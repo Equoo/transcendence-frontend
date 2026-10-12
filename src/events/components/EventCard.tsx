@@ -1,4 +1,6 @@
+import type { TFunction } from "i18next";
 import { type JSX, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { FiChevronRight } from "react-icons/fi";
 import { GoPeople } from "react-icons/go";
 import { IoLocationOutline } from "react-icons/io5";
@@ -31,19 +33,25 @@ function getCountdown(targetDate: Date): CountdownType {
 	return { days, hours, minutes, seconds, totalMs };
 }
 
-function formatCountdown(countdown: CountdownType): string {
+// eslint-disable-next-line id-length
+function formatCountdown(countdown: CountdownType, t: TFunction): string {
 	const pad = (value: number): string => String(value).padStart(2, "0");
 	if (countdown.totalMs === 0) {
-		return "Running";
+		return t("events.running");
 	}
 	if (countdown.days > 0) {
-		return `${countdown.days}d ${pad(countdown.hours)}:${pad(countdown.minutes)}:${pad(countdown.seconds)}`;
+		return t("events.countdownDays", {
+			days: countdown.days,
+			time: `${pad(countdown.hours)}:${pad(countdown.minutes)}:${pad(countdown.seconds)}`,
+		});
 	}
 
 	return `${pad(countdown.hours)}:${pad(countdown.minutes)}:${pad(countdown.seconds)}`;
 }
 
 function Countdown({ date }: { date: Date }): JSX.Element {
+	// eslint-disable-next-line id-length
+	const { t } = useTranslation();
 	const [countdown, setCountdown] = useState(() => getCountdown(date));
 
 	useEffect(() => {
@@ -59,11 +67,11 @@ function Countdown({ date }: { date: Date }): JSX.Element {
 	return (
 		<div
 			id="countdown"
-			className="flex flex-col font-head font-bold text-3xl"
+			className="flex flex-col font-head font-bold text-3xl whitespace-nowrap"
 		>
-			{formatCountdown(countdown)}
+			{formatCountdown(countdown, t)}
 			<small className="text-muted font-semibold text-xs tracking-wider">
-				BEFORE START
+				{t("events.beforeStart")}
 			</small>
 		</div>
 	);
@@ -74,6 +82,8 @@ export default function EventCard({
 }: {
 	event: EventSummary;
 }): JSX.Element {
+	// eslint-disable-next-line id-length
+	const { t } = useTranslation();
 	return (
 		<div className="bg-surface flex max-w-lg grow sm:min-w-md min-w-sm h-fit flex-col gap-4 overflow-hidden border border-border rounded-3xl p-6 shadow-main sm:p-8">
 			<h2 className=" text-3xl font-semibold font-head leading-8 text-text tracking-tight overflow-x-scroll overflow-y-hidden">
@@ -107,12 +117,15 @@ export default function EventCard({
 					</div>
 				)}
 			</div>
-			<div className="flex gap-3 items-end">
+			<div className="flex gap-3 items-end flex-wrap">
 				<Countdown key={event.id} date={new Date(event.date)} />
 				<div className="ml-auto">
 					<Badge border="" bg="bg-good-soft" text="text-good">
 						<GoPeople />
-						{event.registeredCount}/{event.size} Registered
+						{t("events.registeredCount", {
+							registered: event.registeredCount,
+							size: event.size,
+						})}
 					</Badge>
 				</div>
 			</div>
@@ -121,7 +134,7 @@ export default function EventCard({
 				<div className="ml-auto">
 					<Link to={`/calendar/${event.id}`}>
 						<CheckButton discrete>
-							Details <FiChevronRight />
+							{t("events.details")} <FiChevronRight />
 						</CheckButton>
 					</Link>
 				</div>

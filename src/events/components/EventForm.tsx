@@ -1,4 +1,5 @@
 import { type JSX, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { PiPlusBold } from "react-icons/pi";
 import { TbPencil } from "react-icons/tb";
 import { useFetcher } from "react-router";
@@ -30,6 +31,8 @@ export default function EventForm({
 	event?: EventData;
 	edit?: boolean;
 }): JSX.Element {
+	// eslint-disable-next-line id-length
+	const { t } = useTranslation();
 	const [errors, setErrors] = useState<ValidationErrors>();
 	const eventFetcher = useFetcher<typeof eventAction>();
 	const [showEventForm, setShowEventForm] = useState(false);
@@ -50,8 +53,8 @@ export default function EventForm({
 		<Promisable
 			skeleton={
 				edit || (
-					<CheckButton type="button"  className={className} disabled>
-						Event
+					<CheckButton type="button" className={className} disabled>
+						{t("events.event")}
 					</CheckButton>
 				)
 			}
@@ -79,21 +82,23 @@ export default function EventForm({
 							}}
 						>
 							<PiPlusBold />
-							Event
+							{t("events.event")}
 						</CheckButton>
 					)}
 
 					{showEventForm && (
 						<Modal
-							title={edit ? "Edit Event" : "Create An Event"}
+							title={
+								edit
+									? t("events.editTitle")
+									: t("events.createTitle")
+							}
 							onClose={() => {
 								setShowEventForm(false);
 							}}
 						>
 							<p className="text-muted font-main font-light w-4/5 text-sm">
-								You will be automatically set as the Organizer.
-								You can still register and unregister after the
-								creation.
+								{t("events.formHint")}
 							</p>
 							<eventFetcher.Form
 								action={
@@ -105,13 +110,17 @@ export default function EventForm({
 								<Input
 									maxLength={55}
 									name="Name"
+									label={t("common.name")}
 									value={event?.name}
 									required
 									errors={errors}
-									placeholder="Event Name"
+									placeholder={t(
+										"events.namePlaceholder",
+									)}
 								/>
 								<Input
 									name="Date"
+									label={t("events.date")}
 									value={event?.date.substring(
 										0,
 										event.date.lastIndexOf(":"),
@@ -119,47 +128,64 @@ export default function EventForm({
 									type="datetime-local"
 									required
 									errors={errors}
-									placeholder="Event Date"
+									placeholder={t(
+										"events.datePlaceholder",
+									)}
 								/>
 								<Input
 									max={2147483646}
 									name="Size"
+									label={t("events.size")}
 									value={event?.size}
 									type="number"
 									required
 									min="1"
 									errors={errors}
-									placeholder="Max Registrations"
+									placeholder={t(
+										"events.sizePlaceholder",
+									)}
 								/>
 								<Input
 									maxLength={50}
 									name="Location"
+									label={t("events.location")}
 									value={event?.location}
 									required
 									errors={errors}
-									placeholder="Event Location"
+									placeholder={t(
+										"events.locationPlaceholder",
+									)}
 								/>
 								<MultipleInput
 									name="Tags"
+									label={t("events.tags")}
 									values={event?.tags}
-									placeholder="Event Tags"
+									placeholder={t(
+										"events.tagsPlaceholder",
+									)}
 									errors={errors}
 									className="w-full bg-surface border rounded-md border-border2  px-2 py-1 font-main text-text"
 								/>
 								<MultipleInput
 									name="Roles"
+									label={t("events.roles")}
 									values={event?.eventRoles.map(
 										(role) => role.name,
 									)}
 									suggestions={roles.map((role) => role.name)}
-									placeholder="Event Roles"
+									placeholder={t(
+										"events.rolesPlaceholder",
+									)}
 									errors={errors}
 									className="w-full bg-surface border rounded-md border-border2  px-2 py-1 font-main text-text"
 								/>
 								<TextArea
 									name="Description"
+									label={t("events.description")}
 									value={event?.description}
-									placeholder="Event Description"
+									placeholder={t(
+										"events.descriptionPlaceholder",
+									)}
 									errors={errors}
 								/>
 								<Promisable data={filesInput}>
@@ -171,6 +197,7 @@ export default function EventForm({
 											)}
 											errors={errors}
 											name="Files"
+											label={t("files.files")}
 										/>
 									)}
 								</Promisable>
@@ -180,7 +207,7 @@ export default function EventForm({
 									type="submit"
 									pending={eventFetcher.state !== "idle"}
 								>
-									Ok
+									{t("common.ok")}
 								</CheckButton>
 							</eventFetcher.Form>
 						</Modal>

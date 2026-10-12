@@ -10,6 +10,7 @@ import type { ValidationErrors } from "../../api/problem_detail";
 
 export type InputProps = ComponentProps<"textarea"> & {
 	name: string;
+	label?: string;
 	className?: string;
 	children?: ReactNode;
 	errors?: ValidationErrors;
@@ -17,6 +18,7 @@ export type InputProps = ComponentProps<"textarea"> & {
 
 export function TextArea({
 	name,
+	label,
 	errors,
 	className,
 	children,
@@ -35,7 +37,7 @@ export function TextArea({
 		<div className="inline-flex flex-col w-full">
 			<div className="text-red-500">
 				<label className="text-text font-main font-medium">
-					{name}
+					{label ?? name}
 				</label>
 				{(rest.required ?? false) && "*"}
 			</div>

@@ -1,5 +1,6 @@
 import { type JSX, useState } from "react";
 import { createPortal } from "react-dom";
+import { useTranslation } from "react-i18next";
 import { PiGear, PiPlus } from "react-icons/pi";
 import { useFetcher } from "react-router";
 
@@ -21,6 +22,8 @@ export default function CategoryForm({
 	edit?: ChannelCategory | null;
 	className?: string;
 }): JSX.Element {
+	// eslint-disable-next-line id-length
+	const { t } = useTranslation();
 	const [errors, setErrors] = useState<ValidationErrors>();
 	const fetcher = useFetcher<typeof clientAction>();
 	const [showModal, setShowModal] = useState(false);
@@ -57,8 +60,10 @@ export default function CategoryForm({
 					<Modal
 						title={
 							edit
-								? `Editing category #${edit.name}`
-								: "Create a category"
+								? t("chat.editCategoryTitle", {
+										name: edit.name,
+									})
+								: t("chat.createCategoryTitle")
 						}
 						onClose={() => {
 							setShowModal(false);
@@ -66,16 +71,13 @@ export default function CategoryForm({
 					>
 						{edit ? (
 							<p className="text-muted font-main font-light w-4/5 text-sm">
-								You are editing category #{edit.name}. You can
-								change his name and whitelist roles. If roles
-								whitelist is empty, everyone can access to
-								channel.
+								{t("chat.editCategoryHint", {
+									name: edit.name,
+								})}
 							</p>
 						) : (
 							<p className="text-muted font-main font-light w-4/5 text-sm">
-								Creating category, give his name and whitelist
-								roles. If roles whitelist is empty, everyone can
-								access to channel.
+								{t("chat.createCategoryHint")}
 							</p>
 						)}
 						<fetcher.Form
@@ -85,17 +87,23 @@ export default function CategoryForm({
 						>
 							<Input
 								name="Name"
+								label={t("common.name")}
 								required
 								errors={errors}
-								placeholder="Category Name"
+								placeholder={t(
+									"chat.categoryNamePlaceholder",
+								)}
 								value={edit?.name}
 							/>
 							<Promisable
 								skeleton={
 									<MultipleInput
 										name="Roles"
+										label={t("common.roles")}
 										onlySuggestions
-										placeholder="Whitelisted Roles"
+										placeholder={t(
+											"chat.whitelistedRoles",
+										)}
 										errors={errors}
 										className="w-full bg-surface border rounded-md border-border2  px-2 py-1 font-main text-text"
 										values={edit?.rolesWhitelist.map(
@@ -108,11 +116,14 @@ export default function CategoryForm({
 								{(roles) => (
 									<MultipleInput
 										name="Roles"
+										label={t("common.roles")}
 										onlySuggestions
 										suggestions={roles.map(
 											(role) => role.name,
 										)}
-										placeholder="Whitelisted Roles"
+										placeholder={t(
+											"chat.whitelistedRoles",
+										)}
 										errors={errors}
 										className="w-full bg-surface border rounded-md border-border2  px-2 py-1 font-main text-text"
 										values={edit?.rolesWhitelist.map(
@@ -136,14 +147,16 @@ export default function CategoryForm({
 									danger
 									pending={fetcher.state !== "idle"}
 								>
-									Delete
+									{t("common.delete")}
 								</CheckButton>
 								<CheckButton
 									active
 									type="submit"
 									pending={fetcher.state !== "idle"}
 								>
-									{edit ? "Validate" : "Create"}
+									{edit
+										? t("common.validate")
+										: t("common.create")}
 								</CheckButton>
 							</div>
 						</fetcher.Form>
@@ -154,7 +167,9 @@ export default function CategoryForm({
 				showDeleteModal &&
 				createPortal(
 					<Modal
-						title={`Delete category #${edit.name}`}
+						title={t("chat.deleteCategoryTitle", {
+							name: edit.name,
+						})}
 						onClose={() => {
 							setShowDeleteModal(false);
 						}}
@@ -174,7 +189,7 @@ export default function CategoryForm({
 								danger
 								pending={fetcher.state !== "idle"}
 							>
-								Delete
+								{t("common.delete")}
 							</CheckButton>
 							<CheckButton
 								type="button"
@@ -185,7 +200,7 @@ export default function CategoryForm({
 								activeCheck={false}
 								pending={fetcher.state !== "idle"}
 							>
-								Cancel
+								{t("common.cancel")}
 							</CheckButton>
 						</fetcher.Form>
 					</Modal>,

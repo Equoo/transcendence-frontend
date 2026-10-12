@@ -1,4 +1,5 @@
 import { type JSX, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { FcFolder } from "react-icons/fc";
 import { PiCheck } from "react-icons/pi";
 
@@ -15,15 +16,19 @@ export default function FileSelect({
 	files,
 	selectedKeys,
 	name,
+	label,
 	required,
 	errors,
 }: {
 	files: AppFile[];
 	selectedKeys?: string[];
 	name: string;
+	label?: string;
 	required?: boolean;
 	errors?: ValidationErrors;
 }): JSX.Element {
+	// eslint-disable-next-line id-length
+	const { t } = useTranslation();
 	const [showSelect, setShowSelect] = useState(false);
 	const [selectedFiles, setSelectedFiles] = useState<string[]>(
 		selectedKeys ?? [],
@@ -42,20 +47,20 @@ export default function FileSelect({
 	}
 
 	return (
-		<Field name={name} required={required} errors={errors}>
+		<Field name={name} label={label} required={required} errors={errors}>
 			<div className="relative flex flex-wrap items-center gap-1 w-full bg-surface border rounded-md border-border2 focus-within:border-accent px-2 py-1 font-main text-text">
 				{selectedFiles.map((selectedFileKey) => {
 					const selectedFile = files.find(
 						(file) => file.key === selectedFileKey,
 					);
-					const label =
+					const fileLabel =
 						selectedFile?.name.substring(
 							selectedFile.name.lastIndexOf("/") + 1,
 						) ?? selectedFileKey;
 
 					return (
 						<Badge key={selectedFileKey}>
-							{label}
+							{fileLabel}
 							<button
 								type="button"
 								className="font-bold text-text cursor-pointer"
@@ -75,13 +80,15 @@ export default function FileSelect({
 						setShowSelect(true);
 					}}
 				>
-					{selectedFiles.length > 0 ? "+ Add" : "Select files"}
+					{selectedFiles.length > 0
+						? t("files.add")
+						: t("files.selectFiles")}
 				</button>
 			</div>
 			<HiddenValues name={name} values={selectedFiles} />
 			{showSelect && (
 				<Modal
-					title="Select a File"
+					title={t("files.selectTitle")}
 					onClose={() => {
 						setShowSelect(false);
 					}}
@@ -142,7 +149,7 @@ export default function FileSelect({
 							setShowSelect(false);
 						}}
 					>
-						Ok
+						{t("common.ok")}
 					</CheckButton>
 				</Modal>
 			)}

@@ -1,4 +1,6 @@
+import type { TFunction } from "i18next";
 import { type JSX, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { BsSend } from "react-icons/bs";
 import { PiNotePencil, PiSparkle, PiStopFill, PiX } from "react-icons/pi";
 import Markdown from "react-markdown";
@@ -7,15 +9,23 @@ import IconBtn from "@/components/Button/IconBtn";
 
 import { type ChatbotMessage, useChatbot } from "../hooks/chatbot.hook";
 
-const DEFAULT_SUGGESTIONS = [
-	"What's in the knowledge base?",
-	"When is the next event?",
-	"How do I join a channel?",
-];
+// eslint-disable-next-line id-length
+function getDefaultSuggestions(t: TFunction): string[] {
+	return [
+		t("assistant.suggestionKnowledge"),
+		t("assistant.suggestionEvent"),
+		t("assistant.suggestionChannel"),
+	];
+}
 
 function TypingDots(): JSX.Element {
+	// eslint-disable-next-line id-length
+	const { t } = useTranslation();
 	return (
-		<span className="inline-flex gap-1 py-1.5" aria-label="Thinking">
+		<span
+			className="inline-flex gap-1 py-1.5"
+			aria-label={t("assistant.thinkingLabel")}
+		>
 			{[0, 150, 300].map((delay) => (
 				<span
 					key={delay}
@@ -34,6 +44,8 @@ function Bubble({
 	message: ChatbotMessage;
 	streaming: boolean;
 }): JSX.Element {
+	// eslint-disable-next-line id-length
+	const { t } = useTranslation();
 	if (message.role === "user") {
 		return (
 			<div className="self-end max-w-[85%] rounded-2xl rounded-br-[5px] bg-accent px-3.75 py-3 text-sm leading-[1.55] text-accent-text whitespace-pre-wrap wrap-break-word">
@@ -49,7 +61,9 @@ function Bubble({
 			{message.reasoning !== "" && (
 				<details className="group mb-2 text-[12.5px] text-muted">
 					<summary className="cursor-pointer select-none font-semibold hover:text-text2">
-						{streaming && empty ? "Thinking…" : "Reasoning"}
+						{streaming && empty
+							? t("assistant.thinking")
+							: t("assistant.reasoning")}
 					</summary>
 					<div className="chat-md mt-1.5 border-l-2 border-border2 pl-2.5">
 						<Markdown>{message.reasoning}</Markdown>
@@ -71,13 +85,15 @@ function Bubble({
 
 export default function ChatbotPanel({
 	onClose,
-	suggestions = DEFAULT_SUGGESTIONS,
+	suggestions,
 	className = "",
 }: {
 	onClose?: () => void;
 	suggestions?: string[];
 	className?: string;
 }): JSX.Element {
+	// eslint-disable-next-line id-length
+	const { t } = useTranslation();
 	const { messages, pending, ask, abort, clear } = useChatbot();
 	const [text, setText] = useState("");
 	const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -114,7 +130,7 @@ export default function ChatbotPanel({
 	return (
 		<section
 			className={`flex flex-col overflow-hidden bg-surface ${className}`}
-			aria-label="Assistant"
+			aria-label={t("knowledge.assistant")}
 		>
 			<header className="flex flex-none items-center gap-2.5 border-b border-border px-4.5 py-3.75">
 				<PiSparkle size={18} className="text-accent" />
@@ -125,8 +141,8 @@ export default function ChatbotPanel({
 						discrete
 						icon={PiNotePencil}
 						size={18}
-						aria-label="New conversation"
-						title="New conversation"
+						aria-label={t("assistant.newConversation")}
+						title={t("assistant.newConversation")}
 						onClick={() => {
 							clear();
 							stickToBottomRef.current = true;
@@ -140,7 +156,7 @@ export default function ChatbotPanel({
 						discrete
 						icon={PiX}
 						size={18}
-						aria-label="Close assistant"
+						aria-label={t("assistant.close")}
 						onClick={onClose}
 						className="p-1.5!"
 					/>
@@ -161,22 +177,23 @@ export default function ChatbotPanel({
 					{messages.length === 0 ? (
 						<>
 							<div className="self-start max-w-[92%] rounded-2xl rounded-bl-[5px] border border-border bg-surface2 px-3.75 py-3 text-sm leading-[1.55] text-text">
-								Hi, I'm Keepy, the group assistant. I answer
-								from your documents in the knowledge base.
+								{t("assistant.greeting")}
 							</div>
 							<div className="flex flex-wrap gap-2">
-								{suggestions.map((suggestion) => (
-									<button
-										key={suggestion}
-										type="button"
-										className="cursor-pointer rounded-full border border-accent/40 bg-surface px-3 py-1.5 text-[12.5px] font-semibold text-accent transition-colors duration-140 hover:bg-accent-soft"
-										onClick={() => {
-											send(suggestion);
-										}}
-									>
-										{suggestion}
-									</button>
-								))}
+								{(suggestions ?? getDefaultSuggestions(t)).map(
+									(suggestion) => (
+										<button
+											key={suggestion}
+											type="button"
+											className="cursor-pointer rounded-full border border-accent/40 bg-surface px-3 py-1.5 text-[12.5px] font-semibold text-accent transition-colors duration-140 hover:bg-accent-soft"
+											onClick={() => {
+												send(suggestion);
+											}}
+										>
+											{suggestion}
+										</button>
+									),
+								)}
 							</div>
 						</>
 					) : (
@@ -204,8 +221,8 @@ export default function ChatbotPanel({
 						ref={inputRef}
 						rows={1}
 						value={text}
-						placeholder="Ask the assistant…"
-						aria-label="Message"
+						placeholder={t("assistant.placeholder")}
+						aria-label={t("assistant.message")}
 						className="max-h-40 flex-1 resize-none border-0 bg-transparent p-0 py-2 text-[14.5px] text-text placeholder:text-muted outline-none focus:ring-0"
 						onChange={(ev) => {
 							setText(ev.target.value);
@@ -227,7 +244,7 @@ export default function ChatbotPanel({
 							active
 							icon={PiStopFill}
 							size={16}
-							aria-label="Stop"
+							aria-label={t("assistant.stop")}
 							onClick={abort}
 							className="grid h-9 w-9 flex-none place-items-center rounded-[11px]"
 						/>
@@ -237,7 +254,7 @@ export default function ChatbotPanel({
 							type="submit"
 							icon={BsSend}
 							size={16}
-							aria-label="Send"
+							aria-label={t("assistant.send")}
 							disabled={text.trim() === ""}
 							className="grid h-9 w-9 flex-none place-items-center rounded-[11px]"
 						/>

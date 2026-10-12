@@ -26,11 +26,11 @@ export default function ProfileLine({
 				edit={edit}
 				size={size}
 			/>
-			<div className="flex flex-col w-5/10">
+			<div className="flex min-w-0 flex-col w-5/10">
 				<p className="text-text text-[14px] font-semibold wrap-break-word ">
 					{user.userName}
 				</p>
-				<p className="text-text2 text-2xs font-medium">
+				<p className="text-text2 text-2xs font-medium truncate">
 					{user.role.name}
 				</p>
 			</div>
