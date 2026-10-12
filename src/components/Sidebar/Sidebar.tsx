@@ -27,6 +27,7 @@ import ProfileLine from "../Profile/ProfileLine";
 import ItemCategory from "./ItemCategory";
 import ItemChannel from "./ItemChannel";
 import ItemChannelCategory from "./ItemChannelCategory";
+import { ChannelListError } from "./SidebarError";
 
 function ChannelListSkeleton(): JSX.Element {
 	return (
@@ -163,7 +164,10 @@ function Sidebar({
 						</div>
 						<ul>
 							<Suspense fallback={<ChannelListSkeleton />}>
-								<Await resolve={channelsInit}>
+								<Await
+									resolve={channelsInit}
+									errorElement={<ChannelListError />}
+								>
 									{channels
 										.filter(
 											(ch) =>

@@ -1,12 +1,13 @@
-/* eslint-disable id-length */
 import { type JSX, useEffect } from "react";
+import { ErrorBoundary as SidebarBoundary } from "react-error-boundary";
 import { useTranslation } from "react-i18next";
-import { isRouteErrorResponse, Outlet } from "react-router";
+import { Outlet, useLocation } from "react-router";
 
 import { ActivityEnum, useActivity } from "@/activity/hooks/activity.hook";
-import { APIError } from "@/api/problem_detail";
 import { type Channel, fetchChannels } from "@/chat/api/chat.api";
 import { useChatHub } from "@/chat/hooks/chatHub.hook";
+import ErrorPage from "@/components/Error/ErrorPage";
+import { SidebarError } from "@/components/Sidebar/SidebarError";
 import {
 	Language,
 	type User,
@@ -56,6 +57,7 @@ export default function Dashboard({
 	loaderData,
 }: Route.ComponentProps): JSX.Element {
 	const activity = useActivity();
+	const location = useLocation();
 
 	const { i18n } = useTranslation();
 
@@ -84,7 +86,15 @@ export default function Dashboard({
 
 	return (
 		<div className="relative w-full h-full overflow-hidden bg-back">
-			<Sidebar user={loaderData.user} channels={loaderData.channels} />
+			<SidebarBoundary
+				resetKeys={[location.pathname]}
+				FallbackComponent={SidebarError}
+			>
+				<Sidebar
+					user={loaderData.user}
+					channels={loaderData.channels}
+				/>
+			</SidebarBoundary>
 			<div className="h-full sm:pl-64 flex flex-col w-full items-center overflow-y-scroll">
 				<UserReactContext value={loaderData.user}>
 					<Outlet />
@@ -94,29 +104,10 @@ export default function Dashboard({
 	);
 }
 
+// Only reached when the dashboard itself can't be rendered (e.g. its loader
+// failed): there is no sidebar to keep, so show a full page error.
 export function ErrorBoundary({
 	error,
 }: Route.ErrorBoundaryProps): JSX.Element {
-	const { t } = useTranslation();
-	if (isRouteErrorResponse(error)) {
-		return (
-			<div className="w-full p-6 text-red-500 font-main">
-				{error.status} — {error.statusText}
-			</div>
-		);
-	} else if (error instanceof APIError) {
-		return (
-			<>
-				<h1>{error.name}</h1>
-				<div className="w-full p-6 text-red-500 font-main">
-					{error.message}
-				</div>
-			</>
-		);
-	}
-	return (
-		<div className="w-full p-6 text-red-500 font-main">
-			{t("errors.serverLoading")}
-		</div>
-	);
+	return <ErrorPage error={error} />;
 }

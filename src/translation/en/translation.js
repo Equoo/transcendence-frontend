@@ -10,6 +10,8 @@ export default {
 				notFoundHint: "May be deleted or never exist.",
 			},
 			errors: {
+				sidebarFailed: "The sidebar couldn't be displayed.",
+				channelsFailed: "Couldn't load channels.",
 				serverLoading: "Server error during page loading",
 				pageNotFound: "Page not found",
 				pageNotFoundDetail:
@@ -25,6 +27,7 @@ export default {
 			},
 			common: {
 				goBack: "Go Back",
+				retry: "Retry",
 				home: "Home",
 				loading: "Loading…",
 				irreversible: "This cannot be cancelled.",
@@ -286,6 +289,7 @@ export default {
 				thinking: "Thinking…",
 				reasoning: "Reasoning",
 				newConversation: "New conversation",
+				crashed: "The assistant ran into an error.",
 				close: "Close assistant",
 				greeting:
 					"Hi, I'm Keepy, the group assistant. I answer from your documents in the knowledge base.",

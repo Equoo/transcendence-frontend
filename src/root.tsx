@@ -1,5 +1,5 @@
 import "./index.css";
-import  './translation/i18n'
+import "./translation/i18n";
 
 import type { JSX, ReactNode } from "react";
 import {
@@ -14,6 +14,7 @@ import { ToastContainer } from "react-toastify";
 
 import type { Route } from "./+types/root";
 import { PermEnum } from "./admin/api/roles";
+import ErrorPage from "./components/Error/ErrorPage";
 import HydratingScreen from "./components/HydratingScreen";
 import { fetchUser, UserContext } from "./users/api/users";
 
@@ -91,4 +92,10 @@ export default function App(): JSX.Element {
 
 export function HydrateFallback(): JSX.Element {
 	return <HydratingScreen />;
+}
+
+export function ErrorBoundary({
+	error,
+}: Route.ErrorBoundaryProps): JSX.Element {
+	return <ErrorPage error={error} />;
 }

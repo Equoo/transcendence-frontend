@@ -1,5 +1,6 @@
 import type { TFunction } from "i18next";
 import { type JSX, useEffect, useRef, useState } from "react";
+import { ErrorBoundary, useErrorBoundary } from "react-error-boundary";
 import { useTranslation } from "react-i18next";
 import { BsSend } from "react-icons/bs";
 import { PiNotePencil, PiSparkle, PiStopFill, PiX } from "react-icons/pi";
@@ -8,6 +9,7 @@ import Markdown from "react-markdown";
 import IconBtn from "@/components/Button/IconBtn";
 
 import { type ChatbotMessage, useChatbot } from "../hooks/chatbot.hook";
+import ChatbotError from "./ChatbotError";
 
 // eslint-disable-next-line id-length
 function getDefaultSuggestions(t: TFunction): string[] {
@@ -83,18 +85,22 @@ function Bubble({
 	);
 }
 
-export default function ChatbotPanel({
-	onClose,
-	suggestions,
-	className = "",
-}: {
+interface ChatbotPanelProps {
 	onClose?: () => void;
 	suggestions?: string[];
 	className?: string;
-}): JSX.Element {
+}
+
+function ChatbotPanelContent({
+	onClose,
+	suggestions,
+	className = "",
+}: ChatbotPanelProps): JSX.Element {
 	// eslint-disable-next-line id-length
 	const { t } = useTranslation();
 	const { messages, pending, ask, abort, clear } = useChatbot();
+	// Async errors (stream, network) aren't caught by ErrorBoundaries on their own.
+	const { showBoundary } = useErrorBoundary();
 	const [text, setText] = useState("");
 	const inputRef = useRef<HTMLTextAreaElement>(null);
 	const bodyRef = useRef<HTMLDivElement>(null);
@@ -124,7 +130,7 @@ export default function ChatbotPanel({
 		setText("");
 		stickToBottomRef.current = true;
 		requestAnimationFrame(resize);
-		void ask(trimmed);
+		ask(trimmed).catch(showBoundary);
 	};
 
 	return (
@@ -262,5 +268,21 @@ export default function ChatbotPanel({
 				</form>
 			</div>
 		</section>
+	);
+}
+
+export default function ChatbotPanel(props: ChatbotPanelProps): JSX.Element {
+	return (
+		<ErrorBoundary
+			fallbackRender={(fallbackProps) => (
+				<ChatbotError
+					{...fallbackProps}
+					onClose={props.onClose}
+					className={props.className}
+				/>
+			)}
+		>
+			<ChatbotPanelContent {...props} />
+		</ErrorBoundary>
 	);
 }

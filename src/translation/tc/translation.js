@@ -10,6 +10,8 @@ export default {
 				notFoundHint: "可能已被刪除或從未存在。",
 			},
 			errors: {
+				sidebarFailed: "無法顯示側邊欄。",
+				channelsFailed: "無法載入頻道。",
 				serverLoading: "載入頁面時發生伺服器錯誤",
 				pageNotFound: "找不到頁面",
 				pageNotFoundDetail: "此頁面不存在或已被移動。",
@@ -23,6 +25,7 @@ export default {
 			},
 			common: {
 				goBack: "返回",
+				retry: "重試",
 				home: "首頁",
 				loading: "載入中…",
 				irreversible: "此操作無法復原。",
@@ -272,6 +275,7 @@ export default {
 				thinking: "思考中…",
 				reasoning: "推理過程",
 				newConversation: "新對話",
+				crashed: "助理發生錯誤。",
 				close: "關閉助理",
 				greeting: "你好，我是 Keepy，群組助理。我會根據知識庫中的文件來回答。",
 				placeholder: "詢問助理…",

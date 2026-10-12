@@ -11,6 +11,8 @@ export default {
 					"Il a peut-être été supprimé ou n'a jamais existé.",
 			},
 			errors: {
+				sidebarFailed: "La barre latérale n'a pas pu être affichée.",
+				channelsFailed: "Impossible de charger les canaux.",
 				serverLoading:
 					"Erreur du serveur lors du chargement de la page",
 				pageNotFound: "Page introuvable",
@@ -27,6 +29,7 @@ export default {
 			},
 			common: {
 				goBack: "Retour",
+				retry: "Réessayer",
 				home: "Accueil",
 				loading: "Chargement…",
 				irreversible: "Cette action est irréversible.",
@@ -299,6 +302,7 @@ export default {
 				thinking: "Réflexion…",
 				reasoning: "Raisonnement",
 				newConversation: "Nouvelle conversation",
+				crashed: "L'assistant a rencontré une erreur.",
 				close: "Fermer l'assistant",
 				greeting:
 					"Bonjour, je suis Keepy, l'assistant du groupe. Je réponds à partir des documents de votre base de connaissances.",

@@ -153,8 +153,10 @@ export const useChatbot = create<ChatbotState>((set) => {
 							? err.message
 							: i18n.t("errors.somethingWrong"),
 				}));
+				throw err;
+			} finally {
+				set({ pending: false });
 			}
-			set({ pending: false });
 		},
 		abort: (): void => {
 			abortController.abort();
