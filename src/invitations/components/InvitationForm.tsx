@@ -2,6 +2,8 @@ import { type JSX, useState } from "react";
 import { PiPlusBold } from "react-icons/pi";
 import { useFetcher } from "react-router";
 
+import { Slidebox } from "@/components/Input/Slidebox";
+
 import CheckButton from "../../components/Button/CheckButton";
 import { Input } from "../../components/Input/Input";
 import Modal from "../../components/Modal/Modal";
@@ -12,21 +14,10 @@ export default function InvitationForm({
 }: {
 	className?: string;
 }): JSX.Element {
-	const [link, setLink] = useState("");
+	const [date] = useState(() => new Date());
 	const invitationFetcher = useFetcher<typeof invitationAction>();
 	const [showInvitationForm, setShowInvitationForm] = useState(false);
-	const [prevFetcherState, setPrevFetcherState] = useState(
-		invitationFetcher.state,
-	);
-
-	if (prevFetcherState !== invitationFetcher.state) {
-		setPrevFetcherState(invitationFetcher.state);
-		if (invitationFetcher.state === "idle" && prevFetcherState !== "idle") {
-			setLink(
-				`${window.location.origin}/register?invitation=${invitationFetcher.data}`,
-			);
-		}
-	}
+	const [permanent, setPermanent] = useState(false);
 
 	return (
 		<>
@@ -60,27 +51,48 @@ export default function InvitationForm({
 						method="POST"
 						className="flex flex-col items-center w-4/5 gap-5 mb-4"
 					>
-						<Input
-							name="Expires At"
-							type="datetime-local"
-							required
-							placeholder="Expiration Date"
-						/>
-						<Input
-							max={2147483646}
-							name="Usages"
-							type="number"
-							required
-							min="1"
-							placeholder="Max Usages"
-						/>
+						<Slidebox
+							name="Permanent"
+							checked={permanent}
+							onChange={(ev) => {
+								setPermanent(ev.target.checked);
+							}}
+						></Slidebox>
+						{!permanent && (
+							<>
+								<Input
+									name="Expires At"
+									type="datetime-local"
+									required
+									placeholder="Expiration Date"
+									min={date
+										.toISOString()
+										.slice(
+											0,
+											date.toISOString().lastIndexOf(":"),
+										)}
+								/>
+								<Input
+									max={2147483647}
+									name="Usages"
+									type="number"
+									required
+									min="1"
+									placeholder="Max Usages"
+								/>
+							</>
+						)}
 						<Input
 							name="Invitation Link"
 							disabled
 							grayed
 							copyable
-							value={link}
+							value={
+								invitationFetcher.data &&
+								`${window.location.origin}/register?invitation=${invitationFetcher.data}`
+							}
 						/>
+
 						<CheckButton
 							active
 							type="submit"

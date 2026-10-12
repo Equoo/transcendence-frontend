@@ -24,6 +24,7 @@ export function clientLoader({ context }: Route.ClientLoaderArgs) {
 
 	const users = fetchUsers().then((result) => (cachedUsers = result));
 	const roles = fetchRoles().then((result) => (cachedRoles = result));
+	const usersRoles = Promise.all([users, roles]);
 	const invitations = fetchInvitations().then(
 		(result) => (cachedInvitations = result),
 	);
@@ -32,9 +33,8 @@ export function clientLoader({ context }: Route.ClientLoaderArgs) {
 	return {
 		user,
 		previousUsers,
-		users,
+		usersRoles,
 		previousRoles,
-		roles,
 		previousInvitations,
 		invitations,
 	};
@@ -44,9 +44,8 @@ export default function AdminUsers({
 	loaderData,
 }: Route.ComponentProps): JSX.Element {
 	const {
-		users,
 		previousUsers,
-		roles,
+		usersRoles,
 		previousRoles,
 		user,
 		previousInvitations,
@@ -61,7 +60,7 @@ export default function AdminUsers({
 						User Management
 					</h1>
 					<Promisable
-						data={Promise.all([users, roles])}
+						data={usersRoles}
 						cached_data={[previousUsers, previousRoles]}
 					>
 						{(data) => (

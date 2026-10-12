@@ -16,7 +16,7 @@ export default function InvitationList({
 		<List
 			cols={[
 				{ id: "Invitation Code", pos: "text-left" },
-				{ id: "Expiration", pos: "text-left" },
+				{ id: "Expiration", pos: "text-center" },
 				{ id: "Remaining Usages", pos: "text-center" },
 				{ id: "Actions", pos: "text-right" },
 			]}
@@ -24,10 +24,16 @@ export default function InvitationList({
 			{invitations.map((invitation) => (
 				<ListRow key={invitation.id}>
 					<ListCell rowHeader>{invitation.id}</ListCell>
-					<ListCell>
-						{new Date(invitation.expiresAt).toLocaleString()}
+					<ListCell pos="text-center">
+						{invitation.usages === -1
+							? "Never"
+							: new Date(invitation.expiresAt).toLocaleString()}
 					</ListCell>
-					<ListCell pos="text-center">{invitation.usages}</ListCell>
+					<ListCell pos="text-center">
+						{invitation.usages === -1
+							? "Infinite"
+							: invitation.usages}
+					</ListCell>
 					<ListCell pos="text-right">
 						<ListAction
 							onClick={() => {
