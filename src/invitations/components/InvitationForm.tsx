@@ -14,6 +14,7 @@ export default function InvitationForm({
 }: {
 	className?: string;
 }): JSX.Element {
+	const [date] = useState(() => new Date());
 	const invitationFetcher = useFetcher<typeof invitationAction>();
 	const [showInvitationForm, setShowInvitationForm] = useState(false);
 	const [permanent, setPermanent] = useState(false);
@@ -64,6 +65,12 @@ export default function InvitationForm({
 									type="datetime-local"
 									required
 									placeholder="Expiration Date"
+									min={date
+										.toISOString()
+										.slice(
+											0,
+											date.toISOString().lastIndexOf(":"),
+										)}
 								/>
 								<Input
 									max={2147483647}
