@@ -15,6 +15,7 @@ import {
 	isBlocked,
 	isFriend,
 	isPending,
+	lastActivity,
 	matchesSearch,
 	relationName,
 } from "../utils/friends.util";
@@ -202,6 +203,7 @@ function FriendsHome(): JSX.Element {
 	const seen = new Set<string>();
 	const recent = (convPages?.pages.flat() ?? [])
 		.filter((cn) => !seen.has(cn.id) && Boolean(seen.add(cn.id)))
+		.toSorted((lhs, rhs) => lastActivity(rhs) - lastActivity(lhs))
 		.slice(0, 6);
 
 	return (

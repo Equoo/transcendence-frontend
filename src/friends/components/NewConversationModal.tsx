@@ -13,7 +13,6 @@ import { useStartConversation } from "../hooks/useConversations";
 import { useRelationships } from "../hooks/useRelationships";
 import { isFriend, matchesSearch, relationName } from "../utils/friends.util";
 
-/** Server-side limit on recipients of a conversation (excluding yourself). */
 const MAX_RECIPIENTS = 9;
 
 export default function NewConversationModal({ onClose }: { onClose: () => void }): JSX.Element {

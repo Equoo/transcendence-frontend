@@ -16,7 +16,7 @@ export interface Relationship {
 	type: RelationshipState;
 }
 
-function normalizeRelationship(rel: Relationship): Relationship {
+export function normalizeRelationship(rel: Relationship): Relationship {
 	return { ...rel, since: new Date(rel.since) };
 }
 

@@ -7,6 +7,7 @@ import { useActivity } from './activity/hooks/activity.hook';
 import { useActivityRealtime } from './activity/realtime/useActivityRealtime';
 import { useChatRealtime } from './chat/realtime/useChatRealtime';
 import { useConversationRealtime } from './friends/realtime/useConversationRealtime';
+import { useRelationshipRealtime } from './friends/realtime/useRelationshipRealtime';
 
 let hub: signalR.HubConnection | null = null;
 
@@ -48,6 +49,7 @@ export function useRealtime(): void {
 	}, [qc]);
 
 	useConversationRealtime();
+	useRelationshipRealtime();
 	useChatRealtime();
 	useActivityRealtime();
 }

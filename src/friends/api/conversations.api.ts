@@ -1,5 +1,5 @@
 import { request, requestJson } from "@/api/request";
-import type { ChannelBase, Message } from "@/chat/api/chat.api";
+import { type ChannelBase, type Message, normalizeMessage } from "@/chat/api/chat.api";
 import type { User } from "@/users/api/users";
 
 export interface ConversationBody {
@@ -13,27 +13,40 @@ export interface Conversation extends ChannelBase {
 	lastMessage: Message | null;
 }
 
+export function normalizeConversation(conv: Conversation): Conversation {
+	return {
+		...conv,
+		createAt: new Date(conv.createAt),
+		lastMessage: conv.lastMessage && normalizeMessage(conv.lastMessage),
+	};
+}
+
 export async function fetchConvs(
 	limit: number,
 	before?: Date | null,
 ): Promise<Conversation[]> {
 	const url = new URL(`/api/me/conversations`, location.origin);
-	url.searchParams.set("limit", String(limit));
+	url.searchParams.set("take", String(limit));
 	if (before) {
 		url.searchParams.set("before", before.toISOString());
 	}
 
-	return requestJson<Conversation[]>(url.toString());
+	const convs = await requestJson<Conversation[]>(url.toString());
+	return convs.map(normalizeConversation);
 }
 
 export async function fetchConv(id: string): Promise<Conversation> {
-	return requestJson<Conversation>(`/api/me/conversations/${id}`);
+	return normalizeConversation(
+		await requestJson<Conversation>(`/api/me/conversations/${id}`),
+	);
 }
 
 export async function createConv(
 	conv: ConversationBody,
 ): Promise<Conversation> {
-	return requestJson<Conversation>("/api/me/conversations", "POST", conv);
+	return normalizeConversation(
+		await requestJson<Conversation>("/api/me/conversations", "POST", conv),
+	);
 }
 
 export async function deleteConv(id: string): Promise<void> {
@@ -44,9 +57,7 @@ export async function updateConv(
 	id: string,
 	conv: ConversationBody,
 ): Promise<Conversation> {
-	return requestJson<Conversation>(
-		`/api/me/conversations/${id}`,
-		"PUT",
-		conv,
+	return normalizeConversation(
+		await requestJson<Conversation>(`/api/me/conversations/${id}`, "PUT", conv),
 	);
 }

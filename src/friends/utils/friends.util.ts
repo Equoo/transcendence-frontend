@@ -39,6 +39,10 @@ export function conversationTitle(conv: Conversation, rels?: Relationship[]): st
 	return conv.recipients.map((us) => displayName(us, rels)).join(", ");
 }
 
+/** Timestamp of the latest message, or of the creation if there is none. */
+export const lastActivity = (conv: Conversation): number =>
+	(conv.lastMessage?.sentAt ?? conv.createAt).getTime();
+
 export const isFriend = (rel: Relationship): boolean =>
 	rel.type === RelationshipState.Friend;
 

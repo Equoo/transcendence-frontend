@@ -18,7 +18,6 @@ export function useRelationships(): UseQueryResult<Relationship[]> {
 		queryKey: friendsKeys.relations,
 		queryFn: fetchRelationships,
 		staleTime: 15_000,
-		refetchInterval: 30_000,
 		refetchOnWindowFocus: true,
 	});
 }

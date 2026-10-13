@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 
 import { getConnection } from '@/realtime';
 
-import type { Conversation } from '../api/conversations.api';
+import { type Conversation, normalizeConversation } from '../api/conversations.api';
 import { addConversation, removeConversation, removeConversationMember } from '../cache/friends.cache';
 
 export function useConversationRealtime(): void {
@@ -12,7 +12,7 @@ export function useConversationRealtime(): void {
 	useEffect(() => {
 		const connection = getConnection();
 		const onNewConversation = (conv: Conversation): void => {
-			addConversation(qc, conv);
+			addConversation(qc, normalizeConversation(conv));
 		};
 		const onRemoveConversation = (id: string): void => {
 			removeConversation(qc, id);

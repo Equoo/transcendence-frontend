@@ -8,7 +8,7 @@ import { useScrollPagination } from "@/hooks/usePagination";
 import { RelationshipState } from "../api/relationship.api";
 import { useConversations } from "../hooks/useConversations";
 import { useRelationships } from "../hooks/useRelationships";
-import { conversationTitle, matchesSearch } from "../utils/friends.util";
+import { conversationTitle, lastActivity, matchesSearch } from "../utils/friends.util";
 import NewConversationModal from "./NewConversationModal";
 import { SideBarChatItem } from "./SideBarChatItem";
 import { SideBarItem } from "./SideBarItem";
@@ -30,9 +30,10 @@ export function ConversationSideBar(): JSX.Element {
 	});
 
 	const seen = new Set<string>();
-	const convs = (data?.pages.toReversed().flat() ?? [])
+	const convs = (data?.pages.flat() ?? [])
 		.filter(cn => !seen.has(cn.id) && Boolean(seen.add(cn.id)))
-		.filter(cn => matchesSearch(conversationTitle(cn, rels), search));
+		.filter(cn => matchesSearch(conversationTitle(cn, rels), search))
+		.toSorted((lhs, rhs) => lastActivity(rhs) - lastActivity(lhs));
 	const incoming = rels?.filter((rel) => rel.type === RelationshipState.PendingResponse).length ?? 0;
 
 	return (
