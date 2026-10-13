@@ -23,7 +23,7 @@ export default function ConfirmModal({
 	onClose: () => void;
 }): JSX.Element {
 	return createPortal(
-		<Modal title={title} onClose={onClose}>
+		<Modal title={title} onClose={onClose} width="w-[calc(100%-2rem)]">
 			{children && (
 				<p className="text-muted font-main font-light text-sm text-center w-full">
 					{children}

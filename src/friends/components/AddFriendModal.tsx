@@ -52,7 +52,7 @@ export default function AddFriendModal({ onClose }: { onClose: () => void }): JS
 		.toSorted((lhs, rhs) => lhs.userName.localeCompare(rhs.userName));
 
 	return createPortal(
-		<Modal title="Add a friend" onClose={onClose}>
+		<Modal title="Add a friend" onClose={onClose} width="w-[calc(100%-2rem)]">
 			<div className="flex flex-col gap-5 w-full">
 				<p className="text-muted font-main font-light text-sm text-center">
 					Search a member of the group by username and send them a friend request.

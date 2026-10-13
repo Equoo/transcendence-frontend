@@ -11,6 +11,7 @@ import { useConversation, useLeaveConversation } from "../hooks/useConversations
 import { useAddFriend, useRelationship, useRelationships } from "../hooks/useRelationships";
 import { conversationTitle, isGroup } from "../utils/friends.util";
 import ActivityLabel from "./ActivityLabel";
+import BackToList, { HEADER_PADDING } from "./BackToList";
 import ConversationAvatar from "./ConversationAvatar";
 
 function DirectActions({ conv }: { conv: Conversation }): JSX.Element | null {
@@ -62,7 +63,8 @@ function ChatHeader({ conv }: { conv: Conversation }): JSX.Element {
 	const group = isGroup(conv);
 
 	return (
-		<div className="flex flex-none items-center gap-3 border-b border-border px-5.5 py-2.5">
+		<div className={`flex flex-none items-center gap-3 border-b border-border py-2.5 ${HEADER_PADDING}`}>
+			<BackToList />
 			<ConversationAvatar conv={conv} />
 			<div className="flex flex-col min-w-0">
 				<div className="font-head text-[17px] font-[650] text-text truncate">{title}</div>

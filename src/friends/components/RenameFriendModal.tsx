@@ -25,7 +25,7 @@ export default function RenameFriendModal({
 	};
 
 	return createPortal(
-		<Modal title={`Rename ${rel.user.userName}`} onClose={onClose}>
+		<Modal title={`Rename ${rel.user.userName}`} onClose={onClose} width="w-[calc(100%-2rem)]">
 			<p className="text-muted font-main font-light text-sm text-center w-full">
 				Only you can see the nickname you give to {rel.user.userName}.
 			</p>

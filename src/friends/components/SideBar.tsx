@@ -13,7 +13,7 @@ import NewConversationModal from "./NewConversationModal";
 import { SideBarChatItem } from "./SideBarChatItem";
 import { SideBarItem } from "./SideBarItem";
 
-export function ConversationSideBar(): JSX.Element {
+export function ConversationSideBar({ className = "" }: { className?: string }): JSX.Element {
 	const containerRef = useRef(null);
 	const [search, setSearch] = useState("");
 	const [showNewConv, setShowNewConv] = useState(false);
@@ -37,12 +37,8 @@ export function ConversationSideBar(): JSX.Element {
 	const incoming = rels?.filter((rel) => rel.type === RelationshipState.PendingResponse).length ?? 0;
 
 	return (
-		<aside
-			id="sidebar"
-			className="fixed top-0 left-64 z-20 w-64 h-full max-h-full transition-transform -translate-x-full sm:translate-x-0
-				bg-back3 border border-border"
-		>
-			<div className="h-full flex flex-col px-3 py-4 space-y-3 font-main font-medium text-muted text-[14.5px] overflow-hidden">
+		<aside className={`h-full min-h-0 shrink-0 bg-back3 border-r border-border ${className}`}>
+			<div className="h-full w-full flex flex-col px-3 py-4 space-y-3 font-main font-medium text-muted text-[14.5px] overflow-hidden">
 				<h1 className="font-semibold tracking-tight text-xl inline-flex justify-center text-text">
 					Private Messages
 				</h1>

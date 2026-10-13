@@ -37,7 +37,7 @@ export default function NewConversationModal({ onClose }: { onClose: () => void 
 	const isGroup = selected.length > 1;
 
 	return createPortal(
-		<Modal title="New conversation" onClose={onClose}>
+		<Modal title="New conversation" onClose={onClose} width="w-[calc(100%-2rem)]">
 			<div className="flex flex-col gap-4 w-full">
 				<p className="text-muted font-main font-light text-sm text-center">
 					Pick one friend for a direct message, or up to {MAX_RECIPIENTS} for a group.

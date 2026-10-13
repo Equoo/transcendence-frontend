@@ -21,6 +21,7 @@ import {
 } from "../utils/friends.util";
 import { useIsOnline } from "./ActivityLabel";
 import AddFriendModal from "./AddFriendModal";
+import BackToList, { HEADER_PADDING } from "./BackToList";
 import ConversationAvatar from "./ConversationAvatar";
 import FriendRow from "./FriendRow";
 import NewConversationModal from "./NewConversationModal";
@@ -48,19 +49,21 @@ function FriendsHeader(): JSX.Element {
 	const [modal, setModal] = useState<"add" | "conv" | null>(null);
 
 	return (
-		<div className="flex flex-none flex-wrap items-center gap-3 border-b border-border px-5.5 py-3">
+		<div className={`flex flex-none flex-wrap items-center gap-x-3 gap-y-2 border-b border-border py-3 ${HEADER_PADDING}`}>
+			<BackToList />
 			<Link to="/messages" className="flex items-center gap-2 font-head text-[17px] font-[650] text-text">
 				<PiUsers size={20} className="text-muted" />
 				Friends
 			</Link>
-			<span className="w-px h-5 bg-border mx-1" />
-			<nav className="flex flex-wrap gap-1">
+			<span className="hidden xl:block w-px h-5 bg-border mx-1" />
+			{/* Own scrollable row until the header is wide enough to hold everything */}
+			<nav className="order-last w-full flex gap-1 overflow-x-auto xl:order-none xl:w-auto">
 				{TABS.map(([to, label]) => (
 					<NavLink
 						key={to}
 						to={`/messages/${to}`}
 						className={({ isActive }) => [
-							"inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[14px] font-semibold duration-120",
+							"inline-flex shrink-0 items-center gap-1.5 px-3 py-1 rounded-full text-[14px] font-semibold duration-120",
 							isActive ? "bg-accent-soft text-text" : "text-text2 hover:bg-hover hover:text-text",
 						].join(" ")}
 					>
@@ -79,9 +82,9 @@ function FriendsHeader(): JSX.Element {
 				title="New conversation"
 				onClick={() => { setModal("conv"); }}
 			/>
-			<CheckButton active activeCheck={false} onClick={() => { setModal("add"); }}>
+			<CheckButton active activeCheck={false} title="Add friend" onClick={() => { setModal("add"); }}>
 				<PiUserPlus size={18} />
-				Add friend
+				<span className="hidden sm:inline">Add friend</span>
 			</CheckButton>
 
 			{modal === "add" && <AddFriendModal onClose={() => { setModal(null); }} />}
@@ -283,7 +286,7 @@ export default function FriendsPage({ filter }: { filter: FriendsFilter | null }
 		<div className="flex flex-col w-full h-full min-h-0">
 			<FriendsHeader />
 			<div className="flex-1 min-h-0 overflow-y-auto">
-				<div className="max-w-3xl mx-auto px-5.5 py-6">
+				<div className="max-w-3xl mx-auto px-4 sm:px-5.5 py-6">
 					{filter ? <FriendsList filter={filter} /> : <FriendsHome />}
 				</div>
 			</div>

@@ -21,10 +21,18 @@ function MessagesSubpage({ subpage }: { subpage: string | null }): JSX.Element {
 export default function Messages({
 	params,
 }: Route.ComponentProps): JSX.Element {
-	return (<>
-		<ConversationSideBar />
-		<div className="h-full sm:pl-64 flex flex-col w-full items-center overflow-hidden">
-			<MessagesSubpage subpage={params.subpage ?? null} />
+	const subpage = params.subpage ?? null;
+
+	// Below lg there is no room for both panes: /messages shows the list,
+	// any subpage shows its content (with a back button to the list).
+	return (
+		<div className="flex w-full h-full min-h-0 overflow-hidden">
+			<ConversationSideBar
+				className={subpage === null ? "flex w-full lg:w-64" : "hidden lg:flex lg:w-64"}
+			/>
+			<div className={`${subpage === null ? "hidden lg:flex" : "flex"} flex-1 min-w-0 h-full flex-col overflow-hidden`}>
+				<MessagesSubpage subpage={subpage} />
+			</div>
 		</div>
-	</>);
+	);
 }
