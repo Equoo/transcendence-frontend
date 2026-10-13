@@ -1,41 +1,34 @@
-import { type InfiniteData, useQueryClient } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 
 import { getConnection } from '@/realtime';
 
 import type { Conversation } from '../api/conversations.api';
+import { addConversation, removeConversation, removeConversationMember } from '../cache/friends.cache';
 
 export function useConversationRealtime(): void {
 	const qc = useQueryClient();
 
 	useEffect(() => {
 		const connection = getConnection();
-		const onConversationCreated = (conv: Conversation): void => {
-			qc.setQueryData<InfiniteData<Conversation[]>>(['conversations', conv.id], old => {
-				if (!old) { return old; }
-				const pages = [...old.pages];
-				pages[0] = [...pages[0], conv];
-				return { ...old, pages };
-			});
-			void qc.invalidateQueries({ queryKey: ['conversations', 'list'] });
-		}
+		const onNewConversation = (conv: Conversation): void => {
+			addConversation(qc, conv);
+		};
+		const onRemoveConversation = (id: string): void => {
+			removeConversation(qc, id);
+		};
+		const onMemberLeft = (id: string, userId: string): void => {
+			removeConversationMember(qc, id, userId);
+		};
 
-		const onConversationUpdated = (id: string, conv: Conversation): void => {
-			qc.setQueryData<InfiniteData<Conversation[]>>(['conversations', conv.id], old => {
-				if (!old) { return old; }
-				const pages = [...old.pages];
-				pages[0] = [...pages[0], conv];
-				return { ...old, pages };
-			});
-			void qc.invalidateQueries({ queryKey: ['conversations', id] });
-		}
-
-		connection.on('ConversationCreated', onConversationCreated);
-		connection.on('ConversationUpdated', onConversationUpdated);
+		connection.on('NewConversation', onNewConversation);
+		connection.on('RemoveConversation', onRemoveConversation);
+		connection.on('ConversationMemberLeft', onMemberLeft);
 
 		return (): void => {
-			connection.off('ConversationCreated', onConversationCreated);
-			connection.off('ConversationUpdated', onConversationUpdated);
+			connection.off('NewConversation', onNewConversation);
+			connection.off('RemoveConversation', onRemoveConversation);
+			connection.off('ConversationMemberLeft', onMemberLeft);
 		};
 	}, [qc]);
 }

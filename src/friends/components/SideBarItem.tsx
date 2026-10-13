@@ -7,10 +7,12 @@ export function SideBarItem({
 	children,
 	icon: Icon,
 	to,
+	badge = 0,
 }: {
 	children: ReactNode;
 	icon: IconType;
 	to: string;
+	badge?: number;
 }): JSX.Element {
 	return (
 		<li>
@@ -38,10 +40,14 @@ export function SideBarItem({
 							/>
 						)}
 						<span className="ms-3">{children}</span>
+						{badge > 0 && (
+							<span className="ml-auto min-w-5 px-1.5 rounded-full bg-accent text-accent-text text-[11px] leading-5 text-center">
+								{badge}
+							</span>
+						)}
 					</>
 				)}
 			</NavLink>
 		</li>
 	);
 }
-

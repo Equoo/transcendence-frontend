@@ -3,8 +3,8 @@ import type { ChannelBase, Message } from "@/chat/api/chat.api";
 import type { User } from "@/users/api/users";
 
 export interface ConversationBody {
-	name: string;
-	topic: string;
+	name?: string;
+	topic?: string;
 	recipients: string[];
 }
 

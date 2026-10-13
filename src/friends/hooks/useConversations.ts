@@ -1,14 +1,16 @@
+import { useInfiniteQuery, useMutation, type UseMutationResult, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useNavigate } from 'react-router';
 
-import { type InfiniteData, useInfiniteQuery, useQuery, useQueryClient } from '@tanstack/react-query';
-
-import { type Conversation, fetchConv, fetchConvs } from '../api/conversations.api';
+import { type Conversation, type ConversationBody, createConv, deleteConv, fetchConv, fetchConvs } from '../api/conversations.api';
+import { addConversation, type ConversationPages, friendsKeys, removeConversation } from '../cache/friends.cache';
+import { toastError } from '../utils/friends.util';
 
 const PAGE_SIZE = 10;
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
 export function useConversations() {
 	return useInfiniteQuery({
-		queryKey: ['conversations', 'list'],
+		queryKey: friendsKeys.conversations,
 		queryFn: async ({ pageParam }): Promise<Conversation[]> => fetchConvs(PAGE_SIZE, pageParam),
 		initialPageParam: null as Date | null,
 		getNextPageParam: (lastPage) =>
@@ -22,16 +24,44 @@ export function useConversation(id: string | undefined) {
 	const qc = useQueryClient();
 
 	return useQuery({
-		queryKey: ["conversations", "detail", id],
+		queryKey: friendsKeys.conversation(id ?? ""),
 		queryFn: async () => fetchConv(id ?? ""),
 		enabled: Boolean(id),
 		staleTime: Infinity,
-		// Seed from the list if this conversation is already loaded there
+		retry: false,
 		initialData: () =>
-			qc.getQueryData<InfiniteData<Conversation[]>>(["conversations", "list"])
+			qc.getQueryData<ConversationPages>(friendsKeys.conversations)
 				?.pages.flat()
 				.find((cn) => cn.id === id),
 		initialDataUpdatedAt: () =>
-			qc.getQueryState(["conversations", "list"])?.dataUpdatedAt,
+			qc.getQueryState(friendsKeys.conversations)?.dataUpdatedAt,
+	});
+}
+
+export function useStartConversation(): UseMutationResult<Conversation, Error, ConversationBody> {
+	const qc = useQueryClient();
+	const navigate = useNavigate();
+
+	return useMutation({
+		mutationFn: createConv,
+		onSuccess: (conv) => {
+			addConversation(qc, conv);
+			void navigate(`/messages/${conv.id}`);
+		},
+		onError: toastError,
+	});
+}
+
+export function useLeaveConversation(): UseMutationResult<void, Error, string> {
+	const qc = useQueryClient();
+	const navigate = useNavigate();
+
+	return useMutation({
+		mutationFn: deleteConv,
+		onSuccess: (__, id) => {
+			void navigate("/messages", { replace: true });
+			removeConversation(qc, id);
+		},
+		onError: toastError,
 	});
 }

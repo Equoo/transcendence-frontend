@@ -8,6 +8,7 @@ import {
 	useState,
 } from "react";
 
+import { useRelationships } from "@/friends/hooks/useRelationships";
 import { useScrollPagination } from "@/hooks/usePagination";
 import { useUser } from "@/users/hooks/users";
 
@@ -64,6 +65,8 @@ function MessageList({
 	const containerRef = useRef<HTMLDivElement>(null);
 	const actionBarRef = useRef<MessageActionBarHandles>(null);
 
+	const { data: relations, isPending: isPendingRelations } = useRelationships();
+
 	const { data, isPending, fetchNextPage, hasNextPage, isFetchingNextPage } = useMessages(channelId);
 	const messages = data ?? [];
 
@@ -73,7 +76,7 @@ function MessageList({
 		hasNextPage,
 		isFetchingNextPage,
 		direction: "up",
-		enabled: !isPending,
+		enabled: !isPending && !isPendingRelations,
 		resetKey: channelId,
 	});
 	const handleScroll = (ev: React.UIEvent<HTMLDivElement>): void => {
@@ -81,7 +84,7 @@ function MessageList({
 		actionBarRef.current?.hide();
 	};
 
-	useScrollRestoration(channelId, containerRef, !isPending);
+	useScrollRestoration(channelId, containerRef, !isPending && !isPendingRelations);
 	const { scrollToBottom } = useAutoScroll(messages, containerRef);
 	const lastMessageRef = useReadReceipts(channelId, messages);
 	const dividerMsgId = useNewMessagesDividerId(channelId, messages);
@@ -131,6 +134,7 @@ function MessageList({
 							onActivate={showActionBar}
 							onDeactivate={hideActionBar}
 							className="px-5.5"
+							relations={relations}
 						/>
 					</Fragment>
 				);

@@ -1,6 +1,8 @@
 import type { JSX, Ref } from "react";
 
 import ProfilePic from "@/components/Profile/ProfilePic";
+import type { Relationship } from "@/friends/api/relationship.api";
+import { displayName } from "@/friends/utils/friends.util";
 
 import type { Message } from "../../api/chat.api";
 import MessageContent from "./MessageContent";
@@ -19,6 +21,7 @@ interface MessageRowProps {
 	onActivate?: (ev: ActivateEvent) => void;
 	onDeactivate?: () => void;
 	className?: string;
+	relations?: Relationship[];
 }
 
 function formatTimestamp(date: Date): string {
@@ -39,6 +42,7 @@ function MessageRow({
 	onActivate,
 	onDeactivate,
 	className,
+	relations
 }: MessageRowProps): JSX.Element {
 	return (
 		<div
@@ -62,7 +66,7 @@ function MessageRow({
 				{showHeader && (
 					<div className="mb-0.75 flex items-baseline gap-2.25">
 						<span className="font-head font-[650] text-[14.5px]">
-							{message.sender.userName}
+							{displayName(message.sender, relations)}
 						</span>
 						<span className="text-[11.5px] text-muted">
 							{formatTimestamp(new Date(message.sentAt))}

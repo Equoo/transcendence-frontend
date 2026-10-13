@@ -91,10 +91,7 @@ export function addMessage(
 		pages[0] = [...pages[0], message];
 		return { ...old, pages };
 	});
-	updateConversation(qc, message.channel.id, {
-		id: message.channel.id,
-		lastMessage: message,
-	});
+	updateConversation(qc, { id: channelId, lastMessage: message });
 }
 
 export function updateMessage(

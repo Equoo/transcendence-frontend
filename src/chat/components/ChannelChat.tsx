@@ -9,7 +9,13 @@ import ChatComposer, { type ChatComposerHandles } from "./ChatComposer";
 import { ChatProvider } from "./ChatProvider";
 import MessageList, { type MessageListHandles } from "./Messages/MessageList";
 
-function ChannelChat({ channel }: { channel: ChannelBase }): JSX.Element | null {
+function ChannelChat({
+	channel,
+	placeholder,
+}: {
+	channel: ChannelBase;
+	placeholder?: string;
+}): JSX.Element | null {
 	const qc = useQueryClient();
 	const listRef = useRef<MessageListHandles>(null);
 	const composerRef = useRef<ChatComposerHandles>(null);
@@ -73,7 +79,7 @@ function ChannelChat({ channel }: { channel: ChannelBase }): JSX.Element | null 
 					/>
 					<ChatComposer
 						ref={composerRef}
-						placeholder={`Message to #${channel.name}...`}
+						placeholder={placeholder ?? `Message to #${channel.name}...`}
 						onSend={onSend}
 					/>
 				</ChatProvider>

@@ -11,29 +11,42 @@ export enum RelationshipState {
 export interface Relationship {
 	id: string;
 	user: User;
-	nickName: string;
+	nickname: string | null;
 	since: Date;
 	type: RelationshipState;
 }
 
+function normalizeRelationship(rel: Relationship): Relationship {
+	return { ...rel, since: new Date(rel.since) };
+}
+
 export async function fetchRelationships(): Promise<Relationship[]> {
-	const friends = await requestJson<Relationship[]>("/api/me/relationships");
-
-	return friends;
+	const rels = await requestJson<Relationship[]>("/api/me/relationships");
+	return rels.map(normalizeRelationship);
 }
 
-export async function addFriend(id: string): Promise<Relationship> {
-	return requestJson<Relationship>("/api/me/relationships", "POST", id);
+export async function addFriend(userId: string): Promise<Relationship> {
+	return normalizeRelationship(
+		await requestJson<Relationship>(`/api/me/relationships/${userId}`, "POST"),
+	);
 }
 
-export async function removeFriend(id: string): Promise<void> {
-	await request(`/api/me/relationships/${id}`, "DELETE");
+export async function removeFriend(userId: string): Promise<void> {
+	await request(`/api/me/relationships/${userId}`, "DELETE");
 }
 
-export async function renameSomeone(id: string, nickName: string): Promise<Relationship> {
-	return requestJson<Relationship>(
-		`/api/me/relationships/${id}`,
-		"PATCH",
-		nickName,
+export async function blockUser(userId: string): Promise<Relationship> {
+	return normalizeRelationship(
+		await requestJson<Relationship>(`/api/me/relationships/${userId}/block`, "POST"),
+	);
+}
+
+export async function renameSomeone(userId: string, nickname: string | null): Promise<Relationship> {
+	return normalizeRelationship(
+		await requestJson<Relationship>(
+			`/api/me/relationships/${userId}`,
+			"PATCH",
+			{ nickname },
+		),
 	);
 }

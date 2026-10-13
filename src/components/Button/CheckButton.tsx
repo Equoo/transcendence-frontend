@@ -44,7 +44,7 @@ export default function CheckButton({
 			<button
 				type={type}
 				{...rest}
-				disabled={pending}
+				disabled={pending || rest.disabled}
 				aria-pressed={active}
 				className={style}
 			>
