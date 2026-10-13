@@ -48,7 +48,7 @@ export default function ChannelRoute({
 			</div>
 
 			{channel ? (
-				<ChannelChat channelId={channel.id}></ChannelChat>
+				<ChannelChat channel={channel}></ChannelChat>
 			) : !isPending && (<div className="absolute flex flex-col items-center top-1/2 left-1/2 -translate-1/2">
 				<h1 className="font-bold text-6xl text-text2">404</h1>
 				<h2 className="font-bold text-3xl text-text2">No such channel</h2>

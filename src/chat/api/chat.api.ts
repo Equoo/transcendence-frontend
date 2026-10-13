@@ -38,12 +38,12 @@ export interface ChannelBase {
 	name: string;
 	topic: string;
 	createAt: Date;
+	type: ChannelType;
 }
 
 export interface Channel extends ChannelBase {
 	eventId?: string;
 	categoryId?: string | null;
-	type: ChannelType;
 	rolesWhitelist: ChannelRole[];
 	categorySync: boolean;
 }

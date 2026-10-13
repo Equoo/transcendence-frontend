@@ -13,7 +13,7 @@ export default [
 			route("calendar/:eventId", "routes/event_details.tsx"),
 			route("knowledge", "routes/knowledge.tsx"),
 			route("knowledge/:key", "routes/file_view.tsx"),
-			route("messages", "routes/messages.tsx"),
+			route("messages/:subpage?", "routes/messages.tsx"),
 			route("channels/:channelId", "routes/channel.tsx"),
 			route("/admin/roles", "admin/routes/Roles.tsx"),
 			route("/admin/users", "admin/routes/Users.tsx"),

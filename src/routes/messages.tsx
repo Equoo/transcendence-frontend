@@ -1,111 +1,60 @@
-import { type JSX, useRef } from "react";
-import { NavLink } from "react-router";
+import type { JSX } from "react";
 
-import { SearchBar } from "@/components/Input/Search";
-import ProfilePic from "@/components/Profile/ProfilePic";
-import { useConversations } from "@/friends/hooks/useConversations";
-import { useScrollPagination } from "@/hooks/usePagination";
-import type { User } from "@/users/api/users";
-import { useUser } from "@/users/hooks/users";
+import ChannelChat from "@/chat/components/ChannelChat";
+import { ConversationSideBar } from "@/friends/components/SideBar";
+import { useConversation } from "@/friends/hooks/useConversations";
 
-function PrivateChatItem({
-	chatId,
-	user,
-}: {
-	chatId: string;
-	user: User;
-}): JSX.Element {
-	const to = `/messages/${chatId}`;
+import type { Route } from "./+types/messages";
 
-	return (
-		<li
-			key={chatId}
-			className=""
-		>
-			<NavLink
-				key={chatId}
-				to={to}
-				className={({ isActive }) =>
-					[
-						"flex gap-2 px-2 py-1.5 text-[14.5px] rounded-base group duration-120",
-						isActive
-							? "bg-accent-soft text-text"
-							: "hover:bg-back hover:text-text",
-					].join(" ")
-				}
-			>
-				{({ isActive, isPending }) => (
-					<>
-						{/* {isPending && ( */}
-						{/* 	<TbLoader2 className="animate-spin min-w-5" /> */}
-						{/* )} */}
-						<ProfilePic user={user} size={1} status></ProfilePic>
-						<div className="flex truncate flex-col justify-center">
-							<p className="text-text text-[14px] font-semibold">{user.userName}</p>
-							<p className="text-muted text-[14px] block truncate min-w-0">{user.userName}: last message blbalba lfe freg lg er</p>
-						</div>
-					</>
-				)}
-			</NavLink>
-		</li>
-	);
-}
-
-export default function Messages(): JSX.Element {
-	const containerRef = useRef(null);
-
-	const { data, isPending, error, fetchNextPage, hasNextPage, isFetchingNextPage } = useConversations();
-	const onScroll = useScrollPagination({
-		containerRef,
-		fetchNextPage,
-		hasNextPage,
-		isFetchingNextPage,
-		direction: "down",
-		enabled: !isPending,
-	});
-
-	const user = useUser();
-	if (!user) { return (<></>); }
+function Chat({ chatId }: { chatId: string }): JSX.Element {
+	const { data, isPending, error } = useConversation(chatId);
 
 	if (isPending) { return <div>LOADING</div>; }
 	if (error) { return <div>ERROR</div>; }
 
-	const seen = new Set<string>();
-	const convs = data.pages.toReversed().flat()
-		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-		.filter(cn => !seen.has(cn.id) && seen.add(cn.id));
-
-
 	return (
-		<aside
-			id="sidebar"
-			className="fixed top-0 left-64 z-20 w-64 h-full max-h-full transition-transform -translate-x-full sm:translate-x-0
-				bg-back3 border border-border"
-		>
-			<div className="h-full flex flex-col px-3 py-4 space-y-3 font-main font-medium text-muted text-[14.5px] overflow-hidden">
-				<h1 className="font-semibold tracking-tight text-xl inline-flex justify-center text-text">
-					Private Messages
-				</h1>
-
-				<SearchBar name="Search conversation" className="bg-back!"></SearchBar>
-
-				<div className="relative flex justify-between items-center px-2 py-1.5 mt-3 text-[11px] text-muted font-bold tracking-wider uppercase group">
-					Messages
+		<div className="relative flex flex-col w-full h-full">
+			<div className="flex flex-none items-center gap-3 border-b border-border px-5.5 py-3.75">
+				<div className="flex flex-col">
+					<div className="flex items-center gap-1.75 font-head text-[17px] font-[650]">
+						<span className="text-muted">#</span>
+						{data.name}
+					</div>
+					<div className="text-[12.5px] text-muted">
+						{data.topic}
+					</div>
 				</div>
-				<ul className="flex-1 overflow-hidden overflow-y-auto w-full" onScroll={onScroll} ref={containerRef}>
-					{convs.map((conv) => (
-						<PrivateChatItem key={conv.id} chatId={conv.id} user={conv.recipients[0]}></PrivateChatItem>
-					))}
-				</ul>
+				<span className="flex-1" />
+			</div>
 
-				<div className="relative flex justify-between items-center px-2 py-1.5 mt-3 text-[11px] text-muted font-bold tracking-wider uppercase group">
-					Friends
-				</div>
-
-				<div className="flex items-center gap-8 w-full">
-				</div>
-			</div >
-		</aside >
-
+			<ChannelChat channel={data}></ChannelChat>
+		</div>
 	);
+}
+
+function FriendsSubpage({ subpage }: { subpage: string | null }): JSX.Element {
+	switch (subpage) {
+		case null:
+			return <div>HOME</div>;
+		case "all":
+			return <div>ALL</div>;
+		case "online":
+			return <div>ONLINE</div>;
+		case "pending":
+			return <div>PENDING</div>;
+		default: {
+			return <Chat chatId={subpage}></Chat>;
+		}
+	}
+}
+
+export default function Messages({
+	params,
+}: Route.ComponentProps): JSX.Element {
+	return (<>
+		<ConversationSideBar />
+		<div className="h-full sm:pl-64 flex flex-col w-full items-center overflow-hidden">
+			<FriendsSubpage subpage={params.subpage ?? null} />
+		</div>
+	</>);
 }

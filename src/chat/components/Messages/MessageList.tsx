@@ -11,7 +11,7 @@ import {
 import { useScrollPagination } from "@/hooks/usePagination";
 import { useUser } from "@/users/hooks/users";
 
-import type { Message } from "../../api/chat.api";
+import { ChannelType, type Message } from "../../api/chat.api";
 import { useAutoScroll } from "../../hooks/useAutoScroll.hook";
 import { useAckTime } from "../../hooks/useChannels";
 import { useMessages } from "../../hooks/useMessages";
@@ -53,10 +53,12 @@ function useNewMessagesDividerId(channelId: string, messages: Message[]): string
 function MessageList({
 	channelId,
 	channelName,
+	channelType,
 	ref,
 }: {
 	channelId: string;
 	channelName: string;
+	channelType: ChannelType;
 	ref?: Ref<MessageListHandles>;
 }): JSX.Element {
 	const containerRef = useRef<HTMLDivElement>(null);
@@ -108,7 +110,7 @@ function MessageList({
 
 			<div className="mt-auto" />
 			<div className="relative gap-3 px-5.5 mt- text-muted">
-				<h1 className="text-3xl font-medium text-text"><span className="font-bold">#</span> {channelName}</h1>
+				<h1 className="text-3xl font-medium text-text">{channelType === ChannelType.Text && (<span className="font-bold">#</span>)} {channelName}</h1>
 				<p>Discussion start here</p>
 			</div>
 			{messages.map((msg, index) => {
