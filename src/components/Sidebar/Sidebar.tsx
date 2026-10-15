@@ -1,5 +1,11 @@
-import { initDrawers } from "flowbite";
-import { type JSX, Suspense, useEffect, useState } from "react";
+import {
+	type JSX,
+	Suspense,
+	useCallback,
+	useEffect,
+	useRef,
+	useState,
+} from "react";
 import { useTranslation } from "react-i18next";
 import { HiMenuAlt2 } from "react-icons/hi";
 import {
@@ -17,7 +23,7 @@ import type { Channel } from "@/chat/api/chat.api";
 import CategoryForm from "@/chat/components/CategoryForm";
 import { useChat } from "@/chat/hooks/chat.hook";
 import { isWhitelisted } from "@/chat/utils/channel.util";
-import { useMediaQuery } from "@/hooks/useMediaQuery";
+import { useClickOutside } from "@/hooks/useClickOutside";
 import Profile from "@/users/components/Profile";
 
 import { PermEnum } from "../../admin/api/roles";
@@ -72,47 +78,51 @@ function Sidebar({
 		useShallow((state) => Object.values(state.categories)),
 	);
 
+	const [showSide, setShowSide] = useState(false);
 	const [showUser, setShowUser] = useState(false);
 
-	useEffect(() => {
-		initDrawers();
-	}, []);
+	const barClickOutsideRef = useClickOutside(
+		useRef<HTMLDivElement>(null),
+		() => {
+			if (!showUser) {
+				setShowSide(false);
+			}
+		},
+	);
 
-	const isMobile = useMediaQuery("(max-width: 639px)");
+	const profileClickOutside = useCallback(() => {
+		setShowUser(false);
+	}, [setShowUser]);
+
 	useEffect(() => {
+		const isMobile = window.matchMedia("(max-width: 64rem)").matches;
 		if (!isMobile) {
 			return;
 		}
-		const sidebar = document.getElementById("sidebar");
-
-		const toggleButton = document.querySelector<HTMLButtonElement>(
-			'button[data-drawer-target="sidebar"]',
-		);
-		if (sidebar?.classList.contains("transform-none") ?? false) {
-			toggleButton?.click();
-		}
-	}, [isMobile, location.pathname]);
+		// eslint-disable-next-line @eslint-react/set-state-in-effect
+		setShowSide(false);
+	}, [location.pathname]);
 
 	return (
 		<>
 			<button
-				data-drawer-target="sidebar"
-				data-drawer-toggle="sidebar"
-				aria-controls="sidebar"
 				type="button"
 				className="fixed z-39 text-heading bg-transparent box-border border border-transparent hover:bg-back2
-				focus:ring-4 focus:ring-border2 font-medium leading-5 rounded-xl top-0 left-0 text-sm p-1
-				focus:outline-none inline-flex sm:hidden"
+				focus:ring-4 focus:ring-border2 font-medium leading-5 rounded-xl top-4 left-6 text-sm p-1
+				focus:outline-none inline-flex lg:hidden"
+				onClick={() => {
+					setShowSide(!showSide);
+				}}
 			>
 				<span className="sr-only">{t("sidebar.open")}</span>
 				<HiMenuAlt2 size={25} />
 			</button>
 
 			<aside
-				id="sidebar"
-				className="fixed top-0 left-0 z-40 w-64 h-full max-h-full  transition-transform -translate-x-full sm:translate-x-0
-				bg-back2"
-				aria-label={t("sidebar.label")}
+				className={`fixed top-0 left-0 z-40 w-64 h-full transition-transform bg-back2
+						${showSide ? "translate-x-0" : "-translate-x-full"}
+          				 lg:translate-x-0`}
+				ref={barClickOutsideRef}
 			>
 				<div className="h-full flex flex-col px-3 py-4 border-e border-border space-y-3 font-main font-medium text-muted text-[14.5px]">
 					<Link to="/" className="flex items-center ps-1 mb-5">
@@ -206,6 +216,7 @@ function Sidebar({
 							onClose={() => {
 								setShowUser(false);
 							}}
+							onClickOutside={profileClickOutside}
 						/>
 					)}
 					<div className="flex items-center gap-8  w-full h-20">

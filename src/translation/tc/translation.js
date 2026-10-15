@@ -114,7 +114,8 @@ export default {
 			admin: {
 				changeRoleName: "變更角色名稱",
 				deleteRoleTitle: "要刪除您的角色嗎？",
-				deleteRoleDesc: "所有使用此角色的使用者將改為成員。此操作無法復原。",
+				deleteRoleDesc:
+					"所有使用此角色的使用者將改為成員。此操作無法復原。",
 				deleteUserTitle: "要刪除 {{name}} 嗎？",
 				deleteUserDesc: "該使用者將從資料庫中移除。此操作無法復原。",
 				disconnectTitle: "要中斷 {{name}} 的連線嗎？",
@@ -147,7 +148,7 @@ export default {
 				running: "進行中",
 				countdownDays: "{{days}} 天 {{time}}",
 				beforeStart: "距離開始",
-				registeredCount: "已報名 {{registered}}/{{size}}",
+				registeredCount: "已報名",
 				details: "詳情",
 				event: "活動",
 				editTitle: "編輯活動",
@@ -169,7 +170,8 @@ export default {
 				registered: "已報名",
 				full: "已額滿",
 				register: "報名",
-				registerHint: "請選擇您偏好的活動角色，管理員仍可能調整您的角色。",
+				registerHint:
+					"請選擇您偏好的活動角色，管理員仍可能調整您的角色。",
 				idRequiredDelete: "刪除活動需要活動 ID",
 				idRequiredUpdate: "更新活動需要活動 ID",
 			},
@@ -204,21 +206,26 @@ export default {
 				moveFile: "移動檔案",
 				deleteFolderTitle: "要刪除此資料夾嗎？",
 				deleteFileTitle: "要刪除此檔案嗎？",
-				deleteFolderDesc: "此資料夾中的所有檔案都將被刪除。此操作無法復原。",
+				deleteFolderDesc:
+					"此資料夾中的所有檔案都將被刪除。此操作無法復原。",
 				unexpectedAction: "檔案操作時發生未預期的錯誤",
 			},
 			chat: {
 				editCategoryTitle: "編輯分類 #{{name}}",
 				createCategoryTitle: "建立分類",
-				editCategoryHint: "您正在編輯分類 #{{name}}。您可以變更其名稱與允許的角色。若允許角色清單為空，則所有人都可以存取頻道。",
-				createCategoryHint: "建立分類：請輸入名稱並設定允許的角色。若允許角色清單為空，則所有人都可以存取頻道。",
+				editCategoryHint:
+					"您正在編輯分類 #{{name}}。您可以變更其名稱與允許的角色。若允許角色清單為空，則所有人都可以存取頻道。",
+				createCategoryHint:
+					"建立分類：請輸入名稱並設定允許的角色。若允許角色清單為空，則所有人都可以存取頻道。",
 				categoryNamePlaceholder: "分類名稱",
 				whitelistedRoles: "允許的角色",
 				deleteCategoryTitle: "刪除分類 #{{name}}",
 				editChannelTitle: "編輯頻道 #{{name}}",
 				createChannelTitle: "建立頻道",
-				editChannelHint: "您正在編輯頻道 #{{name}}。您可以變更其名稱、主題與允許的角色。若允許角色清單為空，則所有人都可以存取此頻道。",
-				createChannelHint: "建立頻道：請輸入名稱、主題並設定允許的角色。若允許角色清單為空，則所有人都可以存取此頻道。",
+				editChannelHint:
+					"您正在編輯頻道 #{{name}}。您可以變更其名稱、主題與允許的角色。若允許角色清單為空，則所有人都可以存取此頻道。",
+				createChannelHint:
+					"建立頻道：請輸入名稱、主題並設定允許的角色。若允許角色清單為空，則所有人都可以存取此頻道。",
 				channelNamePlaceholder: "頻道名稱",
 				channelTopicPlaceholder: "頻道主題",
 				topic: "主題",
@@ -273,7 +280,8 @@ export default {
 				reasoning: "推理過程",
 				newConversation: "新對話",
 				close: "關閉助理",
-				greeting: "你好，我是 Keepy，群組助理。我會根據知識庫中的文件來回答。",
+				greeting:
+					"你好，我是 Keepy，群組助理。我會根據知識庫中的文件來回答。",
 				placeholder: "詢問助理…",
 				message: "訊息",
 				stop: "停止",
