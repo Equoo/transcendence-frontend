@@ -1,3 +1,4 @@
+import i18n from "i18next";
 import { data, redirect } from "react-router";
 
 import type { Channel } from "@/chat/api/chat.api";
@@ -51,7 +52,7 @@ export async function clientAction({
 	try {
 		if (request.method === "DELETE") {
 			if (!params.eventId) {
-				throw new Error("Event ID is required for deletion");
+				throw new Error(i18n.t("events.idRequiredDelete"));
 			}
 			res = await deleteEvent(params.eventId);
 			return redirect("/calendar");
@@ -67,7 +68,7 @@ export async function clientAction({
 			upsertChannel(queryClient, res.channel as unknown as Channel);
 		} else if (request.method === "PUT") {
 			if (!params.eventId) {
-				throw new Error("Event ID is required for update");
+				throw new Error(i18n.t("events.idRequiredUpdate"));
 			}
 			res = await updateEvent(event, params.eventId);
 		}

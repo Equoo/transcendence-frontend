@@ -1,5 +1,6 @@
 import { initDrawers } from "flowbite";
 import { type JSX, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { HiMenuAlt2 } from "react-icons/hi";
 import {
 	PiBookOpen,
@@ -41,12 +42,16 @@ function ChannelListSkeleton(): JSX.Element {
 }
 
 function Sidebar({ user }: { user: User }): JSX.Element {
+	// eslint-disable-next-line id-length
+	const { t } = useTranslation();
 	const location = useLocation();
 	const fetcher = useFetcher();
 	const channelsQuery = useChannels();
 	const categoriesQuery = useCategories();
 	const categories = categoriesQuery.data ?? [];
-	const dictCategories = Object.fromEntries(categories.map((cat) => [cat.id, cat]));
+	const dictCategories = Object.fromEntries(
+		categories.map((cat) => [cat.id, cat]),
+	);
 	const channels = (channelsQuery.data ?? []).filter(
 		(ch) =>
 			!ch.eventId &&
@@ -90,7 +95,7 @@ function Sidebar({ user }: { user: User }): JSX.Element {
 				focus:ring-4 focus:ring-border2 font-medium leading-5 rounded-xl top-0 left-0 text-sm p-1
 				focus:outline-none inline-flex sm:hidden"
 			>
-				<span className="sr-only">Open sidebar</span>
+				<span className="sr-only">{t("sidebar.open")}</span>
 				<HiMenuAlt2 size={25} />
 			</button>
 
@@ -98,17 +103,20 @@ function Sidebar({ user }: { user: User }): JSX.Element {
 				id="sidebar"
 				className="fixed top-0 left-0 z-40 w-64 h-full max-h-full  transition-transform -translate-x-full sm:translate-x-0
 				bg-back2"
-				aria-label="Sidebar"
+				aria-label={t("sidebar.label")}
 			>
 				<div className="h-full flex flex-col px-3 py-4 border-e border-border space-y-3 font-main font-medium text-muted text-[14.5px]">
 					<Link to="/" className="flex items-center ps-1 mb-5">
-						<img src="/logo/icon-tile.svg" className="h-10 me-3" />
-						<div className="flex flex-col self-center">
+						<img
+							src="/logo/icon-tile.svg"
+							className="h-10 me-3 shrink-0"
+						/>
+						<div className="flex min-w-0 flex-col self-center">
 							<span className="text-text font-head font-semibold text-[17px]">
 								Keep Grouped
 							</span>
-							<span className="text-muted font-main font-normal text-sm">
-								Transcendance Project
+							<span className="text-muted font-main font-normal text-sm whitespace-nowrap">
+								{t("sidebar.subtitle")}
 							</span>
 						</div>
 					</Link>
@@ -117,84 +125,85 @@ function Sidebar({ user }: { user: User }): JSX.Element {
 					)}
 					<ul className="mt-4">
 						<ItemCategory to="/" icon={PiHouse}>
-							Home
+							{t("common.home")}
 						</ItemCategory>
 						<ItemCategory to="/calendar" icon={PiCalendarBlank}>
-							Calendar
+							{t("sidebar.calendar")}
 						</ItemCategory>
 						<ItemCategory to="/knowledge" icon={PiBookOpen}>
-							Knowledge
+							{t("sidebar.knowledge")}
 						</ItemCategory>
 						<ItemCategory to="/messages" icon={PiChat}>
-							Private Messages
+							{t("sidebar.messages")}
 						</ItemCategory>
 					</ul>
 
 					<div className="flex-1 overflow-y-auto">
 						<ul>
-							<li className="flex justify-between items-center px-2 py-1.5 mt-3 text-[11px] text-muted font-bold tracking-wider uppercase group">
-								Upcoming
+							<li className="flex justify-between items-center px-2 py-1.5 mt-3 text-[11px] text-muted font-bold tracking-wider uppercase whitespace-nowrap group">
+								{t("sidebar.upcoming")}
 								<span className="ml-auto">0</span>
 							</li>
 						</ul>
 
-						<div className="relative flex justify-between items-center px-2 py-1.5 mt-3 text-[11px] text-muted font-bold tracking-wider uppercase group">
-							Channels{" "}
+						<div className="relative flex justify-between items-center px-2 py-1.5 mt-3 text-[11px] text-muted font-bold tracking-wider uppercase whitespace-nowrap group">
+							{t("sidebar.channels")}{" "}
 							{Boolean(
 								user.role.permission & PermEnum.HandleChannels,
 							) && <CategoryForm></CategoryForm>}
 						</div>
 						<ul>
-							{channelsQuery.isPending || categoriesQuery.isPending ? (
+							{channelsQuery.isPending ||
+							categoriesQuery.isPending ? (
 								<ChannelListSkeleton />
-							) : (<>
-								{channels
-									.filter(
-										(ch) =>
-											ch.categoryId === null ||
-											!Object.hasOwn(
-												dictCategories,
-												ch.categoryId ?? "",
-											),
-									)
-									.map((channel) => (
-										<ItemChannel
-											key={channel.id}
-											channel={channel}
-											user={user}
-										></ItemChannel>
-									))}
-								<li className="mb-3"></li>
-								{categories.map((category) => (
-									<ItemChannelCategory
-										key={category.id}
-										category={category}
-										channels={channels.filter(
+							) : (
+								<>
+									{channels
+										.filter(
 											(ch) =>
-												ch.categoryId ===
-												category.id,
-										)}
-										user={user}
-									></ItemChannelCategory>
-								))}
-							</>)}
+												ch.categoryId === null ||
+												!Object.hasOwn(
+													dictCategories,
+													ch.categoryId ?? "",
+												),
+										)
+										.map((channel) => (
+											<ItemChannel
+												key={channel.id}
+												channel={channel}
+												user={user}
+											></ItemChannel>
+										))}
+									<li className="mb-3"></li>
+									{categories.map((category) => (
+										<ItemChannelCategory
+											key={category.id}
+											category={category}
+											channels={channels.filter(
+												(ch) =>
+													ch.categoryId ===
+													category.id,
+											)}
+											user={user}
+										></ItemChannelCategory>
+									))}
+								</>
+							)}
 						</ul>
 					</div>
 					<AdminSidebar user={user} />
-					{
-						showUser && (
-							<Profile
-								role={user.role}
-								fetcher={fetcher}
-								user={user}
-								onClose={() => {
-									setShowUser(false);
-								}}
-							/>
-						)
-					}
+					{showUser && (
+						<Profile
+							role={user.role}
+							fetcher={fetcher}
+							user={user}
+							onClose={() => {
+								setShowUser(false);
+							}}
+						/>
+					)}
 					<div className="flex items-center gap-8  w-full h-20">
-						<ProfileLine user={user} status edit size={3} />
+						<ProfileLine user={user} status edit size={2} />
 						<PiGear
 							className="absolute text-muted right-5 hover:text-text2 cursor-pointer"
 							size={20}
@@ -203,8 +212,8 @@ function Sidebar({ user }: { user: User }): JSX.Element {
 							}}
 						></PiGear>
 					</div>
-				</div >
-			</aside >
+				</div>
+			</aside>
 		</>
 	);
 }

@@ -1,4 +1,5 @@
 import { type JSX, useEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { PiPushPin, PiUsers } from "react-icons/pi";
 import { useNavigate } from "react-router";
 
@@ -11,6 +12,8 @@ import type { Route } from "./+types/channel";
 export default function ChannelRoute({
 	params,
 }: Route.ComponentProps): JSX.Element {
+	// eslint-disable-next-line id-length
+	const { t } = useTranslation();
 	const { data: channel, isPending } = useChannel(params.channelId);
 	const hasChannel = Boolean(channel);
 
@@ -34,26 +37,40 @@ export default function ChannelRoute({
 				<div className="flex flex-col">
 					<div className="flex items-center gap-1.75 font-head text-[17px] font-[650]">
 						<span className="text-muted">#</span>
-						{isPending ? "" : channel?.name ?? "404 no such channel"}
+						{isPending
+							? ""
+							: (channel?.name ?? t("channel.notFoundTitle"))}
 					</div>
 					<div className="text-[12.5px] text-muted">
 						{channel?.topic ?? ""}
 					</div>
 				</div>
 				<span className="flex-1" />
-				{hasChannel && (<>
-					<IconBtn discrete icon={PiPushPin} />
-					<IconBtn discrete icon={PiUsers} />
-				</>)}
+				{hasChannel && (
+					<>
+						<IconBtn discrete icon={PiPushPin} />
+						<IconBtn discrete icon={PiUsers} />
+					</>
+				)}
 			</div>
 
 			{channel ? (
 				<ChannelChat channel={channel}></ChannelChat>
-			) : !isPending && (<div className="absolute flex flex-col items-center top-1/2 left-1/2 -translate-1/2">
-				<h1 className="font-bold text-6xl text-text2">404</h1>
-				<h2 className="font-bold text-3xl text-text2">No such channel</h2>
-				<p className="text-text2">May be deleted or never exist.</p>
-			</div>)}
+			) : (
+				!isPending && (
+					<div className="absolute flex flex-col items-center top-1/2 left-1/2 -translate-1/2">
+						<h1 className="font-bold text-6xl text-text2">
+							t("channel.notFoundHeading")
+						</h1>
+						<h2 className="font-bold text-3xl text-text2">
+							t("channel.notFoundHint")
+						</h2>
+						<p className="text-text2">
+							May be deleted or never exist.
+						</p>
+					</div>
+				)
+			)}
 		</div>
 	);
 }

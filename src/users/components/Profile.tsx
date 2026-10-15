@@ -1,15 +1,19 @@
 import { useEffect, useState } from "react";
 import type { JSX } from "react/jsx-runtime";
+import { useTranslation } from "react-i18next";
 import type { FetcherWithComponents } from "react-router";
 
 import type { Role } from "@/admin/api/roles";
 import CheckButton from "@/components/Button/CheckButton";
+import { Input } from "@/components/Input/Input";
+import PopupList from "@/components/List/PopupList";
 import ChangeModal from "@/components/Modal/ChangeModal";
 import ChoiceModal from "@/components/Modal/ChoiceModal";
+import Modal from "@/components/Modal/Modal";
 import ProfileLine from "@/components/Profile/ProfileLine";
 import Section, { type LineInfos } from "@/users/components/Section";
 
-import type { User } from "../api/users";
+import { Language, type User } from "../api/users";
 
 export default function Profile({
 	onClose,
@@ -22,9 +26,13 @@ export default function Profile({
 	user: User;
 	role: Role;
 }): JSX.Element {
+	// eslint-disable-next-line id-length
+	const { i18n, t } = useTranslation();
+
 	const [showDelete, setShowDelete] = useState(false);
 	const [showUsername, setShowUsername] = useState(false);
 	const [showPassword, setShowPassword] = useState(false);
+	const [showLanguage, setShowLanguage] = useState(false);
 
 	useEffect(() => {
 		if (fetcher.data) {
@@ -34,6 +42,8 @@ export default function Profile({
 			setShowPassword(false);
 			// eslint-disable-next-line @eslint-react/set-state-in-effect
 			setShowUsername(false);
+			// eslint-disable-next-line @eslint-react/set-state-in-effect
+			setShowLanguage(false);
 		}
 	}, [fetcher.data]);
 
@@ -44,24 +54,42 @@ export default function Profile({
 		setShowPassword(true);
 	};
 
+	const LanguageDisplay: string =
+		user.language === Language.fr
+			? "Francais"
+			: user.language === Language.en
+				? "English"
+				: "汉语";
+
 	const Lines: LineInfos[] = [
 		{
-			name: "Username",
+			name: t("profile.username"),
 			value: user.userName,
 			action: openUsername,
 		},
-		{ name: "Password", value: "***********", action: openPassword },
+		{
+			name: t("profile.password"),
+			value: "***********",
+			action: openPassword,
+		},
+		{
+			name: t("profile.language"),
+			value: LanguageDisplay,
+			action: (): void => {
+				setShowLanguage(true);
+			},
+		},
 	];
 
 	return (
 		<>
 			{showDelete && (
 				<ChoiceModal
-					title="Delete your account ?"
+					title={t("profile.deleteTitle")}
 					onClose={() => {
 						setShowDelete(false);
 					}}
-					desc="This cannot be cancelled."
+					desc={t("common.irreversible")}
 					action="/me/delete"
 					method="DELETE"
 					fetcher={fetcher}
@@ -70,14 +98,15 @@ export default function Profile({
 
 			{showUsername && (
 				<ChangeModal
-					title="Change Username"
+					title={t("profile.changeUsername")}
 					onClose={() => {
 						setShowUsername(false);
 					}}
 					action="/me/username"
 					method="PATCH"
 					inputName="Username"
-					placeholder="new Username"
+					inputLabel={t("profile.username")}
+					placeholder={t("profile.newUsername")}
 					minInput={1}
 					maxInput={20}
 					fetcher={fetcher}
@@ -85,22 +114,105 @@ export default function Profile({
 			)}
 
 			{showPassword && (
-				<ChangeModal
-					title="Change Password"
+				<Modal
 					onClose={() => {
 						setShowPassword(false);
 					}}
-					action="/me/password"
-					method="PATCH"
-					inputName="New password"
-					minInput={8}
-					maxInput={255}
-					fetcher={fetcher}
-					placeholder="new nassword"
-					password
-				></ChangeModal>
+					title={t("profile.changePassword")}
+				>
+					<p className="text-muted font-main font-light text-sm text-center w-full">
+						Your password will change, this cannot be cancelled.
+					</p>
+					<fetcher.Form
+						action={"/me/password"}
+						method={"PATCH"}
+						className="flex flex-col items-center gap-5 w-7/10"
+					>
+						<Input
+							password
+							maxLength={255}
+							minLength={8}
+							name={"Current Password"}
+							required
+							className="ring-0 focus:border-border border-border rounded-sm"
+							placeholder={"current password"}
+						></Input>
+
+						<Input
+							password
+							maxLength={255}
+							minLength={8}
+							name={t("profile.newPassword")}
+							required
+							className="ring-0 focus:border-border border-border rounded-sm"
+							placeholder={t("profile.newPasswordPlaceholder")}
+						></Input>
+						<CheckButton active type="submit">
+							OK
+						</CheckButton>
+					</fetcher.Form>
+				</Modal>
 			)}
-			<div className="flex items-center justify-center absolute bottom-15 left-55 flex-col border-border2 shadow-md bg-surface w-75 h-90 rounded-2xl">
+			<div className="flex items-center justify-center absolute bottom-15 left-55 flex-col border-border2 shadow-md bg-surface w-75 min-h-95 py-4 rounded-2xl">
+				{showLanguage && (
+					<PopupList
+						className="absolute right-9 bottom-32 bg-surface2 border border-border"
+						onClose={() => {
+							setShowLanguage(false);
+						}}
+						rows={[
+							{
+								id: "Francais",
+								onClick: (): void => {
+									void fetcher.submit(
+										{ language: Language.fr },
+										{
+											method: "PATCH",
+											action: "/me/language",
+										},
+									);
+									void i18n.changeLanguage(
+										Language[user.language],
+									);
+								},
+								content: <h1>🇫🇷 | Francais</h1>,
+							},
+							{
+								id: "English",
+								onClick: (): void => {
+									void fetcher.submit(
+										{ language: Language.en },
+										{
+											method: "PATCH",
+											action: "/me/language",
+										},
+									);
+									void i18n.changeLanguage(
+										Language[user.language],
+									);
+								},
+								content: <h1>🇬🇧 | English</h1>,
+							},
+							{
+								id: "汉语",
+								onClick: (): void => {
+									void fetcher.submit(
+										{ language: Language.tc },
+										{
+											method: "PATCH",
+											action: "/me/language",
+										},
+									);
+									void i18n.changeLanguage(
+										Language[user.language],
+									);
+								},
+								content: <h1>🇹🇼 | 汉语</h1>,
+							},
+						]}
+					></PopupList>
+				)}
+
 				<button
 					type="button"
 					onClick={onClose}
@@ -108,7 +220,7 @@ export default function Profile({
 				>
 					×
 				</button>
-				<div className="flex flex-col justify-center w-18/21 h-full gap-3 ">
+				<div className="flex flex-col justify-center w-18/21 h-full gap-3">
 					<ProfileLine
 						changePicture
 						size={3}
@@ -117,10 +229,11 @@ export default function Profile({
 					></ProfileLine>
 					<Section
 						role={role}
-						title="Account Info"
+						title={t("profile.accountInfo")}
 						lines={Lines}
 					></Section>
-					<div className="mt-2 flex justify-around gap-5">
+
+					<div className="mt-2 flex flex-wrap justify-center gap-x-5 gap-y-2">
 						{role.name !== "\\(*-*)/" && (
 							<CheckButton
 								discrete
@@ -128,7 +241,7 @@ export default function Profile({
 									setShowDelete(true);
 								}}
 							>
-								Delete Account
+								{t("profile.deleteAccount")}
 							</CheckButton>
 						)}
 						<CheckButton
@@ -139,7 +252,7 @@ export default function Profile({
 								});
 							}}
 						>
-							Logout
+							{t("profile.logout")}
 						</CheckButton>
 					</div>
 				</div>

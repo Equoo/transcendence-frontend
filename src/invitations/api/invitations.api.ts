@@ -12,10 +12,16 @@ export interface InvitationInput {
 }
 
 export function toInvitationInput(formData: FormData): InvitationInput {
-	return {
+	const res = {
 		expiresAt: formData.get("Expires At") as string,
 		usages: Number(formData.get("Usages")),
 	};
+
+	if ((formData.get("Permanent") as string) === "on") {
+		res.usages = -1;
+		res.expiresAt = new Date().toJSON();
+	}
+	return res;
 }
 
 export async function createInvitation(

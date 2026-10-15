@@ -1,4 +1,5 @@
 import { type JSX, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { PiFolderPlus, PiUploadSimple } from "react-icons/pi";
 
 import CheckButton from "@/components/Button/CheckButton";
@@ -12,6 +13,8 @@ import FolderItem from "./FolderItem";
 import FolderUpload from "./FolderUpload";
 
 export default function FileList({ files }: { files: AppFile[] }): JSX.Element {
+	// eslint-disable-next-line id-length
+	const { t } = useTranslation();
 	const [showUpload, setShowUpload] = useState(false);
 	const [showNewFolder, setShowNewFolder] = useState(false);
 	const { currFolder, folders, rootFiles, enterFolder, goUp } =
@@ -20,11 +23,11 @@ export default function FileList({ files }: { files: AppFile[] }): JSX.Element {
 
 	return (
 		<div className="mt-20">
-			<div className="inline-flex w-full justify-between items-end mb-2">
-				<p className="font-main text-text2 pl-1.5 text-base font-semibold">
+			<div className="flex flex-wrap w-full justify-between items-end gap-2 mb-2">
+				<p className="font-main text-text2 pl-1.5 text-base font-semibold min-w-0 truncate">
 					{currFolder}
 				</p>
-				<div className="inline-flex gap-2">
+				<div className="inline-flex shrink-0 gap-2">
 					<CheckButton
 						className=""
 						onClick={() => {
@@ -32,7 +35,7 @@ export default function FileList({ files }: { files: AppFile[] }): JSX.Element {
 						}}
 					>
 						<PiFolderPlus />
-						New folder
+						{t("files.newFolder")}
 					</CheckButton>
 					<CheckButton
 						active
@@ -43,23 +46,23 @@ export default function FileList({ files }: { files: AppFile[] }): JSX.Element {
 						}}
 					>
 						<PiUploadSimple />
-						Upload
+						{t("common.upload")}
 					</CheckButton>
 				</div>
 			</div>
 			<List
 				cols={[
-					{ id: "Name" },
-					{ id: "Type" },
-					{ id: "Size" },
-					{ id: "Actions", pos: "text-right" },
+					{ id: t("common.name") },
+					{ id: t("files.type") },
+					{ id: t("files.size") },
+					{ id: t("common.actions"), pos: "text-right" },
 				]}
 				empty={
 					currFolder === "/" &&
 					folders.length === 0 &&
 					rootFiles.length === 0
 				}
-				emptyMessage="No files to display."
+				emptyMessage={t("files.empty")}
 			>
 				{currFolder !== "/" && <FolderItem name=".." onClick={goUp} />}
 				{folders.map((folder) => (

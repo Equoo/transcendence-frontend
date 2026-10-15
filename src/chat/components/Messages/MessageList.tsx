@@ -7,6 +7,7 @@ import {
 	useRef,
 	useState,
 } from "react";
+import { useTranslation } from "react-i18next";
 
 import { useRelationships } from "@/friends/hooks/useRelationships";
 import { useScrollPagination } from "@/hooks/usePagination";
@@ -31,7 +32,10 @@ export interface MessageListHandles {
 	scrollBack: () => void;
 }
 
-function useNewMessagesDividerId(channelId: string, messages: Message[]): string | null {
+function useNewMessagesDividerId(
+	channelId: string,
+	messages: Message[],
+): string | null {
 	const user = useUser();
 	const ackDate = useAckTime(channelId);
 
@@ -62,12 +66,16 @@ function MessageList({
 	channelType: ChannelType;
 	ref?: Ref<MessageListHandles>;
 }): JSX.Element {
+	// eslint-disable-next-line id-length
+	const { t } = useTranslation();
 	const containerRef = useRef<HTMLDivElement>(null);
 	const actionBarRef = useRef<MessageActionBarHandles>(null);
 
-	const { data: relations, isPending: isPendingRelations } = useRelationships();
+	const { data: relations, isPending: isPendingRelations } =
+		useRelationships();
 
-	const { data, isPending, fetchNextPage, hasNextPage, isFetchingNextPage } = useMessages(channelId);
+	const { data, isPending, fetchNextPage, hasNextPage, isFetchingNextPage } =
+		useMessages(channelId);
 	const messages = data ?? [];
 
 	const paginate = useScrollPagination({
@@ -84,7 +92,11 @@ function MessageList({
 		actionBarRef.current?.hide();
 	};
 
-	useScrollRestoration(channelId, containerRef, !isPending && !isPendingRelations);
+	useScrollRestoration(
+		channelId,
+		containerRef,
+		!isPending && !isPendingRelations,
+	);
 	const { scrollToBottom } = useAutoScroll(messages, containerRef);
 	const lastMessageRef = useReadReceipts(channelId, messages);
 	const dividerMsgId = useNewMessagesDividerId(channelId, messages);
@@ -113,8 +125,13 @@ function MessageList({
 
 			<div className="mt-auto" />
 			<div className="relative gap-3 px-5.5 mt- text-muted">
-				<h1 className="text-3xl font-medium text-text">{channelType === ChannelType.Text && (<span className="font-bold">#</span>)} {channelName}</h1>
-				<p>Discussion start here</p>
+				<h1 className="text-3xl font-medium text-text">
+					{channelType === ChannelType.Text && (
+						<span className="font-bold">#</span>
+					)}{" "}
+					{channelName}
+				</h1>
+				<p>{t("chat.discussionStart")}</p>
 			</div>
 			{messages.map((msg, index) => {
 				const previous = messages[index - 1];

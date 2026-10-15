@@ -1,6 +1,9 @@
 import { type JSX, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { PiPlusBold } from "react-icons/pi";
 import { useFetcher } from "react-router";
+
+import { Slidebox } from "@/components/Input/Slidebox";
 
 import CheckButton from "../../components/Button/CheckButton";
 import { Input } from "../../components/Input/Input";
@@ -12,21 +15,12 @@ export default function InvitationForm({
 }: {
 	className?: string;
 }): JSX.Element {
-	const [link, setLink] = useState("");
+	const [date] = useState(() => new Date());
+	// eslint-disable-next-line id-length
+	const { t } = useTranslation();
 	const invitationFetcher = useFetcher<typeof invitationAction>();
 	const [showInvitationForm, setShowInvitationForm] = useState(false);
-	const [prevFetcherState, setPrevFetcherState] = useState(
-		invitationFetcher.state,
-	);
-
-	if (prevFetcherState !== invitationFetcher.state) {
-		setPrevFetcherState(invitationFetcher.state);
-		if (invitationFetcher.state === "idle" && prevFetcherState !== "idle") {
-			setLink(
-				`${window.location.origin}/register?invitation=${invitationFetcher.data}`,
-			);
-		}
-	}
+	const [permanent, setPermanent] = useState(false);
 
 	return (
 		<>
@@ -40,53 +34,78 @@ export default function InvitationForm({
 				}}
 			>
 				<PiPlusBold />
-				Invite
+				{t("invitations.invite")}
 			</CheckButton>
 
 			{showInvitationForm && (
 				<Modal
-					title="Create An Invitation"
+					title={t("invitations.createTitle")}
 					onClose={() => {
 						setShowInvitationForm(false);
 					}}
 				>
 					<p className="text-muted font-main font-light w-4/5 text-sm">
-						You will get a link to share. Do not share to public
-						space. The link will be automatically deleted if it's
-						expired or reach all of it's usages
+						{t("invitations.hint")}
 					</p>
 					<invitationFetcher.Form
 						action="/invitations"
 						method="POST"
 						className="flex flex-col items-center w-4/5 gap-5 mb-4"
 					>
-						<Input
-							name="Expires At"
-							type="datetime-local"
-							required
-							placeholder="Expiration Date"
-						/>
-						<Input
-							max={2147483646}
-							name="Usages"
-							type="number"
-							required
-							min="1"
-							placeholder="Max Usages"
-						/>
+						<Slidebox
+							name="Permanent"
+							checked={permanent}
+							onChange={(ev) => {
+								setPermanent(ev.target.checked);
+							}}
+						></Slidebox>
+						{!permanent && (
+							<>
+								<Input
+									name="Expires At"
+									label={t("invitations.expiresAt")}
+									type="datetime-local"
+									required
+									min={date
+										.toISOString()
+										.slice(
+											0,
+											date.toISOString().lastIndexOf(":"),
+										)}
+									placeholder={t(
+										"invitations.expirationDate",
+									)}
+								/>
+								<Input
+									max={2147483646}
+									name="Usages"
+									label={t("invitations.usages")}
+									type="number"
+									required
+									min="1"
+									placeholder={t("invitations.maxUsages")}
+								/>
+							</>
+						)}
+
 						<Input
 							name="Invitation Link"
+							label={t("invitations.link")}
 							disabled
 							grayed
 							copyable
-							value={link}
+							value={
+								invitationFetcher.data &&
+								`${window.location.origin}/register?invitation=${invitationFetcher.data}`
+							}
 						/>
+
 						<CheckButton
 							active
 							type="submit"
 							pending={invitationFetcher.state !== "idle"}
 						>
-							Ok
+							{t("common.ok")}
 						</CheckButton>
 					</invitationFetcher.Form>
 				</Modal>

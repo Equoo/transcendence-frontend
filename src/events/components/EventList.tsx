@@ -45,9 +45,11 @@ function EventListSkeleton({ count = 3 }: { count?: number }): JSX.Element {
 }
 
 export default function EventList({
+	previousEvents,
 	events,
 	skeletonCount = 3,
 }: {
+	previousEvents?: EventSummary[];
 	events: Promise<EventSummary[]> | EventSummary[];
 	skeletonCount?: number;
 }): JSX.Element {
@@ -56,6 +58,7 @@ export default function EventList({
 			<Promisable
 				data={events}
 				skeleton={<EventListSkeleton count={skeletonCount} />}
+				cached_data={previousEvents}
 			>
 				{(data) =>
 					data.map((event) => (

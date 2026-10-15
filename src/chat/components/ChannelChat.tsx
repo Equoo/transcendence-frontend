@@ -1,10 +1,21 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { type JSX, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { useUser } from "@/users/hooks/users";
 
-import { type ChannelBase, type Message, normalizeMessage, sendMessage, updateMessage as putMessage } from "../api/chat.api";
-import { addMessage, resolvePendingMessage, updateMessage } from "../cache/chat.cache";
+import {
+	type ChannelBase,
+	type Message,
+	normalizeMessage,
+	sendMessage,
+	updateMessage as putMessage,
+} from "../api/chat.api";
+import {
+	addMessage,
+	resolvePendingMessage,
+	updateMessage,
+} from "../cache/chat.cache";
 import ChatComposer, { type ChatComposerHandles } from "./ChatComposer";
 import { ChatProvider } from "./ChatProvider";
 import MessageList, { type MessageListHandles } from "./Messages/MessageList";
@@ -17,6 +28,8 @@ function ChannelChat({
 	placeholder?: string;
 }): JSX.Element | null {
 	const qc = useQueryClient();
+	// eslint-disable-next-line id-length
+	const { t } = useTranslation();
 	const listRef = useRef<MessageListHandles>(null);
 	const composerRef = useRef<ChatComposerHandles>(null);
 
@@ -29,7 +42,11 @@ function ChannelChat({
 		target: Message | null,
 	): void => {
 		if (mode === "edit" && target) {
-			updateMessage(qc, channel.id, { id: target.id, content: text, editAt: new Date() });
+			updateMessage(qc, channel.id, {
+				id: target.id,
+				content: text,
+				editAt: new Date(),
+			});
 			putMessage(channel.id, target.id, text).catch(() => {
 				// eslint-disable-next-line no-warning-comments
 				// TODO: error
@@ -60,7 +77,10 @@ function ChannelChat({
 				});
 			})
 			.catch(() => {
-				updateMessage(qc, channel.id, { id: pendingId, status: "error" });
+				updateMessage(qc, channel.id, {
+					id: pendingId,
+					status: "error",
+				});
 			});
 
 		listRef.current?.scrollBack();
@@ -69,7 +89,11 @@ function ChannelChat({
 	return (
 		<div className="flex min-h-0 flex-1">
 			<div className="flex min-w-0 flex-1 flex-col">
-				<ChatProvider chatId={channel.id} listRef={listRef} composerRef={composerRef}>
+				<ChatProvider
+					chatId={channel.id}
+					listRef={listRef}
+					composerRef={composerRef}
+				>
 					<MessageList
 						ref={listRef}
 						key={channel.id}
@@ -79,7 +103,12 @@ function ChannelChat({
 					/>
 					<ChatComposer
 						ref={composerRef}
-						placeholder={placeholder ?? `Message to #${channel.name}...`}
+						placeholder={
+							placeholder ??
+							t("chat.messageTo", {
+								name: channel.name,
+							})
+						}
 						onSend={onSend}
 					/>
 				</ChatProvider>

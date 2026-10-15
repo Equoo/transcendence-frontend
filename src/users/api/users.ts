@@ -1,6 +1,9 @@
+import "../../translation/i18n";
+
 import { createContext } from "react-router";
 
 import { ActivityEnum, useActivity } from "@/activity/hooks/activity.hook";
+import { APIError, type ProblemDetail } from "@/api/problem_detail";
 import { request, requestJson } from "@/api/request";
 import callApi from "@/tokens/callApi";
 
@@ -12,12 +15,19 @@ export const UserContext = createContext<User>();
 
 // Interface
 
+export enum Language {
+	fr = 0,
+	en = 1,
+	tc = 2,
+}
+
 export interface User {
 	id: string;
 	userName: string;
 	channelsAckMsg: Map<string, Date>;
 	role: Role;
 	avatar?: AppFile;
+	language: Language;
 }
 
 interface UserDto {
@@ -26,6 +36,7 @@ interface UserDto {
 	channelsAckMsg: Record<string, string>;
 	role: Role;
 	avatar?: AppFile;
+	language: Language;
 }
 
 interface UsernameRequest {
@@ -43,6 +54,7 @@ function normalizeUser(dto: UserDto): User {
 	return {
 		id: dto.id,
 		userName: dto.userName,
+		language: dto.language,
 		channelsAckMsg: new Map(
 			Object.entries(dto.channelsAckMsg).map(([key, val]) => [
 				key,
@@ -87,6 +99,21 @@ export async function userChangeUsername(
 
 export async function userDeleteAccount(): Promise<Response> {
 	return request("/api/me", "DELETE");
+}
+
+export async function userChangeLanguage(
+	formdata: FormData,
+): Promise<Response> {
+	const res = await callApi("/api/me/language", {
+		method: "PATCH",
+		headers: { "Content-Type": "application/json" },
+		body: JSON.stringify(Number(formdata.get("language"))),
+	});
+	if (!res.ok) {
+		throw new APIError((await res.json()) as ProblemDetail);
+	}
+
+	return res;
 }
 
 export async function userChangePassword(

@@ -1,5 +1,6 @@
 import { type JSX, useState } from "react";
 import { createPortal } from "react-dom";
+import { useTranslation } from "react-i18next";
 import { PiGear, PiPlus } from "react-icons/pi";
 import { useFetcher } from "react-router";
 
@@ -24,6 +25,8 @@ export default function ChannelForm({
 	category?: string;
 	className?: string;
 }): JSX.Element {
+	// eslint-disable-next-line id-length
+	const { t } = useTranslation();
 	const [errors, setErrors] = useState<ValidationErrors>();
 	const fetcher = useFetcher<typeof clientAction>();
 	const [showModal, setShowModal] = useState(false);
@@ -61,8 +64,10 @@ export default function ChannelForm({
 					<Modal
 						title={
 							edit
-								? `Editing channel #${edit.name}`
-								: "Create a channel"
+								? t("chat.editChannelTitle", {
+										name: edit.name,
+									})
+								: t("chat.createChannelTitle")
 						}
 						onClose={() => {
 							setShowModal(false);
@@ -70,16 +75,13 @@ export default function ChannelForm({
 					>
 						{edit ? (
 							<p className="text-muted font-main font-light w-4/5 text-sm">
-								You are editing channel #{edit.name}. You can
-								change his name, topic and whitelist roles. If
-								roles whitelist is empty, everyone can access to
-								channel.
+								{t("chat.editChannelHint", {
+									name: edit.name,
+								})}
 							</p>
 						) : (
 							<p className="text-muted font-main font-light w-4/5 text-sm">
-								Creating channel, give his name, topic and
-								whitelist roles. If roles whitelist is empty,
-								everyone can access to channel.
+								{t("chat.createChannelHint")}
 							</p>
 						)}
 						<fetcher.Form
@@ -89,29 +91,35 @@ export default function ChannelForm({
 						>
 							<Input
 								name="Name"
+								label={t("common.name")}
 								required
 								errors={errors}
-								placeholder="Channel Name"
+								placeholder={t(
+									"chat.channelNamePlaceholder",
+								)}
 								value={edit?.name}
 							/>
 							<Input
 								name="Topic"
+								label={t("chat.topic")}
 								errors={errors}
-								placeholder="Channel Topic"
+								placeholder={t(
+									"chat.channelTopicPlaceholder",
+								)}
 								value={edit?.topic}
 							/>
 							<Checkbox
 								name="Syncronised"
+								label={t("chat.synchronised")}
 								errors={errors}
-								placeholder="Category Sync"
+								placeholder={t("chat.categorySync")}
 								defaultChecked={edit?.categorySync}
 								onChange={(ev) => {
 									setSync(ev.currentTarget.checked);
 								}}
 							>
 								<p className="text-muted font-main font-light w-4/5 text-sm">
-									Use category roles whitelist for this
-									channel.
+									{t("chat.useCategoryRoles")}
 								</p>
 							</Checkbox>
 
@@ -119,8 +127,11 @@ export default function ChannelForm({
 								skeleton={
 									<MultipleInput
 										name="Roles"
+										label={t("common.roles")}
 										onlySuggestions
-										placeholder="Whitelisted Roles"
+										placeholder={t(
+											"chat.whitelistedRoles",
+										)}
 										errors={errors}
 										className="w-full px-2 py-1 font-main"
 										grayed={sync}
@@ -134,11 +145,14 @@ export default function ChannelForm({
 								{(roles) => (
 									<MultipleInput
 										name="Roles"
+										label={t("common.roles")}
 										onlySuggestions
 										suggestions={roles.map(
 											(role) => role.name,
 										)}
-										placeholder="Whitelisted Roles"
+										placeholder={t(
+											"chat.whitelistedRoles",
+										)}
 										errors={errors}
 										className="w-full px-2 py-1 font-main"
 										grayed={sync}
@@ -168,14 +182,16 @@ export default function ChannelForm({
 									danger
 									pending={fetcher.state !== "idle"}
 								>
-									Delete
+									{t("common.delete")}
 								</CheckButton>
 								<CheckButton
 									active
 									type="submit"
 									pending={fetcher.state !== "idle"}
 								>
-									{edit ? "Validate" : "Create"}
+									{edit
+										? t("common.validate")
+										: t("common.create")}
 								</CheckButton>
 							</div>
 						</fetcher.Form>
@@ -186,7 +202,9 @@ export default function ChannelForm({
 				showDeleteModal &&
 				createPortal(
 					<Modal
-						title={`Delete channel #${edit.name}`}
+						title={t("chat.deleteChannelTitle", {
+							name: edit.name,
+						})}
 						onClose={() => {
 							setShowDeleteModal(false);
 						}}
@@ -206,7 +224,7 @@ export default function ChannelForm({
 								danger
 								pending={fetcher.state !== "idle"}
 							>
-								Delete
+								{t("common.delete")}
 							</CheckButton>
 							<CheckButton
 								type="button"
@@ -217,7 +235,7 @@ export default function ChannelForm({
 								active
 								pending={fetcher.state !== "idle"}
 							>
-								Cancel
+								{t("common.cancel")}
 							</CheckButton>
 						</fetcher.Form>
 					</Modal>,

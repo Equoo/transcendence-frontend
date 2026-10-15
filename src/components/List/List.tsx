@@ -1,4 +1,5 @@
 import type { ComponentProps, JSX, ReactNode } from "react";
+import { useTranslation } from "react-i18next";
 
 type Alignment = "text-left" | "text-center" | "text-right";
 
@@ -64,7 +65,7 @@ export function ListAction({
 		<button
 			{...props}
 			type={type}
-			className={` inline-flex items-center justify-center rounded-sm p-1 text-text2 hover:text-accent focus-visible:outline-2 focus-visible:outline-accent disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer ${className}`}
+			className={` inline-flex items-center justify-center whitespace-nowrap rounded-sm p-1 text-text2 hover:text-accent focus-visible:outline-2 focus-visible:outline-accent disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer ${className}`}
 		/>
 	);
 }
@@ -79,10 +80,12 @@ export default function List({
 	cols,
 	children,
 	empty = false,
-	emptyMessage = "Nothing to display.",
+	emptyMessage,
 	className = "",
 	...props
 }: ListProps): JSX.Element {
+	// eslint-disable-next-line id-length
+	const { t } = useTranslation();
 	return (
 		<div className="w-full min-w-0 overflow-x-auto rounded-base border border-border bg-surface">
 			<table
@@ -95,7 +98,7 @@ export default function List({
 							<th
 								key={col.id}
 								scope="col"
-								className={`px-6 py-3 font-medium ${col.pos ?? "text-left"} ${col.className}`}
+								className={`px-6 py-3 font-medium whitespace-nowrap ${col.pos ?? "text-left"} ${col.className ?? ""}`}
 							>
 								{col.id}
 							</th>
@@ -110,7 +113,8 @@ export default function List({
 								pos="text-center"
 								className="text-muted"
 							>
-								{emptyMessage}
+								{emptyMessage ??
+									t("common.nothingToDisplay")}
 							</ListCell>
 						</ListRow>
 					) : (

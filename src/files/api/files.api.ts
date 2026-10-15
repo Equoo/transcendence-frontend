@@ -1,3 +1,5 @@
+import i18n from "i18next";
+
 import { request, requestJson } from "@/api/request";
 import callApi from "@/tokens/callApi";
 
@@ -76,7 +78,7 @@ export async function renameFolder(
 	to: string,
 ): Promise<Response> {
 	if (to.startsWith(from)) {
-		throw new Error("Cannot move a folder into itself");
+		throw new Error(i18n.t("files.cannotMoveIntoItself"));
 	}
 	const files = await fetchFiles();
 	await Promise.all(

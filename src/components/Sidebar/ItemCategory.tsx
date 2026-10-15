@@ -29,15 +29,15 @@ function ItemCategory({
 				{({ isActive, isPending }) => (
 					<>
 						{isPending ? (
-							<TbLoader2 className="animate-spin min-w-5" />
+							<TbLoader2 className="animate-spin min-w-5 shrink-0" />
 						) : (
 							<Icon
-								className="min-w-5"
+								className="min-w-5 shrink-0"
 								size={18}
 								color={isActive ? "#e8743c" : ""}
 							/>
 						)}
-						<span className="ms-3">{children}</span>
+						<span className="ms-3 truncate">{children}</span>
 					</>
 				)}
 			</NavLink>
