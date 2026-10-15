@@ -1,7 +1,7 @@
 import { type JSX, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { FiChevronLeft } from "react-icons/fi";
-import { PiTrash } from "react-icons/pi";
+import { PiArrowBendUpRight, PiTrash } from "react-icons/pi";
 import { Link, useFetcher, useNavigate } from "react-router";
 
 import ChannelChat from "@/chat/components/ChannelChat";
@@ -39,20 +39,17 @@ export async function clientLoader({
 export default function EventDetails({
 	loaderData: { event, roles, files, user },
 }: Route.ComponentProps): JSX.Element {
-    // eslint-disable-next-line id-length
-    const { t } = useTranslation();
+	// eslint-disable-next-line id-length
+	const { t } = useTranslation();
 	const fetcher = useFetcher<typeof clientAction>();
 	const navigate = useNavigate();
-	const dateString: string = new Date(event.date).toLocaleString(
-		[],
-		{
-			hour: "2-digit",
-			minute: "2-digit",
-			month: "short",
-			day: "2-digit",
-			year: "numeric",
-		},
-	);
+	const dateString: string = new Date(event.date).toLocaleString([], {
+		hour: "2-digit",
+		minute: "2-digit",
+		month: "short",
+		day: "2-digit",
+		year: "numeric",
+	});
 	const [showConfirmation, setShowConfirmation] = useState(false);
 
 	useEffect(() => {
@@ -124,7 +121,7 @@ export default function EventDetails({
 				<EventRegisterBtn event={event} className="ml-auto shrink-0" />
 			</div>
 			<div className="flex h-full">
-				<div className="flex flex-col gap-1 border-r border-border w-1/3 p-6">
+				<div className="flex flex-col gap-1 border-r border-border w-1/5 p-6">
 					<span className="font-bold text-muted text-xs tracking-wider">
 						{t("eventDetails.when")}
 					</span>
@@ -178,19 +175,42 @@ export default function EventDetails({
 					</span>
 					<ProfileLine user={event.organizer} status />
 					<span className="font-bold text-muted text-xs tracking-wider mt-4">
-						{t("eventDetails.resources")}
+						{t("eventDetails.resources")} - {event.files.length}
 					</span>
-					<div className="flex mt-1 items-center gap-3">
+					<div className="flex flex-col mt-1 items-center gap-1 w-fit">
 						{event.files.map((file) => (
-							<Link key={file.key} to={`/knowledge/${file.key}`}>
-								<div
-									className={`inline-flex items-center gap-2 rounded p-2 hover:cursor-pointer bg-surface2 hover:bg-surface`}
+							<div
+								key={file.key}
+								className={`w-full rounded p-2 hover:cursor-pointer bg-surface2 hover:bg-surface`}
+							>
+								<Link
+									to={`/knowledge/${file.key}`}
+									className="inline-flex items-center w-full"
 								>
-									<p className={`text-lg font-medium`}>
-										{file.name}
+									<p className={`text-sm mr-6`}>
+										{file.name.slice(
+											file.name.lastIndexOf("/") + 1,
+										)}
 									</p>
-								</div>
-							</Link>
+									<p className="text-xs ml-auto">
+										{file.length / 1000000 < 1
+											? t("files.sizeKb", {
+													size: Math.floor(
+														file.length / 1000,
+													),
+												})
+											: t("files.sizeMb", {
+													size: Math.floor(
+														file.length / 1000000,
+													),
+												})}
+									</p>
+									<PiArrowBendUpRight
+										className="ml-2 pb-1"
+										size={18}
+									/>
+								</Link>
+							</div>
 						))}
 					</div>
 				</div>
