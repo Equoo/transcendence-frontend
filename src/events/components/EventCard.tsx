@@ -72,7 +72,7 @@ function Countdown({ date }: { date: Date }): JSX.Element {
 			id="countdown"
 			className="flex flex-col font-head font-bold text-2xl @sm:text-3xl tabular-nums whitespace-nowrap"
 		>
-			{formatCountdown(countdown)}
+			{formatCountdown(countdown, t)}
 			{countdown.totalMs === 0 ? (
 				<small className="inline-flex items-center gap-1.5 text-good font-semibold text-xs tracking-wider">
 					<span className="size-1.5 rounded-full bg-good animate-pulse" />
