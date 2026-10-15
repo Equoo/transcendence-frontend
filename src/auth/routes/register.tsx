@@ -1,4 +1,5 @@
 import type { JSX } from "react";
+import { useTranslation } from "react-i18next";
 import { Form, redirect, useLocation } from "react-router";
 
 import { AuthForm, AuthLogo, AuthTitle } from "../../auth/components/AuthForm";
@@ -7,11 +8,12 @@ import type { Route } from "./+types/register";
 
 export async function clientAction({
 	request,
-}: Route.ClientActionArgs): Promise<UserResult> {
+}: Route.ClientActionArgs): Promise<UserResult | Response> {
 	const formdata = await request.formData();
+	const res = await registerUser(formdata);
 
-	if (!(await registerUser(formdata)).ok) {
-		return { ok: false };
+	if (!res.ok) {
+		return res;
 	}
 	return redirect("/");
 }
@@ -19,6 +21,8 @@ export async function clientAction({
 export default function Register({
 	actionData,
 }: Route.ComponentProps): JSX.Element {
+	// eslint-disable-next-line id-length
+	const { t } = useTranslation();
 	const location = useLocation();
 	const code = new URLSearchParams(location.search).get("invitation");
 
@@ -31,18 +35,21 @@ export default function Register({
 					className="flex flex-col gap-5 items-center lg:items-start"
 				>
 					<AuthTitle
-						top="JOIN THE TEAM"
-						mid="Create new account"
-						bot="Already a member? "
-						nameLink="Log in"
+						top={t("auth.joinTheTeam")}
+						mid={t("auth.registerTitle")}
+						bot={t("auth.alreadyMember")}
+						nameLink={t("auth.logIn")}
 						link="/login"
 					/>
 					{actionData?.ok === false && (
-						<div className="text-error">
-							Invalid invitation code.
-						</div>
+						<div className="text-error">{actionData.error}</div>
+	
 					)}
-					<AuthForm btnName={"Register"} register code={code} />
+					<AuthForm
+						btnName={t("auth.register")}
+						register
+						code={code}
+					/>
 				</Form>
 			</div>
 		</div>

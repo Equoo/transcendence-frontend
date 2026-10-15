@@ -1,4 +1,6 @@
+import type { TFunction } from "i18next";
 import { type JSX, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { FiChevronRight } from "react-icons/fi";
 import { GoPeople } from "react-icons/go";
 import { IoLocationOutline } from "react-icons/io5";
@@ -32,13 +34,17 @@ function getCountdown(targetDate: Date): CountdownType {
 	return { days, hours, minutes, seconds, totalMs };
 }
 
-function formatCountdown(countdown: CountdownType): string {
+// eslint-disable-next-line id-length
+function formatCountdown(countdown: CountdownType, t: TFunction): string {
 	const pad = (value: number): string => String(value).padStart(2, "0");
 	if (countdown.totalMs === 0) {
-		return "Running";
+		return t("events.running");
 	}
 	if (countdown.days > 0) {
-		return `${countdown.days}d ${pad(countdown.hours)}:${pad(countdown.minutes)}:${pad(countdown.seconds)}`;
+		return t("events.countdownDays", {
+			days: countdown.days,
+			time: `${pad(countdown.hours)}:${pad(countdown.minutes)}:${pad(countdown.seconds)}`,
+		});
 	}
 
 	return `${pad(countdown.hours)}:${pad(countdown.minutes)}:${pad(countdown.seconds)}`;
@@ -47,6 +53,8 @@ function formatCountdown(countdown: CountdownType): string {
 const MAX_VISIBLE_TAGS = 3;
 
 function Countdown({ date }: { date: Date }): JSX.Element {
+	// eslint-disable-next-line id-length
+	const { t } = useTranslation();
 	const [countdown, setCountdown] = useState(() => getCountdown(date));
 
 	useEffect(() => {
@@ -68,11 +76,11 @@ function Countdown({ date }: { date: Date }): JSX.Element {
 			{countdown.totalMs === 0 ? (
 				<small className="inline-flex items-center gap-1.5 text-good font-semibold text-xs tracking-wider">
 					<span className="size-1.5 rounded-full bg-good animate-pulse" />
-					LIVE NOW
+					{t("events.liveNow")}
 				</small>
 			) : (
 				<small className="text-muted font-semibold text-xs tracking-wider">
-					BEFORE START
+					{t("events.beforeStart")}
 				</small>
 			)}
 		</div>
@@ -120,6 +128,9 @@ export default function EventCard({
 		day: "2-digit",
 		year: "numeric",
 	});
+
+	// eslint-disable-next-line id-length
+	const { t } = useTranslation();
 
 	return (
 		<div className="@container bg-surface flex w-full max-w-md shrink-0 min-w-0 flex-col gap-4 border border-border rounded-3xl p-5 shadow-main sm:p-8">
@@ -182,7 +193,7 @@ export default function EventCard({
 						<GoPeople className="shrink-0" />
 						{event.registeredCount}/{event.size}
 						<span className="hidden @xs:block">
-							Registered
+							{t("events.registeredCount")}
 						</span>
 					</Badge>
 				</div>
@@ -191,7 +202,7 @@ export default function EventCard({
 					<EventRegisterBtn event={event} />
 					<Link to={`/calendar/${event.id}`}>
 						<CheckButton discrete>
-							Details <FiChevronRight />
+							{t("events.details")} <FiChevronRight />
 						</CheckButton>
 					</Link>
 				</div>

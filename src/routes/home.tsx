@@ -1,4 +1,5 @@
 import { type JSX, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { ActivityEnum, useActivity } from "@/activity/hooks/activity.hook";
 import { PermEnum } from "@/admin/api/roles";
@@ -14,15 +15,23 @@ import { type AppFile, fetchFiles } from "../files/api/files.api";
 import { fetchUsers, type User, UserContext } from "../users/api/users";
 import type { Route } from "./+types/home";
 
+let cachedEvents: EventSummary[] | undefined;
+
 export function clientLoader({ context }: Route.ClientLoaderArgs): {
+	previousEvents: EventSummary[] | undefined;
 	events: Promise<EventSummary[]>;
 	roles: Promise<EventRole[]>;
 	files: Promise<AppFile[]>;
 	users: Promise<User[]>;
 	user: User;
 } {
+	const previousEvents = cachedEvents;
+
+	const events = fetchEvents().then((result) => (cachedEvents = result));
+
 	return {
-		events: fetchEvents(),
+		previousEvents,
+		events,
 		roles: fetchEventRoles(),
 		files: fetchFiles(),
 		users: fetchUsers(),
@@ -31,22 +40,24 @@ export function clientLoader({ context }: Route.ClientLoaderArgs): {
 }
 
 export default function Home({
-	loaderData: { events, roles, files, users, user },
+	loaderData: { previousEvents, events, roles, files, users, user },
 }: Route.ComponentProps): JSX.Element {
+    // eslint-disable-next-line id-length
+    const { t } = useTranslation();
 	const [showOnline, setShowOnline] = useState(false);
 	const activity = useActivity();
 	return (
 		<>
 			<div className="w-full flex flex-row pl-16 lg:p-6 pr-6 py-4 justify-between items-center">
 				<h1 className="font-semibold tracking-tight text-xl inline-flex gap-4 items-center">
-					Home
+					{t("common.home")}
 					<Promisable data={users}>
 						{(data) => (
 							<>
 								{showOnline && (
 									<Modal
 										align="start"
-										title="Users Online"
+										title={t("home.usersOnline")}
 										onClose={() => {
 											setShowOnline(false);
 										}}
@@ -68,23 +79,26 @@ export default function Home({
 									</Modal>
 								)}
 								<p
-									className="font-medium text-sm text-success cursor-pointer"
+									className="font-medium text-sm text-success cursor-pointer whitespace-nowrap"
 									onClick={() => {
 										setShowOnline(true);
 									}}
 								>
-									{activity.getOnlineUsers().length}/
-									{data.length} Online
+									{t("home.onlineCount", {
+										online: activity.getOnlineUsers()
+											.length,
+										total: data.length,
+									})}
 								</p>
 							</>
 						)}
 					</Promisable>
 				</h1>
-				{Boolean(
-					user.role.permission & PermEnum.HandleEvent,
-				) && <EventForm roles={roles} files={files} />}
+				{Boolean(user.role.permission & PermEnum.HandleEvent) && (
+					<EventForm roles={roles} files={files} />
+				)}
 			</div>
-			<EventList events={events} />
+			<EventList events={events} previousEvents={previousEvents} />
 		</>
 	);
 }

@@ -1,7 +1,12 @@
+import i18n from "i18next";
 import { data, redirect } from "react-router";
 
 import { APIError } from "@/api/problem_detail";
-import { createChannel, deleteChannel, updateChannel } from "@/chat/api/chat.api";
+import {
+	createChannel,
+	deleteChannel,
+	updateChannel,
+} from "@/chat/api/chat.api";
 import { useChat } from "@/chat/hooks/chat.hook";
 
 import type { Route } from "./+types/channel.route";
@@ -15,7 +20,7 @@ export async function clientAction({ request }: Route.ClientActionArgs) {
 
 		if (request.method === "DELETE") {
 			if (!formdata.get("id")) {
-				throw new Error("Channel ID is required for deletion");
+				throw new Error(i18n.t("chat.channelIdRequiredDelete"));
 			}
 			await deleteChannel(formdata.get("id") as string);
 
@@ -29,7 +34,7 @@ export async function clientAction({ request }: Route.ClientActionArgs) {
 			return redirect(`/channels/${res.id}`);
 		} else if (request.method === "PUT") {
 			if (!formdata.get("id")) {
-				throw new Error("Channel ID is required for update");
+				throw new Error(i18n.t("chat.channelIdRequiredUpdate"));
 			}
 			res = await updateChannel(formdata);
 

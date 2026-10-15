@@ -1,4 +1,5 @@
 import type { JSX } from "react/jsx-runtime";
+import { useTranslation } from "react-i18next";
 import { AiFillFileUnknown } from "react-icons/ai";
 
 import BlobURL from "../../components/BlobURL";
@@ -50,6 +51,8 @@ export function BlobView({
 	className?: string;
 	name: string;
 }): JSX.Element {
+	// eslint-disable-next-line id-length
+	const { t } = useTranslation();
 	if (type.startsWith("video")) {
 		return (
 			<video
@@ -83,7 +86,7 @@ export function BlobView({
 	}
 	return (
 		<h1 className="text-center mt-10 font-semibold font-main text-text text-4xl">
-			Can't preview file
+			{t("files.cannotPreview")}
 		</h1>
 	);
 }
@@ -107,6 +110,8 @@ export default function FilePreview({
 	blob: Blob;
 	file: AppFile;
 }): JSX.Element {
+	// eslint-disable-next-line id-length
+	const { t } = useTranslation();
 	return (
 		<div className="flex flex-col w-full h-full justify-center items-center gap-4">
 			<BlobURL blob={blob}>
@@ -121,7 +126,7 @@ export default function FilePreview({
 						/>
 						<a download={file.name} href={url}>
 							<CheckButton active activeCheck={false}>
-								Download
+								{t("files.download")}
 							</CheckButton>
 						</a>
 					</>

@@ -1,4 +1,12 @@
-import { type JSX, Suspense, useCallback, useEffect, useRef, useState } from "react";
+import {
+	type JSX,
+	Suspense,
+	useCallback,
+	useEffect,
+	useRef,
+	useState,
+} from "react";
+import { useTranslation } from "react-i18next";
 import { HiMenuAlt2 } from "react-icons/hi";
 import {
 	PiBookOpen,
@@ -7,7 +15,7 @@ import {
 	PiGear,
 	PiHouse,
 } from "react-icons/pi";
-import { Await, Link, useFetcher } from "react-router";
+import { Await, Link, useFetcher, useLocation } from "react-router";
 import { useShallow } from "zustand/react/shallow";
 
 import AdminSidebar from "@/admin/components/AdminSidebar";
@@ -48,6 +56,9 @@ function Sidebar({
 	user: User;
 	channels: Channel[] | Promise<Channel[]>;
 }): JSX.Element {
+	// eslint-disable-next-line id-length
+	const { t } = useTranslation();
+	const location = useLocation();
 	const fetcher = useFetcher();
 	const dictCategories = useChat(useShallow((state) => state.categories));
 	const channels = useChat(
@@ -90,7 +101,6 @@ function Sidebar({
 		}
 		// eslint-disable-next-line @eslint-react/set-state-in-effect
 		setShowSide(false);
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [location.pathname]);
 
 	return (
@@ -104,7 +114,7 @@ function Sidebar({
 					setShowSide(!showSide);
 				}}
 			>
-				<span className="sr-only">Open sidebar</span>
+				<span className="sr-only">{t("sidebar.open")}</span>
 				<HiMenuAlt2 size={25} />
 			</button>
 
@@ -116,13 +126,16 @@ function Sidebar({
 			>
 				<div className="h-full flex flex-col px-3 py-4 border-e border-border space-y-3 font-main font-medium text-muted text-[14.5px]">
 					<Link to="/" className="flex items-center ps-1 mb-5">
-						<img src="/logo/icon-tile.svg" className="h-10 me-3" />
-						<div className="flex flex-col self-center">
+						<img
+							src="/logo/icon-tile.svg"
+							className="h-10 me-3 shrink-0"
+						/>
+						<div className="flex min-w-0 flex-col self-center">
 							<span className="text-text font-head font-semibold text-[17px]">
 								Keep Grouped
 							</span>
-							<span className="text-muted font-main font-normal text-sm">
-								Transcendance Project
+							<span className="text-muted font-main font-normal text-sm whitespace-nowrap">
+								{t("sidebar.subtitle")}
 							</span>
 						</div>
 					</Link>
@@ -131,29 +144,29 @@ function Sidebar({
 					)}
 					<ul className="mt-4">
 						<ItemCategory to="/" icon={PiHouse}>
-							Home
+							{t("common.home")}
 						</ItemCategory>
 						<ItemCategory to="/calendar" icon={PiCalendarBlank}>
-							Calendar
+							{t("sidebar.calendar")}
 						</ItemCategory>
 						<ItemCategory to="/knowledge" icon={PiBookOpen}>
-							Knowledge
+							{t("sidebar.knowledge")}
 						</ItemCategory>
 						<ItemCategory to="/messages" icon={PiChat}>
-							Messages
+							{t("sidebar.messages")}
 						</ItemCategory>
 					</ul>
 
 					<div className="flex-1 overflow-y-auto">
 						<ul>
-							<li className="flex justify-between items-center px-2 py-1.5 mt-3 text-[11px] text-muted font-bold tracking-wider uppercase group">
-								Upcoming
+							<li className="flex justify-between items-center px-2 py-1.5 mt-3 text-[11px] text-muted font-bold tracking-wider uppercase whitespace-nowrap group">
+								{t("sidebar.upcoming")}
 								<span className="ml-auto">0</span>
 							</li>
 						</ul>
 
-						<div className="relative flex justify-between items-center px-2 py-1.5 mt-3 text-[11px] text-muted font-bold tracking-wider uppercase group">
-							Channels{" "}
+						<div className="relative flex justify-between items-center px-2 py-1.5 mt-3 text-[11px] text-muted font-bold tracking-wider uppercase whitespace-nowrap group">
+							{t("sidebar.channels")}{" "}
 							{Boolean(
 								user.role.permission & PermEnum.HandleChannels,
 							) && <CategoryForm></CategoryForm>}
@@ -195,21 +208,19 @@ function Sidebar({
 						</ul>
 					</div>
 					<AdminSidebar user={user} />
-					{
-						showUser && (
-							<Profile
-								role={user.role}
-								fetcher={fetcher}
-								user={user}
-								onClose={() => {
-									setShowUser(false);
-								}}
-								onClickOutside={profileClickOutside}
-							/>
-						)
-					}
+					{showUser && (
+						<Profile
+							role={user.role}
+							fetcher={fetcher}
+							user={user}
+							onClose={() => {
+								setShowUser(false);
+							}}
+							onClickOutside={profileClickOutside}
+						/>
+					)}
 					<div className="flex items-center gap-8  w-full h-20">
-						<ProfileLine user={user} status edit size={3} />
+						<ProfileLine user={user} status edit size={2} />
 						<PiGear
 							className="absolute text-muted right-5 hover:text-text2 cursor-pointer"
 							size={20}
@@ -218,8 +229,8 @@ function Sidebar({
 							}}
 						></PiGear>
 					</div>
-				</div >
-			</aside >
+				</div>
+			</aside>
 		</>
 	);
 }

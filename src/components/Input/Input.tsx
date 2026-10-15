@@ -5,18 +5,20 @@ import {
 	useEffect,
 	useState,
 } from "react";
-import { TbCopy, TbCopyCheck } from "react-icons/tb";
+import { TbCopy, TbCopyCheck, TbEye, TbEyeOff } from "react-icons/tb";
 
 import type { ValidationErrors } from "../../api/problem_detail";
 import { Field } from "./Field";
 
 export type InputProps = ComponentProps<"input"> & {
 	name: string;
+	label?: string;
 	className?: string;
 	children?: ReactNode;
 	errors?: ValidationErrors;
 	grayed?: boolean;
 	copyable?: boolean;
+	password?: boolean;
 };
 
 function copyContent(content: string): void {
@@ -29,16 +31,19 @@ function copyContent(content: string): void {
 
 export function Input({
 	name,
+	label,
 	errors,
 	className,
 	children,
 	grayed,
 	copyable,
+	password,
 	value,
 	onChange,
 	...rest
 }: InputProps): JSX.Element {
 	const [internalValue, setInternalValue] = useState(value ?? "");
+	const [passwordVisible, setPasswordVisible] = useState(password);
 	const [copied, setCopied] = useState(false);
 	const isError = Boolean(errors?.[name] ?? false);
 
@@ -48,7 +53,12 @@ export function Input({
 	}, [value]);
 
 	return (
-		<Field name={name} required={rest.required} errors={errors}>
+		<Field
+			name={name}
+			label={label}
+			required={rest.required}
+			errors={errors}
+		>
 			<div
 				className={`relative flex flex-wrap items-center w-full border rounded-md
                     px-2 py-1 font-main ${(grayed ?? false) ? "bg-muted/20 text-text2" : "bg-surface text-text"}  
@@ -72,9 +82,10 @@ export function Input({
 					))}
 				{children}
 				<input
-					className={`bg-transparent outline-0 ring-0 border-0 p-0 w-10 grow peer`}
+					className={`text-[15px] bg-transparent outline-0 ring-0 border-0 p-0 w-10 grow peer h-6`}
 					name={name}
 					value={internalValue}
+					type={passwordVisible ? "password" : rest.type}
 					{...rest}
 					onChange={(ev) => {
 						if (onChange) {
@@ -83,6 +94,27 @@ export function Input({
 						setInternalValue(ev.target.value);
 					}}
 				/>
+				{password && (
+					<>
+						{passwordVisible ? (
+							<TbEyeOff
+								size={19}
+								className=" text-text ml-2 hover:cursor-pointer hover:text-black"
+								onClick={() => {
+									setPasswordVisible(!passwordVisible);
+								}}
+							/>
+						) : (
+							<TbEye
+								size={19}
+								className=" text-text ml-2 hover:cursor-pointer hover:text-black"
+								onClick={() => {
+									setPasswordVisible(!passwordVisible);
+								}}
+							/>
+						)}
+					</>
+				)}
 			</div>
 		</Field>
 	);

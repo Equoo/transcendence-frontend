@@ -1,4 +1,5 @@
 import type { JSX } from "react";
+import { useTranslation } from "react-i18next";
 import { PiLock, PiUser } from "react-icons/pi";
 import { Link, useNavigation } from "react-router";
 
@@ -80,6 +81,8 @@ export function AuthForm({
 	code?: string | null;
 	register?: boolean;
 }): JSX.Element {
+	// eslint-disable-next-line id-length
+	const { t } = useTranslation();
 	const navigation = useNavigation();
 
 	return (
@@ -87,19 +90,22 @@ export function AuthForm({
 			<Input
 				maxLength={25}
 				className="h-12"
-				placeholder="Username"
+				placeholder={t("auth.username")}
 				type="text"
 				name="Username"
+				label={t("auth.username")}
 				required
 			>
 				<PiUser className="ml-2 mr-2" />
 			</Input>
 			<Input
+				password
 				maxLength={256}
 				className="h-12"
-				placeholder="Password"
+				placeholder={t("auth.password")}
 				type="password"
 				name="Password"
+				label={t("auth.password")}
 				required
 			>
 				<PiLock className="ml-2 mr-2" />
@@ -108,11 +114,12 @@ export function AuthForm({
 				<Input
 					maxLength={200}
 					className="h-12"
-					placeholder="Invitation Code"
+					placeholder={t("auth.invitationCode")}
 					value={code ?? ""}
 					grayed={Boolean(code)}
 					type="text"
 					name="Code"
+					label={t("auth.code")}
 					required
 				/>
 			)}
@@ -122,7 +129,7 @@ export function AuthForm({
 					active
 					activeCheck={false}
 					type="submit"
-					className="w-3/7"
+					className="w-3/7 min-w-fit"
 				>
 					{btnName}
 				</CheckButton>

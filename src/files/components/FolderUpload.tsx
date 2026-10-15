@@ -1,4 +1,5 @@
 import { type JSX, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useFetcher } from "react-router";
 
 import CheckButton from "@/components/Button/CheckButton";
@@ -18,6 +19,8 @@ export default function FolderUpload({
 	currentPath?: string;
 	folders: string[];
 }): JSX.Element {
+	// eslint-disable-next-line id-length
+	const { t } = useTranslation();
 	const [errors, setErrors] = useState<ValidationErrors>();
 	const filesFetcher = useFetcher<typeof filesAction>();
 	const destinations = Array.from(new Set(["/", currentPath, ...folders]));
@@ -33,7 +36,7 @@ export default function FolderUpload({
 		}
 	}, [filesFetcher.data, onClose]);
 	return (
-		<Modal title="New folder" onClose={onClose}>
+		<Modal title={t("files.newFolder")} onClose={onClose}>
 			<filesFetcher.Form
 				action="/files"
 				method="POST"
@@ -57,12 +60,13 @@ export default function FolderUpload({
 				<Input
 					maxLength={100}
 					name="Name"
+					label={t("common.name")}
 					required
 					pattern="^[^\/]*$"
-					title="Must not contain /"
+					title={t("files.noSlash")}
 					errors={errors}
 				/>
-				<Field name="Folder" required>
+				<Field name="Folder" label={t("files.folder")} required>
 					<select
 						name="Folder"
 						required
@@ -80,7 +84,7 @@ export default function FolderUpload({
 					type="submit"
 					pending={filesFetcher.state !== "idle"}
 				>
-					New Folder
+					{t("files.newFolderButton")}
 				</CheckButton>
 			</filesFetcher.Form>
 		</Modal>

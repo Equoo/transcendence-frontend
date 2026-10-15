@@ -1,9 +1,14 @@
+import i18n from "i18next";
 import { data } from "react-router";
 
 import { APIError } from "@/api/problem_detail";
 import { useChat } from "@/chat/hooks/chat.hook";
 
-import { createCategory, deleteCategory, updateCategory } from "../api/chat.api";
+import {
+	createCategory,
+	deleteCategory,
+	updateCategory,
+} from "../api/chat.api";
 import type { Route } from "./+types/category.route";
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
@@ -15,7 +20,7 @@ export async function clientAction({ request }: Route.ClientActionArgs) {
 
 		if (request.method === "DELETE") {
 			if (!formdata.get("id")) {
-				throw new Error("Channel ID is required for deletion");
+				throw new Error(i18n.t("chat.categoryIdRequiredDelete"));
 			}
 			await deleteCategory(formdata.get("id") as string);
 
@@ -24,10 +29,9 @@ export async function clientAction({ request }: Route.ClientActionArgs) {
 			res = await createCategory(formdata);
 
 			useChat.getState().addCategory(res);
-
 		} else if (request.method === "PUT") {
 			if (!formdata.get("id")) {
-				throw new Error("Channel ID is required for update");
+				throw new Error(i18n.t("chat.categoryIdRequiredUpdate"));
 			}
 			res = await updateCategory(formdata);
 

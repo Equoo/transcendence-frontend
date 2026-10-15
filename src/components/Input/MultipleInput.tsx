@@ -4,6 +4,7 @@ import {
 	type KeyboardEventHandler,
 	useState,
 } from "react";
+import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 
 import type { ValidationErrors } from "../../api/problem_detail";
@@ -19,6 +20,7 @@ export default function MultipleInput({
 	onlySuggestions = false,
 	className,
 	name,
+	label,
 	placeholder,
 	values: replaceValues,
 	errors,
@@ -26,12 +28,15 @@ export default function MultipleInput({
 	...rest
 }: {
 	name: string;
+	label?: string;
 	suggestions?: string[];
 	onlySuggestions?: boolean;
 	values?: string[];
 	errors?: ValidationErrors;
 	grayed?: boolean;
 } & ComponentProps<"input">): JSX.Element {
+	// eslint-disable-next-line id-length
+	const { t } = useTranslation();
 	const [values, setValues] = useState<string[]>(replaceValues ?? []);
 	const [draft, setDraft] = useState("");
 	const [selected, setSelected] = useState(0);
@@ -50,7 +55,9 @@ export default function MultipleInput({
 	}
 
 	const inputType: KeyboardEventHandler<HTMLInputElement> = (ev) => {
-		if (grayed) { return; }
+		if (grayed) {
+			return;
+		}
 
 		const sugg = getSuggestions();
 
@@ -91,15 +98,20 @@ export default function MultipleInput({
 				toast(Alert, {
 					type: "error",
 					data: {
-						title: "Validation Error",
-						detail: "Value too long, expect < 20 characters",
+						title: t("validation.title"),
+						detail: t("validation.valueTooLong"),
 					},
 				});
 			}
 		}
 	};
 	return (
-		<Field name={name} required={rest.required} errors={errors}>
+		<Field
+			name={name}
+			label={label}
+			required={rest.required}
+			errors={errors}
+		>
 			<div
 				className={`relative flex flex-wrap gap-1 focus-within:border-accent border rounded-md border-border2
 					${grayed ? "bg-muted/20 text-text2" : "bg-surface text-text"}

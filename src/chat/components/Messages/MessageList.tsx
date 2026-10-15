@@ -7,6 +7,7 @@ import {
 	useRef,
 	useState,
 } from "react";
+import { useTranslation } from "react-i18next";
 import { useShallow } from "zustand/react/shallow";
 
 import { useChat } from "@/chat/hooks/chat.hook";
@@ -80,6 +81,8 @@ function MessageList({
 	channelName: string;
 	ref?: Ref<MessageListHandles>;
 }): JSX.Element {
+	// eslint-disable-next-line id-length
+	const { t } = useTranslation();
 	const containerRef = useRef<HTMLDivElement>(null);
 	const actionBarRef = useRef<MessageActionBarHandles>(null);
 
@@ -123,8 +126,10 @@ function MessageList({
 
 			<div className="mt-auto" />
 			<div className="relative gap-3 px-5.5 mt- text-muted">
-				<h1 className="text-3xl font-medium text-text"><span className="font-bold">#</span> {channelName}</h1>
-				<p>Discussion start here</p>
+				<h1 className="text-3xl font-medium text-text">
+					<span className="font-bold">#</span> {channelName}
+				</h1>
+				<p>{t("chat.discussionStart")}</p>
 			</div>
 			{messages.map((msg, index) => {
 				const previous = messages[index - 1];

@@ -1,5 +1,6 @@
 import { type Ref, useImperativeHandle, useRef, useState } from "react";
 import type { JSX } from "react/jsx-runtime";
+import { useTranslation } from "react-i18next";
 import { PiArrowArcLeft, PiDotsThree, PiTrash } from "react-icons/pi";
 
 import { PermEnum } from "@/admin/api/roles";
@@ -34,6 +35,8 @@ function MessageActionBar({
 	ref?: Ref<MessageActionBarHandles>;
 	channelId: string;
 }): JSX.Element {
+	// eslint-disable-next-line id-length
+	const { t } = useTranslation();
 	const getMessage = useChat((state) => state.getMessage);
 
 	const [actionBar, setActionBar] = useState<ActionBar | null>(null);
@@ -114,44 +117,59 @@ function MessageActionBar({
 								size={14}
 								onClick={() => {
 									if (composerRef.current) {
-										composerRef.current.enterEditMode(actionBar.msg, actionBar.el);
+										composerRef.current.enterEditMode(
+											actionBar.msg,
+											actionBar.el,
+										);
 									}
 								}}
 							></IconBtn>
 						) : (
-							<IconBtn icon={PiArrowArcLeft} size={14}
+							<IconBtn
+								icon={PiArrowArcLeft}
+								size={14}
 								onClick={() => {
 									if (composerRef.current) {
-										composerRef.current.enterReplyMode(actionBar.msg, actionBar.el);
+										composerRef.current.enterReplyMode(
+											actionBar.msg,
+											actionBar.el,
+										);
 									}
 								}}
 							></IconBtn>
 						)}
 						{(actionBar.msg.sender.id === user?.id ||
-							user && (user.role.permission & PermEnum.ManageMessages) !== 0) && (
-								<IconBtn
-									icon={PiTrash}
-									className="text-red-400"
-									size={14}
-									onClick={() => {
-										setShowRemoveForm(true);
-									}}
-								></IconBtn>
-							)}
+							(user &&
+								(user.role.permission &
+									PermEnum.ManageMessages) !==
+									0)) && (
+							<IconBtn
+								icon={PiTrash}
+								className="text-red-400"
+								size={14}
+								onClick={() => {
+									setShowRemoveForm(true);
+								}}
+							></IconBtn>
+						)}
 					</>
 				)}
 				<IconBtn icon={PiDotsThree} size={14}></IconBtn>
 			</div>
 			{showRemoveForm && (
 				<Modal
-					title="Remove message"
+					title={t("chat.removeMessage")}
 					onClose={() => {
 						setShowRemoveForm(false);
 					}}
 				>
-					<p>Are you sure to remove this message ?</p>
+					<p>{t("chat.removeMessageConfirm")}</p>
 
-					<MessageRow message={actionBar.msg} showHeader className="w-full hover:bg-transparent"></MessageRow>
+					<MessageRow
+						message={actionBar.msg}
+						showHeader
+						className="w-full hover:bg-transparent"
+					></MessageRow>
 
 					<div className="flex flex-row gap-4">
 						<CheckButton
@@ -170,7 +188,7 @@ function MessageActionBar({
 								setShowRemoveForm(false);
 							}}
 						>
-							Delete
+							{t("common.delete")}
 						</CheckButton>
 						<CheckButton
 							onClick={() => {
@@ -178,7 +196,7 @@ function MessageActionBar({
 							}}
 							active
 						>
-							Cancel
+							{t("common.cancel")}
 						</CheckButton>
 					</div>
 				</Modal>

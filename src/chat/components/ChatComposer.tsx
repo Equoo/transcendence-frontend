@@ -11,6 +11,7 @@ import {
 	useRef,
 	useState,
 } from "react";
+import { useTranslation } from "react-i18next";
 import { BsSend } from "react-icons/bs";
 import { PiImage, PiPaperclip, PiSmiley } from "react-icons/pi";
 
@@ -54,13 +55,23 @@ function ChatComposer({
 	placeholder: string;
 	onSend: (text: string, mode: ChatMode, target: Message | null) => void;
 }): JSX.Element {
+	// eslint-disable-next-line id-length
+	const { t } = useTranslation();
 	const [isEmpty, setIsEmpty] = useState(true);
 	const [showPicker, setShowPicker] = useState(false);
 
 	const editableRef = useRef<HTMLDivElement>(null);
 	const pickerRef = useRef<HTMLDivElement>(null);
 
-	const { id, getChatMode, setChatMode, getChatText, setChatText, getChatLastText, setChatLastText } = useChatContext();
+	const {
+		id,
+		getChatMode,
+		setChatMode,
+		getChatText,
+		setChatText,
+		getChatLastText,
+		setChatLastText,
+	} = useChatContext();
 
 	const updateEmpty = (): void => {
 		if (editableRef.current) {
@@ -102,28 +113,31 @@ function ChatComposer({
 		setChatText(editable.textContent);
 	};
 
-	const setText = useCallback((text: string): void => {
-		const editable = editableRef.current;
-		if (!editable) {
-			return;
-		}
+	const setText = useCallback(
+		(text: string): void => {
+			const editable = editableRef.current;
+			if (!editable) {
+				return;
+			}
 
-		editable.textContent = text;
-		setChatText(text);
+			editable.textContent = text;
+			setChatText(text);
 
-		const selection = window.getSelection();
-		if (selection) {
-			const range = document.createRange();
+			const selection = window.getSelection();
+			if (selection) {
+				const range = document.createRange();
 
-			range.selectNodeContents(editable);
-			range.collapse(false);
+				range.selectNodeContents(editable);
+				range.collapse(false);
 
-			selection.removeAllRanges();
-			selection.addRange(range);
-		}
+				selection.removeAllRanges();
+				selection.addRange(range);
+			}
 
-		updateEmpty();
-	}, [setChatText])
+			updateEmpty();
+		},
+		[setChatText],
+	);
 
 	const clearText = (): void => {
 		const editable = editableRef.current;
@@ -138,10 +152,16 @@ function ChatComposer({
 
 	const [chatMode, modeTarget, modeTargetEl] = getChatMode();
 
+	// eslint-disable-next-line react-hooks/preserve-manual-memoization
 	const closeChatMode = useCallback((): void => {
-		if (chatMode === "default") { return; }
-		if (chatMode === "edit") { setText(getChatLastText()); }
+		if (chatMode === "default") {
+			return;
+		}
+		if (chatMode === "edit") {
+			setText(getChatLastText());
+		}
 		setChatMode("default", null);
+		// eslint-disable-next-line react-hooks/preserve-manual-memoization
 	}, [chatMode, getChatLastText, setChatMode, setText]);
 
 	useImperativeHandle(ref, () => ({
@@ -245,7 +265,7 @@ function ChatComposer({
 			{chatMode !== "default" && (
 				<div className="flex rounded-t-xl bg-back px-4 items-center justify-between">
 					<a
-						className="text-sm text-muted hover:text-text cursor-pointer"
+						className="min-w-0 truncate text-sm text-muted hover:text-text cursor-pointer"
 						onClick={() => {
 							modeTargetEl?.scrollIntoView({
 								behavior: "smooth",
@@ -254,18 +274,20 @@ function ChatComposer({
 						}}
 					>
 						{chatMode === "edit" ? (
-							<>Editing a message - *Escape* to cancel</>
+							<>{t("chat.editingMessage")}</>
 						) : (
 							<>
-								Replying to @
-								{modeTarget?.sender.userName ?? "Unknown"} -
-								*Escap* to cancel
+								{t("chat.replyingTo", {
+									name:
+										modeTarget?.sender.userName ??
+										t("common.unknown"),
+								})}
 							</>
 						)}
 					</a>
 					<button
 						type="button"
-						className="text-muted hover:text-text text-2xl cursor-pointer"
+						className="ml-3 shrink-0 text-muted hover:text-text text-2xl cursor-pointer"
 						onClick={() => {
 							closeChatMode();
 						}}

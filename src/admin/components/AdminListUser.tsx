@@ -1,9 +1,11 @@
 import { type ComponentProps, type JSX, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useFetcher } from "react-router";
 
 import ChangeModal from "@/components/Modal/ChangeModal";
 import ChoiceModal from "@/components/Modal/ChoiceModal";
 import ProfilePic from "@/components/Profile/ProfilePic";
+import Promisable from "@/components/Promisable";
 
 import type { User } from "../../users/api/users";
 import { PermEnum, type Role } from "../api/roles";
@@ -17,9 +19,11 @@ export default function ListUsers({
 	currentUser,
 }: {
 	user: User;
-	roles: Role[];
+	roles: Role[] | Promise<Role[]>;
 	currentUser: User;
 }): JSX.Element {
+	// eslint-disable-next-line id-length
+	const { t } = useTranslation();
 	const [showChangePass, setShowChangePass] = useState(false);
 	const [showConfirmationDelete, setShowConfirmationDelete] = useState(false);
 	const [showConfirmationDisconnect, setShowConfirmationDisconnect] =
@@ -54,44 +58,50 @@ export default function ListUsers({
 			<td className="px-6 py-3 font-medium ">
 				{showConfirmationDelete && (
 					<ChoiceModal
-						title={`Delete ${user.userName} ?`}
+						title={t("admin.deleteUserTitle", {
+							name: user.userName,
+						})}
 						onClose={() => {
 							setShowConfirmationDelete(false);
 						}}
 						action="/users/removeUser"
 						method="DELETE"
-						desc="The user will be remove from the database. This cannot be cancelled."
+						desc={t("admin.deleteUserDesc")}
 						id={user.id}
 						fetcher={fetcher}
 					></ChoiceModal>
 				)}
 				{showConfirmationDisconnect && (
 					<ChoiceModal
-						title={`Disconnect ${user.userName} ?`}
+						title={t("admin.disconnectTitle", {
+							name: user.userName,
+						})}
 						onClose={() => {
 							setShowConfirmationDisconnect(false);
 						}}
 						action="/users/disconnectUser"
 						method="DELETE"
-						desc="The user will need to login again. This cannot be
-							cancelled."
+						desc={t("admin.reloginDesc")}
 						id={user.id}
 						fetcher={fetcher}
 					></ChoiceModal>
 				)}
 				{showChangePass && (
 					<ChangeModal
-						title={`Change ${user.userName}'s password`}
+						password
+						title={t("admin.changePasswordTitle", {
+							name: user.userName,
+						})}
 						onClose={() => {
 							setShowChangePass(false);
 						}}
 						action="/users/passwordUser"
 						method="PATCH"
-						desc="The user will need to login again. This cannot be
-							cancelled."
+						desc={t("admin.reloginDesc")}
 						id={user.id}
 						inputName="password"
-						placeholder="New password"
+						inputLabel={t("profile.password")}
+						placeholder={t("profile.newPassword")}
 						minInput={8}
 						maxInput={256}
 						fetcher={fetcher}
@@ -100,62 +110,74 @@ export default function ListUsers({
 				{user.userName}
 			</td>
 			<td className="px-6 py-3 font-medium">
-				<select
-					defaultValue={user.role.name}
-					disabled={
-						!(currentUser.role.permission & PermEnum.HandleRoles)
-					}
-					className={classSelect}
-					onChange={(event) => {
-						const role = roles.find(
-							(rl) => event.target.value === rl.name,
-						);
+				<Promisable data={roles}>
+					{(listRole) => (
+						<select
+							defaultValue={user.role.name}
+							disabled={
+								!(
+									currentUser.role.permission &
+									PermEnum.HandleRoles
+								)
+							}
+							className={classSelect}
+							onChange={(event) => {
+								const role = listRole.find(
+									(rl) => event.target.value === rl.name,
+								);
 
-						if (!role) {
-							return;
-						}
-						void fetcher.submit(
-							{
-								UserId: user.id,
-								RoleId: role.id,
-							},
-							{ method: "PATCH", action: "/users/roleUser" },
-						);
-					}}
-				>
-					{roles.map((rl) => (
-						<option key={rl.id}>{rl.name}</option>
-					))}
-				</select>
+								if (!role) {
+									return;
+								}
+								void fetcher.submit(
+									{
+										UserId: user.id,
+										RoleId: role.id,
+									},
+									{
+										method: "PATCH",
+										action: "/users/roleUser",
+									},
+								);
+							}}
+						>
+							{listRole.map((rl) => (
+								<option key={rl.id}>{rl.name}</option>
+							))}
+						</select>
+					)}
+				</Promisable>
 			</td>
-			<td className="space-x-10 font-medium w-1/4 ">
-				<button
-					type="submit"
-					className="hover:text-accent hover:cursor-pointer"
-					onClick={() => {
-						setShowConfirmationDelete(true);
-					}}
-				>
-					Remove User
-				</button>
-				<button
-					type="submit"
-					className="hover:text-accent hover:cursor-pointer"
-					onClick={() => {
-						setShowChangePass(true);
-					}}
-				>
-					Reset Password
-				</button>
-				<button
-					type="submit"
-					className="hover:text-accent hover:cursor-pointer"
-					onClick={() => {
-						setShowConfirmationDisconnect(true);
-					}}
-				>
-					Disconnect
-				</button>
+			<td className="px-6 py-3 font-medium">
+				<div className="flex flex-wrap items-center gap-x-6 gap-y-1">
+					<button
+						type="submit"
+						className="whitespace-nowrap hover:text-accent hover:cursor-pointer"
+						onClick={() => {
+							setShowConfirmationDelete(true);
+						}}
+					>
+						{t("admin.removeUser")}
+					</button>
+					<button
+						type="submit"
+						className="whitespace-nowrap hover:text-accent hover:cursor-pointer"
+						onClick={() => {
+							setShowChangePass(true);
+						}}
+					>
+						{t("admin.resetPassword")}
+					</button>
+					<button
+						type="submit"
+						className="whitespace-nowrap hover:text-accent hover:cursor-pointer"
+						onClick={() => {
+							setShowConfirmationDisconnect(true);
+						}}
+					>
+						{t("admin.disconnect")}
+					</button>
+				</div>
 			</td>
 		</tr>
 	);
