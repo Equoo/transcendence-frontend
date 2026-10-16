@@ -49,7 +49,7 @@ export default function CheckButton({
 				{...rest}
 				disabled={pending || rest.disabled}
 				aria-pressed={active}
-				className={style}
+				className={`${style} ${rest.className}`}
 			>
 				{pending && <TbLoader2 className="animate-spin" />}
 				{active && activeCheck && !pending && <PiCheckFatFill />}

@@ -96,28 +96,28 @@ export default function ProfilePic({
 	let sizeStyle: string;
 
 	if (size === 1) {
-		sizeStyle = "w-10 h-10 min-w-10 min-h-10";
+		sizeStyle = "w-10 h-10 max-w-10 max-h-10";
 	} else if (size === 0.5) {
-		sizeStyle = "w-5 h-5 min-w-5 min-h-5";
+		sizeStyle = "w-5 h-5 max-w-5 max-h-5";
 	} else if (size === 2) {
-		sizeStyle = "w-15 h-15 min-w-15 min-h-15";
+		sizeStyle = "w-15 h-15 max-w-15 max-h-15";
 	} else {
 		sizeStyle = "w-18 h-18";
 	}
 
 	return (
-		<div className={`relative flex shrink-0 ${sizeStyle}`}>
+		<div className={`relative flex shrink-0 ${sizeStyle} ${className}`}>
 			{user.avatar ? (
 				<img
 					src={`/api/files/${user.avatar.key}`}
-					className={`rounded-full w-full h-full ${className} border-2 border-accent-text`}
+					className={`rounded-full w-full h-full border-2 border-accent-text`}
 					style={{ zIndex: idx }}
 				/>
 			) : (
 				<Blobatar
 					name={user.id}
 					animate="always"
-					className="w-full h-full"
+					className={`w-full h-full`}
 					expression={getExpression(activity.getActivity(user.id))}
 				></Blobatar>
 			)}

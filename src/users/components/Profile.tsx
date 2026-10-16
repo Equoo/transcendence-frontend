@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { JSX } from "react/jsx-runtime";
 import { useTranslation } from "react-i18next";
 import type { FetcherWithComponents } from "react-router";
@@ -11,6 +11,7 @@ import ChangeModal from "@/components/Modal/ChangeModal";
 import ChoiceModal from "@/components/Modal/ChoiceModal";
 import Modal from "@/components/Modal/Modal";
 import ProfileLine from "@/components/Profile/ProfileLine";
+import { useClickOutside } from "@/hooks/useClickOutside";
 import Section, { type LineInfos } from "@/users/components/Section";
 
 import { Language, type User } from "../api/users";
@@ -20,11 +21,14 @@ export default function Profile({
 	fetcher,
 	user,
 	role,
+	onClickOutside,
+	...rest
 }: {
 	onClose: () => void;
 	fetcher: FetcherWithComponents<Response>;
 	user: User;
 	role: Role;
+	onClickOutside: () => void;
 }): JSX.Element {
 	// eslint-disable-next-line id-length
 	const { i18n, t } = useTranslation();
@@ -80,6 +84,16 @@ export default function Profile({
 			},
 		},
 	];
+
+	const clickOutsideRef = useClickOutside(
+		useRef<HTMLDivElement>(null),
+		() => {
+			if (showDelete || showUsername || showPassword) {
+				return;
+			}
+			onClickOutside();
+		},
+	);
 
 	return (
 		<>
@@ -153,7 +167,11 @@ export default function Profile({
 					</fetcher.Form>
 				</Modal>
 			)}
-			<div className="flex items-center justify-center absolute bottom-15 left-55 flex-col border-border2 shadow-md bg-surface w-75 min-h-95 py-4 rounded-2xl">
+			<div
+				className="flex items-center justify-center absolute bottom-15 left-55 flex-col border-border2 shadow-md bg-surface w-75 min-h-95 py-4 rounded-2xl z-10"
+				ref={clickOutsideRef}
+				{...rest}
+			>
 				{showLanguage && (
 					<PopupList
 						className="absolute right-9 bottom-32 bg-surface2 border border-border"
@@ -212,7 +230,6 @@ export default function Profile({
 						]}
 					></PopupList>
 				)}
-
 				<button
 					type="button"
 					onClick={onClose}
@@ -240,6 +257,7 @@ export default function Profile({
 								onClick={() => {
 									setShowDelete(true);
 								}}
+								danger
 							>
 								{t("profile.deleteAccount")}
 							</CheckButton>
@@ -251,6 +269,7 @@ export default function Profile({
 									method: "DELETE",
 								});
 							}}
+							danger
 						>
 							{t("profile.logout")}
 						</CheckButton>
