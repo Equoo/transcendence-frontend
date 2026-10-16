@@ -1,6 +1,7 @@
 import { useMutation, type UseMutationResult, useQuery, useQueryClient, type UseQueryResult } from "@tanstack/react-query";
 
 import { fetchUsers, type User } from "@/users/api/users";
+import { toastError } from "@/utils/error.util";
 
 import {
 	addFriend,
@@ -11,7 +12,6 @@ import {
 	renameSomeone,
 } from "../api/relationship.api";
 import { friendsKeys, removeRelationship, upsertRelationship } from "../cache/friends.cache";
-import { toastError } from "../utils/friends.util";
 
 export function useRelationships(): UseQueryResult<Relationship[]> {
 	return useQuery({
