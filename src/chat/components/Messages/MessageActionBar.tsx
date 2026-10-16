@@ -1,3 +1,4 @@
+import { useQueryClient } from "@tanstack/react-query";
 import { type Ref, useImperativeHandle, useRef, useState } from "react";
 import type { JSX } from "react/jsx-runtime";
 import { useTranslation } from "react-i18next";
@@ -9,8 +10,8 @@ import IconBtn from "@/components/Button/IconBtn";
 import Modal from "@/components/Modal/Modal";
 import { useUser } from "@/users/hooks/users";
 
-import { type Message, removeMessage } from "../../api/chat.api";
-import { useChat } from "../../hooks/chat.hook";
+import { deleteMessage, type Message } from "../../api/chat.api";
+import { findMessage, removeMessage } from "../../cache/chat.cache";
 import { useChatContext } from "../ChatProvider";
 import MessageRow from "./MessageRow";
 
@@ -35,9 +36,9 @@ function MessageActionBar({
 	ref?: Ref<MessageActionBarHandles>;
 	channelId: string;
 }): JSX.Element {
+	const qc = useQueryClient();
 	// eslint-disable-next-line id-length
 	const { t } = useTranslation();
-	const getMessage = useChat((state) => state.getMessage);
 
 	const [actionBar, setActionBar] = useState<ActionBar | null>(null);
 	const [showRemoveForm, setShowRemoveForm] = useState(false);
@@ -64,7 +65,7 @@ function MessageActionBar({
 					prev.el.ariaSelected = "false";
 				}
 				const id = row.dataset.id ?? "undefined";
-				const msg = getMessage(channelId, id);
+				const msg = findMessage(qc, channelId, id);
 				if (!msg) {
 					return prev;
 				}
@@ -92,7 +93,6 @@ function MessageActionBar({
 		},
 	}));
 
-	const removeMsg = useChat((state) => state.removeMsg);
 	const { composerRef } = useChatContext();
 	const user = useUser();
 
@@ -175,9 +175,13 @@ function MessageActionBar({
 						<CheckButton
 							danger
 							onClick={() => {
-								removeMessage(channelId, actionBar.msg.id)
+								deleteMessage(channelId, actionBar.msg.id)
 									.then(() => {
-										removeMsg(channelId, actionBar.msg.id);
+										removeMessage(
+											qc,
+											channelId,
+											actionBar.msg.id,
+										);
 									})
 									.catch(() => {
 										// NOTE: replace by good error handling

@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-import { useChatHub } from "@/chat/hooks/chatHub.hook";
+import { hubSend } from "@/realtime";
 
 export enum ActivityEnum {
 	Online = 0,
@@ -53,27 +53,16 @@ export const useActivity = create<ActivityState>()((set, get) => ({
 		set((old) => ({
 			activities: new Map(old.activities).set(get().selfId, act),
 		}));
-		await useChatHub.getState().hub?.send("ActivityReported", act);
+		await hubSend("ActivityReported", act);
 	},
 	reportActivity: (): void => {
-		void useChatHub
-			.getState()
-			.hub?.invoke(
-				"ActivityReported",
-				get().activities.get(get().selfId),
-			);
+		void hubSend("ActivityReported", get().activities.get(get().selfId));
 	},
 	reportActivityTo: (userId: string): void => {
-		void useChatHub
-			.getState()
-			.hub?.invoke(
-				"ReportActivityTo",
-				userId,
-				get().activities.get(get().selfId),
-			);
+		void hubSend("ReportActivityTo", userId, get().activities.get(get().selfId));
 	},
 	askOthersActivity: (): void => {
-		void useChatHub.getState().hub?.send("AskOthersActivity");
+		void hubSend("AskOthersActivity");
 	},
 	setPreference: (activity): void => {
 		localStorage.setItem("activityPreference", activity.toString());

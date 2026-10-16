@@ -1,30 +1,21 @@
+import { useQueryClient } from "@tanstack/react-query";
 import { type RefObject, useCallback, useEffect, useRef } from "react";
-import { useShallow } from "zustand/react/shallow";
 
 import { useUser } from "@/users/hooks/users";
 
-import { ackMessage, type Channel } from "../api/chat.api";
-import { useChat } from "./chat.hook";
+import { ackMessage, type Message } from "../api/chat.api";
+import { setAckTime } from "../cache/chat.cache";
+import { useAckTime } from "./useChannels";
 
 const ACK_DEBOUNCE_MS = 800;
 
-/**
- * Acknowledges the latest message from other users once it is fully visible
- * and the tab is focused, debouncing rapid visibility changes.
- *
- * Returns a ref to attach to the last rendered message.
- */
 export function useReadReceipts(
 	channelId: string,
+	messages: Message[],
 ): RefObject<HTMLDivElement | null> {
 	const user = useUser();
-	const messages = useChat(
-		useShallow((state) => Object.values(state.channels[channelId].messages)),
-	);
-	const ackDate = useChat(
-		useShallow((state) => state.channels[channelId].ackTime),
-	);
-	const updateChannel = useChat(useShallow((state) => state.updateChannel));
+	const qc = useQueryClient();
+	const ackDate = useAckTime(channelId);
 
 	const lastMessageRef = useRef<HTMLDivElement>(null);
 	const pendingAckRef = useRef<{ msgId: string; sentAt: Date } | null>(null);
@@ -44,13 +35,11 @@ export function useReadReceipts(
 					return;
 				}
 				void ackMessage(channelId, pending.msgId);
-				updateChannel(channelId, {
-					ackTime: pending.sentAt,
-				} as unknown as Channel);
+				setAckTime(qc, channelId, pending.sentAt);
 				pendingAckRef.current = null;
 			}, ACK_DEBOUNCE_MS);
 		},
-		[channelId, updateChannel],
+		[channelId, qc],
 	);
 
 	const tryAck = useCallback((): void => {

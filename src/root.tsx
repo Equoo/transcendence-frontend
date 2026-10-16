@@ -1,6 +1,8 @@
 import "./index.css";
 import  './translation/i18n'
 
+import { QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import type { JSX, ReactNode } from "react";
 import {
 	Links,
@@ -15,6 +17,7 @@ import { ToastContainer } from "react-toastify";
 import type { Route } from "./+types/root";
 import { PermEnum } from "./admin/api/roles";
 import HydratingScreen from "./components/HydratingScreen";
+import { queryClient } from "./queryClient";
 import { fetchUser, UserContext } from "./users/api/users";
 
 const alertStyle = {
@@ -77,7 +80,10 @@ export function Layout({ children }: { children: ReactNode }): JSX.Element {
 						} relative flex px-4 gap-1 py-2 min-h-10 rounded-lg justify-between overflow-hidden cursor-pointer`
 					}
 				/>
-				{children}
+				<QueryClientProvider client={queryClient}>
+					{children}
+					<ReactQueryDevtools initialIsOpen={false} />
+				</QueryClientProvider>
 				<ScrollRestoration />
 				<Scripts />
 			</body>

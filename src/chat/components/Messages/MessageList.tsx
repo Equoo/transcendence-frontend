@@ -8,13 +8,15 @@ import {
 	useState,
 } from "react";
 import { useTranslation } from "react-i18next";
-import { useShallow } from "zustand/react/shallow";
 
-import { useChat } from "@/chat/hooks/chat.hook";
+import { useRelationships } from "@/friends/hooks/useRelationships";
+import { useScrollPagination } from "@/hooks/usePagination";
 import { useUser } from "@/users/hooks/users";
 
+import { ChannelType, type Message } from "../../api/chat.api";
 import { useAutoScroll } from "../../hooks/useAutoScroll.hook";
-import { useMessagePagination } from "../../hooks/useMessagePagination.hook";
+import { useAckTime } from "../../hooks/useChannels";
+import { useMessages } from "../../hooks/useMessages";
 import { useReadReceipts } from "../../hooks/useReadReceipts.hook";
 import { useScrollRestoration } from "../../hooks/useScrollRestoration.hook";
 import { startsNewDay, startsNewGroup } from "../../utils/message.util";
@@ -30,31 +32,12 @@ export interface MessageListHandles {
 	scrollBack: () => void;
 }
 
-function useNewMessagesDividerId(channelId: string): string | null {
+function useNewMessagesDividerId(
+	channelId: string,
+	messages: Message[],
+): string | null {
 	const user = useUser();
-	const messages = useChat(
-		useShallow((state) =>
-			Object.values(state.channels[channelId].messages),
-		),
-	);
-	const channels = useChat(
-		useShallow((state) => Object.values(state.channels)),
-	);
-	const ackDate = useChat(
-		useShallow((state) => state.channels[channelId].ackTime),
-	);
-
-	useEffect(() => {
-		if (!user) {
-			return;
-		}
-		channels.forEach((channel) => {
-			if (channel.ackTime) {
-				return;
-			}
-			channel.ackTime = user.channelsAckMsg.get(channel.id) ?? null;
-		});
-	}, [user, channels]);
+	const ackDate = useAckTime(channelId);
 
 	const [dividerMsgId, setDividerMsgId] = useState<string | null>(null);
 	useEffect(() => {
@@ -75,10 +58,12 @@ function useNewMessagesDividerId(channelId: string): string | null {
 function MessageList({
 	channelId,
 	channelName,
+	channelType,
 	ref,
 }: {
 	channelId: string;
 	channelName: string;
+	channelType: ChannelType;
 	ref?: Ref<MessageListHandles>;
 }): JSX.Element {
 	// eslint-disable-next-line id-length
@@ -86,21 +71,35 @@ function MessageList({
 	const containerRef = useRef<HTMLDivElement>(null);
 	const actionBarRef = useRef<MessageActionBarHandles>(null);
 
-	const messages = useChat(
-		useShallow((state) =>
-			Object.values(state.channels[channelId].messages),
-		),
-	);
+	const { data: relations, isPending: isPendingRelations } =
+		useRelationships();
 
-	const handleScroll = useMessagePagination(
+	const { data, isPending, fetchNextPage, hasNextPage, isFetchingNextPage } =
+		useMessages(channelId);
+	const messages = data ?? [];
+
+	const paginate = useScrollPagination({
+		containerRef,
+		fetchNextPage,
+		hasNextPage,
+		isFetchingNextPage,
+		direction: "up",
+		enabled: !isPending && !isPendingRelations,
+		resetKey: channelId,
+	});
+	const handleScroll = (ev: React.UIEvent<HTMLDivElement>): void => {
+		paginate(ev);
+		actionBarRef.current?.hide();
+	};
+
+	useScrollRestoration(
 		channelId,
 		containerRef,
-		actionBarRef,
+		!isPending && !isPendingRelations,
 	);
-	useScrollRestoration(channelId, containerRef);
-	const { scrollToBottom } = useAutoScroll(channelId, containerRef);
-	const lastMessageRef = useReadReceipts(channelId);
-	const dividerMsgId = useNewMessagesDividerId(channelId);
+	const { scrollToBottom } = useAutoScroll(messages, containerRef);
+	const lastMessageRef = useReadReceipts(channelId, messages);
+	const dividerMsgId = useNewMessagesDividerId(channelId, messages);
 
 	useImperativeHandle(ref, () => ({ scrollBack: scrollToBottom }), [
 		scrollToBottom,
@@ -127,7 +126,10 @@ function MessageList({
 			<div className="mt-auto" />
 			<div className="relative gap-3 px-5.5 mt- text-muted">
 				<h1 className="text-3xl font-medium text-text">
-					<span className="font-bold">#</span> {channelName}
+					{channelType === ChannelType.Text && (
+						<span className="font-bold">#</span>
+					)}{" "}
+					{channelName}
 				</h1>
 				<p>{t("chat.discussionStart")}</p>
 			</div>
@@ -149,6 +151,7 @@ function MessageList({
 							onActivate={showActionBar}
 							onDeactivate={hideActionBar}
 							className="px-5.5"
+							relations={relations}
 						/>
 					</Fragment>
 				);

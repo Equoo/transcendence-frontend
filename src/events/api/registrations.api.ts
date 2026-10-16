@@ -1,6 +1,5 @@
-import callApi from "@/tokens/callApi";
+import { request } from "@/api/request";
 
-import { APIError, type ProblemDetail } from "../../api/problem_detail";
 import type { User } from "../../users/api/users";
 
 export interface Registration {
@@ -23,27 +22,9 @@ export async function registerToEvent(
 	eventId: string,
 	reg: RegistrationInput,
 ): Promise<Response> {
-	const res = await callApi(`/api/events/${eventId}/registration`, {
-		method: "POST",
-		body: JSON.stringify(reg),
-		headers: {
-			"Content-Type": "application/json",
-		},
-	});
-
-	if (!res.ok) {
-		throw new APIError((await res.json()) as ProblemDetail);
-	}
-	return res;
+	return request(`/api/events/${eventId}/registration`, "POST", reg);
 }
 
 export async function unregisterFromEvent(eventId: string): Promise<Response> {
-	const res = await callApi(`/api/events/${eventId}/registration`, {
-		method: "DELETE",
-	});
-
-	if (!res.ok) {
-		throw new APIError((await res.json()) as ProblemDetail);
-	}
-	return res;
+	return request(`/api/events/${eventId}/registration`, "DELETE");
 }

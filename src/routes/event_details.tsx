@@ -5,6 +5,7 @@ import { PiTrash } from "react-icons/pi";
 import { Link, useFetcher, useNavigate } from "react-router";
 
 import ChannelChat from "@/chat/components/ChannelChat";
+import { useChannel } from "@/chat/hooks/useChannels";
 import ChoiceModal from "@/components/Modal/ChoiceModal";
 import ProfileLine from "@/components/Profile/ProfileLine";
 import ProfilePic from "@/components/Profile/ProfilePic";
@@ -64,6 +65,9 @@ export default function EventDetails({
 			}
 		}
 	}, [fetcher.data, navigate]);
+
+	const { data: channel } = useChannel(event.channel.id);
+
 	return (
 		<div className="flex flex-col w-full h-full">
 			{showConfirmation && (
@@ -190,7 +194,7 @@ export default function EventDetails({
 						))}
 					</div>
 				</div>
-				<ChannelChat channelId={event.channel.id}></ChannelChat>
+				{channel && <ChannelChat channel={channel}></ChannelChat>}
 			</div>
 		</div>
 	);

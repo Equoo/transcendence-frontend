@@ -13,7 +13,7 @@ export default [
 			route("calendar/:eventId", "routes/event_details.tsx"),
 			route("knowledge", "routes/knowledge.tsx"),
 			route("knowledge/:key", "routes/file_view.tsx"),
-			route("messages", "routes/messages.tsx"),
+			route("messages/:subpage?", "routes/messages.tsx"),
 			route("channels/:channelId", "routes/channel.tsx"),
 			route("/admin/roles", "admin/routes/Roles.tsx"),
 			route("/admin/users", "admin/routes/Users.tsx"),
@@ -34,6 +34,8 @@ export default [
 	route("/invitations/:id?", "invitations/routes/invitations.route.tsx"),
 	route("/channels", "chat/routes/channel.route.tsx"),
 	route("/category", "chat/routes/category.route.tsx"),
+	route("/conversations", "friends/routes/conversation.route.tsx"),
+	route("/relationships", "friends/routes/relationship.route.tsx"),
 
 	route("/roles/:action", "admin/routes/RolesAction.ts"),
 	route("/users/:action", "admin/routes/UsersAction.ts"),

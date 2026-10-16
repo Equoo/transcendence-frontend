@@ -1,6 +1,4 @@
-import callApi from "@/tokens/callApi";
-
-import { APIError, type ProblemDetail } from "../../api/problem_detail";
+import { request } from "@/api/request";
 
 // Interface API
 
@@ -45,68 +43,23 @@ function toChangeRole(formData: FormData): reqChangeRole {
 export async function handleDisconnect(formdata: FormData): Promise<Response> {
 	const req = toUserId(formdata);
 
-	const res = await callApi(`/api/auth/logout/${req.Id}`, {
-		method: "DELETE",
-		headers: {
-			"Content-Type": "application/json",
-		},
-	});
-
-	if (!res.ok) {
-		throw new APIError((await res.json()) as ProblemDetail);
-	}
-
-	return res;
+	return request(`/api/auth/logout/${req.Id}`, "DELETE");
 }
 
 export async function resetPassword(formdata: FormData): Promise<Response> {
 	const req = toResetInput(formdata);
 
-	const res = await callApi(`/api/auth/${req.Id}/password`, {
-		method: "PATCH",
-		headers: {
-			"Content-Type": "application/json",
-		},
-		body: JSON.stringify(req.Password),
-	});
-
-	if (!res.ok) {
-		throw new APIError((await res.json()) as ProblemDetail);
-	}
-
-	return res;
+	return request(`/api/auth/${req.Id}/password`, "PATCH", req.Password);
 }
 
 export async function handleRemoveUser(formdata: FormData): Promise<Response> {
 	const req = toUserId(formdata);
 
-	const res = await callApi(`/api/users/${req.Id}`, {
-		method: "DELETE",
-		headers: {
-			"Content-Type": "application/json",
-		},
-	});
-
-	if (!res.ok) {
-		throw new APIError((await res.json()) as ProblemDetail);
-	}
-
-	return res;
+	return request(`/api/users/${req.Id}`, "DELETE");
 }
 
 export async function handleChange(formdata: FormData): Promise<Response> {
 	const req = toChangeRole(formdata);
 
-	const res = await callApi(`/api/users/${req.UserId}/role/${req.RoleId}`, {
-		method: "PATCH",
-		headers: {
-			"Content-Type": "application/json",
-		},
-	});
-
-	if (!res.ok) {
-		throw new APIError((await res.json()) as ProblemDetail);
-	}
-
-	return res;
+	return request(`/api/users/${req.UserId}/role/${req.RoleId}`, "PATCH");
 }

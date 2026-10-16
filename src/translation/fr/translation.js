@@ -275,7 +275,7 @@ export default {
 				subtitle: "Projet Transcendance",
 				calendar: "Calendrier",
 				knowledge: "Connaissances",
-				messages: "Messages",
+				messages: "Messages privée",
 				upcoming: "À venir",
 				channels: "Canaux",
 			},

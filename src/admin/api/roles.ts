@@ -1,6 +1,6 @@
+import { requestJson } from "@/api/request";
 import callApi from "@/tokens/callApi";
 
-import { APIError, type ProblemDetail } from "../../api/problem_detail";
 import { toUserId } from "./users";
 
 export enum PermEnum {
@@ -83,15 +83,7 @@ function toPermInput(perm: number): PermInput {
 // Function API
 
 export async function fetchRoles(): Promise<Role[]> {
-	const res = await callApi("/api/roles");
-
-	if (!res.ok) {
-		throw new APIError((await res.json()) as ProblemDetail);
-	}
-
-	const roles = (await res.json()) as Role[];
-
-	return roles;
+	return requestJson<Role[]>("/api/roles");
 }
 
 export async function createRole(formdata: FormData): Promise<Response> {

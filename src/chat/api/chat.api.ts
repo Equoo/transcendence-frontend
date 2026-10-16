@@ -1,7 +1,4 @@
-/* eslint-disable max-lines */
-import { APIError, type ProblemDetail } from "@/api/problem_detail";
-import { useChat } from "@/chat/hooks/chat.hook";
-import callApi from "@/tokens/callApi";
+import { request, requestJson } from "@/api/request";
 import type { User } from "@/users/api/users";
 
 export interface Message {
@@ -30,15 +27,23 @@ export interface ChannelRole {
 	name: string;
 }
 
-export interface Channel {
+export enum ChannelType {
+	Text = 0,
+	DirectMessage = 1,
+	GroupDirectMessage = 2
+}
+
+export interface ChannelBase {
 	id: string;
 	name: string;
 	topic: string;
 	createAt: Date;
+	type: ChannelType;
+}
+
+export interface Channel extends ChannelBase {
 	eventId?: string;
 	categoryId?: string | null;
-	messages: Message[];
-	ackTime?: Date | null;
 	rolesWhitelist: ChannelRole[];
 	categorySync: boolean;
 }
@@ -56,28 +61,25 @@ export interface ChannelCategory {
 	rolesWhitelist: ChannelRole[];
 }
 
+export interface ChannelBody {
+	name: string;
+	topic: string;
+	whitelistRoles: string[];
+	categorySync: boolean;
+	category: string | null;
+}
+
+export interface CategoryBody {
+	name: string;
+	whitelistRoles: string[];
+}
+
 export async function fetchChannels(): Promise<Channel[]> {
-	if (Object.keys(useChat.getState().channels).length !== 0) {
-		return [];
-	}
+	return requestJson<Channel[]>("/api/channels");
+}
 
-	const channelsRes = await fetch("/api/channels");
-	if (!channelsRes.ok) {
-		throw new APIError((await channelsRes.json()) as ProblemDetail);
-	}
-	const channels = (await channelsRes.json()) as Channel[];
-
-	channels.forEach((ch) => { ch.messages = [] });
-
-	const categoriesRes = await fetch("/api/categories");
-	if (!categoriesRes.ok) {
-		throw new APIError((await categoriesRes.json()) as ProblemDetail);
-	}
-	const categories = (await categoriesRes.json()) as ChannelCategory[];
-
-	useChat.getState().setChannels(channels, categories);
-
-	return channels;
+export async function fetchCategories(): Promise<ChannelCategory[]> {
+	return requestJson<ChannelCategory[]>("/api/categories");
 }
 
 export async function fetchMessages(
@@ -91,138 +93,40 @@ export async function fetchMessages(
 		url += `&before=${before.toISOString()}`;
 	}
 
-	const response = await callApi(url);
-	if (!response.ok) {
-		throw new APIError((await response.json()) as ProblemDetail);
-	}
-
-	const raw = (await response.json()) as Message[];
-	const messages: Message[] = raw.map((msg) => normalizeMessage(msg));
-	return messages;
+	const raw = await requestJson<Message[]>(url);
+	return raw.map((msg) => normalizeMessage(msg));
 }
 
-export async function createChannel(formData: FormData): Promise<Channel> {
-	const category = formData.get("category") as string;
-
-	const body: { name: string, topic: string, whitelistRoles: string[], categorySync: boolean, category: string | null } = {
-		name: formData.get("Name") as string,
-		topic: formData.get("Topic") as string,
-		whitelistRoles: formData.getAll("Roles") as string[],
-		categorySync: formData.has("Syncronised"),
-		category: null
-	};
-	if (category) { body.category = category; }
-
-	const response = await fetch("/api/channels", {
-		method: "POST",
-		headers: {
-			"Content-Type": "application/json",
-		},
-		body: JSON.stringify(body),
-	});
-
-	if (!response.ok) {
-		throw new APIError((await response.json()) as ProblemDetail);
-	}
-
-	return (await response.json()) as Channel;
+export async function createChannel(channel: ChannelBody): Promise<Channel> {
+	return requestJson<Channel>("/api/channels", "POST", channel);
 }
 
-export async function updateChannel(formData: FormData): Promise<Channel> {
-	const category = formData.get("category") as string;
-
-	const body: { name: string, topic: string, whitelistRoles: string[], categorySync: boolean, category: string | null } = {
-		name: formData.get("Name") as string,
-		topic: formData.get("Topic") as string,
-		whitelistRoles: formData.getAll("Roles") as string[],
-		categorySync: formData.has("Syncronised"),
-		category: null
-	};
-	if (category) { body.category = category; }
-
-	const response = await fetch(
-		`/api/channels/${formData.get("id") as string}`,
-		{
-			method: "PUT",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify(body),
-		},
+export async function updateChannel(id: string, channel: ChannelBody): Promise<Channel> {
+	return requestJson<Channel>(
+		`/api/channels/${id}`,
+		"PUT",
+		channel,
 	);
-
-	if (!response.ok) {
-		throw new APIError((await response.json()) as ProblemDetail);
-	}
-
-	return (await response.json()) as Channel;
 }
 
 export async function deleteChannel(id: string): Promise<void> {
-	const response = await fetch(`/api/channels/${id}`, {
-		method: "DELETE",
-		headers: {
-			"Content-Type": "application/json",
-		},
-	});
-
-	if (!response.ok) {
-		throw new APIError((await response.json()) as ProblemDetail);
-	}
+	await request(`/api/channels/${id}`, "DELETE");
 }
 
-export async function createCategory(formData: FormData): Promise<ChannelCategory> {
-	const response = await fetch("/api/categories", {
-		method: "POST",
-		headers: {
-			"Content-Type": "application/json",
-		},
-		body: JSON.stringify({
-			name: formData.get("Name") as string,
-			whitelistRoles: formData.getAll("Roles") as string[],
-		}),
-	});
-
-	if (!response.ok) {
-		throw new APIError((await response.json()) as ProblemDetail);
-	}
-
-	return (await response.json()) as ChannelCategory;
+export async function createCategory(category: CategoryBody): Promise<ChannelCategory> {
+	return requestJson<ChannelCategory>("/api/categories", "POST", category);
 }
 
-export async function updateCategory(formData: FormData): Promise<ChannelCategory> {
-	const response = await fetch(
-		`/api/categories/${formData.get("id") as string}`,
-		{
-			method: "PUT",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify({
-				name: formData.get("Name") as string,
-				whitelistRoles: formData.getAll("Roles") as string[],
-			}),
-		},
+export async function updateCategory(id: string, category: CategoryBody): Promise<ChannelCategory> {
+	return requestJson<ChannelCategory>(
+		`/api/categories/${id}`,
+		"PUT",
+		category,
 	);
-
-	if (!response.ok) {
-		throw new APIError((await response.json()) as ProblemDetail);
-	}
-
-	return (await response.json()) as ChannelCategory;
 }
 
 export async function deleteCategory(id: string): Promise<void> {
-	const response = await fetch(`/api/categories/${id}`, {
-		method: "DELETE",
-		headers: {
-			"Content-Type": "application/json",
-		},
-	});
-
-	if (!response.ok) {
-		throw new APIError((await response.json()) as ProblemDetail);
-	}
+	await request(`/api/categories/${id}`, "DELETE");
 }
 
 export async function sendMessage(
@@ -230,22 +134,10 @@ export async function sendMessage(
 	content: string,
 	messageReference: string | undefined,
 ): Promise<Message> {
-	const response = await callApi(`/api/channels/${channelId}/messages`, {
-		method: "POST",
-		headers: {
-			"Content-Type": "application/json",
-		},
-		body: JSON.stringify({
-			content,
-			messageReference,
-		}),
+	return requestJson<Message>(`/api/channels/${channelId}/messages`, "POST", {
+		content,
+		messageReference,
 	});
-
-	if (!response.ok) {
-		throw new APIError((await response.json()) as ProblemDetail);
-	}
-
-	return (await response.json()) as Message;
 }
 
 export async function updateMessage(
@@ -253,57 +145,19 @@ export async function updateMessage(
 	id: string,
 	content: string,
 ): Promise<Message> {
-	const response = await callApi(
-		`/api/channels/${channelId}/messages/${id}`,
-		{
-			method: "PUT",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify({
-				content,
-			}),
-		},
-	);
-
-	if (!response.ok) {
-		throw new APIError((await response.json()) as ProblemDetail);
-	}
-
-	return (await response.json()) as Message;
+	return requestJson<Message>(`/api/channels/${channelId}/messages/${id}`, "PUT", {
+		content,
+	});
 }
 
-export async function removeMessage(
+export async function deleteMessage(
 	channelId: string,
 	id: string,
 ): Promise<string> {
-	const response = await fetch(`/api/channels/${channelId}/messages/${id}`, {
-		method: "DELETE",
-		headers: {
-			"Content-Type": "application/json",
-		},
-	});
-
-	if (!response.ok) {
-		throw new APIError((await response.json()) as ProblemDetail);
-	}
-
+	const response = await request(`/api/channels/${channelId}/messages/${id}`, "DELETE");
 	return response.text();
 }
 
 export async function ackMessage(channelId: string, id: string): Promise<void> {
-	const response = await fetch(
-		`/api/channels/${channelId}/messages/${id}/ack`,
-		{
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify({}),
-		},
-	);
-
-	if (!response.ok) {
-		throw new APIError((await response.json()) as ProblemDetail);
-	}
+	await request(`/api/channels/${channelId}/messages/${id}/ack`, "POST", {});
 }

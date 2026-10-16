@@ -5,28 +5,17 @@ import { isRouteErrorResponse, Outlet } from "react-router";
 
 import { ActivityEnum, useActivity } from "@/activity/hooks/activity.hook";
 import { APIError } from "@/api/problem_detail";
-import { type Channel, fetchChannels } from "@/chat/api/chat.api";
-import { useChatHub } from "@/chat/hooks/chatHub.hook";
-import {
-	Language,
-	type User,
-	UserContext,
-} from "@/users/api/users";
+import { useRealtime } from "@/realtime";
+import { Language, type User, UserContext } from "@/users/api/users";
 import { UserReactContext } from "@/users/hooks/users";
 
 import Sidebar from "../components/Sidebar/Sidebar";
 import type { Route } from "./+types/dashboard";
 
-export async function clientLoader({
-	context,
-}: Route.ClientLoaderArgs): Promise<{
+export function clientLoader({ context }: Route.ClientLoaderArgs): {
 	user: User;
-	channels: Promise<Channel[]>;
-}> {
-	await useChatHub.getState().connect();
-	const user = context.get(UserContext);
-
-	return { user, channels: fetchChannels() };
+} {
+	return { user: context.get(UserContext) };
 }
 
 let unloading = false;
@@ -55,6 +44,7 @@ function handleUnload(): undefined {
 export default function Dashboard({
 	loaderData,
 }: Route.ComponentProps): JSX.Element {
+	useRealtime();
 	const activity = useActivity();
 
 	const { i18n } = useTranslation();
@@ -84,7 +74,7 @@ export default function Dashboard({
 
 	return (
 		<div className="relative w-full h-full overflow-hidden bg-back">
-			<Sidebar user={loaderData.user} channels={loaderData.channels} />
+			<Sidebar user={loaderData.user} />
 			<div className="h-full lg:pl-64 flex flex-col w-full items-center overflow-y-scroll">
 				<UserReactContext value={loaderData.user}>
 					<Outlet />
