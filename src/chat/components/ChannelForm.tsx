@@ -12,6 +12,7 @@ import { Input } from "@/components/Input/Input";
 import MultipleInput from "@/components/Input/MultipleInput";
 import Modal from "@/components/Modal/Modal";
 import Promisable from "@/components/Promisable";
+import { toastError } from "@/utils/error.util";
 
 import type { Channel, ChannelRole } from "../api/chat.api";
 import type { clientAction } from "../routes/channel.route";
@@ -38,11 +39,17 @@ export default function ChannelForm({
 
 	if (prevFetcherState !== fetcher.state) {
 		setPrevFetcherState(fetcher.state);
-		if (fetcher.data instanceof APIError) {
-			setErrors(fetcher.data.problem.errors);
-		}
 		if (fetcher.state === "idle" && prevFetcherState !== "idle") {
-			setShowModal(false);
+			if (fetcher.data instanceof APIError) {
+				setErrors(fetcher.data.problem.errors);
+				if (!fetcher.data.problem.errors) {
+					toastError(fetcher.data);
+				}
+			} else {
+				setErrors({});
+				setShowModal(false);
+				setShowDeleteModal(false);
+			}
 		}
 	}
 

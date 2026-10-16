@@ -12,6 +12,7 @@ import { useTranslation } from "react-i18next";
 import { useRelationships } from "@/friends/hooks/useRelationships";
 import { useScrollPagination } from "@/hooks/usePagination";
 import { useUser } from "@/users/hooks/users";
+import { toastError } from "@/utils/error.util";
 
 import { ChannelType, type Message } from "../../api/chat.api";
 import { useAutoScroll } from "../../hooks/useAutoScroll.hook";
@@ -74,9 +75,22 @@ function MessageList({
 	const { data: relations, isPending: isPendingRelations } =
 		useRelationships();
 
-	const { data, isPending, fetchNextPage, hasNextPage, isFetchingNextPage } =
-		useMessages(channelId);
+	const {
+		data,
+		error,
+		isPending,
+		isFetchNextPageError,
+		fetchNextPage,
+		hasNextPage,
+		isFetchingNextPage,
+	} = useMessages(channelId);
 	const messages = data ?? [];
+
+	useEffect(() => {
+		if (isFetchNextPageError) {
+			toastError(error);
+		}
+	}, [error, isFetchNextPageError]);
 
 	const paginate = useScrollPagination({
 		containerRef,

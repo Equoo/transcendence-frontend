@@ -17,6 +17,7 @@ export function useChannel(channelId: string): UseQueryResult<Channel | null> {
 		queryKey: chatKeys.channels,
 		queryFn: fetchChannels,
 		select: (channels) => channels.find((ch) => ch.id === channelId) ?? null,
+		throwOnError: (__, query) => typeof query.state.data === "undefined",
 	});
 }
 
