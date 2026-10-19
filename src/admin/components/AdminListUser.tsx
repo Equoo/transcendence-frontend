@@ -2,6 +2,7 @@ import { type ComponentProps, type JSX, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useFetcher } from "react-router";
 
+import { Select } from "@/components/Input/Select";
 import ChangeModal from "@/components/Modal/ChangeModal";
 import ChoiceModal from "@/components/Modal/ChoiceModal";
 import ProfilePic from "@/components/Profile/ProfilePic";
@@ -40,13 +41,6 @@ export default function ListUsers({
 			setShowConfirmationDisconnect(false);
 		}
 	}, [fetcher.data]);
-
-	let classSelect =
-		"border-0 bg-surface appearance-none focus:border-0 focus:ring-0 hover:cursor-pointer hover:text-accent";
-
-	if (!(currentUser.role.permission & PermEnum.HandleRoles)) {
-		classSelect = "border-0 bg-none bg-surface focus:border-0 focus:ring-0";
-	}
 
 	return (
 		<tr className="text-sm text-body  border-b rounded-base border-border">
@@ -112,7 +106,7 @@ export default function ListUsers({
 			<td className="px-6 py-3 font-medium">
 				<Promisable data={roles}>
 					{(listRole) => (
-						<select
+						<Select
 							defaultValue={user.role.name}
 							disabled={
 								!(
@@ -120,10 +114,14 @@ export default function ListUsers({
 									PermEnum.HandleRoles
 								)
 							}
-							className={classSelect}
-							onChange={(event) => {
+							ghost
+							options={listRole.map((rl) => ({
+								value: rl.name,
+								label: rl.name,
+							}))}
+							onChange={(value) => {
 								const role = listRole.find(
-									(rl) => event.target.value === rl.name,
+									(rl) => value === rl.name,
 								);
 
 								if (!role) {
@@ -140,11 +138,7 @@ export default function ListUsers({
 									},
 								);
 							}}
-						>
-							{listRole.map((rl) => (
-								<option key={rl.id}>{rl.name}</option>
-							))}
-						</select>
+						/>
 					)}
 				</Promisable>
 			</td>

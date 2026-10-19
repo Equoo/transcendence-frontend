@@ -153,7 +153,6 @@ export default function ProfilePic({
 									id: "online",
 									onClick: (): void => {
 										activity.removePreference();
-										setShowSelect(false);
 									},
 									content: (
 										<div className="inline-flex gap-2.5 items-center whitespace-nowrap">
@@ -174,7 +173,6 @@ export default function ProfilePic({
 									id: String(act),
 									onClick: (): void => {
 										activity.setPreference(act);
-										setShowSelect(false);
 									},
 									content: (
 										<div className="inline-flex gap-2.5 items-center whitespace-nowrap">
@@ -221,29 +219,25 @@ export default function ProfilePic({
 					rows={[
 						{
 							id: "picture",
+							onClick: (): void => {
+								setShowPics(true);
+							},
 							content: (
-								<div
-									className="inline-flex gap-2.5 items-center"
-									onClick={() => {
-										setShowPics(true);
-									}}
-								>
+								<div className="inline-flex gap-2.5 items-center">
 									{t("profilePic.choosePicture")}
 								</div>
 							),
 						},
 						{
 							id: "blobatar",
+							onClick: (): void => {
+								void fetcher.submit(null, {
+									method: "DELETE",
+									action: "/me/blobatar",
+								});
+							},
 							content: (
-								<div
-									className="inline-flex gap-2.5 items-center"
-									onClick={() => {
-										void fetcher.submit(null, {
-											method: "DELETE",
-											action: "/me/blobatar",
-										});
-									}}
-								>
+								<div className="inline-flex gap-2.5 items-center">
 									{t("profilePic.removeAvatar")}
 								</div>
 							),

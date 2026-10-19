@@ -1,16 +1,21 @@
 import { type JSX, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { FiChevronLeft } from "react-icons/fi";
-import { PiArrowBendUpRight, PiTrash } from "react-icons/pi";
-import { TbPencil } from "react-icons/tb";
+import {
+	PiArrowBendUpRight,
+	PiDotsThreeVerticalBold,
+	PiTrash,
+} from "react-icons/pi";
 import { Link, useFetcher, useNavigate } from "react-router";
 
 import ChannelChat from "@/chat/components/ChannelChat";
 import { useChannel } from "@/chat/hooks/useChannels";
+import CheckButton from "@/components/Button/CheckButton";
 import ChoiceModal from "@/components/Modal/ChoiceModal";
 import Modal from "@/components/Modal/Modal";
 import ProfileLine from "@/components/Profile/ProfileLine";
 import ProfilePic from "@/components/Profile/ProfilePic";
+import RoleChange from "@/events/components/RoleChange";
 
 import { PermEnum } from "../admin/api/roles";
 import Badge from "../components/Badge";
@@ -19,7 +24,6 @@ import { fetchEvent } from "../events/api/events.api";
 import EventForm from "../events/components/EventForm";
 import EventRegisterBtn from "../events/components/EventRegisterBtn";
 import type { clientAction as eventAction } from "../events/routes/events.route";
-import type { clientAction as registrationAction } from "../events/routes/registrations.route";
 import { fetchFiles } from "../files/api/files.api";
 import { UserContext } from "../users/api/users";
 import type { Route } from "./+types/event_details";
@@ -45,7 +49,6 @@ export default function EventDetails({
 	// eslint-disable-next-line id-length
 	const { t } = useTranslation();
 	const eventFetcher = useFetcher<typeof eventAction>();
-	const registrationFetcher = useFetcher<typeof registrationAction>();
 	const navigate = useNavigate();
 	const dateString: string = new Date(event.date).toLocaleString([], {
 		hour: "2-digit",
@@ -111,7 +114,16 @@ export default function EventDetails({
 						</>
 					)}
 				</div>
-				<EventRegisterBtn event={event} className="ml-auto shrink-0" />
+				{event.isRegistered && (
+					<CheckButton className="ml-auto">
+						{
+							event.registrations.find(
+								(re) => re.user.id === user.id,
+							)?.role
+						}
+					</CheckButton>
+				)}
+				<EventRegisterBtn event={event} className="shrink-0" />
 			</div>
 			<div className="flex h-full">
 				<div className="flex flex-col gap-1 border-r border-border w-1/5 p-6">
@@ -150,7 +162,7 @@ export default function EventDetails({
 							registered: event.registrations.length,
 							size: event.size,
 						})}
-						<TbPencil
+						<PiDotsThreeVerticalBold
 							size={18}
 							className="hover:text-text hover:cursor-pointer"
 							onClick={() => {
@@ -171,35 +183,15 @@ export default function EventDetails({
 									className="w-7/10 inline-flex justify-between items-center"
 								>
 									<ProfileLine status user={reg.user} />
-									<select
-										name="eventRoleId"
-										className="bg-surface border-border rounded-md text-text font-medium focus:ring-accent h-fit"
-										defaultValue={
-											event.eventRoles.find(
-												(er) => er.name === reg.role,
-											)?.id
-										}
-										onChange={(ev) => {
-											void registrationFetcher.submit(
-												JSON.stringify({
-													eventRoleId:
-														ev.target.value,
-													userId: user.id,
-												}),
-												{
-													method: "PATCH",
-													action: `/events/${event.id}/registration`,
-													encType: "application/json",
-												},
-											);
-										}}
-									>
-										{event.eventRoles.map((er) => (
-											<option key={er.id} value={er.id}>
-												{er.name}
-											</option>
-										))}
-									</select>
+									{Boolean(
+										user.role.permission &
+										PermEnum.HandleEvent,
+									) && (
+										<RoleChange
+											registration={reg}
+											event={event}
+										/>
+									)}
 								</div>
 							))}
 						</Modal>

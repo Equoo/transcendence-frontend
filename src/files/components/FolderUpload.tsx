@@ -5,6 +5,7 @@ import { useFetcher } from "react-router";
 import CheckButton from "@/components/Button/CheckButton";
 import { Field } from "@/components/Input/Field";
 import { Input } from "@/components/Input/Input";
+import { Select } from "@/components/Input/Select";
 import Modal from "@/components/Modal/Modal";
 
 import { APIError, type ValidationErrors } from "../../api/problem_detail";
@@ -67,18 +68,15 @@ export default function FolderUpload({
 					errors={errors}
 				/>
 				<Field name="Folder" label={t("files.folder")} required>
-					<select
+					<Select
 						name="Folder"
-						required
 						defaultValue={currentPath}
-						className="w-full bg-surface border rounded-md border-border2 focus:border-accent px-2 py-1 font-main text-text"
-					>
-						{destinations.map((folder) => (
-							<option key={folder} value={folder}>
-								{folder}
-							</option>
-						))}
-					</select>
+						className="w-full"
+						options={destinations.map((folder) => ({
+							value: folder,
+							label: folder,
+						}))}
+					/>
 				</Field>
 				<CheckButton
 					type="submit"

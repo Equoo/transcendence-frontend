@@ -2,6 +2,8 @@ import { type ComponentProps, type JSX, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useFetcher } from "react-router";
 
+import { Select } from "@/components/Input/Select";
+
 import CheckButton from "../../components/Button/CheckButton";
 import Modal from "../../components/Modal/Modal";
 import type { EventSummary } from "../api/events.api";
@@ -67,19 +69,16 @@ export default function EventRegisterBtn({
 						<p className="text-muted font-main text-wrap font-light w-4/5 text-sm">
 							{t("events.registerHint")}
 						</p>
-						<select
+						<Select
 							name="eventRoleId"
-							className="bg-surface border-border rounded-md text-text font-medium focus:ring-accent"
 							defaultValue={
 								eventRoles.find((er) => er.name === "Any")?.id
 							}
-						>
-							{eventRoles.map((er) => (
-								<option key={er.id} value={er.id}>
-									{er.name}
-								</option>
-							))}
-						</select>
+							options={eventRoles.map((er) => ({
+								value: er.id,
+								label: er.name,
+							}))}
+						/>
 						<CheckButton type="submit">
 							{t("common.ok")}
 						</CheckButton>

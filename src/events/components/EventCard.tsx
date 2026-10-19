@@ -169,15 +169,8 @@ export default function EventCard({
 						</Tooltip>
 					</div>
 				</div>
-
 				<div className="h-6 min-w-0">
-					{event.tags.length > 0 ? (
-						<EventTags tags={event.tags} />
-					) : (
-						<span className="text-muted text-xs italic leading-6">
-							No tags
-						</span>
-					)}
+					<EventTags tags={event.tags} />
 				</div>
 			</div>
 
