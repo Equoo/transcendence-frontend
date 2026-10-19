@@ -125,6 +125,8 @@ export async function userChangePassword(
 
 export async function userLogout(): Promise<Response> {
 	const res = await request("/api/auth/logout");
+
+	window.location.assign("/login");
 	const activity = useActivity.getState();
 	await activity.setSelfActivity(ActivityEnum.Offline);
 	return res;
