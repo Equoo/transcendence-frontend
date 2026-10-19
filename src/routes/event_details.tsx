@@ -170,11 +170,13 @@ export default function EventDetails({
 					</span>
 					{showRegistrations && (
 						<Modal
-							title="Registered Users"
+							title={t("eventDetails.registeredUsers")}
 							onClose={() => {
 								setShowRegistrations(false);
 							}}
 						>
+							{event.registeredCount === 0 &&
+								t("eventDetails.noRegistrations")}
 							{event.registrations.map((reg) => (
 								<div
 									key={reg.user.id}

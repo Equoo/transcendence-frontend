@@ -1,4 +1,5 @@
 import type { JSX } from "react/jsx-runtime";
+import { useTranslation } from "react-i18next";
 import { useFetcher } from "react-router";
 import { toast } from "react-toastify";
 
@@ -16,6 +17,8 @@ export default function RoleChange({
 	registration: Registration;
 	event: EventData;
 }): JSX.Element {
+	// eslint-disable-next-line id-length
+	const { t } = useTranslation();
 	const fetcher = useFetcher();
 
 	return (
@@ -44,7 +47,10 @@ export default function RoleChange({
 					)
 					.then(() => {
 						toast.success(
-							`Succesfully updated ${registration.user.userName} to ${role?.name}`,
+							t("eventDetails.roleChangeSuccess", {
+								name: registration.user.userName,
+								role: role?.name,
+							}),
 							{ autoClose: 2000 },
 						);
 					});
