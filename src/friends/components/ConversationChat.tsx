@@ -13,6 +13,7 @@ import { conversationTitle, isGroup } from "../utils/friends.util";
 import ActivityLabel from "./ActivityLabel";
 import BackToList, { HEADER_PADDING } from "./BackToList";
 import ConversationAvatar from "./ConversationAvatar";
+import { ConversationChatSkeleton } from "./Skeletons";
 
 function DirectActions({ conv }: { conv: Conversation }): JSX.Element | null {
 	const [other] = conv.recipients;
@@ -85,7 +86,7 @@ export default function ConversationChat({ chatId }: { chatId: string }): JSX.El
 	const { data: rels } = useRelationships();
 
 	if (isPending) {
-		return <p className="text-muted text-sm text-center py-10 w-full">Loading conversation...</p>;
+		return <ConversationChatSkeleton />;
 	}
 	if (error) {
 		return (

@@ -2,7 +2,6 @@ import type { JSX } from "react";
 import { PiArrowLeft } from "react-icons/pi";
 import { Link } from "react-router";
 
-/** Back to the conversation list, only shown when the list and the content can't fit side by side. */
 export default function BackToList(): JSX.Element {
 	return (
 		<Link
@@ -15,5 +14,4 @@ export default function BackToList(): JSX.Element {
 	);
 }
 
-/** Header padding leaving room for the main sidebar's drawer button on phones. */
 export const HEADER_PADDING = "pl-12 pr-4 sm:px-5.5";

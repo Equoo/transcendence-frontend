@@ -1,4 +1,4 @@
-import type { JSX } from "react";
+import type { JSX, ReactNode } from "react";
 
 import Promisable from "@/components/Promisable";
 
@@ -50,10 +50,12 @@ export default function EventList({
 	previousEvents,
 	events,
 	skeletonCount = 3,
+	empty,
 }: {
 	previousEvents?: EventSummary[];
 	events: Promise<EventSummary[]> | EventSummary[];
 	skeletonCount?: number;
+	empty?: ReactNode;
 }): JSX.Element {
 	return (
 		<div className=" w-full flex shrink-0 px-4 py-6 gap-6 overflow-x-scroll items-stretch justify-center-safe">
@@ -62,10 +64,12 @@ export default function EventList({
 				skeleton={<EventListSkeleton count={skeletonCount} />}
 				cached_data={previousEvents}
 			>
-				{(data) =>
-					data.map((event) => (
-						<EventCard key={event.id} event={event} />
-					))
+				{(data): ReactNode =>
+					data.length === 0 && empty
+						? empty
+						: data.map((event) => (
+							<EventCard key={event.id} event={event} />
+						))
 				}
 			</Promisable>
 		</div>

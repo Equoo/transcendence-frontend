@@ -12,6 +12,7 @@ import { conversationTitle, lastActivity, matchesSearch } from "../utils/friends
 import NewConversationModal from "./NewConversationModal";
 import { SideBarChatItem } from "./SideBarChatItem";
 import { SideBarItem } from "./SideBarItem";
+import { ConversationListSkeleton } from "./Skeletons";
 
 export function ConversationSideBar({ className = "" }: { className?: string }): JSX.Element {
 	const containerRef = useRef(null);
@@ -74,7 +75,7 @@ export function ConversationSideBar({ className = "" }: { className?: string }):
 					</button>
 				</div>
 				<ul className="flex-1 overflow-hidden overflow-y-auto w-full" onScroll={onScroll} ref={containerRef}>
-					{isPending && <li className="px-2 text-[13px]">Loading...</li>}
+					{isPending && <ConversationListSkeleton />}
 					{error && <li className="px-2 text-[13px] text-error">Couldn't load conversations.</li>}
 					{!isPending && !error && convs.length === 0 && (
 						<li className="px-2 text-[13px]">{search ? "No match." : "No conversation yet."}</li>

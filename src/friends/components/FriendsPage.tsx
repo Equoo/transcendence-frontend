@@ -1,30 +1,27 @@
-import { type JSX, type ReactNode, useState } from "react";
-import { PiCaretRight, PiChatCircleDots, PiUserPlus, PiUsers } from "react-icons/pi";
+import { type JSX, useState } from "react";
+import { PiChatCircleDots, PiUserPlus, PiUsers } from "react-icons/pi";
 import { Link, NavLink } from "react-router";
 
 import CheckButton from "@/components/Button/CheckButton";
 import IconBtn from "@/components/Button/IconBtn";
 import { SearchBar } from "@/components/Input/Search";
-import ProfilePic from "@/components/Profile/ProfilePic";
 
 import { type Relationship, RelationshipState } from "../api/relationship.api";
-import { useConversations, useStartConversation } from "../hooks/useConversations";
 import { useRelationships } from "../hooks/useRelationships";
-import {
-	conversationTitle,
-	isBlocked,
-	isFriend,
-	isPending,
-	lastActivity,
-	matchesSearch,
-	relationName,
-} from "../utils/friends.util";
+import { isBlocked, isFriend, matchesSearch, relationName } from "../utils/friends.util";
 import { useIsOnline } from "./ActivityLabel";
 import AddFriendModal from "./AddFriendModal";
 import BackToList, { HEADER_PADDING } from "./BackToList";
-import ConversationAvatar from "./ConversationAvatar";
 import FriendRow from "./FriendRow";
+import {
+	EmptyState,
+	OnlineFriends,
+	PendingRequestsBanner,
+	RecentConversations,
+	SectionTitle,
+} from "./FriendsWidgets";
 import NewConversationModal from "./NewConversationModal";
+import { FriendListSkeleton } from "./Skeletons";
 
 export type FriendsFilter = "all" | "online" | "pending" | "blocked";
 
@@ -34,14 +31,6 @@ const TABS: [FriendsFilter, string][] = [
 	["pending", "Pending"],
 	["blocked", "Blocked"],
 ];
-
-function SectionTitle({ children }: { children: ReactNode }): JSX.Element {
-	return (
-		<h3 className="px-1 pb-2 text-[11px] text-muted font-bold tracking-wider uppercase">
-			{children}
-		</h3>
-	);
-}
 
 function FriendsHeader(): JSX.Element {
 	const { data: rels } = useRelationships();
@@ -56,8 +45,7 @@ function FriendsHeader(): JSX.Element {
 				Friends
 			</Link>
 			<span className="hidden xl:block w-px h-5 bg-border mx-1" />
-			{/* Own scrollable row until the header is wide enough to hold everything */}
-			<nav className="order-last w-full flex gap-1 overflow-x-auto xl:order-none xl:w-auto">
+			<nav className="order-last w-full flex gap-1 overflow-x-auto xl:order-0 xl:w-auto">
 				{TABS.map(([to, label]) => (
 					<NavLink
 						key={to}
@@ -93,18 +81,6 @@ function FriendsHeader(): JSX.Element {
 	);
 }
 
-function EmptyState({ title, children }: { title: string; children?: ReactNode }): JSX.Element {
-	return (
-		<div className="flex flex-col items-center gap-2 py-16 text-center">
-			<div className="flex items-center justify-center size-14 rounded-2xl bg-accent-soft text-accent mb-2">
-				<PiUsers size={28} />
-			</div>
-			<h2 className="font-head font-semibold text-lg text-text">{title}</h2>
-			{children && <p className="text-sm text-text2 max-w-sm">{children}</p>}
-		</div>
-	);
-}
-
 function RelationList({ title, rels }: { title: string; rels: Relationship[] }): JSX.Element | null {
 	if (rels.length === 0) { return null; }
 	return (
@@ -123,7 +99,7 @@ function FriendsList({ filter }: { filter: FriendsFilter }): JSX.Element {
 	const [search, setSearch] = useState("");
 
 	if (loading) {
-		return <p className="text-muted text-sm text-center py-10">Loading friends...</p>;
+		return <FriendListSkeleton />;
 	}
 	if (error) {
 		return <EmptyState title="Couldn't load your friends">{error.message}</EmptyState>;
@@ -174,109 +150,12 @@ function FriendsList({ filter }: { filter: FriendsFilter }): JSX.Element {
 	);
 }
 
-function OnlineFriendCard({ rel }: { rel: Relationship }): JSX.Element {
-	const startConv = useStartConversation();
-	return (
-		<button
-			type="button"
-			disabled={startConv.isPending}
-			onClick={() => { startConv.mutate({ recipients: [rel.user.id] }); }}
-			className="flex flex-col items-center gap-2 p-4 rounded-base border border-border bg-surface cursor-pointer
-				hover:-translate-y-0.5 hover:shadow-main duration-120"
-		>
-			<ProfilePic user={rel.user} size={2} status />
-			<span className="text-text text-[14px] font-semibold truncate max-w-full">{relationName(rel)}</span>
-		</button>
-	);
-}
-
-function FriendsHome(): JSX.Element {
-	const { data: rels, isPending: loading } = useRelationships();
-	const { data: convPages } = useConversations();
-	const isOnline = useIsOnline();
-
-	if (loading) {
-		return <p className="text-muted text-sm text-center py-10">Loading...</p>;
-	}
-
-	const friends = (rels ?? []).filter(isFriend);
-	const online = friends.filter((rel) => isOnline(rel.user.id));
-	const incoming = (rels ?? []).filter((rel) => rel.type === RelationshipState.PendingResponse);
-	const outgoing = (rels ?? []).filter(isPending).length - incoming.length;
-	const seen = new Set<string>();
-	const recent = (convPages?.pages.flat() ?? [])
-		.filter((cn) => !seen.has(cn.id) && Boolean(seen.add(cn.id)))
-		.toSorted((lhs, rhs) => lastActivity(rhs) - lastActivity(lhs))
-		.slice(0, 6);
-
+export function FriendsHome(): JSX.Element {
 	return (
 		<div className="flex flex-col gap-8">
-			{incoming.length > 0 && (
-				<Link
-					to="/messages/pending"
-					className="flex items-center gap-4 p-4 rounded-base border border-accent/30 bg-accent-soft hover:brightness-98 duration-120"
-				>
-					<div className="flex -space-x-3">
-						{incoming.slice(0, 3).map((rel, idx) => (
-							<ProfilePic key={rel.id} user={rel.user} size={1} idx={3 - idx} />
-						))}
-					</div>
-					<div className="flex flex-col flex-1">
-						<span className="text-text font-semibold">
-							{incoming.length} pending friend request{incoming.length > 1 ? "s" : ""}
-						</span>
-						<span className="text-text2 text-sm">
-							{incoming.slice(0, 3).map(relationName).join(", ")}
-							{incoming.length > 3 && ` and ${incoming.length - 3} more`}
-						</span>
-					</div>
-					<PiCaretRight className="text-text2" />
-				</Link>
-			)}
-
-			{friends.length === 0 ? (
-				<EmptyState title="Welcome to your private space">
-					Add friends to chat with them directly or create small groups.
-					{outgoing > 0 && ` You have ${outgoing} request${outgoing > 1 ? "s" : ""} waiting for an answer.`}
-				</EmptyState>
-			) : (
-				<section>
-					<SectionTitle>Online now — {online.length}</SectionTitle>
-					{online.length === 0 ? (
-						<p className="text-sm text-text2 px-1">None of your {friends.length} friends are online right now.</p>
-					) : (
-						<div className="grid grid-cols-[repeat(auto-fill,minmax(130px,1fr))] gap-3">
-							{online.map((rel) => <OnlineFriendCard key={rel.id} rel={rel} />)}
-						</div>
-					)}
-				</section>
-			)}
-
-			{recent.length > 0 && (
-				<section>
-					<SectionTitle>Recent conversations</SectionTitle>
-					<div className="grid grid-cols-[repeat(auto-fill,minmax(240px,1fr))] gap-3">
-						{recent.map((conv) => (
-							<Link
-								key={conv.id}
-								to={`/messages/${conv.id}`}
-								className="flex items-center gap-3 p-3 rounded-base border border-border bg-surface
-									hover:-translate-y-0.5 hover:shadow-main duration-120"
-							>
-								<ConversationAvatar conv={conv} />
-								<div className="flex flex-col min-w-0">
-									<span className="text-text text-[14px] font-semibold truncate">{conversationTitle(conv, rels)}</span>
-									<span className="text-muted text-[13px] truncate">
-										{conv.lastMessage
-											? `${conv.lastMessage.sender.userName}: ${conv.lastMessage.content}`
-											: "No messages yet"}
-									</span>
-								</div>
-							</Link>
-						))}
-					</div>
-				</section>
-			)}
+			<PendingRequestsBanner />
+			<OnlineFriends />
+			<RecentConversations />
 		</div>
 	);
 }
