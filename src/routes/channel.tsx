@@ -60,13 +60,10 @@ export default function ChannelRoute({
 				!isPending && (
 					<div className="absolute flex flex-col items-center top-1/2 left-1/2 -translate-1/2">
 						<h1 className="font-bold text-6xl text-text2">
-							t("channel.notFoundHeading")
+							{t("channel.notFoundHeading")}
 						</h1>
-						<h2 className="font-bold text-3xl text-text2">
-							t("channel.notFoundHint")
-						</h2>
 						<p className="text-text2">
-							May be deleted or never exist.
+							{t("channel.notFoundHint")}
 						</p>
 					</div>
 				)

@@ -57,7 +57,7 @@ export async function clientAction({ request }: Route.ClientActionArgs) {
 		}
 	} catch (err) {
 		if (err instanceof APIError) {
-			if (err.problem.status > 400) {
+			if (err.problem.status === 400) {
 				return data(err);
 			}
 		}

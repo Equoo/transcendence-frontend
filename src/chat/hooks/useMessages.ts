@@ -24,5 +24,7 @@ export function useMessages(channelId: string) {
 		getNextPageParam: (lastPage) => (lastPage.length === 0 ? null : lastPage[0].sentAt),
 		select: toMessages,
 		staleTime: Infinity,
+		// Only a failed first load reaches the ErrorBoundary, older pages are toasted
+		throwOnError: (__, query) => typeof query.state.data === "undefined",
 	});
 }

@@ -9,6 +9,7 @@ import CheckButton from "@/components/Button/CheckButton";
 import IconBtn from "@/components/Button/IconBtn";
 import Modal from "@/components/Modal/Modal";
 import { useUser } from "@/users/hooks/users";
+import { toastError } from "@/utils/error.util";
 
 import { deleteMessage, type Message } from "../../api/chat.api";
 import { findMessage, removeMessage } from "../../cache/chat.cache";
@@ -183,12 +184,7 @@ function MessageActionBar({
 											actionBar.msg.id,
 										);
 									})
-									.catch(() => {
-										// NOTE: replace by good error handling
-										console.error(
-											"Removing message failed",
-										);
-									});
+									.catch(toastError);
 								setShowRemoveForm(false);
 							}}
 						>

@@ -1,20 +1,7 @@
-import { toast } from "react-toastify";
-
-import { APIError } from "@/api/problem_detail";
-import Alert from "@/components/Alert";
 import type { User } from "@/users/api/users";
 
 import type { Conversation } from "../api/conversations.api";
 import { type Relationship, RelationshipState } from "../api/relationship.api";
-
-export function toastError(err: Error): void {
-	toast(Alert, {
-		type: "error",
-		data: err instanceof APIError
-			? { title: err.problem.title, detail: err.problem.detail }
-			: { title: "Something went wrong", detail: err.message },
-	});
-}
 
 export function relationName(rel: Relationship): string {
 	return rel.nickname ?? rel.user.userName;

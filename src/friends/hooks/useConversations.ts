@@ -1,9 +1,10 @@
 import { useInfiniteQuery, useMutation, type UseMutationResult, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router';
 
+import { toastError } from '@/utils/error.util';
+
 import { type Conversation, type ConversationBody, createConv, deleteConv, fetchConv, fetchConvs } from '../api/conversations.api';
 import { addConversation, type ConversationPages, friendsKeys, removeConversation } from '../cache/friends.cache';
-import { toastError } from '../utils/friends.util';
 
 const PAGE_SIZE = 10;
 

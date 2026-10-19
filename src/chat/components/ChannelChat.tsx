@@ -3,6 +3,7 @@ import { type JSX, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { useUser } from "@/users/hooks/users";
+import { toastError } from "@/utils/error.util";
 
 import {
 	type ChannelBase,
@@ -47,9 +48,13 @@ function ChannelChat({
 				content: text,
 				editAt: new Date(),
 			});
-			putMessage(channel.id, target.id, text).catch(() => {
-				// eslint-disable-next-line no-warning-comments
-				// TODO: error
+			putMessage(channel.id, target.id, text).catch((err: unknown) => {
+				updateMessage(qc, channel.id, {
+					id: target.id,
+					content: target.content,
+					editAt: target.editAt,
+				});
+				toastError(err as Error);
 			});
 
 			return;
@@ -76,11 +81,12 @@ function ChannelChat({
 					message: { ...normalizeMessage(msg), status: "sended" },
 				});
 			})
-			.catch(() => {
+			.catch((err: unknown) => {
 				updateMessage(qc, channel.id, {
 					id: pendingId,
 					status: "error",
 				});
+				toastError(err as Error);
 			});
 
 		listRef.current?.scrollBack();
