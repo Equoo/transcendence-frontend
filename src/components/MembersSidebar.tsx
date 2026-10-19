@@ -59,7 +59,9 @@ function MemberRow({ user, name, isSelf, offline }: {
 	);
 }
 
-function MemberList({ users, search }: { users: User[]; search: string }): JSX.Element {
+function MemberList({ users, search }: {
+	users: User[]; search: string;
+}): JSX.Element {
 	// eslint-disable-next-line id-length
 	const { t } = useTranslation();
 	const activity = useActivity();
@@ -117,9 +119,10 @@ function MembersCount({ users }: { users: User[] }): JSX.Element {
 	);
 }
 
-export default function MembersSidebar({ users, open, onClose }: {
+export default function MembersSidebar({ users, open, filter, onClose }: {
 	users: Promise<User[]>;
 	open: boolean;
+	filter?: (user: User) => boolean;
 	onClose: () => void;
 }): JSX.Element {
 	// eslint-disable-next-line id-length
@@ -145,7 +148,7 @@ export default function MembersSidebar({ users, open, onClose }: {
 				<div className="flex flex-col min-w-0 flex-1">
 					<h2 className="font-head font-semibold text-[17px] text-text">{t("home.members")}</h2>
 					<Promisable data={users} skeleton={<span className="h-3 my-1 w-20 rounded bg-border animate-pulse" />}>
-						{(data) => <MembersCount users={data} />}
+						{(data) => <MembersCount users={filter ? data.filter((us) => filter(us)) : data} />}
 					</Promisable>
 				</div>
 				<IconBtn discrete icon={PiX} title={t("home.closeMembers")} onClick={onClose} />
@@ -161,7 +164,7 @@ export default function MembersSidebar({ users, open, onClose }: {
 			</div>
 			<div className="flex-1 min-h-0 overflow-y-auto px-2 pb-4">
 				<Promisable data={users} skeleton={<ul><ConversationListSkeleton count={8} /></ul>}>
-					{(data) => <MemberList users={data} search={search} />}
+					{(data) => <MemberList users={filter ? data.filter((us) => filter(us)) : data} search={search} />}
 				</Promisable>
 			</div>
 		</aside>

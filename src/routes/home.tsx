@@ -4,12 +4,12 @@ import { PiCalendarDots, PiChatsCircle, PiHouse, PiUsers } from "react-icons/pi"
 import { Link } from "react-router";
 
 import { PermEnum } from "@/admin/api/roles";
+import MembersSidebar, { useOnlineCount } from "@/components/MembersSidebar";
 import Promisable from "@/components/Promisable";
 import { HEADER_PADDING } from "@/friends/components/BackToList";
 import { OnlineFriends, PendingRequestsBanner, RecentConversations } from "@/friends/components/FriendsWidgets";
 import DashboardPanel from "@/home/components/DashboardPanel";
 import DashboardStats from "@/home/components/DashboardStats";
-import MembersSidebar, { useOnlineCount } from "@/home/components/MembersSidebar";
 import RecentFilesPanel from "@/home/components/RecentFilesPanel";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 
