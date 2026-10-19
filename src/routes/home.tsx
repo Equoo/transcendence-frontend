@@ -78,9 +78,11 @@ function OnlineUsers({ users }: { users: Promise<User[]> }): JSX.Element {
 						title={t("home.usersOnline")}
 						onClose={() => { setShowOnline(false); }}
 					>
-						{data
-							.filter((us) => activity.getActivity(us.id) !== ActivityEnum.Offline)
-							.map((us) => <ProfileLine status user={us} key={us.id} />)}
+						<div className="w-full overflow-y-auto h-full">
+							{data
+								.filter((us) => activity.getActivity(us.id) !== ActivityEnum.Offline)
+								.map((us) => <ProfileLine status user={us} key={us.id} size={1} />)}
+						</div>
 					</Modal>
 				)}
 				<button
