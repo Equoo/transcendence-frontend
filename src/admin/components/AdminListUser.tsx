@@ -1,4 +1,4 @@
-import { type ComponentProps, type JSX, useEffect, useState } from "react";
+import { type ComponentProps, type JSX, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useFetcher } from "react-router";
 
@@ -31,17 +31,6 @@ export default function ListUsers({
 		useState(false);
 	const fetcher = useFetcher();
 
-	useEffect(() => {
-		if (fetcher.data) {
-			// eslint-disable-next-line @eslint-react/set-state-in-effect
-			setShowChangePass(false);
-			// eslint-disable-next-line @eslint-react/set-state-in-effect
-			setShowConfirmationDelete(false);
-			// eslint-disable-next-line @eslint-react/set-state-in-effect
-			setShowConfirmationDisconnect(false);
-		}
-	}, [fetcher.data]);
-
 	return (
 		<tr className="text-sm text-body  border-b rounded-base border-border">
 			<td>
@@ -62,7 +51,6 @@ export default function ListUsers({
 						method="DELETE"
 						desc={t("admin.deleteUserDesc")}
 						id={user.id}
-						fetcher={fetcher}
 					></ChoiceModal>
 				)}
 				{showConfirmationDisconnect && (
@@ -77,7 +65,6 @@ export default function ListUsers({
 						method="DELETE"
 						desc={t("admin.reloginDesc")}
 						id={user.id}
-						fetcher={fetcher}
 					></ChoiceModal>
 				)}
 				{showChangePass && (
@@ -98,7 +85,6 @@ export default function ListUsers({
 						placeholder={t("profile.newPassword")}
 						minInput={8}
 						maxInput={256}
-						fetcher={fetcher}
 					></ChangeModal>
 				)}
 				{user.userName}

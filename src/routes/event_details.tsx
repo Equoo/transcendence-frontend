@@ -6,7 +6,7 @@ import {
 	PiDotsThreeVerticalBold,
 	PiTrash,
 } from "react-icons/pi";
-import { Link, useFetcher, useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 
 import ChannelChat from "@/chat/components/ChannelChat";
 import { useChannel } from "@/chat/hooks/useChannels";
@@ -23,7 +23,6 @@ import { fetchEventRoles } from "../events/api/event_roles.api";
 import { fetchEvent } from "../events/api/events.api";
 import EventForm from "../events/components/EventForm";
 import EventRegisterBtn from "../events/components/EventRegisterBtn";
-import type { clientAction as eventAction } from "../events/routes/events.route";
 import { fetchFiles } from "../files/api/files.api";
 import { UserContext } from "../users/api/users";
 import type { Route } from "./+types/event_details";
@@ -48,7 +47,6 @@ export default function EventDetails({
 }: Route.ComponentProps): JSX.Element {
 	// eslint-disable-next-line id-length
 	const { t } = useTranslation();
-	const eventFetcher = useFetcher<typeof eventAction>();
 	const navigate = useNavigate();
 	const dateString: string = new Date(event.date).toLocaleString([], {
 		hour: "2-digit",
@@ -74,7 +72,6 @@ export default function EventDetails({
 						name: event.name,
 					})}
 					desc={t("common.irreversible")}
-					fetcher={eventFetcher}
 				/>
 			)}
 			<div className="flex px-4 py-4 gap-4 items-center border-b border-border">

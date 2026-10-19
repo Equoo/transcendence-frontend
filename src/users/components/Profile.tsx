@@ -41,11 +41,7 @@ export default function Profile({
 	useEffect(() => {
 		if (fetcher.data) {
 			// eslint-disable-next-line @eslint-react/set-state-in-effect
-			setShowDelete(false);
-			// eslint-disable-next-line @eslint-react/set-state-in-effect
 			setShowPassword(false);
-			// eslint-disable-next-line @eslint-react/set-state-in-effect
-			setShowUsername(false);
 			// eslint-disable-next-line @eslint-react/set-state-in-effect
 			setShowLanguage(false);
 		}
@@ -106,7 +102,6 @@ export default function Profile({
 					desc={t("common.irreversible")}
 					action="/me/delete"
 					method="DELETE"
-					fetcher={fetcher}
 				></ChoiceModal>
 			)}
 
@@ -123,7 +118,6 @@ export default function Profile({
 					placeholder={t("profile.newUsername")}
 					minInput={1}
 					maxInput={20}
-					fetcher={fetcher}
 				></ChangeModal>
 			)}
 

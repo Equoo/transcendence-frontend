@@ -71,6 +71,7 @@ export default {
 			eventDetails: {
 				unregisterUserTitle: "Remove {{name}} from the event",
 				unregisterUser: "Remove from the event",
+				unregisterUserSuccess: "{{name}} has been removed from {{event}}",
 				deleteTitle: "Delete the event {{name}}",
 				when: "WHEN",
 				where: "WHERE",

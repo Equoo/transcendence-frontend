@@ -73,6 +73,7 @@ export default {
 			eventDetails: {
 				unregisterUserTitle: "Désinscrire {{name}} de l'événement",
 				unregisterUser: "Désinscrire de l'événement",
+				unregisterUserSuccess: "{{name}} a été désinscrit de {{event}}",
 				deleteTitle: "Supprimer l'événement {{name}}",
 				when: "QUAND",
 				where: "OÙ",

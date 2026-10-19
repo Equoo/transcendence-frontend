@@ -1,9 +1,8 @@
 /* eslint-disable @eslint-react/no-array-index-key */
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import type { JSX } from "react/jsx-runtime";
 import { useTranslation } from "react-i18next";
 import { TbPencil, TbTrash } from "react-icons/tb";
-import { useFetcher } from "react-router";
 
 import ChangeModal from "@/components/Modal/ChangeModal";
 import ChoiceModal from "@/components/Modal/ChoiceModal";
@@ -21,17 +20,6 @@ export default function ListRoles({ role }: { role: Role }): JSX.Element {
 	const { t } = useTranslation();
 	const [showConfirmation, setShowConfirmation] = useState(false);
 	const [showChangeRole, setShowChangeRole] = useState(false);
-
-	const fetcher = useFetcher();
-
-	useEffect(() => {
-		if (fetcher.data) {
-			// eslint-disable-next-line @eslint-react/set-state-in-effect
-			setShowConfirmation(false);
-			// eslint-disable-next-line @eslint-react/set-state-in-effect
-			setShowChangeRole(false);
-		}
-	}, [fetcher.data]);
 
 	const checkboxes: Perm[] = [];
 
@@ -59,7 +47,6 @@ export default function ListRoles({ role }: { role: Role }): JSX.Element {
 						placeholder={t("common.name")}
 						minInput={1}
 						maxInput={20}
-						fetcher={fetcher}
 						id={role.id}
 					></ChangeModal>
 				)}
@@ -72,7 +59,6 @@ export default function ListRoles({ role }: { role: Role }): JSX.Element {
 						desc={t("admin.deleteRoleDesc")}
 						action="/roles/deleteRole"
 						method="DELETE"
-						fetcher={fetcher}
 						id={role.id}
 					></ChoiceModal>
 				)}
