@@ -10,7 +10,6 @@ import { Link, useFetcher, useNavigate } from "react-router";
 
 import ChannelChat from "@/chat/components/ChannelChat";
 import { useChannel } from "@/chat/hooks/useChannels";
-import CheckButton from "@/components/Button/CheckButton";
 import ChoiceModal from "@/components/Modal/ChoiceModal";
 import Modal from "@/components/Modal/Modal";
 import ProfileLine from "@/components/Profile/ProfileLine";
@@ -114,14 +113,15 @@ export default function EventDetails({
 						</>
 					)}
 				</div>
+				<div className="ml-auto"></div>
 				{event.isRegistered && (
-					<CheckButton className="ml-auto">
-						{
-							event.registrations.find(
-								(re) => re.user.id === user.id,
-							)?.role
-						}
-					</CheckButton>
+					<RoleChange
+						// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+						registration={event.registrations.find(
+							(reg) => reg.user.id === user.id,
+						)!}
+						event={event}
+					/>
 				)}
 				<EventRegisterBtn event={event} className="shrink-0" />
 			</div>

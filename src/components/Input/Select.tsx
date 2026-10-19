@@ -205,7 +205,7 @@ export function Select({
 				id={`${id}-list`}
 				role="listbox"
 				popover="manual"
-				className="fixed inset-auto m-0 max-h-64 overflow-y-auto p-1 bg-surface border border-border rounded-lg shadow-main font-main text-[15px] text-text animate-in"
+				className="fixed inset-auto m-0 max-h-64 overflow-y-auto py-1.5 px-2.5 bg-surface border border-border rounded-lg shadow-main font-main text-[15px] text-text animate-in"
 			>
 				{options.map((opt, idx) => (
 					<li
