@@ -6,6 +6,7 @@ import {
 	registerToEvent,
 	toRegistrationInput,
 	unregisterFromEvent,
+	unregisterUserFromEvent,
 } from "../api/registrations.api";
 import type { Route } from "./+types/registrations.route";
 
@@ -26,6 +27,8 @@ export async function clientAction({
 			params.eventId,
 			(await request.json()) as PatchRegistrationInput,
 		);
+	} else if (params.userId) {
+		res = await unregisterUserFromEvent(params.eventId, params.userId);
 	} else {
 		res = await unregisterFromEvent(params.eventId);
 	}

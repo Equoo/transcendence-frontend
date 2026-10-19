@@ -67,6 +67,8 @@ export default {
 				},
 			},
 			eventDetails: {
+				unregisterUserTitle: "將 {{name}} 從活動中移除",
+				unregisterUser: "從活動中移除",
 				deleteTitle: "刪除活動 {{name}}",
 				when: "時間",
 				where: "地點",

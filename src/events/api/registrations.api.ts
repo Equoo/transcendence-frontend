@@ -53,3 +53,10 @@ export async function patchRegistration(
 export async function unregisterFromEvent(eventId: string): Promise<Response> {
 	return request(`/api/events/${eventId}/registration`, "DELETE");
 }
+
+export async function unregisterUserFromEvent(
+	eventId: string,
+	userId: string,
+): Promise<Response> {
+	return request(`/api/events/${eventId}/registration/${userId}`, "DELETE");
+}

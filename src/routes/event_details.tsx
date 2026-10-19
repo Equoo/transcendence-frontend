@@ -15,6 +15,7 @@ import Modal from "@/components/Modal/Modal";
 import ProfileLine from "@/components/Profile/ProfileLine";
 import ProfilePic from "@/components/Profile/ProfilePic";
 import RoleChange from "@/events/components/RoleChange";
+import UnregisterUser from "@/events/components/UnregisterUser";
 
 import { PermEnum } from "../admin/api/roles";
 import Badge from "../components/Badge";
@@ -187,10 +188,16 @@ export default function EventDetails({
 										user.role.permission &
 										PermEnum.HandleEvent,
 									) && (
-										<RoleChange
-											registration={reg}
-											event={event}
-										/>
+										<div className="inline-flex items-center gap-3">
+											<RoleChange
+												registration={reg}
+												event={event}
+											/>
+											<UnregisterUser
+												registration={reg}
+												event={event}
+											/>
+										</div>
 									)}
 								</div>
 							))}
