@@ -21,7 +21,7 @@ import {
 	SectionTitle,
 } from "./FriendsWidgets";
 import NewConversationModal from "./NewConversationModal";
-import { FriendListSkeleton } from "./Skeletons";
+import { FriendListSkeleton, OnlineFriendsSkeleton } from "./Skeletons";
 
 export type FriendsFilter = "all" | "online" | "pending" | "blocked";
 
@@ -151,11 +151,25 @@ function FriendsList({ filter }: { filter: FriendsFilter }): JSX.Element {
 }
 
 export function FriendsHome(): JSX.Element {
+	const { data: rels, isPending } = useRelationships();
+
+	if (isPending) { return <OnlineFriendsSkeleton />; }
+
+	const friends = (rels ?? []).filter(isFriend);
+	const outgoing = (rels ?? []).filter((rel) => rel.type === RelationshipState.PendingRequest).length;
+
 	return (
 		<div className="flex flex-col gap-8">
 			<PendingRequestsBanner />
-			<OnlineFriends />
-			<RecentConversations />
+			{friends.length === 0 ? (
+				<EmptyState title="Welcome to your private space">
+					Add friends to chat with them directly or create small groups.
+					{outgoing > 0 && ` You have ${outgoing} request${outgoing > 1 ? "s" : ""} waiting for an answer.`}
+				</EmptyState>
+			) : (<>
+				<OnlineFriends />
+				<RecentConversations />
+			</>)}
 		</div>
 	);
 }

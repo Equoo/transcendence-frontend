@@ -103,10 +103,11 @@ export function OnlineFriends({ limit }: { limit?: number }): JSX.Element {
 
 	if (friends.length === 0) {
 		return (
-			<EmptyState title="Welcome to your private space">
-				Add friends to chat with them directly or create small groups.
-				{outgoing > 0 && ` You have ${outgoing} request${outgoing > 1 ? "s" : ""} waiting for an answer.`}
-			</EmptyState>
+			<section>
+				<SectionTitle>ONLINE NOW</SectionTitle>
+				<p className="text-sm text-text2 px-1">Make you more friends and see them here later !</p>
+				<p className="text-sm text-text2 px-1">{outgoing > 0 && ` You have ${outgoing} request${outgoing > 1 ? "s" : ""} waiting for an answer.`}</p>
+			</section>
 		);
 	}
 	return (

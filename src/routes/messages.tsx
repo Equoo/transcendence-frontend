@@ -23,8 +23,6 @@ export default function Messages({
 }: Route.ComponentProps): JSX.Element {
 	const subpage = params.subpage ?? null;
 
-	// Below lg there is no room for both panes: /messages shows the list,
-	// any subpage shows its content (with a back button to the list).
 	return (
 		<div className="flex w-full h-full min-h-0 overflow-hidden">
 			<ConversationSideBar

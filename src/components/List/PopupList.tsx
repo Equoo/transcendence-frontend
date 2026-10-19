@@ -26,7 +26,7 @@ export default function PopupList({
 	return (
 		<ul
 			ref={clickOutsideRef}
-			className={`absolute p-2 rounded-md flex flex-col ${className}`}
+			className={`absolute p-2 rounded-md flex flex-col z-10 ${className}`}
 		>
 			{rows.map((row) => (
 				<li

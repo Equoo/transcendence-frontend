@@ -55,7 +55,23 @@ function OnlineUsers({ users }: { users: Promise<User[]> }): JSX.Element {
 	const activity = useActivity();
 
 	return (
-		<Promisable data={users}>
+		<Promisable data={users} skeleton={(<>
+			<button
+				type="button"
+				className="inline-flex items-center gap-2 font-medium text-sm text-good cursor-pointer whitespace-nowrap"
+			>
+				<span className="size-2 rounded-full bg-good" />
+				{t("home.onlineCount", {
+					online: "X",
+					total: "X",
+				})}
+			</button>
+			<IconBtn
+				discrete
+				icon={PiUsers}
+				title={t("home.usersOnline")}
+			/>
+		</>)}>
 			{(data) => (<>
 				{showOnline && (
 					<Modal
