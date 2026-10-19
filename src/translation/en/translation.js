@@ -204,7 +204,6 @@ export default {
 				sizeKb: "{{size}} KB",
 				sizeMb: "{{size}} MB",
 				newFolder: "New folder",
-				type: "Type",
 				size: "Size",
 				empty: "No files to display.",
 				cannotPreview: "Can't preview file",

@@ -53,7 +53,6 @@ export default function FileList({ files }: { files: AppFile[] }): JSX.Element {
 			<List
 				cols={[
 					{ id: t("common.name") },
-					{ id: t("files.type") },
 					{ id: t("files.size") },
 					{ id: t("common.actions"), pos: "text-right" },
 				]}

@@ -198,7 +198,6 @@ export default {
 				sizeKb: "{{size}} KB",
 				sizeMb: "{{size}} MB",
 				newFolder: "新增資料夾",
-				type: "類型",
 				size: "大小",
 				empty: "沒有可顯示的檔案。",
 				cannotPreview: "無法預覽此檔案",

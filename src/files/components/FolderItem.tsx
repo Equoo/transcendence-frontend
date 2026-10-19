@@ -1,8 +1,7 @@
 import type { JSX } from "react";
-import { useTranslation } from "react-i18next";
-import { FcFolder } from "react-icons/fc";
 
 import { ListAction, ListCell, ListRow } from "../../components/List/List";
+import { FolderIcon } from "./FileIcon";
 import ItemActions from "./ItemActions";
 
 export default function FolderItem({
@@ -16,8 +15,6 @@ export default function FolderItem({
 	parent?: string;
 	folders?: string[];
 }): JSX.Element {
-	// eslint-disable-next-line id-length
-	const { t } = useTranslation();
 	return (
 		<ListRow>
 			<ListCell rowHeader>
@@ -25,13 +22,12 @@ export default function FolderItem({
 					onClick={() => {
 						onClick(name);
 					}}
-					className="gap-2 whitespace-nowrap"
+					className="gap-3 whitespace-nowrap"
 				>
-					<FcFolder aria-hidden="true" />
+					<FolderIcon />
 					{name}
 				</ListAction>
 			</ListCell>
-			<ListCell>{t("files.folder")}</ListCell>
 			<ListCell>-</ListCell>
 			<ListCell>
 				{typeof parent === "string" && folders && (

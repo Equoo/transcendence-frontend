@@ -73,6 +73,30 @@ export function listFolders(files: AppFile[]): string[] {
 	);
 }
 
+export function splitFileName(name: string): {
+	folder: string;
+	baseName: string;
+} {
+	const slash = name.lastIndexOf("/");
+	return {
+		folder: name.slice(0, slash + 1),
+		baseName: name.slice(slash + 1),
+	};
+}
+
+export function getRecentFiles(files: AppFile[], limit: number): AppFile[] {
+	return files
+		.filter(
+			(file) =>
+				file.name.at(0) === "/" &&
+				file.name.at(file.name.length - 1) !== "/",
+		)
+		.toSorted((fileA, fileB) =>
+			fileB.lastUpdated.localeCompare(fileA.lastUpdated),
+		)
+		.slice(0, limit);
+}
+
 export async function renameFolder(
 	from: string,
 	to: string,

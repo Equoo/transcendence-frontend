@@ -210,7 +210,6 @@ export default {
 				sizeKb: "{{size}} Ko",
 				sizeMb: "{{size}} Mo",
 				newFolder: "Nouveau dossier",
-				type: "Type",
 				size: "Taille",
 				empty: "Aucun fichier à afficher.",
 				cannotPreview: "Impossible d'afficher un aperçu du fichier",
