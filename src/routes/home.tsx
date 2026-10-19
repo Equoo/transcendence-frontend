@@ -11,7 +11,6 @@ import ProfileLine from "@/components/Profile/ProfileLine";
 import Promisable from "@/components/Promisable";
 import { HEADER_PADDING } from "@/friends/components/BackToList";
 import { OnlineFriends, PendingRequestsBanner, RecentConversations } from "@/friends/components/FriendsWidgets";
-import ChannelsPanel from "@/home/components/ChannelsPanel";
 import DashboardPanel from "@/home/components/DashboardPanel";
 import DashboardStats from "@/home/components/DashboardStats";
 import RecentFilesPanel from "@/home/components/RecentFilesPanel";
@@ -165,7 +164,6 @@ export default function Home({
 						</DashboardPanel>
 					</div>
 					<div className="flex flex-col gap-6 min-w-0">
-						<ChannelsPanel />
 						<RecentFilesPanel files={files} />
 					</div>
 				</div>
