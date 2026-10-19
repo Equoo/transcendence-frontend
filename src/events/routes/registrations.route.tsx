@@ -1,6 +1,8 @@
 import { data } from "react-router";
 
 import {
+	patchRegistration,
+	type PatchRegistrationInput,
 	registerToEvent,
 	toRegistrationInput,
 	unregisterFromEvent,
@@ -18,6 +20,11 @@ export async function clientAction({
 		res = await registerToEvent(
 			params.eventId,
 			toRegistrationInput(await request.formData()),
+		);
+	} else if (request.method === "PATCH") {
+		res = await patchRegistration(
+			params.eventId,
+			(await request.json()) as PatchRegistrationInput,
 		);
 	} else {
 		res = await unregisterFromEvent(params.eventId);

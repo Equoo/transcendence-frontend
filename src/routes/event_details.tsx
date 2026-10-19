@@ -1,12 +1,14 @@
-import { type JSX, useEffect, useState } from "react";
+import { type JSX, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { FiChevronLeft } from "react-icons/fi";
 import { PiArrowBendUpRight, PiTrash } from "react-icons/pi";
+import { TbPencil } from "react-icons/tb";
 import { Link, useFetcher, useNavigate } from "react-router";
 
 import ChannelChat from "@/chat/components/ChannelChat";
 import { useChannel } from "@/chat/hooks/useChannels";
 import ChoiceModal from "@/components/Modal/ChoiceModal";
+import Modal from "@/components/Modal/Modal";
 import ProfileLine from "@/components/Profile/ProfileLine";
 import ProfilePic from "@/components/Profile/ProfilePic";
 
@@ -16,7 +18,8 @@ import { fetchEventRoles } from "../events/api/event_roles.api";
 import { fetchEvent } from "../events/api/events.api";
 import EventForm from "../events/components/EventForm";
 import EventRegisterBtn from "../events/components/EventRegisterBtn";
-import type { clientAction } from "../events/routes/events.route";
+import type { clientAction as eventAction } from "../events/routes/events.route";
+import type { clientAction as registrationAction } from "../events/routes/registrations.route";
 import { fetchFiles } from "../files/api/files.api";
 import { UserContext } from "../users/api/users";
 import type { Route } from "./+types/event_details";
@@ -30,7 +33,7 @@ export async function clientLoader({
 
 	return {
 		event: res,
-		roles: fetchEventRoles(),
+		roles: await fetchEventRoles(),
 		files: fetchFiles(),
 		user: context.get(UserContext),
 	};
@@ -41,7 +44,8 @@ export default function EventDetails({
 }: Route.ComponentProps): JSX.Element {
 	// eslint-disable-next-line id-length
 	const { t } = useTranslation();
-	const fetcher = useFetcher<typeof clientAction>();
+	const eventFetcher = useFetcher<typeof eventAction>();
+	const registrationFetcher = useFetcher<typeof registrationAction>();
 	const navigate = useNavigate();
 	const dateString: string = new Date(event.date).toLocaleString([], {
 		hour: "2-digit",
@@ -51,18 +55,7 @@ export default function EventDetails({
 		year: "numeric",
 	});
 	const [showConfirmation, setShowConfirmation] = useState(false);
-
-	useEffect(() => {
-		if (fetcher.data) {
-			if (
-				fetcher.data instanceof Response &&
-				fetcher.data.status === 204
-			) {
-				void navigate("/");
-			}
-		}
-	}, [fetcher.data, navigate]);
-
+	const [showRegistrations, setShowRegistrations] = useState(false);
 	const { data: channel } = useChannel(event.channel.id);
 
 	return (
@@ -78,7 +71,7 @@ export default function EventDetails({
 						name: event.name,
 					})}
 					desc={t("common.irreversible")}
-					fetcher={fetcher}
+					fetcher={eventFetcher}
 				/>
 			)}
 			<div className="flex px-4 py-4 gap-4 items-center border-b border-border">
@@ -152,12 +145,65 @@ export default function EventDetails({
 							</div>
 						</>
 					)}
-					<span className="font-bold text-muted text-xs tracking-wider mt-4">
+					<span className="font-bold text-muted text-xs tracking-wider mt-4 inline-flex items-center gap-2">
 						{t("eventDetails.participants", {
 							registered: event.registrations.length,
 							size: event.size,
 						})}
+						<TbPencil
+							size={18}
+							className="hover:text-text hover:cursor-pointer"
+							onClick={() => {
+								setShowRegistrations(true);
+							}}
+						/>
 					</span>
+					{showRegistrations && (
+						<Modal
+							title="Registered Users"
+							onClose={() => {
+								setShowRegistrations(false);
+							}}
+						>
+							{event.registrations.map((reg) => (
+								<div
+									key={reg.user.id}
+									className="w-7/10 inline-flex justify-between items-center"
+								>
+									<ProfileLine status user={reg.user} />
+									<select
+										name="eventRoleId"
+										className="bg-surface border-border rounded-md text-text font-medium focus:ring-accent h-fit"
+										defaultValue={
+											event.eventRoles.find(
+												(er) => er.name === reg.role,
+											)?.id
+										}
+										onChange={(ev) => {
+											void registrationFetcher.submit(
+												JSON.stringify({
+													eventRoleId:
+														ev.target.value,
+													userId: user.id,
+												}),
+												{
+													method: "PATCH",
+													action: `/events/${event.id}/registration`,
+													encType: "application/json",
+												},
+											);
+										}}
+									>
+										{event.eventRoles.map((er) => (
+											<option key={er.id} value={er.id}>
+												{er.name}
+											</option>
+										))}
+									</select>
+								</div>
+							))}
+						</Modal>
+					)}
 					<div className="min-h-10 flex">
 						{event.registrations.map((reg, idx) => (
 							<ProfilePic
