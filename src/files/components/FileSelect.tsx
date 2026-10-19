@@ -1,6 +1,5 @@
 import { type JSX, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { FcFolder } from "react-icons/fc";
 import { PiCheck } from "react-icons/pi";
 
 import type { ValidationErrors } from "../../api/problem_detail";
@@ -9,8 +8,9 @@ import CheckButton from "../../components/Button/CheckButton";
 import { Field } from "../../components/Input/Field";
 import HiddenValues from "../../components/Input/HiddenValues";
 import Modal from "../../components/Modal/Modal";
-import type { AppFile } from "../api/files.api";
+import { type AppFile, splitFileName } from "../api/files.api";
 import { useFileBrowser } from "../hooks/useFileBrowser";
+import { FileIcon, FolderIcon } from "./FileIcon";
 
 export default function FileSelect({
 	files,
@@ -53,10 +53,9 @@ export default function FileSelect({
 					const selectedFile = files.find(
 						(file) => file.key === selectedFileKey,
 					);
-					const fileLabel =
-						selectedFile?.name.substring(
-							selectedFile.name.lastIndexOf("/") + 1,
-						) ?? selectedFileKey;
+					const fileLabel = selectedFile
+						? splitFileName(selectedFile.name).baseName
+						: selectedFileKey;
 
 					return (
 						<Badge key={selectedFileKey}>
@@ -100,7 +99,7 @@ export default function FileSelect({
 									className="inline-flex items-center gap-2 rounded p-2 hover:bg-surface2 hover:cursor-pointer"
 									onClick={goUp}
 								>
-									<FcFolder size={22} />
+									<FolderIcon />
 									<p className="text-lg font-medium">..</p>
 								</div>
 							)}
@@ -112,7 +111,7 @@ export default function FileSelect({
 										enterFolder(folder);
 									}}
 								>
-									<FcFolder size={22} />
+									<FolderIcon />
 									<p className="text-lg font-medium">
 										{folder}
 									</p>
@@ -130,14 +129,13 @@ export default function FileSelect({
 										toggleSelected(file.key);
 									}}
 								>
+									<FileIcon contentType={file.contentType} />
+									<p className="flex-1 min-w-0 truncate text-lg font-medium text-text">
+										{file.name.slice(currFolder.length)}
+									</p>
 									{selectedFiles.includes(file.key) && (
 										<PiCheck size={20} />
 									)}
-									<p
-										className={`${selectedFiles.includes(file.key) || "pl-7"} text-lg font-medium text-text`}
-									>
-										{file.name.slice(currFolder.length)}
-									</p>
 								</div>
 							))}
 						</div>

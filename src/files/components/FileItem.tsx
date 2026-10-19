@@ -4,6 +4,7 @@ import { Link } from "react-router";
 
 import { ListCell, ListRow } from "../../components/List/List";
 import type { AppFile } from "../api/files.api";
+import { FileIcon } from "./FileIcon";
 import ItemActions from "./ItemActions";
 
 export default function FileItem({
@@ -23,13 +24,13 @@ export default function FileItem({
 		<ListRow>
 			<ListCell rowHeader>
 				<Link
-					className="hover:underline focus-visible:outline-accent"
+					className="inline-flex items-center gap-3 rounded-sm p-1 hover:underline focus-visible:outline-accent"
 					to={`/knowledge/${file.key}`}
 				>
+					<FileIcon contentType={file.contentType} />
 					{name}
 				</Link>
 			</ListCell>
-			<ListCell>{file.contentType}</ListCell>
 			<ListCell>
 				{file.length / 1000000 < 1
 					? t("files.sizeKb", {
