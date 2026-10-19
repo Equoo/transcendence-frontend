@@ -52,7 +52,7 @@ function formatCountdown(countdown: CountdownType, t: TFunction): string {
 
 const MAX_VISIBLE_TAGS = 3;
 
-function Countdown({ date }: { date: Date }): JSX.Element {
+export function Countdown({ date }: { date: Date }): JSX.Element {
 	// eslint-disable-next-line id-length
 	const { t } = useTranslation();
 	const [countdown, setCountdown] = useState(() => getCountdown(date));
