@@ -43,6 +43,14 @@ function MessageActionBar({
 	const [actionBar, setActionBar] = useState<ActionBar | null>(null);
 	const [showRemoveForm, setShowRemoveForm] = useState(false);
 	const actionBarTimerRef = useRef<number | null>(null);
+	const activeRowRef = useRef<HTMLDivElement | null>(null);
+
+	const clearHideTimer = (): void => {
+		if (actionBarTimerRef.current !== null) {
+			clearTimeout(actionBarTimerRef.current);
+			actionBarTimerRef.current = null;
+		}
+	};
 
 	useImperativeHandle(ref, () => ({
 		show: (
@@ -50,45 +58,39 @@ function MessageActionBar({
 				| React.MouseEvent<HTMLDivElement>
 				| React.FocusEvent<HTMLDivElement>,
 		): void => {
-			if (actionBarTimerRef.current) {
-				clearTimeout(actionBarTimerRef.current);
-			}
+			clearHideTimer();
 
 			const row = ev.currentTarget;
-			if (typeof row === "undefined") {
+			if (typeof row === "undefined" || row === activeRowRef.current) {
 				return;
 			}
+
+			const msg = findMessage(qc, channelId, row.dataset.id ?? "");
+			if (!msg) {
+				return;
+			}
+
+			const top =
+				row.offsetTop - (row.parentElement?.scrollTop ?? 0) - 20;
+			const left = row.offsetLeft + row.offsetWidth / 2;
+
+			if (activeRowRef.current) {
+				activeRowRef.current.ariaSelected = "false";
+			}
 			row.ariaSelected = "true";
+			activeRowRef.current = row;
 
-			setActionBar((prev) => {
-				if (prev && prev.el !== row) {
-					prev.el.ariaSelected = "false";
-				}
-				const id = row.dataset.id ?? "undefined";
-				const msg = findMessage(qc, channelId, id);
-				if (!msg) {
-					return prev;
-				}
-
-				return {
-					msg,
-					el: row,
-					top:
-						row.offsetTop -
-						(row.parentElement?.scrollTop ?? 0) -
-						20,
-					left: row.offsetLeft + row.offsetWidth / 2,
-				};
-			});
+			setActionBar({ msg, el: row, top, left });
 		},
 		hide: (): void => {
+			clearHideTimer();
 			actionBarTimerRef.current = setTimeout(() => {
-				setActionBar((prev) => {
-					if (prev) {
-						prev.el.ariaSelected = "false";
-					}
-					return null;
-				});
+				actionBarTimerRef.current = null;
+				if (activeRowRef.current) {
+					activeRowRef.current.ariaSelected = "false";
+					activeRowRef.current = null;
+				}
+				setActionBar(null);
 			}, 80);
 		},
 	}));
@@ -103,10 +105,7 @@ function MessageActionBar({
 		<>
 			<div
 				style={{ top: actionBar.top, left: actionBar.left }}
-				onMouseEnter={() => {
-					actionBarTimerRef.current &&
-						clearTimeout(actionBarTimerRef.current);
-				}}
+				onMouseEnter={clearHideTimer}
 				className="absolute flex flex-row z-50 -translate-x-1/2"
 			>
 				{actionBar.el.dataset.pending === "false" && (
@@ -142,16 +141,16 @@ function MessageActionBar({
 							(user &&
 								(user.role.permission &
 									PermEnum.ManageMessages) !==
-									0)) && (
-							<IconBtn
-								icon={PiTrash}
-								className="text-red-400"
-								size={14}
-								onClick={() => {
-									setShowRemoveForm(true);
-								}}
-							></IconBtn>
-						)}
+								0)) && (
+								<IconBtn
+									icon={PiTrash}
+									className="text-red-400"
+									size={14}
+									onClick={() => {
+										setShowRemoveForm(true);
+									}}
+								></IconBtn>
+							)}
 					</>
 				)}
 				<IconBtn icon={PiDotsThree} size={14}></IconBtn>

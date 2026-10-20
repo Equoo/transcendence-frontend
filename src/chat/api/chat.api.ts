@@ -18,6 +18,7 @@ export function normalizeMessage(msg: Message): Message {
 		...({
 			sentAt: new Date(msg.sentAt),
 			editAt: msg.editAt && new Date(msg.editAt ?? new Date()),
+			messageRef: msg.messageRef && normalizeMessage(msg.messageRef),
 		} as Message),
 	};
 }

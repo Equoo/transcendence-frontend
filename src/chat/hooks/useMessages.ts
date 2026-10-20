@@ -44,12 +44,10 @@ export function useMessages(channelId: string) {
 			newerCursor(firstPage, firstPageParam),
 		select: toMessages,
 		staleTime: Infinity,
-		// Only a failed first load reaches the ErrorBoundary, older pages are toasted
 		throwOnError: (__, query) => typeof query.state.data === "undefined",
 	});
 }
 
-/** Replaces the loaded messages with a window centered on `date`. */
 export function useLoadMessagesAround(
 	channelId: string,
 ): (date: Date) => Promise<void> {

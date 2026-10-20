@@ -102,10 +102,16 @@ export function findMessage(
 	channelId: string,
 	id: string,
 ): Message | undefined {
-	return qc
-		.getQueryData<MessagePages>(chatKeys.messages(channelId))
-		?.pages.flat()
-		.find((msg) => msg.id === id);
+	const pages = qc.getQueryData<MessagePages>(
+		chatKeys.messages(channelId),
+	)?.pages;
+	for (const page of pages ?? []) {
+		const found = page.find((msg) => msg.id === id);
+		if (found) {
+			return found;
+		}
+	}
+	return void 0;
 }
 
 export function addMessage(

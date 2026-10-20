@@ -125,6 +125,7 @@ function MessageList({
 		hasNextPage,
 		isFetchingNextPage,
 		direction: "up",
+		threshold: 148,
 		enabled: isReady && !isFetchingPreviousPage,
 		resetKey: channelId,
 	});
