@@ -28,6 +28,15 @@ export function useCategories(): UseQueryResult<ChannelCategory[]> {
 	});
 }
 
+export function useCategory(categoryId: string): UseQueryResult<ChannelCategory | null> {
+	return useQuery({
+		queryKey: chatKeys.categories,
+		queryFn: fetchCategories,
+		select: (categories) => categories.find((ch) => ch.id === categoryId) ?? null,
+		throwOnError: (__, query) => typeof query.state.data === "undefined",
+	});
+}
+
 export function useAckTime(channelId: string): Date | null {
 	const user = useUser();
 

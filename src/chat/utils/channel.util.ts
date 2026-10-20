@@ -14,7 +14,6 @@ export function sanitizeChannelSlug(input?: string | null): string {
 	}
 
 	return input
-		.toLowerCase()
 		.replace(WHITESPACE, "-")
 		.replace(FORBIDDEN, "")
 		.replace(DASH_RUNS, "-")
