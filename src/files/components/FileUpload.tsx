@@ -4,6 +4,7 @@ import { useFetcher } from "react-router";
 
 import { Field } from "@/components/Input/Field";
 import { Select } from "@/components/Input/Select";
+import usePogressFetch from "@/hooks/useProgressFetch";
 
 import { APIError, type ValidationErrors } from "../../api/problem_detail";
 import CheckButton from "../../components/Button/CheckButton";
@@ -24,6 +25,7 @@ export default function FileUpload({
 	const { t } = useTranslation();
 	const [errors, setErrors] = useState<ValidationErrors>();
 	const [name, setName] = useState("");
+	const { progress, total, doFetch } = usePogressFetch();
 	const filesFetcher = useFetcher<typeof filesAction>();
 	const destinations = Array.from(new Set(["/", currentPath, ...folders]));
 
@@ -52,10 +54,14 @@ export default function FileUpload({
 						`${formData.get("Folder") as string}${formData.get("Name") as string}`,
 					);
 					formData.delete("Folder");
-					void filesFetcher.submit(formData, {
-						action: "/files",
+
+					void doFetch("/api/files", {
 						method: "POST",
-						encType: "multipart/form-data",
+						body: formData,
+					}).then((res) => {
+						if (res.status === 201) {
+							onClose();
+						}
 					});
 				}}
 			>
