@@ -349,6 +349,7 @@ export default {
 				discussionStart: "Discussion start here",
 				edited: "(edited)",
 				newMessages: "New messages",
+				jumpToPresent: "Jump to present",
 				categoryIdRequiredDelete:
 					"Category ID is required for deletion",
 				categoryIdRequiredUpdate: "Category ID is required for update",

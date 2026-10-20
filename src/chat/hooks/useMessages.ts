@@ -48,6 +48,20 @@ export function useMessages(channelId: string) {
 	});
 }
 
+export function useLoadLatestMessages(channelId: string): () => Promise<void> {
+	const qc = useQueryClient();
+
+	return useCallback(async (): Promise<void> => {
+		const page = await fetchMessages(channelId, INITIAL_PAGE_SIZE, null);
+		const queryKey = chatKeys.messages(channelId);
+		await qc.cancelQueries({ queryKey });
+		qc.setQueryData<MessagePages>(queryKey, {
+			pages: [page],
+			pageParams: [null],
+		});
+	}, [qc, channelId]);
+}
+
 export function useLoadMessagesAround(
 	channelId: string,
 ): (date: Date) => Promise<void> {

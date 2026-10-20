@@ -18,11 +18,16 @@ import { toastError } from "@/utils/error.util";
 import { ChannelType, type Message } from "../../api/chat.api";
 import { useAutoScroll } from "../../hooks/useAutoScroll.hook";
 import { useAckTime } from "../../hooks/useChannels";
-import { useLoadMessagesAround, useMessages } from "../../hooks/useMessages";
+import {
+	useLoadLatestMessages,
+	useLoadMessagesAround,
+	useMessages,
+} from "../../hooks/useMessages";
 import { useReadReceipts } from "../../hooks/useReadReceipts.hook";
 import { useScrollRestoration } from "../../hooks/useScrollRestoration.hook";
 import { startsNewDay, startsNewGroup } from "../../utils/message.util";
 import { useChatContext } from "../ChatProvider";
+import JumpToPresentButtons, { useScrolledUp } from "./JumpToPresentButtons";
 import MessageActionBar, {
 	type MessageActionBarHandles,
 } from "./MessageActionBar";
@@ -138,10 +143,12 @@ function MessageList({
 		enabled: isReady && !isFetchingNextPage,
 		resetKey: channelId,
 	});
+	const [isScrolledUp, trackScrolledUp] = useScrolledUp();
 	const handleScroll = (ev: React.UIEvent<HTMLDivElement>): void => {
 		paginateOlder(ev);
 		paginateNewer(ev);
 		actionBarRef.current?.hide();
+		trackScrolledUp(ev);
 	};
 
 	useScrollRestoration(
@@ -157,9 +164,36 @@ function MessageList({
 	const lastMessageRef = useReadReceipts(channelId, messages);
 	const dividerMsgId = useNewMessagesDividerId(channelId, messages);
 
-	useImperativeHandle(ref, () => ({ scrollBack: scrollToBottom }), [
-		scrollToBottom,
-	]);
+	const loadLatestMessages = useLoadLatestMessages(channelId);
+	const [jumpToPresentChannel, setJumpToPresentChannel] = useState<
+		string | null
+	>(null);
+
+	useLayoutEffect(() => {
+		const el = containerRef.current;
+		if (!el || jumpToPresentChannel !== channelId) {
+			return;
+		}
+		el.scrollTop = el.scrollHeight;
+		// eslint-disable-next-line @eslint-react/set-state-in-effect
+		setJumpToPresentChannel(null);
+	}, [data, jumpToPresentChannel, channelId]);
+
+	const jumpToPresent = (): void => {
+		if (!hasPreviousPage) {
+			scrollToBottom();
+			return;
+		}
+		loadLatestMessages()
+			.then(() => {
+				setJumpToPresentChannel(channelId);
+			})
+			.catch((err: unknown) => {
+				toastError(err as Error);
+			});
+	};
+
+	useImperativeHandle(ref, () => ({ scrollBack: jumpToPresent }));
 
 	const { getChatMode } = useChatContext();
 	const [chatMode, modeTarget] = getChatMode();
@@ -203,47 +237,56 @@ function MessageList({
 	};
 
 	return (
-		<div
-			className="flex flex-1 min-h-0 flex-col overflow-y-auto pt-5"
-			ref={containerRef}
-			onScroll={handleScroll}
-		>
-			<MessageActionBar ref={actionBarRef} channelId={channelId} />
+		<div className="relative flex flex-1 min-h-0 flex-col">
+			<JumpToPresentButtons
+				isDetached={hasPreviousPage}
+				isScrolledUp={isScrolledUp}
+				onClick={jumpToPresent}
+			/>
+			<div
+				className="flex flex-1 min-h-0 flex-col overflow-y-auto pt-5"
+				ref={containerRef}
+				onScroll={handleScroll}
+			>
+				<MessageActionBar ref={actionBarRef} channelId={channelId} />
 
-			<div className="mt-auto" />
-			<div className="relative gap-3 px-5.5 text-muted">
-				<h1 className="text-3xl font-medium text-text">
-					{channelType === ChannelType.Text && (
-						<span className="font-bold">#</span>
-					)}{" "}
-					{channelName}
-				</h1>
-				<p>{t("chat.discussionStart")}</p>
+				<div className="mt-auto" />
+				<div className="relative gap-3 px-5.5 text-muted">
+					<h1 className="text-3xl font-medium text-text">
+						{channelType === ChannelType.Text && (
+							<span className="font-bold">#</span>
+						)}{" "}
+						{channelName}
+					</h1>
+					<p>{t("chat.discussionStart")}</p>
+				</div>
+				{messages.map((msg, index) => {
+					const previous = messages[index - 1];
+					const isLast = index === messages.length - 1;
+
+					return (
+						<Fragment key={msg.id}>
+							{dividerMsgId === msg.id && <NewMessagesDivider />}
+							{startsNewDay(msg, previous) && (
+								<MessageDaySeparator
+									date={new Date(msg.sentAt)}
+								/>
+							)}
+							<MessageRow
+								message={msg}
+								showHeader={startsNewGroup(msg, previous)}
+								isFocused={isModeTarget(msg.id)}
+								rowRef={isLast ? lastMessageRef : null}
+								onActivate={showActionBar}
+								onDeactivate={hideActionBar}
+								className="px-5.5"
+								relations={relations}
+								onClickReply={goto}
+							/>
+						</Fragment>
+					);
+				})}
 			</div>
-			{messages.map((msg, index) => {
-				const previous = messages[index - 1];
-				const isLast = index === messages.length - 1;
-
-				return (
-					<Fragment key={msg.id}>
-						{dividerMsgId === msg.id && <NewMessagesDivider />}
-						{startsNewDay(msg, previous) && (
-							<MessageDaySeparator date={new Date(msg.sentAt)} />
-						)}
-						<MessageRow
-							message={msg}
-							showHeader={startsNewGroup(msg, previous)}
-							isFocused={isModeTarget(msg.id)}
-							rowRef={isLast ? lastMessageRef : null}
-							onActivate={showActionBar}
-							onDeactivate={hideActionBar}
-							className="px-5.5"
-							relations={relations}
-							onClickReply={goto}
-						/>
-					</Fragment>
-				);
-			})}
 		</div>
 	);
 }

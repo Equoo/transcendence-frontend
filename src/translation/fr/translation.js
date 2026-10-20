@@ -362,6 +362,7 @@ export default {
 				discussionStart: "La discussion commence ici",
 				edited: "(modifié)",
 				newMessages: "Nouveaux messages",
+				jumpToPresent: "Revenir au présent",
 				categoryIdRequiredDelete:
 					"L'identifiant de la catégorie est requis pour la suppression",
 				categoryIdRequiredUpdate:
