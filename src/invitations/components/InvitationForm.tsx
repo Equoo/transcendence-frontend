@@ -63,7 +63,7 @@ export default function InvitationForm({
 							<>
 								<Input
 									name="Expires At"
-									label={t("invitations.expiresAt")}
+									label={t("invitations.expireAt")}
 									type="datetime-local"
 									required
 									min={date

@@ -33,7 +33,7 @@ export default function InvitationList({
 					<ListCell pos="text-center">
 						{invitation.usages === -1
 							? "Never"
-							: new Date(invitation.expiresAt).toLocaleString()}
+							: new Date(invitation.expireAt).toLocaleString()}
 					</ListCell>
 					<ListCell pos="text-center">
 						{invitation.usages === -1

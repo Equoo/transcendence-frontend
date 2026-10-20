@@ -1,17 +1,27 @@
 import { useState } from "react";
 
-import type { EventData } from "../../api/events.api";
+import { type EventData, maxDate } from "../../api/events.api";
+import { toInputValue } from "./DateSlot";
 import { REQUIRED_FIELDS, type RequiredField } from "./Slot";
 
 export interface EventDraft {
 	name: string;
 	location: string;
 	date: string;
+	expireAt: string;
 	size: string;
 	tags: string[];
 	roles: string[];
 	description: string;
 	fileKeys: string[];
+}
+
+function initialExpireAt(expireAt?: string): string {
+	if (!expireAt) {
+		return "";
+	}
+	const date = new Date(expireAt);
+	return date.getTime() >= maxDate ? "" : toInputValue(date);
 }
 
 function initialDraft(event?: EventData): EventDraft {
@@ -20,6 +30,7 @@ function initialDraft(event?: EventData): EventDraft {
 			name: "",
 			location: "",
 			date: "",
+			expireAt: "",
 			size: "",
 			tags: [],
 			roles: [],
@@ -31,6 +42,7 @@ function initialDraft(event?: EventData): EventDraft {
 		name: event.name,
 		location: event.location,
 		date: event.date.substring(0, event.date.lastIndexOf(":")),
+		expireAt: initialExpireAt(event.expireAt),
 		size: String(event.size),
 		tags: event.tags,
 		roles: event.eventRoles.map((role) => role.name),

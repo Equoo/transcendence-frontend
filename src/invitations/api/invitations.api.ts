@@ -2,24 +2,24 @@ import { request, requestJson } from "@/api/request";
 
 export interface Invitation {
 	id: string;
-	expiresAt: string;
+	expireAt: string;
 	usages: number;
 }
 
 export interface InvitationInput {
-	expiresAt: string;
+	expireAt: string;
 	usages: number;
 }
 
 export function toInvitationInput(formData: FormData): InvitationInput {
 	const res = {
-		expiresAt: formData.get("Expires At") as string,
+		expireAt: new Date(formData.get("Expires At") as string).toISOString(),
 		usages: Number(formData.get("Usages")),
 	};
 
 	if ((formData.get("Permanent") as string) === "on") {
 		res.usages = -1;
-		res.expiresAt = new Date().toJSON();
+		res.expireAt = new Date().toJSON();
 	}
 	return res;
 }

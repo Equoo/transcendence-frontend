@@ -6,10 +6,13 @@ import type { User } from "../../users/api/users";
 import type { EventRole } from "./event_roles.api";
 import type { Registration } from "./registrations.api";
 
+export const maxDate = 199999999999999;
+
 export interface EventData {
 	id: string;
 	name: string;
 	date: string;
+	expireAt: string;
 	size: number;
 	location: string;
 	tags: string[];
@@ -38,6 +41,7 @@ export interface EventSummary {
 export interface EventInput {
 	name: string;
 	date: string;
+	expireAt: string;
 	size: number;
 	location: string;
 	tags: string[];
@@ -47,9 +51,15 @@ export interface EventInput {
 }
 
 export function toEventInput(formData: FormData): EventInput {
+	const expire = formData.get("Expire Date") as string;
+
 	return {
 		name: formData.get("Name") as string,
-		date: formData.get("Date") as string,
+		expireAt:
+			expire === ""
+				? new Date(maxDate).toISOString()
+				: new Date(expire).toISOString(),
+		date: new Date(formData.get("Date") as string).toISOString(),
 		size: Number(formData.get("Size")),
 		location: formData.get("Location") as string,
 		tags: formData.getAll("Tags") as string[],
