@@ -54,7 +54,13 @@ export function toEventInput(formData: FormData): EventInput {
 
 	return {
 		name: formData.get("Name") as string,
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
 		expireAt: expire === "" ? new Date(maxDate).toISOString() : expire,
+=======
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
 		date: new Date(formData.get("Date") as string).toISOString(),
 		size: Number(formData.get("Size")),
 		location: formData.get("Location") as string,
