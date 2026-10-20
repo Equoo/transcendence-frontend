@@ -332,7 +332,7 @@ export default {
 				invite: "Invite",
 				createTitle: "Create An Invitation",
 				hint: "You will get a link to share. Do not share it in a public space. The link will be automatically deleted if it expires or reaches all of its usages.",
-				expiresAt: "Expires At",
+				expiresAt: "Expire At",
 				expirationDate: "Expiration Date",
 				usages: "Usages",
 				maxUsages: "Max Usages",
