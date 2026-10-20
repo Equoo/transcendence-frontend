@@ -5,7 +5,7 @@ import { useClickOutside } from "@/hooks/useClickOutside";
 
 interface Row {
 	id: string;
-	onClick?: () => void;
+	onClick: () => void;
 	content: ReactNode;
 }
 
@@ -26,12 +26,15 @@ export default function PopupList({
 	return (
 		<ul
 			ref={clickOutsideRef}
-			className={`absolute p-2 rounded-md flex flex-col z-10 ${className}`}
+			className={`absolute p-2 rounded-md flex flex-col z-50 ${className}`}
 		>
 			{rows.map((row) => (
 				<li
 					key={row.id}
-					onClick={row.onClick}
+					onClick={() => {
+						row.onClick();
+						onClose();
+					}}
 					className="text-text font-medium p-2 whitespace-nowrap hover:bg-back2 rounded-md cursor-pointer"
 				>
 					{row.content}

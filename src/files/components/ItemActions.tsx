@@ -6,6 +6,7 @@ import { useFetcher } from "react-router";
 import CheckButton from "@/components/Button/CheckButton";
 import { Field } from "@/components/Input/Field";
 import { Input } from "@/components/Input/Input";
+import { Select } from "@/components/Input/Select";
 import { ListActions } from "@/components/List/List";
 import PopupList from "@/components/List/PopupList";
 import Modal from "@/components/Modal/Modal";
@@ -137,9 +138,7 @@ export default function ItemActions({
 			{dialog === "move" && (
 				<Modal
 					title={
-						isFolder
-							? t("files.moveFolder")
-							: t("files.moveFile")
+						isFolder ? t("files.moveFolder") : t("files.moveFile")
 					}
 					width="w-4/10"
 					onClose={() => {
@@ -155,22 +154,15 @@ export default function ItemActions({
 							<input type="hidden" name="From" value={path} />
 						)}
 						<input type="hidden" name="Name" value={name} />
-						<Field
-							name="Folder"
-							label={t("files.folder")}
-							required
-						>
-							<select
+						<Field name="Folder" label={t("files.folder")} required>
+							<Select
 								name="Folder"
-								required
-								className="w-full bg-surface border rounded-md border-border2 focus:border-accent px-2 py-1 font-main text-text"
-							>
-								{destinations.map((folder) => (
-									<option key={folder} value={folder}>
-										{folder}
-									</option>
-								))}
-							</select>
+								className="w-full"
+								options={destinations.map((folder) => ({
+									value: folder,
+									label: folder,
+								}))}
+							/>
 						</Field>
 						<CheckButton
 							type="submit"

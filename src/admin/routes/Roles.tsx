@@ -1,7 +1,6 @@
 /* eslint-disable id-length */
-import { type JSX, useEffect, useState } from "react";
+import { type JSX, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useFetcher } from "react-router";
 
 import ChangeModal from "@/components/Modal/ChangeModal";
 import Promisable from "@/components/Promisable";
@@ -28,15 +27,7 @@ export default function AdminRoles({
 	const { t } = useTranslation();
 	const [showRoleForm, setShowRoleForm] = useState<boolean>(false);
 
-	const fetcher = useFetcher();
 	const roles: Promise<Role[]> | Role[] = loaderData.roles;
-
-	useEffect(() => {
-		if (fetcher.data) {
-			// eslint-disable-next-line @eslint-react/set-state-in-effect
-			setShowRoleForm(false);
-		}
-	}, [fetcher.data]);
 
 	return (
 		<>
@@ -53,7 +44,6 @@ export default function AdminRoles({
 					placeholder={t("common.name")}
 					minInput={1}
 					maxInput={20}
-					fetcher={fetcher}
 				></ChangeModal>
 			)}
 			<div className="flex w-full h-full justify-center bg-back">

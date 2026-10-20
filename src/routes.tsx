@@ -26,7 +26,7 @@ export default [
 	route("/login", "auth/routes/login.tsx"),
 	// Resources routes
 	route(
-		"/events/:eventId/registration",
+		"/events/:eventId/registration/:userId?",
 		"events/routes/registrations.route.tsx",
 	),
 	route("/events/:eventId?", "events/routes/events.route.tsx"),

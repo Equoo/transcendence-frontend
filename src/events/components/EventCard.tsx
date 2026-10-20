@@ -52,7 +52,7 @@ function formatCountdown(countdown: CountdownType, t: TFunction): string {
 
 const MAX_VISIBLE_TAGS = 3;
 
-function Countdown({ date }: { date: Date }): JSX.Element {
+export function Countdown({ date }: { date: Date }): JSX.Element {
 	// eslint-disable-next-line id-length
 	const { t } = useTranslation();
 	const [countdown, setCountdown] = useState(() => getCountdown(date));
@@ -169,15 +169,8 @@ export default function EventCard({
 						</Tooltip>
 					</div>
 				</div>
-
 				<div className="h-6 min-w-0">
-					{event.tags.length > 0 ? (
-						<EventTags tags={event.tags} />
-					) : (
-						<span className="text-muted text-xs italic leading-6">
-							No tags
-						</span>
-					)}
+					<EventTags tags={event.tags} />
 				</div>
 			</div>
 

@@ -1,14 +1,21 @@
-import { type JSX, useEffect, useState } from "react";
+import { type JSX, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { FiChevronLeft } from "react-icons/fi";
-import { PiTrash } from "react-icons/pi";
-import { Link, useFetcher, useNavigate } from "react-router";
+import {
+	PiArrowBendUpRight,
+	PiDotsThreeVerticalBold,
+	PiTrash,
+} from "react-icons/pi";
+import { Link, useNavigate } from "react-router";
 
 import ChannelChat from "@/chat/components/ChannelChat";
 import { useChannel } from "@/chat/hooks/useChannels";
 import ChoiceModal from "@/components/Modal/ChoiceModal";
+import Modal from "@/components/Modal/Modal";
 import ProfileLine from "@/components/Profile/ProfileLine";
 import ProfilePic from "@/components/Profile/ProfilePic";
+import RoleChange from "@/events/components/RoleChange";
+import UnregisterUser from "@/events/components/UnregisterUser";
 
 import { PermEnum } from "../admin/api/roles";
 import Badge from "../components/Badge";
@@ -16,7 +23,6 @@ import { fetchEventRoles } from "../events/api/event_roles.api";
 import { fetchEvent } from "../events/api/events.api";
 import EventForm from "../events/components/EventForm";
 import EventRegisterBtn from "../events/components/EventRegisterBtn";
-import type { clientAction } from "../events/routes/events.route";
 import { fetchFiles } from "../files/api/files.api";
 import { UserContext } from "../users/api/users";
 import type { Route } from "./+types/event_details";
@@ -30,7 +36,7 @@ export async function clientLoader({
 
 	return {
 		event: res,
-		roles: fetchEventRoles(),
+		roles: await fetchEventRoles(),
 		files: fetchFiles(),
 		user: context.get(UserContext),
 	};
@@ -39,33 +45,18 @@ export async function clientLoader({
 export default function EventDetails({
 	loaderData: { event, roles, files, user },
 }: Route.ComponentProps): JSX.Element {
-    // eslint-disable-next-line id-length
-    const { t } = useTranslation();
-	const fetcher = useFetcher<typeof clientAction>();
+	// eslint-disable-next-line id-length
+	const { t } = useTranslation();
 	const navigate = useNavigate();
-	const dateString: string = new Date(event.date).toLocaleString(
-		[],
-		{
-			hour: "2-digit",
-			minute: "2-digit",
-			month: "short",
-			day: "2-digit",
-			year: "numeric",
-		},
-	);
+	const dateString: string = new Date(event.date).toLocaleString([], {
+		hour: "2-digit",
+		minute: "2-digit",
+		month: "short",
+		day: "2-digit",
+		year: "numeric",
+	});
 	const [showConfirmation, setShowConfirmation] = useState(false);
-
-	useEffect(() => {
-		if (fetcher.data) {
-			if (
-				fetcher.data instanceof Response &&
-				fetcher.data.status === 204
-			) {
-				void navigate("/");
-			}
-		}
-	}, [fetcher.data, navigate]);
-
+	const [showRegistrations, setShowRegistrations] = useState(false);
 	const { data: channel } = useChannel(event.channel.id);
 
 	return (
@@ -81,7 +72,6 @@ export default function EventDetails({
 						name: event.name,
 					})}
 					desc={t("common.irreversible")}
-					fetcher={fetcher}
 				/>
 			)}
 			<div className="flex px-4 py-4 gap-4 items-center border-b border-border">
@@ -121,10 +111,20 @@ export default function EventDetails({
 						</>
 					)}
 				</div>
-				<EventRegisterBtn event={event} className="ml-auto shrink-0" />
+				<div className="ml-auto"></div>
+				{event.isRegistered && (
+					<RoleChange
+						// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+						registration={event.registrations.find(
+							(reg) => reg.user.id === user.id,
+						)!}
+						event={event}
+					/>
+				)}
+				<EventRegisterBtn event={event} className="shrink-0" />
 			</div>
 			<div className="flex h-full">
-				<div className="flex flex-col gap-1 border-r border-border w-1/3 p-6">
+				<div className="flex flex-col gap-1 border-r border-border w-1/5 p-6">
 					<span className="font-bold text-muted text-xs tracking-wider">
 						{t("eventDetails.when")}
 					</span>
@@ -155,12 +155,53 @@ export default function EventDetails({
 							</div>
 						</>
 					)}
-					<span className="font-bold text-muted text-xs tracking-wider mt-4">
+					<span className="font-bold text-muted text-xs tracking-wider mt-4 inline-flex items-center gap-2">
 						{t("eventDetails.participants", {
 							registered: event.registrations.length,
 							size: event.size,
 						})}
+						<PiDotsThreeVerticalBold
+							size={18}
+							className="hover:text-text hover:cursor-pointer"
+							onClick={() => {
+								setShowRegistrations(true);
+							}}
+						/>
 					</span>
+					{showRegistrations && (
+						<Modal
+							title={t("eventDetails.registeredUsers")}
+							onClose={() => {
+								setShowRegistrations(false);
+							}}
+						>
+							{event.registeredCount === 0 &&
+								t("eventDetails.noRegistrations")}
+							{event.registrations.map((reg) => (
+								<div
+									key={reg.user.id}
+									className="w-7/10 inline-flex justify-between items-center"
+								>
+									<ProfileLine status user={reg.user} />
+									{Boolean(
+										user.role.permission &
+										PermEnum.HandleEvent,
+									) && (
+										<div className="inline-flex items-center gap-3">
+											<RoleChange
+												registration={reg}
+												event={event}
+											/>
+											<UnregisterUser
+												registration={reg}
+												event={event}
+											/>
+										</div>
+									)}
+								</div>
+							))}
+						</Modal>
+					)}
 					<div className="min-h-10 flex">
 						{event.registrations.map((reg, idx) => (
 							<ProfilePic
@@ -178,19 +219,42 @@ export default function EventDetails({
 					</span>
 					<ProfileLine user={event.organizer} status />
 					<span className="font-bold text-muted text-xs tracking-wider mt-4">
-						{t("eventDetails.resources")}
+						{t("eventDetails.resources")} - {event.files.length}
 					</span>
-					<div className="flex mt-1 items-center gap-3">
+					<div className="flex flex-col mt-1 items-center gap-1 w-fit">
 						{event.files.map((file) => (
-							<Link key={file.key} to={`/knowledge/${file.key}`}>
-								<div
-									className={`inline-flex items-center gap-2 rounded p-2 hover:cursor-pointer bg-surface2 hover:bg-surface`}
+							<div
+								key={file.key}
+								className={`w-full rounded p-2 hover:cursor-pointer bg-surface2 hover:bg-surface`}
+							>
+								<Link
+									to={`/knowledge/${file.key}`}
+									className="inline-flex items-center w-full"
 								>
-									<p className={`text-lg font-medium`}>
-										{file.name}
+									<p className={`text-sm mr-6`}>
+										{file.name.slice(
+											file.name.lastIndexOf("/") + 1,
+										)}
 									</p>
-								</div>
-							</Link>
+									<p className="text-xs ml-auto">
+										{file.length / 1000000 < 1
+											? t("files.sizeKb", {
+													size: Math.floor(
+														file.length / 1000,
+													),
+												})
+											: t("files.sizeMb", {
+													size: Math.floor(
+														file.length / 1000000,
+													),
+												})}
+									</p>
+									<PiArrowBendUpRight
+										className="ml-2 pb-1"
+										size={18}
+									/>
+								</Link>
+							</div>
 						))}
 					</div>
 				</div>

@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useFetcher } from "react-router";
 
 import { Field } from "@/components/Input/Field";
+import { Select } from "@/components/Input/Select";
 
 import { APIError, type ValidationErrors } from "../../api/problem_detail";
 import CheckButton from "../../components/Button/CheckButton";
@@ -97,18 +98,15 @@ export default function FileUpload({
 					errors={errors}
 				/>
 				<Field name="Folder" label={t("files.folder")} required>
-					<select
+					<Select
 						name="Folder"
-						required
 						defaultValue={currentPath}
-						className="w-full bg-surface border rounded-md border-border2 focus:border-accent px-2 py-1 font-main text-text"
-					>
-						{destinations.map((folder) => (
-							<option key={folder} value={folder}>
-								{folder}
-							</option>
-						))}
-					</select>
+						className="w-full"
+						options={destinations.map((folder) => ({
+							value: folder,
+							label: folder,
+						}))}
+					/>
 				</Field>
 				<CheckButton
 					type="submit"

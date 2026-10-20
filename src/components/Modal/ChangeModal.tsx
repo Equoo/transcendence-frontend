@@ -1,6 +1,8 @@
 import type { JSX } from "react";
 import { useTranslation } from "react-i18next";
-import type { FetcherWithComponents, HTMLFormMethod } from "react-router";
+import type { HTMLFormMethod } from "react-router";
+
+import { useModalFetcher } from "@/hooks/useModalFetcher";
 
 import CheckButton from "../Button/CheckButton";
 import HiddenValues from "../Input/HiddenValues";
@@ -10,6 +12,7 @@ import Modal from "./Modal";
 export default function ChangeModal({
 	title,
 	onClose,
+	then,
 	desc,
 	action,
 	method,
@@ -19,11 +22,11 @@ export default function ChangeModal({
 	id,
 	minInput,
 	maxInput,
-	fetcher,
 	password,
 }: {
 	title: string;
 	onClose: () => void;
+	then?: (data?: unknown) => void;
 	desc?: string;
 	action: string;
 	method: HTMLFormMethod;
@@ -33,11 +36,12 @@ export default function ChangeModal({
 	id?: string;
 	minInput: number;
 	maxInput: number;
-	fetcher: FetcherWithComponents<Response>;
 	password?: boolean;
 }): JSX.Element {
 	// eslint-disable-next-line id-length
 	const { t } = useTranslation();
+	const fetcher = useModalFetcher({ onClose, then });
+
 	return (
 		<Modal title={title} onClose={onClose}>
 			{desc && (
@@ -61,7 +65,11 @@ export default function ChangeModal({
 					className="ring-0 focus:border-border border-border rounded-sm"
 					placeholder={placeholder}
 				></Input>
-				<CheckButton active type="submit">
+				<CheckButton
+					active
+					type="submit"
+					pending={fetcher.state !== "idle"}
+				>
 					{t("common.ok")}
 				</CheckButton>
 			</fetcher.Form>

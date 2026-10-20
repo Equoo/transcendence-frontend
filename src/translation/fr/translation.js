@@ -71,6 +71,12 @@ export default {
 				},
 			},
 			eventDetails: {
+				unregisterUserTitle: "Désinscrire {{name}} de l'événement",
+				unregisterUser: "Désinscrire de l'événement",
+				unregisterUserSuccess: "{{name}} a été désinscrit de {{event}}",
+				registeredUsers: "Utilisateurs inscrits",
+				noRegistrations: "Personne n'est encore inscrit !",
+				roleChangeSuccess: "{{name}} est maintenant {{role}}",
 				deleteTitle: "Supprimer l'événement {{name}}",
 				when: "QUAND",
 				where: "OÙ",
@@ -203,6 +209,34 @@ export default {
 					"L'identifiant de l'événement est requis pour la suppression",
 				idRequiredUpdate:
 					"L'identifiant de l'événement est requis pour la modification",
+				composer: {
+					subtitle:
+						"Remplissez la carte, elle s'affichera telle quelle.",
+					preview: "Aperçu",
+					namePlaceholder: "Donnez un nom à l'événement",
+					locationPlaceholder: "Où ça se passe ?",
+					datePlaceholder: "Quand ?",
+					tonight: "Ce soir",
+					tomorrow: "Demain soir",
+					saturday: "Samedi",
+					nextWeek: "Dans une semaine",
+					customDate: "Ou une date précise",
+					spots: "Nombre de places",
+					addTag: "tag",
+					extrasTitle: "Détails supplémentaires",
+					extrasHint: "Facultatif, vous pourrez compléter plus tard.",
+					descriptionPlaceholder:
+						"Programme, infos pratiques, matériel à prévoir…",
+					rolesHint:
+						"Les rôles que les participants pourront choisir en s'inscrivant.",
+					rolePlaceholder: "Filtrer ou créer un rôle…",
+					createRole: "Créer « {{name}} »",
+					attachFiles: "Joindre des fichiers",
+					missing_one: "Encore {{count}} champ à remplir",
+					missing_other: "Encore {{count}} champs à remplir",
+					create: "Créer l'événement",
+					save: "Enregistrer",
+				},
 			},
 			files: {
 				cannotMoveIntoItself:
