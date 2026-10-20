@@ -2,7 +2,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { type Ref, useImperativeHandle, useRef, useState } from "react";
 import type { JSX } from "react/jsx-runtime";
 import { useTranslation } from "react-i18next";
-import { PiArrowArcLeft, PiDotsThree, PiTrash } from "react-icons/pi";
+import { PiArrowArcLeft, PiDotsThree, PiPencil, PiTrash } from "react-icons/pi";
 
 import { PermEnum } from "@/admin/api/roles";
 import IconBtn from "@/components/Button/IconBtn";
@@ -113,7 +113,7 @@ function MessageActionBar({
 					<>
 						{actionBar.msg.sender.id === user?.id ? (
 							<IconBtn
-								icon={PiArrowArcLeft}
+								icon={PiPencil}
 								size={14}
 								onClick={() => {
 									if (composerRef.current) {

@@ -129,6 +129,31 @@ function MessageList({
 	): void => actionBarRef.current?.show(ev);
 	const hideActionBar = (): void => actionBarRef.current?.hide();
 
+	const goto = (msg: Message): void => {
+		if (!containerRef.current) {
+			return;
+		}
+
+		const msgs = Array.from(containerRef.current.children);
+		const el = msgs.find(
+			(msgEl) =>
+				msgEl.attributes.getNamedItem("data-id")?.value === msg.id,
+		);
+
+		if (!el) {
+			return;
+		}
+
+		el.scrollIntoView({
+			behavior: "smooth",
+			block: "center",
+		});
+		(el as HTMLDivElement).dataset.focus = "true";
+		setTimeout(() => {
+			(el as HTMLDivElement).dataset.focus = "false";
+		}, 3000);
+	};
+
 	return (
 		<div
 			className="flex flex-1 min-h-0 flex-col overflow-y-auto pt-5"
@@ -138,7 +163,7 @@ function MessageList({
 			<MessageActionBar ref={actionBarRef} channelId={channelId} />
 
 			<div className="mt-auto" />
-			<div className="relative gap-3 px-5.5 mt- text-muted">
+			<div className="relative gap-3 px-5.5 text-muted">
 				<h1 className="text-3xl font-medium text-text">
 					{channelType === ChannelType.Text && (
 						<span className="font-bold">#</span>
@@ -166,6 +191,7 @@ function MessageList({
 							onDeactivate={hideActionBar}
 							className="px-5.5"
 							relations={relations}
+							onClickReply={goto}
 						/>
 					</Fragment>
 				);
