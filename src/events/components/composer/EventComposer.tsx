@@ -11,12 +11,15 @@ import type { EventData } from "../../api/events.api";
 import type { clientAction as eventAction } from "../../routes/events.route";
 import ComposerCard, { type ComposerPopover } from "./ComposerCard";
 import { DescriptionTile, FilesTile, RolesTile } from "./EventExtras";
+import ExpireTile from "./ExpireTile";
 import { REQUIRED_FIELDS, type RequiredField } from "./Slot";
 import { type EventDraft, useEventDraft } from "./useEventDraft";
 
 const SLOT_ERROR_KEYS = new Set([
 	"Name",
 	"Date",
+	"ExpireAt",
+	"Expire Date",
 	"Size",
 	"Location",
 	"Tags",
@@ -45,6 +48,7 @@ function DraftFields({ draft }: { draft: EventDraft }): JSX.Element {
 				value={draft.location.trim()}
 			/>
 			<input type="hidden" name="Date" value={draft.date} />
+			<input type="hidden" name="Expire Date" value={draft.expireAt} />
 			<input type="hidden" name="Size" value={draft.size} />
 			<input type="hidden" name="Description" value={draft.description} />
 			<HiddenValues name="Tags" values={draft.tags} />
@@ -208,6 +212,13 @@ export default function EventComposer({
 						errors={errorsOf(errors, "Roles", "EventRoleIds")}
 						onChange={(selected) => {
 							update("roles", selected);
+						}}
+					/>
+					<ExpireTile
+						value={draft.expireAt}
+						errors={errorsOf(errors, "ExpireAt", "Expire Date")}
+						onChange={(value) => {
+							update("expireAt", value);
 						}}
 					/>
 					<FilesTile

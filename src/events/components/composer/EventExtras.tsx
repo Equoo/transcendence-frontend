@@ -18,7 +18,7 @@ import FilePickerModal from "../../../files/components/FilePickerModal";
 import { BARE_INPUT, FieldErrors } from "./Slot";
 import { MAX_CHIP_LENGTH } from "./TagsSlot";
 
-function Tile({
+export function Tile({
 	icon,
 	title,
 	aside,

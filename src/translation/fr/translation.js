@@ -245,6 +245,11 @@ export default {
 					rolePlaceholder: "Filtrer ou créer un rôle…",
 					createRole: "Créer « {{name}} »",
 					attachFiles: "Joindre des fichiers",
+					expireTitle: "Expiration",
+					expireHint:
+						"L'événement sera supprimé automatiquement à cette date. Laissez vide pour le conserver indéfiniment.",
+					expireNever: "N'expire jamais",
+					expireClear: "Effacer",
 					missing_one: "Encore {{count}} champ à remplir",
 					missing_other: "Encore {{count}} champs à remplir",
 					create: "Créer l'événement",

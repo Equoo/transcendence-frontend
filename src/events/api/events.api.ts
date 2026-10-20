@@ -6,12 +6,13 @@ import type { User } from "../../users/api/users";
 import type { EventRole } from "./event_roles.api";
 import type { Registration } from "./registrations.api";
 
-const maxDate = 199999999999999;
+export const maxDate = 199999999999999;
 
 export interface EventData {
 	id: string;
 	name: string;
 	date: string;
+	expireAt: string;
 	size: number;
 	location: string;
 	tags: string[];

@@ -238,6 +238,11 @@ export default {
 					rolePlaceholder: "Filter or create a role…",
 					createRole: 'Create "{{name}}"',
 					attachFiles: "Attach files",
+					expireTitle: "Expiration",
+					expireHint:
+						"The event will be automatically deleted at this date. Leave empty to keep it indefinitely.",
+					expireNever: "Never expires",
+					expireClear: "Clear",
 					missing_one: "{{count}} more field to fill",
 					missing_other: "{{count}} more fields to fill",
 					create: "Create event",
