@@ -13,7 +13,7 @@ import {
 	updateMessage as putMessage,
 } from "../api/chat.api";
 import {
-	addMessage,
+	addPendingMessage,
 	resolvePendingMessage,
 	updateMessage,
 } from "../cache/chat.cache";
@@ -72,7 +72,7 @@ function ChannelChat({
 		} as Message;
 
 		setCounter(counter + 1);
-		addMessage(qc, channel.id, message);
+		addPendingMessage(qc, channel.id, message);
 
 		sendMessage(channel.id, text, target?.id)
 			.then((msg) => {

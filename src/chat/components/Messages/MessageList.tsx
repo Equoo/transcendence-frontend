@@ -4,6 +4,7 @@ import {
 	type Ref,
 	useEffect,
 	useImperativeHandle,
+	useLayoutEffect,
 	useRef,
 	useState,
 } from "react";
@@ -17,7 +18,7 @@ import { toastError } from "@/utils/error.util";
 import { ChannelType, type Message } from "../../api/chat.api";
 import { useAutoScroll } from "../../hooks/useAutoScroll.hook";
 import { useAckTime } from "../../hooks/useChannels";
-import { useMessages } from "../../hooks/useMessages";
+import { useLoadMessagesAround, useMessages } from "../../hooks/useMessages";
 import { useReadReceipts } from "../../hooks/useReadReceipts.hook";
 import { useScrollRestoration } from "../../hooks/useScrollRestoration.hook";
 import { startsNewDay, startsNewGroup } from "../../utils/message.util";
@@ -28,6 +29,28 @@ import MessageActionBar, {
 import MessageDaySeparator from "./MessageDaySeparator";
 import MessageRow from "./MessageRow";
 import NewMessagesDivider from "./NewMessagesDivider";
+
+const FOCUS_DURATION_MS = 3000;
+
+function focusMessage(
+	container: HTMLElement,
+	id: string,
+	behavior: ScrollBehavior,
+): boolean {
+	const el = container.querySelector<HTMLElement>(
+		`[data-id="${CSS.escape(id)}"]`,
+	);
+	if (!el) {
+		return false;
+	}
+
+	el.scrollIntoView({ behavior, block: "center" });
+	el.dataset.focus = "true";
+	setTimeout(() => {
+		el.dataset.focus = "false";
+	}, FOCUS_DURATION_MS);
+	return true;
+}
 
 export interface MessageListHandles {
 	scrollBack: () => void;
@@ -83,6 +106,9 @@ function MessageList({
 		fetchNextPage,
 		hasNextPage,
 		isFetchingNextPage,
+		fetchPreviousPage,
+		hasPreviousPage,
+		isFetchingPreviousPage,
 	} = useMessages(channelId);
 	const messages = data ?? [];
 
@@ -92,17 +118,28 @@ function MessageList({
 		}
 	}, [error, isFetchNextPageError]);
 
-	const paginate = useScrollPagination({
+	const isReady = !isPending && !isPendingRelations;
+	const paginateOlder = useScrollPagination({
 		containerRef,
 		fetchNextPage,
 		hasNextPage,
 		isFetchingNextPage,
 		direction: "up",
-		enabled: !isPending && !isPendingRelations,
+		enabled: isReady && !isFetchingPreviousPage,
+		resetKey: channelId,
+	});
+	const paginateNewer = useScrollPagination({
+		containerRef,
+		fetchNextPage: fetchPreviousPage,
+		hasNextPage: hasPreviousPage,
+		isFetchingNextPage: isFetchingPreviousPage,
+		direction: "down",
+		enabled: isReady && !isFetchingNextPage,
 		resetKey: channelId,
 	});
 	const handleScroll = (ev: React.UIEvent<HTMLDivElement>): void => {
-		paginate(ev);
+		paginateOlder(ev);
+		paginateNewer(ev);
 		actionBarRef.current?.hide();
 	};
 
@@ -111,7 +148,11 @@ function MessageList({
 		containerRef,
 		!isPending && !isPendingRelations,
 	);
-	const { scrollToBottom } = useAutoScroll(messages, containerRef);
+	const { scrollToBottom } = useAutoScroll(
+		messages,
+		containerRef,
+		!hasPreviousPage,
+	);
 	const lastMessageRef = useReadReceipts(channelId, messages);
 	const dividerMsgId = useNewMessagesDividerId(channelId, messages);
 
@@ -129,29 +170,35 @@ function MessageList({
 	): void => actionBarRef.current?.show(ev);
 	const hideActionBar = (): void => actionBarRef.current?.hide();
 
+	const loadMessagesAround = useLoadMessagesAround(channelId);
+	const [gotoTarget, setGotoTarget] = useState<{
+		channelId: string;
+		id: string;
+	} | null>(null);
+
+	useLayoutEffect(() => {
+		const el = containerRef.current;
+		if (!el || gotoTarget?.channelId !== channelId) {
+			return;
+		}
+		if (focusMessage(el, gotoTarget.id, "instant")) {
+			setGotoTarget(null);
+		}
+	}, [data, gotoTarget, channelId]);
+
 	const goto = (msg: Message): void => {
-		if (!containerRef.current) {
+		const el = containerRef.current;
+		if (!el || focusMessage(el, msg.id, "smooth")) {
 			return;
 		}
 
-		const msgs = Array.from(containerRef.current.children);
-		const el = msgs.find(
-			(msgEl) =>
-				msgEl.attributes.getNamedItem("data-id")?.value === msg.id,
-		);
-
-		if (!el) {
-			return;
-		}
-
-		el.scrollIntoView({
-			behavior: "smooth",
-			block: "center",
-		});
-		(el as HTMLDivElement).dataset.focus = "true";
-		setTimeout(() => {
-			(el as HTMLDivElement).dataset.focus = "false";
-		}, 3000);
+		loadMessagesAround(msg.sentAt)
+			.then(() => {
+				setGotoTarget({ channelId, id: msg.id });
+			})
+			.catch((err: unknown) => {
+				toastError(err as Error);
+			});
 	};
 
 	return (

@@ -16,12 +16,16 @@ async function sleep(ms: number): Promise<void> {
 export function useAutoScroll(
 	messages: Message[],
 	containerRef: RefObject<HTMLDivElement | null>,
+	isLive: boolean,
 ): { scrollToBottom: () => void } {
 	const prevMessages = usePrevious(messages) as Message[] | null;
+	const wasLive = usePrevious(isLive) as boolean | null;
 
 	const scrollToBottom = (): void => {
 		const el = containerRef.current;
-		if (!el) { return; }
+		if (!el) {
+			return;
+		}
 		void sleep(SCROLL_DELAY_MS).then(() => {
 			el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
 		});
@@ -30,10 +34,14 @@ export function useAutoScroll(
 	useEffect(() => {
 		const lastId = messages[messages.length - 1]?.id;
 		const prevLastId = prevMessages?.[prevMessages.length - 1]?.id;
-		if (!prevMessages || prevLastId === lastId) { return; }
+		if (!prevMessages || prevLastId === lastId || !isLive || !wasLive) {
+			return;
+		}
 
 		const el = containerRef.current;
-		if (!el) { return; }
+		if (!el) {
+			return;
+		}
 
 		const distanceFromBottom =
 			el.scrollHeight - el.scrollTop - el.clientHeight;
@@ -41,7 +49,7 @@ export function useAutoScroll(
 			scrollToBottom();
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [messages, prevMessages]);
+	}, [messages, prevMessages, isLive, wasLive]);
 
 	return { scrollToBottom };
 }
