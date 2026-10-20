@@ -1,26 +1,35 @@
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { useRevalidator } from "react-router";
 
 interface Init {
 	method?: string;
 	headers?: Record<string, string>;
 	body?: XMLHttpRequestBodyInit;
-	signal?: AbortSignal;
 }
 
 export default function usePogressFetch(): {
 	progress: number;
 	total: number;
 	doFetch: (endpoint: string, init?: Init) => Promise<Response>;
+	abort: () => void;
 } {
 	const [progress, setProgress] = useState(0);
 	const [total, setTotal] = useState(0);
 	const revalidator = useRevalidator();
+	const controllerRef = useRef<AbortController>(new AbortController());
+
+	function abort(): void {
+		controllerRef.current.abort();
+	}
 
 	const doFetch = useCallback(
 		async (url: string, init: Init = {}) => {
+			controllerRef.current.abort();
+			controllerRef.current = new AbortController();
+			const { signal } = controllerRef.current;
+
 			await fetch("/api/me");
-			return new Promise<Response>((resolve) => {
+			return new Promise<Response>((resolve, reject) => {
 				const req = new XMLHttpRequest();
 
 				req.open(init.method ?? "GET", url);
@@ -58,7 +67,13 @@ export default function usePogressFetch(): {
 						}),
 					);
 				};
-				init.signal?.addEventListener("abort", () => {
+				req.onerror = (): void => {
+					reject(new TypeError("Network request failed"));
+				};
+				req.onabort = (): void => {
+					reject(new DOMException("Request aborted", "AbortError"));
+				};
+				signal.addEventListener("abort", () => {
 					req.abort();
 				});
 				setTotal(0);
@@ -71,5 +86,5 @@ export default function usePogressFetch(): {
 		},
 		[revalidator],
 	);
-	return { progress, total, doFetch };
+	return { progress, total, doFetch, abort };
 }
