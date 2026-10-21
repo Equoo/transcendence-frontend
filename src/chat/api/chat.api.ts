@@ -153,14 +153,10 @@ export async function updateMessage(
 	channelId: string,
 	id: string,
 	content: string,
-): Promise<Message> {
-	return requestJson<Message>(
-		`/api/channels/${channelId}/messages/${id}`,
-		"PUT",
-		{
-			content,
-		},
-	);
+): Promise<void> {
+	await request(`/api/channels/${channelId}/messages/${id}`, "PUT", {
+		content,
+	});
 }
 
 export async function deleteMessage(
