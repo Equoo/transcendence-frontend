@@ -1,6 +1,8 @@
 import type { JSX } from "react/jsx-runtime";
 import { NavLink } from "react-router";
 
+import { resolveUser, useUser } from "@/users/hooks/users";
+
 import type { Conversation } from "../api/conversations.api";
 import type { Relationship } from "../api/relationship.api";
 import { conversationTitle, isGroup } from "../utils/friends.util";
@@ -13,6 +15,7 @@ export function SideBarChatItem({
 	conv: Conversation;
 	rels?: Relationship[];
 }): JSX.Element {
+	const user = useUser();
 	const last = conv.lastMessage;
 
 	return (
@@ -32,7 +35,7 @@ export function SideBarChatItem({
 				<div className="flex truncate flex-col justify-center min-w-0">
 					<p className="text-text text-[14px] font-semibold truncate">{conversationTitle(conv, rels)}</p>
 					{last ? (
-						<p className="text-muted text-[14px] block truncate min-w-0">{last.sender.userName}: {last.content}</p>
+						<p className="text-muted text-[14px] block truncate min-w-0">{resolveUser(last.sender, user).userName}: {last.content}</p>
 					) : isGroup(conv) && (
 						<p className="text-muted text-[13px]">{conv.recipients.length + 1} members</p>
 					)}
