@@ -8,6 +8,7 @@ type Props = ComponentProps<"button"> & {
 	icon: IconType;
 	size?: number;
 	pending?: boolean;
+	danger?: boolean;
 };
 
 export default function IconBtn({
@@ -15,6 +16,7 @@ export default function IconBtn({
 	discrete = false,
 	icon: Icon,
 	size = 18,
+	danger = false,
 	...rest
 }: Props): JSX.Element {
 	const activeStyle =
@@ -22,12 +24,13 @@ export default function IconBtn({
 	const unactiveStyle =
 		"text-text bg-surface border border-border hover:bg-border";
 	const discreteStyle = "text-text2 hover:bg-border hover:border-border";
+	const dangerStyle = "text-red-400 hover:bg-border hover:border-border";
 	return (
 		<button
 			type="button"
 			{...rest}
 			aria-pressed={active}
-			className={`${active ? activeStyle : discrete ? discreteStyle : unactiveStyle} inline-flex items-center font-semibold duration-150 py-2.5 px-2.5 gap-2 rounded-[12px] cursor-pointer ${rest.className}`}
+			className={`${active ? activeStyle : discrete ? discreteStyle : danger ? dangerStyle : unactiveStyle} inline-flex items-center font-semibold duration-150 py-2.5 px-2.5 gap-2 rounded-[12px] cursor-pointer ${rest.className}`}
 		>
 			<Icon size={size} />
 		</button>
