@@ -355,6 +355,10 @@ export default {
 					"Modification d'un message - *Échap* pour annuler",
 				replyingTo: "Réponse à @{{name}} - *Échap* pour annuler",
 				removeMessage: "Supprimer le message",
+				reply: "Répondre",
+				edit: "Modifier",
+				copyText: "Copier le texte",
+				copyId: "Copier l'ID du message",
 				removeMessageConfirm:
 					"Voulez-vous vraiment supprimer ce message ?",
 				today: "Aujourd'hui",
