@@ -1,5 +1,4 @@
 /* eslint-disable complexity */
-/* eslint-disable max-lines */
 import "blobatar/motion.css";
 
 import { Blobatar } from "@blobatar/react";
