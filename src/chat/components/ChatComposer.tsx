@@ -55,6 +55,7 @@ function ChatComposer({
 	placeholder: string;
 	onSend: (text: string, mode: ChatMode, target: Message | null) => void;
 }): JSX.Element {
+
 	// eslint-disable-next-line id-length
 	const { t } = useTranslation();
 	const [isEmpty, setIsEmpty] = useState(true);
@@ -262,6 +263,7 @@ function ChatComposer({
 					<Picker data={data} onEmojiSelect={handleEmojiSelect} />
 				</div>
 			)}
+			
 			{chatMode !== "default" && (
 				<div className="flex rounded-t-xl bg-back px-4 items-center justify-between">
 					<a

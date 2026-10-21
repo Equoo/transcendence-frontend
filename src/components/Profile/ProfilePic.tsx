@@ -1,14 +1,17 @@
+/* eslint-disable complexity */
 import "blobatar/motion.css";
 
 import { Blobatar } from "@blobatar/react";
 import { type Expression, idle, sleepy, surprised } from "blobatar/expression";
-import { type JSX, useEffect, useState } from "react";
+import { type JSX, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { TbPencil } from "react-icons/tb";
 import { useFetcher } from "react-router";
 
 import { ActivityEnum, useActivity } from "@/activity/hooks/activity.hook";
+import { useClickOutside } from "@/hooks/useClickOutside";
 import type { User } from "@/users/api/users";
+import ProfileUser from "@/users/components/ProfileUser";
 
 import type { clientAction as filesAction } from "../../files/routes/files.route";
 import PopupList from "../List/PopupList";
@@ -50,6 +53,7 @@ export default function ProfilePic({
 	size = 2,
 	className,
 	changePicture = false,
+	watch = false,
 	status = false,
 	edit = false,
 }: {
@@ -59,16 +63,23 @@ export default function ProfilePic({
 	className?: string;
 	status?: boolean;
 	changePicture?: boolean;
+	watch?: boolean;
 	edit?: boolean;
 }): JSX.Element {
 	// eslint-disable-next-line id-length
 	const { t } = useTranslation();
 	const filesFetcher = useFetcher<typeof filesAction>();
 	const fetcher = useFetcher();
+	const watchRef = useRef<HTMLDivElement>(null);
 
 	const [showSelect, setShowSelect] = useState(false);
 	const [showPics, setShowPics] = useState(false);
 	const [showPpMenu, setShowPpMenu] = useState(false);
+	const [showWatch, setShowWatch] = useState(false);
+
+	useClickOutside(watchRef, (): void => {
+		setShowWatch(false);
+	});
 
 	useEffect(() => {
 		if (filesFetcher.data) {
@@ -104,18 +115,20 @@ export default function ProfilePic({
 	}
 
 	return (
-		<div className={`relative flex shrink-0 ${sizeStyle} ${className}`}>
+		<div
+			className={`relative flex shrink-0 ${sizeStyle} ${className} ${watch || changePicture ? "group" : ""}`}
+		>
 			{user.avatar ? (
 				<img
 					src={`/api/files/${user.avatar.key}`}
-					className={`rounded-full w-full h-full border-2 border-accent-text`}
+					className={`rounded-full w-full h-full border-2 border-accent-text  ${watch || changePicture ? "group-hover:brightness-120" : ""}`}
 					style={{ zIndex: idx }}
 				/>
 			) : (
 				<Blobatar
 					name={user.id}
 					animate="always"
-					className={`w-full h-full`}
+					className={`w-full h-full ${watch || changePicture ? "group-hover:brightness-120" : ""}`}
 					expression={getExpression(activity.getActivity(user.id))}
 				></Blobatar>
 			)}
@@ -190,24 +203,36 @@ export default function ProfilePic({
 					)}
 				</div>
 			)}
-			{changePicture && (
+			{(changePicture || watch) && (
 				<div
 					onClick={() => {
-						if (user.avatar) {
-							setShowPpMenu(true);
+						if (changePicture) {
+							if (user.avatar) {
+								setShowPpMenu(true);
+							} else {
+								setShowPics(true);
+							}
 						} else {
-							setShowPics(true);
+							setShowWatch(true);
 						}
 					}}
-					className={` ${sizeStyle} opacity-0 hover:opacity-100 absolute z-1 hover:cursor-pointer rounded-full flex justify-center items-center`}
+					className={` ${sizeStyle} opacity-0 ${watch || changePicture ? "group-hover:opacity-100" : ""} absolute z-1 hover:cursor-pointer rounded-full flex justify-center items-center`}
 				>
-					<div className="w-full h-full rounded-full bg-black opacity-30"></div>
-					<TbPencil
-						size={25}
-						className="text-accent-text  absolute z-2"
-					></TbPencil>
+					<div className="w-full h-full rounded-full  opacity-0"></div>
+					{changePicture && (
+						<TbPencil
+							size={25}
+							className="text-accent-text  absolute z-2"
+						></TbPencil>
+					)}
 				</div>
 			)}
+			{showWatch && (
+				<div ref={watchRef} className="absolute bottom-6 left-9">
+					<ProfileUser user={user}></ProfileUser>
+				</div>
+			)}
+
 			{showPpMenu && (
 				<PopupList
 					className="absolute z-4 right-13 top-4  bg-surface2 border border-border"

@@ -1,9 +1,12 @@
-import type { JSX, Ref } from "react";
+import { type JSX, type Ref, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import ProfilePic from "@/components/Profile/ProfilePic";
 import type { Relationship } from "@/friends/api/relationship.api";
 import { displayName } from "@/friends/utils/friends.util";
+import { useClickOutside } from "@/hooks/useClickOutside";
+import ProfileUser from "@/users/components/ProfileUser";
+import { useUser } from "@/users/hooks/users";
 
 import type { Message } from "../../api/chat.api";
 import MessageContent from "./MessageContent";
@@ -49,6 +52,14 @@ function MessageRow({
 }: MessageRowProps): JSX.Element {
 	// eslint-disable-next-line id-length
 	const { t } = useTranslation();
+	const user = useUser();
+	const [showWatch, setShowWatch] = useState(false);
+	const watchRef = useRef<HTMLDivElement>(null);
+
+	useClickOutside(watchRef, (): void => {
+		setShowWatch(false);
+	});
+
 	return (
 		<div
 			ref={rowRef}
@@ -58,19 +69,30 @@ function MessageRow({
 			onMouseEnter={onActivate}
 			onFocus={onActivate}
 			onMouseLeave={onDeactivate}
-			className={`relative gap-3 ${showHeader ? "mt-4.5" : "mt-0.75"} hover:bg-back2 aria-selected:bg-back2 data-[pending=true]:animate-pulse data-[focus=true]:bg-accent-soft ${className}`}
+			className={`flex items-center relative shrink-0 ${showHeader ? "mt-4.5" : "mt-0.75"} hover:bg-back2 aria-selected:bg-back2 data-[pending=true]:animate-pulse data-[focus=true]:bg-accent-soft ${className}`}
 		>
 			{showHeader && (
 				<ProfilePic
-					className="absolute"
+					watch={message.sender.id !== user?.id}
 					user={message.sender}
 					size={1}
 				/>
 			)}
-			<div className="ml-12">
+			{showWatch && message.sender.id !== user?.id && (
+				<div ref={watchRef} className="absolute bottom-7 left-15">
+					<ProfileUser user={message.sender}></ProfileUser>
+				</div>
+			)}
+			<div className={showHeader ? `ml-2` : `ml-12`}>
 				{showHeader && (
 					<div className="mb-0.75 flex items-baseline gap-2.25">
-						<span className="font-head font-[650] text-[14.5px]">
+						<span
+							// eslint-disable-next-line no-negated-condition
+							className={`${message.sender.id !== user?.id ? "hover:underline hover:cursor-pointer" : ""} font-main font-[650] text-[14.5px]`}
+							onClick={() => {
+								setShowWatch(true);
+							}}
+						>
 							{displayName(message.sender, relations)}
 						</span>
 						<span className="text-[11.5px] text-muted">
