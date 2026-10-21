@@ -1,11 +1,11 @@
 import { type JSX, useState } from "react";
+import { createPortal } from "react-dom";
 import { PiCheckBold, PiHourglass, PiUserPlus } from "react-icons/pi";
 
 import CheckButton from "@/components/Button/CheckButton";
 import { SearchBar } from "@/components/Input/Search";
-import { ModalList, ModalListItem } from "@/components/List/ModalList";
 import Modal from "@/components/Modal/Modal";
-import UserLine from "@/components/Profile/UserLine";
+import ProfilePic from "@/components/Profile/ProfilePic";
 import type { User } from "@/users/api/users";
 import { useUser } from "@/users/hooks/users";
 
@@ -94,11 +94,7 @@ export default function AddFriendModal({
 		.toSorted((lhs, rhs) => lhs.userName.localeCompare(rhs.userName));
 
 	return createPortal(
-		<Modal
-			title="Add a friend"
-			onClose={onClose}
-			width="w-[calc(100%-2rem)]"
-		>
+		<Modal title="Add a friend" onClose={onClose}>
 			<div className="flex flex-col gap-5 w-full">
 				<p className="text-muted font-main font-light text-sm text-center">
 					Search a member of the group by username and send them a
