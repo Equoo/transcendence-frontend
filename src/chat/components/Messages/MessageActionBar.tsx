@@ -2,10 +2,18 @@ import { useQueryClient } from "@tanstack/react-query";
 import { type Ref, useImperativeHandle, useRef, useState } from "react";
 import type { JSX } from "react/jsx-runtime";
 import { useTranslation } from "react-i18next";
-import { PiArrowArcLeft, PiDotsThree, PiPencil, PiTrash } from "react-icons/pi";
+import {
+	PiArrowArcLeft,
+	PiCopy,
+	PiDotsThree,
+	PiHash,
+	PiPencil,
+	PiTrash,
+} from "react-icons/pi";
 
 import { PermEnum } from "@/admin/api/roles";
 import IconBtn from "@/components/Button/IconBtn";
+import PopupList from "@/components/List/PopupList";
 import ConfirmModal from "@/components/Modal/ConfirmModal";
 import { useUser } from "@/users/hooks/users";
 import { toastError } from "@/utils/error.util";
@@ -42,6 +50,7 @@ function MessageActionBar({
 
 	const [actionBar, setActionBar] = useState<ActionBar | null>(null);
 	const [showRemoveForm, setShowRemoveForm] = useState(false);
+	const [showMenu, setShowMenu] = useState(false);
 	const actionBarTimerRef = useRef<number | null>(null);
 	const activeRowRef = useRef<HTMLDivElement | null>(null);
 
@@ -80,6 +89,7 @@ function MessageActionBar({
 			row.ariaSelected = "true";
 			activeRowRef.current = row;
 
+			setShowMenu(false);
 			setActionBar({ msg, el: row, top, left });
 		},
 		hide: (): void => {
@@ -90,6 +100,7 @@ function MessageActionBar({
 					activeRowRef.current.ariaSelected = "false";
 					activeRowRef.current = null;
 				}
+				setShowMenu(false);
 				setActionBar(null);
 			}, 80);
 		},
@@ -101,6 +112,94 @@ function MessageActionBar({
 	if (!actionBar) {
 		return <div></div>;
 	}
+
+	const isOwn = actionBar.msg.sender.id === user?.id;
+	const canDelete =
+		isOwn ||
+		(user !== null &&
+			(user.role.permission & PermEnum.ManageMessages) !== 0);
+	const isSent = actionBar.el.dataset.pending === "false";
+
+	const copyText = (text: string): void => {
+		navigator.clipboard.writeText(text).catch(toastError);
+	};
+
+	const menuRow = (
+		Icon: typeof PiCopy,
+		label: string,
+		danger = false,
+	): JSX.Element => (
+		<div
+			className={`flex items-center gap-2 text-sm ${danger ? "text-red-400" : ""}`}
+		>
+			<Icon size={16} />
+			{label}
+		</div>
+	);
+
+	const menuRows = [
+		...(isSent
+			? [
+					{
+						id: "reply",
+						onClick: (): void => {
+							composerRef.current?.enterReplyMode(
+								actionBar.msg,
+								actionBar.el,
+							);
+						},
+						content: menuRow(PiArrowArcLeft, t("chat.reply")),
+					},
+				]
+			: []),
+		...(isSent && isOwn
+			? [
+					{
+						id: "edit",
+						onClick: (): void => {
+							composerRef.current?.enterEditMode(
+								actionBar.msg,
+								actionBar.el,
+							);
+						},
+						content: menuRow(PiPencil, t("chat.edit")),
+					},
+				]
+			: []),
+		{
+			id: "copy",
+			onClick: (): void => {
+				copyText(actionBar.msg.content);
+			},
+			content: menuRow(PiCopy, t("chat.copyText")),
+		},
+		...(isSent
+			? [
+					{
+						id: "copyId",
+						onClick: (): void => {
+							copyText(actionBar.msg.id);
+						},
+						content: menuRow(PiHash, t("chat.copyId")),
+					},
+				]
+			: []),
+		...(isSent && canDelete
+			? [
+					{
+						id: "delete",
+						onClick: (): void => {
+							setShowRemoveForm(true);
+						},
+						content: menuRow(
+							PiTrash,
+							t("chat.removeMessage"),
+							true,
+						),
+					},
+				]
+			: []),
+	];
 	return (
 		<>
 			<div
@@ -108,9 +207,9 @@ function MessageActionBar({
 				onMouseEnter={clearHideTimer}
 				className="absolute flex flex-row z-50 -translate-x-1/2"
 			>
-				{actionBar.el.dataset.pending === "false" && (
+				{isSent && (
 					<>
-						{actionBar.msg.sender.id === user?.id ? (
+						{isOwn ? (
 							<IconBtn
 								icon={PiPencil}
 								size={14}
@@ -137,23 +236,34 @@ function MessageActionBar({
 								}}
 							></IconBtn>
 						)}
-						{(actionBar.msg.sender.id === user?.id ||
-							(user &&
-								(user.role.permission &
-									PermEnum.ManageMessages) !==
-								0)) && (
-								<IconBtn
-									icon={PiTrash}
-									className="text-red-400"
-									size={14}
-									onClick={() => {
-										setShowRemoveForm(true);
-									}}
-								></IconBtn>
-							)}
+						{canDelete && (
+							<IconBtn
+								icon={PiTrash}
+								className="text-red-400"
+								size={14}
+								onClick={() => {
+									setShowRemoveForm(true);
+								}}
+							></IconBtn>
+						)}
 					</>
 				)}
-				<IconBtn icon={PiDotsThree} size={14}></IconBtn>
+				<IconBtn
+					icon={PiDotsThree}
+					size={14}
+					onClick={() => {
+						setShowMenu((open) => !open);
+					}}
+				></IconBtn>
+				{showMenu && (
+					<PopupList
+						className="top-full right-0 mt-1 bg-surface2 border border-border shadow-sm"
+						onClose={() => {
+							setShowMenu(false);
+						}}
+						rows={menuRows}
+					/>
+				)}
 			</div>
 			{showRemoveForm && (
 				<ConfirmModal
