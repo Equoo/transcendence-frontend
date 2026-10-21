@@ -40,7 +40,7 @@ function JumpToPresentButtons({
 				<button
 					type="button"
 					onClick={onClick}
-					className="absolute bottom-4 left-1/2 z-40 hidden -translate-x-1/2 items-center gap-1.5 rounded-full bg-accent px-3.5 py-1.5 text-[13px] font-medium text-white shadow-main lg:flex"
+					className="absolute cursor-pointer bottom-4 left-1/2 z-40 hidden -translate-x-1/2 items-center gap-1.5 rounded-full bg-accent px-3.5 py-1.5 text-[13px] font-medium text-white shadow-main lg:flex"
 				>
 					{t("chat.jumpToPresent")}
 					<PiArrowDown size={14} />
@@ -51,7 +51,7 @@ function JumpToPresentButtons({
 					type="button"
 					onClick={onClick}
 					aria-label={t("chat.jumpToPresent")}
-					className="absolute bottom-4 right-4 z-40 flex size-11 items-center justify-center rounded-full bg-accent text-white shadow-main lg:hidden"
+					className="absolute cursor-pointer bottom-4 right-4 z-40 flex size-11 items-center justify-center rounded-full bg-accent text-white shadow-main lg:hidden"
 				>
 					<PiArrowDown size={20} />
 				</button>
