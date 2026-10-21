@@ -50,6 +50,7 @@ export default function ListUsers({
 						action="/users/removeUser"
 						method="DELETE"
 						desc={t("admin.deleteUserDesc")}
+						confirmLabel={t("common.delete")}
 						id={user.id}
 					></ChoiceModal>
 				)}
@@ -64,6 +65,7 @@ export default function ListUsers({
 						action="/users/disconnectUser"
 						method="DELETE"
 						desc={t("admin.reloginDesc")}
+						confirmLabel={t("admin.disconnect")}
 						id={user.id}
 					></ChoiceModal>
 				)}

@@ -3,7 +3,7 @@ import { type JSX, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { PiArrowsClockwise, PiCloudArrowUp } from "react-icons/pi";
 
-import { FieldErrors, slotClass } from "@/events/components/composer/Slot";
+import { FieldErrors } from "@/components/Input/Field";
 
 import { FileIcon } from "./FileIcon";
 
@@ -20,33 +20,44 @@ export function formatSize(bytes: number, t: TFunction): string {
 export default function Dropzone({
 	file,
 	errors,
-	nudge,
+	nudge = false,
+	accept,
+	autoFocus = false,
 	onPick,
+	onReject,
 }: {
 	file: File | null;
 	errors?: string[];
-	nudge: boolean;
+	nudge?: boolean;
+	accept?: string;
+	autoFocus?: boolean;
 	onPick: (file: File) => void;
+	onReject: (reason: string) => void;
 }): JSX.Element {
 	// eslint-disable-next-line id-length
 	const { t } = useTranslation();
 	const inputRef = useRef<HTMLInputElement>(null);
 	const [dragging, setDragging] = useState(false);
 
+	function pick(picked: File): void {
+		if (picked.size > MAX_FILE_SIZE) {
+			onReject(
+				t("files.tooLarge", { size: formatSize(MAX_FILE_SIZE, t) }),
+			);
+		} else {
+			onPick(picked);
+		}
+	}
+
 	return (
 		<div className="flex flex-col gap-1">
 			<button
 				type="button"
-				autoFocus
-				className={`flex w-full items-center gap-3 rounded-2xl p-4 text-left cursor-pointer ${slotClass(
-					{
-						filled: file !== null,
-						next: file === null,
-						active: dragging,
-						error: Boolean(errors),
-						nudge,
-					},
-				)} ${file === null ? "min-h-32 flex-col justify-center text-center" : "bg-surface2"}`}
+				autoFocus={autoFocus}
+				className={`flex w-full items-center gap-3 rounded-2xl border p-4 text-left duration-150 cursor-pointer focus-visible:outline-0 focus-visible:border-accent
+					${file === null ? "min-h-32 flex-col justify-center border-dashed text-center" : "bg-surface2"}
+					${errors ? "border-error" : dragging ? "border-accent bg-accent-soft" : "border-border2 hover:border-accent"}
+					${nudge ? "animate-nudge" : ""}`}
 				onClick={() => inputRef.current?.click()}
 				onDragOver={(ev) => {
 					ev.preventDefault();
@@ -65,7 +76,7 @@ export default function Dropzone({
 					setDragging(false);
 					const dropped = ev.dataTransfer.files.item(0);
 					if (dropped) {
-						onPick(dropped);
+						pick(dropped);
 					}
 				}}
 			>
@@ -113,11 +124,12 @@ export default function Dropzone({
 			<input
 				ref={inputRef}
 				type="file"
+				accept={accept}
 				hidden
 				onChange={(ev) => {
 					const picked = ev.target.files?.item(0);
 					if (picked) {
-						onPick(picked);
+						pick(picked);
 					}
 					ev.target.value = "";
 				}}

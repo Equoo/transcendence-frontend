@@ -9,7 +9,7 @@ import { Input } from "@/components/Input/Input";
 import PopupList from "@/components/List/PopupList";
 import ChangeModal from "@/components/Modal/ChangeModal";
 import ChoiceModal from "@/components/Modal/ChoiceModal";
-import Modal from "@/components/Modal/Modal";
+import Modal, { ModalFooter } from "@/components/Modal/Modal";
 import ProfileLine from "@/components/Profile/ProfileLine";
 import { useClickOutside } from "@/hooks/useClickOutside";
 import Section, { type LineInfos } from "@/users/components/Section";
@@ -100,6 +100,7 @@ export default function Profile({
 						setShowDelete(false);
 					}}
 					desc={t("common.irreversible")}
+					confirmLabel={t("common.delete")}
 					action="/me/delete"
 					method="DELETE"
 				></ChoiceModal>
@@ -127,37 +128,48 @@ export default function Profile({
 						setShowPassword(false);
 					}}
 					title={t("profile.changePassword")}
+					subtitle={t("profile.changePasswordHint")}
 				>
-					<p className="text-muted font-main font-light text-sm text-center w-full">
-						Your password will change, this cannot be cancelled.
-					</p>
 					<fetcher.Form
-						action={"/me/password"}
-						method={"PATCH"}
-						className="flex flex-col items-center gap-5 w-7/10"
+						action="/me/password"
+						method="PATCH"
+						className="contents"
 					>
-						<Input
-							password
-							maxLength={255}
-							minLength={8}
-							name={"Current Password"}
-							required
-							className="ring-0 focus:border-border border-border rounded-sm"
-							placeholder={"current password"}
-						></Input>
-
-						<Input
-							password
-							maxLength={255}
-							minLength={8}
-							name={t("profile.newPassword")}
-							required
-							className="ring-0 focus:border-border border-border rounded-sm"
-							placeholder={t("profile.newPasswordPlaceholder")}
-						></Input>
-						<CheckButton active type="submit">
-							OK
-						</CheckButton>
+						<div className="flex flex-col gap-4">
+							<Input
+								autoFocus
+								password
+								maxLength={255}
+								minLength={8}
+								name="Current password"
+								label={t("changeModal.currentPassword")}
+								required
+								placeholder={t(
+									"changeModal.currentPasswordPlaceholder",
+								)}
+							/>
+							<Input
+								password
+								maxLength={255}
+								minLength={8}
+								name="New password"
+								label={t("profile.newPassword")}
+								required
+								placeholder={t(
+									"profile.newPasswordPlaceholder",
+								)}
+							/>
+						</div>
+						<ModalFooter>
+							<CheckButton
+								active
+								activeCheck={false}
+								type="submit"
+								pending={fetcher.state !== "idle"}
+							>
+								{t("profile.changePassword")}
+							</CheckButton>
+						</ModalFooter>
 					</fetcher.Form>
 				</Modal>
 			)}

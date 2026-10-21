@@ -3,17 +3,20 @@ import { useTranslation } from "react-i18next";
 import { PiDotsThreeVerticalBold } from "react-icons/pi";
 import { useFetcher } from "react-router";
 
+import { otherErrors, validationErrors } from "@/api/problem_detail";
 import CheckButton from "@/components/Button/CheckButton";
-import { Field } from "@/components/Input/Field";
 import { Input } from "@/components/Input/Input";
-import { Select } from "@/components/Input/Select";
 import { ListActions } from "@/components/List/List";
 import PopupList from "@/components/List/PopupList";
-import Modal from "@/components/Modal/Modal";
+import ConfirmModal from "@/components/Modal/ConfirmModal";
+import Modal, { ModalFooter } from "@/components/Modal/Modal";
 
 import type { clientAction } from "../routes/files.route";
+import FolderPicker from "./FolderPicker";
 
 type Dialog = "rename" | "move" | "delete";
+
+const NAME_MAX_LENGTH = 100;
 
 /**
  * Rename / move / delete menu for a file (`fileKey` set) or a folder
@@ -34,6 +37,7 @@ export default function ItemActions({
 	const { t } = useTranslation();
 	const [showSelect, setShowSelect] = useState(false);
 	const [dialog, setDialog] = useState<Dialog | null>(null);
+	const [newName, setNewName] = useState(name);
 	const fetcher = useFetcher<typeof clientAction>();
 	const isFolder = !fileKey;
 	const path = `${parent}${name}/`;
@@ -41,6 +45,16 @@ export default function ItemActions({
 	const destinations = Array.from(new Set(["/", ...folders])).filter(
 		(folder) => folder !== parent && !(isFolder && folder.startsWith(path)),
 	);
+	const [destination, setDestination] = useState(destinations.at(0) ?? "");
+	const renameReady =
+		newName.trim() !== "" && newName !== name && !newName.includes("/");
+	const errors = validationErrors(fetcher.data);
+
+	function open(next: Dialog): void {
+		setNewName(name);
+		setDestination(destinations.at(0) ?? "");
+		setDialog(next);
+	}
 
 	useEffect(() => {
 		if (fetcher.data instanceof Response && fetcher.data.status < 300) {
@@ -74,21 +88,21 @@ export default function ItemActions({
 							{
 								id: "rename",
 								onClick: (): void => {
-									setDialog("rename");
+									open("rename");
 								},
 								content: <div>{t("files.rename")}</div>,
 							},
 							{
 								id: "move",
 								onClick: (): void => {
-									setDialog("move");
+									open("move");
 								},
 								content: <div>{t("files.move")}</div>,
 							},
 							{
 								id: "delete",
 								onClick: (): void => {
-									setDialog("delete");
+									open("delete");
 								},
 								content: <div>{t("files.delete")}</div>,
 							},
@@ -103,7 +117,6 @@ export default function ItemActions({
 							? t("files.renameFolder")
 							: t("files.renameFile")
 					}
-					width="w-4/10"
 					onClose={() => {
 						setDialog(null);
 					}}
@@ -111,27 +124,39 @@ export default function ItemActions({
 					<fetcher.Form
 						method="PATCH"
 						action={action}
-						className="flex flex-col gap-4 w-7/10 items-center"
+						className="contents"
 					>
 						{isFolder && (
 							<input type="hidden" name="From" value={path} />
 						)}
 						<input type="hidden" name="Folder" value={parent} />
 						<Input
+							autoFocus
 							name="Name"
+							value={newName}
+							maxLength={NAME_MAX_LENGTH}
 							label={t("common.name")}
-							value={name}
-							pattern="^[^\/]*$"
-							title={t("files.noSlash")}
-							required
+							placeholder={name}
+							errors={
+								newName.includes("/")
+									? { ...errors, Name: [t("files.noSlash")] }
+									: errors
+							}
+							onChange={(ev) => {
+								setNewName(ev.target.value);
+							}}
 						/>
-						<CheckButton
-							type="submit"
-							active
-							pending={fetcher.state !== "idle"}
-						>
-							{t("files.rename")}
-						</CheckButton>
+						<ModalFooter errors={otherErrors(errors, ["Name"])}>
+							<CheckButton
+								type="submit"
+								active
+								activeCheck={false}
+								disabled={!renameReady}
+								pending={fetcher.state !== "idle"}
+							>
+								{t("files.rename")}
+							</CheckButton>
+						</ModalFooter>
 					</fetcher.Form>
 				</Modal>
 			)}
@@ -140,7 +165,7 @@ export default function ItemActions({
 					title={
 						isFolder ? t("files.moveFolder") : t("files.moveFile")
 					}
-					width="w-4/10"
+					subtitle={`${parent}${name}`}
 					onClose={() => {
 						setDialog(null);
 					}}
@@ -148,72 +173,58 @@ export default function ItemActions({
 					<fetcher.Form
 						method="PATCH"
 						action={action}
-						className="flex flex-col gap-4 w-7/10 items-center"
+						className="contents"
 					>
 						{isFolder && (
 							<input type="hidden" name="From" value={path} />
 						)}
 						<input type="hidden" name="Name" value={name} />
-						<Field name="Folder" label={t("files.folder")} required>
-							<Select
-								name="Folder"
-								className="w-full"
-								options={destinations.map((folder) => ({
-									value: folder,
-									label: folder,
-								}))}
-							/>
-						</Field>
-						<CheckButton
-							type="submit"
-							active
-							pending={fetcher.state !== "idle"}
-						>
-							{t("files.move")}
-						</CheckButton>
+						<FolderPicker
+							name="Folder"
+							label={t("files.moveTo")}
+							folders={destinations}
+							value={destination}
+							onChange={setDestination}
+						/>
+						<ModalFooter errors={otherErrors(errors, [])}>
+							<CheckButton
+								type="submit"
+								active
+								activeCheck={false}
+								disabled={destinations.length === 0}
+								pending={fetcher.state !== "idle"}
+							>
+								{t("files.move")}
+							</CheckButton>
+						</ModalFooter>
 					</fetcher.Form>
 				</Modal>
 			)}
 			{dialog === "delete" && (
-				<Modal
-					width="w-fit"
+				<ConfirmModal
 					title={
 						isFolder
 							? t("files.deleteFolderTitle")
 							: t("files.deleteFileTitle")
 					}
+					description={
+						isFolder
+							? t("files.deleteFolderDesc")
+							: t("common.irreversible")
+					}
+					confirmLabel={t("files.delete")}
+					danger
+					pending={fetcher.state !== "idle"}
 					onClose={() => {
 						setDialog(null);
 					}}
-				>
-					<p className="text-muted font-main font-light w-4/5 text-sm text-center">
-						{isFolder
-							? t("files.deleteFolderDesc")
-							: t("common.irreversible")}
-					</p>
-					<div className="inline-flex gap-8">
-						<CheckButton
-							pending={fetcher.state !== "idle"}
-							onClick={() => {
-								void fetcher.submit(
-									isFolder ? { From: path } : null,
-									{ action, method: "DELETE" },
-								);
-							}}
-						>
-							{t("common.yes")}
-						</CheckButton>
-						<CheckButton
-							active
-							activeCheck={false}
-							onClick={() => {
-								setDialog(null);
-							}}
-						>
-							{t("common.no")}
-						</CheckButton>
-					</div>
-				</Modal>
+					onConfirm={() => {
+						void fetcher.submit(isFolder ? { From: path } : null, {
+							action,
+							method: "DELETE",
+						});
+					}}
+				/>
 			)}
 		</>
 	);

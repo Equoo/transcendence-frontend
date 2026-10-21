@@ -1,17 +1,15 @@
-import { addDays, addWeeks, format, nextSaturday, set } from "date-fns";
+import { addDays, addWeeks, nextSaturday, set } from "date-fns";
 import { type JSX, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { PiClock } from "react-icons/pi";
 
-import { FieldErrors, slotClass, SlotPopover } from "./Slot";
+import { fieldBox, FieldErrors } from "@/components/Input/Field";
+import { slotClass, SlotPopover } from "@/components/Input/Slot";
+import { toInputValue } from "@/utils/date.util";
 
 const EVENING_HOUR = 20;
 const AFTERNOON_HOUR = 14;
 const TONIGHT_CUTOFF_HOUR = 19;
-
-export function toInputValue(date: Date): string {
-	return format(date, "yyyy-MM-dd'T'HH:mm");
-}
 
 function atHour(day: Date, hours: number): Date {
 	return set(day, { hours, minutes: 0, seconds: 0, milliseconds: 0 });
@@ -110,7 +108,7 @@ function DatePicker({
 					type="datetime-local"
 					value={value}
 					min={toInputValue(now)}
-					className="rounded-xl border border-border2 bg-surface px-3 py-2 text-sm font-normal text-text focus:border-accent focus:ring-0"
+					className={`${fieldBox()} font-normal`}
 					onChange={(ev) => {
 						onChange(ev.target.value);
 					}}

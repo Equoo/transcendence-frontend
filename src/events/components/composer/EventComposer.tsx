@@ -1,9 +1,16 @@
 import { type JSX, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { PiX } from "react-icons/pi";
 import { useFetcher } from "react-router";
 
-import { APIError, type ValidationErrors } from "../../../api/problem_detail";
+import Modal from "@/components/Modal/Modal";
+import { useNudge } from "@/hooks/useNudge";
+
+import {
+	APIError,
+	otherErrors,
+	type ValidationErrors,
+	validationErrors,
+} from "../../../api/problem_detail";
 import HiddenValues from "../../../components/Input/HiddenValues";
 import type { AppFile } from "../../../files/api/files.api";
 import type { EventRole } from "../../api/event_roles.api";
@@ -12,10 +19,14 @@ import type { clientAction as eventAction } from "../../routes/events.route";
 import ComposerCard, { type ComposerPopover } from "./ComposerCard";
 import { DescriptionTile, FilesTile, RolesTile } from "./EventExtras";
 import ExpireTile from "./ExpireTile";
-import { REQUIRED_FIELDS, type RequiredField } from "./Slot";
-import { type EventDraft, useEventDraft } from "./useEventDraft";
+import {
+	type EventDraft,
+	REQUIRED_FIELDS,
+	type RequiredField,
+	useEventDraft,
+} from "./useEventDraft";
 
-const SLOT_ERROR_KEYS = new Set([
+const SLOT_ERROR_KEYS = [
 	"Name",
 	"Date",
 	"ExpireAt",
@@ -28,9 +39,7 @@ const SLOT_ERROR_KEYS = new Set([
 	"Description",
 	"Files",
 	"FileKeys",
-]);
-
-const NO_ERRORS: ValidationErrors = {};
+];
 
 function errorsOf(errors: ValidationErrors, ...keys: string[]): string[] {
 	return keys
@@ -41,12 +50,6 @@ function errorsOf(errors: ValidationErrors, ...keys: string[]): string[] {
 function DraftFields({ draft }: { draft: EventDraft }): JSX.Element {
 	return (
 		<>
-			<input type="hidden" name="Name" value={draft.name.trim()} />
-			<input
-				type="hidden"
-				name="Location"
-				value={draft.location.trim()}
-			/>
 			<input type="hidden" name="Date" value={draft.date} />
 			<input type="hidden" name="Expire Date" value={draft.expireAt} />
 			<input type="hidden" name="Size" value={draft.size} />
@@ -74,17 +77,12 @@ export default function EventComposer({
 	const fetcher = useFetcher<typeof eventAction>();
 	const { draft, update, filled, missing } = useEventDraft(event);
 	const [openPopover, setOpenPopover] = useState<ComposerPopover>(null);
-	const [nudged, setNudged] = useState<RequiredField | null>(null);
+	const { nudged, nudge, onAnimationEnd } = useNudge<RequiredField>();
 	const nameRef = useRef<HTMLInputElement>(null);
 	const locationRef = useRef<HTMLInputElement>(null);
 
-	const errors =
-		fetcher.data instanceof APIError
-			? (fetcher.data.problem.errors ?? NO_ERRORS)
-			: NO_ERRORS;
-	const generalErrors = Object.entries(errors)
-		.filter(([key]) => !SLOT_ERROR_KEYS.has(key))
-		.flatMap(([, messages]) => messages);
+	const errors = validationErrors(fetcher.data);
+	const generalErrors = otherErrors(errors, SLOT_ERROR_KEYS);
 
 	useEffect(() => {
 		if (
@@ -117,49 +115,13 @@ export default function EventComposer({
 	}
 
 	return (
-		<div
-			role="dialog"
-			aria-modal="true"
-			aria-labelledby="event-composer-title"
-			className="fixed inset-0 z-50 overflow-y-auto bg-back/85 backdrop-blur-md animate-[fade-in_0.2s_ease-out]"
-			onKeyDown={(ev) => {
-				if (
-					ev.key === "Escape" &&
-					ev.currentTarget.contains(ev.target as Node)
-				) {
-					onClose();
-				}
-			}}
-			onAnimationEnd={(ev) => {
-				if (ev.animationName === "nudge") {
-					setNudged(null);
-				}
-			}}
+		<Modal
+			size="page"
+			title={event ? t("events.editTitle") : t("events.createTitle")}
+			subtitle={t("events.composer.subtitle")}
+			onClose={onClose}
+			onAnimationEnd={onAnimationEnd}
 		>
-			<header className="sticky top-0 z-30 flex items-center gap-4 bg-back/70 px-4 py-4 backdrop-blur-md sm:px-8">
-				<div className="flex-1 min-w-0">
-					<h2
-						id="event-composer-title"
-						className="font-head font-semibold text-xl text-text tracking-tight"
-					>
-						{event
-							? t("events.editTitle")
-							: t("events.createTitle")}
-					</h2>
-					<p className="text-sm text-text2">
-						{t("events.composer.subtitle")}
-					</p>
-				</div>
-				<button
-					type="button"
-					aria-label={t("common.cancel")}
-					className="flex items-center justify-center size-10 shrink-0 rounded-full text-text2 duration-150 cursor-pointer hover:bg-hover hover:text-text"
-					onClick={onClose}
-				>
-					<PiX size={20} />
-				</button>
-			</header>
-
 			<fetcher.Form
 				action={event ? `/events/${event.id}` : "/events"}
 				method={event ? "PUT" : "POST"}
@@ -168,7 +130,7 @@ export default function EventComposer({
 					const nextField = missing.at(0);
 					if (nextField) {
 						ev.preventDefault();
-						setNudged(nextField);
+						nudge(nextField);
 						focusField(nextField);
 					}
 				}}
@@ -243,6 +205,6 @@ export default function EventComposer({
 
 				<DraftFields draft={draft} />
 			</fetcher.Form>
-		</div>
+		</Modal>
 	);
 }

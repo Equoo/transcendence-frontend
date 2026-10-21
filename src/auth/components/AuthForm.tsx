@@ -1,6 +1,7 @@
 import type { JSX } from "react";
 import { useTranslation } from "react-i18next";
-import { PiLock, PiUser } from "react-icons/pi";
+import { PiUser } from "react-icons/pi";
+import { SlLock } from "react-icons/sl";
 import { Link, useNavigation } from "react-router";
 
 import CheckButton from "../../components/Button/CheckButton";
@@ -96,7 +97,7 @@ export function AuthForm({
 				label={t("auth.username")}
 				required
 			>
-				<PiUser className="ml-2 mr-2" />
+				<PiUser className="ml-2 mr-2 text-text2" size={20} />
 			</Input>
 			<Input
 				password
@@ -108,7 +109,7 @@ export function AuthForm({
 				label={t("auth.password")}
 				required
 			>
-				<PiLock className="ml-2 mr-2" />
+				<SlLock className="ml-2 mr-2 text-text2" size={20} />
 			</Input>
 			{register && (
 				<Input

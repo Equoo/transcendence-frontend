@@ -1,21 +1,23 @@
-import type { JSX, RefObject } from "react";
+import type { JSX, KeyboardEvent, RefObject } from "react";
 import { useTranslation } from "react-i18next";
 import { IoLocationOutline } from "react-icons/io5";
 import { PiSparkle } from "react-icons/pi";
+
+import { FieldErrors } from "@/components/Input/Field";
+import { TextSlot } from "@/components/Input/Slot";
+import { panelClass } from "@/components/Modal/Modal";
 
 import type { ValidationErrors } from "../../../api/problem_detail";
 import CheckButton from "../../../components/Button/CheckButton";
 import { Countdown } from "../EventCard";
 import DateSlot from "./DateSlot";
 import SizeSlot from "./SizeSlot";
+import TagsSlot from "./TagsSlot";
 import {
-	FieldErrors,
+	type EventDraft,
 	REQUIRED_FIELDS,
 	type RequiredField,
-	TextSlot,
-} from "./Slot";
-import TagsSlot from "./TagsSlot";
-import type { EventDraft } from "./useEventDraft";
+} from "./useEventDraft";
 
 const NAME_MAX_LENGTH = 55;
 const LOCATION_MAX_LENGTH = 50;
@@ -97,6 +99,19 @@ export default function ComposerCard({
 	const nextField = missing.at(0) ?? null;
 	const complete = nextField === null;
 
+	function advanceOnEnter(
+		field: "name" | "location",
+	): (ev: KeyboardEvent<HTMLInputElement>) => void {
+		return (ev): void => {
+			if (ev.key === "Enter") {
+				ev.preventDefault();
+				if (draft[field].trim() !== "") {
+					advance(field);
+				}
+			}
+		};
+	}
+
 	function slotState(field: RequiredField): {
 		next: boolean;
 		nudge: boolean;
@@ -118,46 +133,44 @@ export default function ComposerCard({
 			</div>
 
 			<div
-				className={`@container flex w-full flex-col gap-4 rounded-3xl border bg-surface p-5 shadow-main duration-300 sm:p-8
-					${complete ? "border-accent/40 ring-4 ring-accent/10" : "border-border"}`}
+				className={`@container flex w-full flex-col gap-4 p-5 sm:p-8 ${panelClass(complete)}`}
 			>
 				<TextSlot
 					autoFocus
-					inputRef={nameRef}
+					ref={nameRef}
+					name="Name"
 					value={draft.name}
 					maxLength={NAME_MAX_LENGTH}
 					counterFrom={NAME_COUNTER_FROM}
 					label={t("common.name")}
 					placeholder={t("events.composer.namePlaceholder")}
 					inputClassName="font-head text-2xl font-semibold leading-tight tracking-tight text-text @sm:text-3xl"
-					errors={errors.Name}
-					onChange={(value) => {
-						update("name", value);
+					errors={errors}
+					onChange={(ev) => {
+						update("name", ev.target.value);
 					}}
-					onEnter={() => {
-						advance("name");
-					}}
+					onKeyDown={advanceOnEnter("name")}
 					{...slotState("name")}
 				/>
 
 				<div className="flex flex-col gap-2 text-sm text-text2">
 					<TextSlot
-						inputRef={locationRef}
+						ref={locationRef}
+						name="Location"
 						value={draft.location}
 						maxLength={LOCATION_MAX_LENGTH}
 						label={t("events.location")}
 						placeholder={t("events.composer.locationPlaceholder")}
-						icon={<IoLocationOutline className="shrink-0" />}
 						inputClassName="text-sm text-text2"
-						errors={errors.Location}
-						onChange={(value) => {
-							update("location", value);
+						errors={errors}
+						onChange={(ev) => {
+							update("location", ev.target.value);
 						}}
-						onEnter={() => {
-							advance("location");
-						}}
+						onKeyDown={advanceOnEnter("location")}
 						{...slotState("location")}
-					/>
+					>
+						<IoLocationOutline className="shrink-0" />
+					</TextSlot>
 					<DateSlot
 						value={draft.date}
 						open={openPopover === "date"}

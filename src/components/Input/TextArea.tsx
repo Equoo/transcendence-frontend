@@ -3,10 +3,13 @@ import {
 	type JSX,
 	type ReactNode,
 	useEffect,
+	useId,
 	useState,
 } from "react";
 
 import type { ValidationErrors } from "../../api/problem_detail";
+import { Field, fieldBox } from "./Field";
+import { BARE_INPUT } from "./Slot";
 
 export type InputProps = ComponentProps<"textarea"> & {
 	name: string;
@@ -20,12 +23,12 @@ export function TextArea({
 	name,
 	label,
 	errors,
-	className,
+	className = "",
 	children,
 	value,
 	...rest
 }: InputProps): JSX.Element {
-	const isError = Boolean(errors?.[name] ?? false);
+	const generatedId = useId();
 	const [internalValue, setInternalValue] = useState(value ?? "");
 
 	useEffect(() => {
@@ -34,22 +37,23 @@ export function TextArea({
 	}, [value]);
 
 	return (
-		<div className="inline-flex flex-col w-full">
-			<div className="text-red-500">
-				<label className="text-text font-main font-medium">
-					{label ?? name}
-				</label>
-				{(rest.required ?? false) && "*"}
-			</div>
+		<Field
+			name={name}
+			label={label}
+			htmlFor={rest.id ?? generatedId}
+			required={rest.required}
+			errors={errors}
+		>
 			<div
-				className={`relative flex flex-wrap items-center w-full bg-surface border rounded-md
-                    px-2 py-1 font-main text-text
-                    ${isError ? "border-error" : "border-border2 focus-within:border-accent"} ${className}`}
+				className={`relative flex items-start gap-2 ${fieldBox({
+					error: Boolean(errors?.[name]),
+				})} ${className}`}
 			>
 				{children}
 				<textarea
+					id={generatedId}
 					name={name}
-					className={`bg-transparent outline-0 ring-0 border-0 p-0 w-10 grow peer`}
+					className={`${BARE_INPUT} min-w-0 grow resize-none field-sizing-content min-h-16 text-sm leading-relaxed`}
 					value={internalValue}
 					onChange={(ev) => {
 						setInternalValue(ev.target.value);
@@ -57,11 +61,6 @@ export function TextArea({
 					{...rest}
 				/>
 			</div>
-			{errors?.[name]?.map((err) => (
-				<p className="ml-1 text-error text-xs tracking-wide " key={err}>
-					- {err}
-				</p>
-			))}
-		</div>
+		</Field>
 	);
 }

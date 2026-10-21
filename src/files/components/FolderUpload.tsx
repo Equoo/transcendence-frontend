@@ -1,15 +1,21 @@
 import { type JSX, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { PiFolderPlus } from "react-icons/pi";
 import { useFetcher } from "react-router";
 
 import CheckButton from "@/components/Button/CheckButton";
-import { Field } from "@/components/Input/Field";
 import { Input } from "@/components/Input/Input";
-import { Select } from "@/components/Input/Select";
-import Modal from "@/components/Modal/Modal";
+import Modal, { ModalFooter } from "@/components/Modal/Modal";
 
-import { APIError, type ValidationErrors } from "../../api/problem_detail";
+import {
+	APIError,
+	otherErrors,
+	validationErrors,
+} from "../../api/problem_detail";
 import type { clientAction as filesAction } from "../routes/files.route";
+import FolderPicker from "./FolderPicker";
+
+const NAME_MAX_LENGTH = 100;
 
 export default function FolderUpload({
 	onClose,
@@ -22,69 +28,94 @@ export default function FolderUpload({
 }): JSX.Element {
 	// eslint-disable-next-line id-length
 	const { t } = useTranslation();
-	const [errors, setErrors] = useState<ValidationErrors>();
-	const filesFetcher = useFetcher<typeof filesAction>();
+	const fetcher = useFetcher<typeof filesAction>();
+	const [name, setName] = useState("");
+	const [folder, setFolder] = useState(currentPath);
 	const destinations = Array.from(new Set(["/", currentPath, ...folders]));
 
+	const errors = validationErrors(fetcher.data);
+	const ready = name.trim() !== "" && !name.includes("/");
+
 	useEffect(() => {
-		if (filesFetcher.data) {
-			if (filesFetcher.data instanceof APIError) {
-				// eslint-disable-next-line @eslint-react/set-state-in-effect
-				setErrors(filesFetcher.data.problem.errors);
-			} else {
-				onClose();
-			}
+		if (
+			fetcher.state === "idle" &&
+			fetcher.data &&
+			!(fetcher.data instanceof APIError)
+		) {
+			onClose();
 		}
-	}, [filesFetcher.data, onClose]);
+	}, [fetcher.state, fetcher.data, onClose]);
+
 	return (
-		<Modal title={t("files.newFolder")} onClose={onClose}>
-			<filesFetcher.Form
-				action="/files"
-				method="POST"
-				encType="multipart/form-data"
-				className="flex flex-col items-center w-4/5 gap-5 mb-4"
-				onSubmit={(event) => {
-					event.preventDefault();
-					const form = new FormData(event.currentTarget);
-					const folder = form.get("Folder") as string;
-					const name = form.get("Name") as string;
+		<Modal
+			title={t("files.newFolder")}
+			subtitle={t("files.newFolderHint")}
+			highlight={ready}
+			onClose={onClose}
+		>
+			<form
+				className="contents"
+				onSubmit={(ev) => {
+					ev.preventDefault();
+					if (!ready) {
+						return;
+					}
 					const formData = new FormData();
-					formData.append("Name", `${folder}${name}/`);
-					formData.append("File", new File([], name));
-					void filesFetcher.submit(formData, {
+					formData.append("Name", `${folder}${name.trim()}/`);
+					formData.append("File", new File([], name.trim()));
+					void fetcher.submit(formData, {
 						action: "/files",
 						method: "POST",
 						encType: "multipart/form-data",
 					});
 				}}
 			>
-				<Input
-					maxLength={100}
-					name="Name"
-					label={t("common.name")}
-					required
-					pattern="^[^\/]*$"
-					title={t("files.noSlash")}
-					errors={errors}
-				/>
-				<Field name="Folder" label={t("files.folder")} required>
-					<Select
-						name="Folder"
-						defaultValue={currentPath}
-						className="w-full"
-						options={destinations.map((folder) => ({
-							value: folder,
-							label: folder,
-						}))}
+				<div className="flex flex-col gap-4">
+					<Input
+						autoFocus
+						name="Name"
+						value={name}
+						maxLength={NAME_MAX_LENGTH}
+						label={t("common.name")}
+						placeholder={t("files.folderNamePlaceholder")}
+						errors={
+							name.includes("/")
+								? { ...errors, Name: [t("files.noSlash")] }
+								: errors
+						}
+						onChange={(ev) => {
+							setName(ev.target.value);
+						}}
 					/>
-				</Field>
-				<CheckButton
-					type="submit"
-					pending={filesFetcher.state !== "idle"}
-				>
-					{t("files.newFolderButton")}
-				</CheckButton>
-			</filesFetcher.Form>
+					<FolderPicker
+						label={t("files.folder")}
+						folders={destinations}
+						value={folder}
+						onChange={setFolder}
+					/>
+				</div>
+				<ModalFooter errors={otherErrors(errors, ["Name"])}>
+					<CheckButton
+						type="submit"
+						active={ready}
+						activeCheck={false}
+						pending={fetcher.state !== "idle"}
+					>
+						{ready ? (
+							<>
+								<PiFolderPlus className="animate-pop" />
+								{t("files.newFolderButton")}
+							</>
+						) : (
+							<span className="text-text2">
+								{name.includes("/")
+									? t("files.noSlash")
+									: t("files.nameFolderFirst")}
+							</span>
+						)}
+					</CheckButton>
+				</ModalFooter>
+			</form>
 		</Modal>
 	);
 }

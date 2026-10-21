@@ -2,11 +2,8 @@ import { useEffect, useRef } from "react";
 import { type FetcherWithComponents, useFetcher } from "react-router";
 import { toast } from "react-toastify";
 
-/**
- * Fetcher owned by a modal: once a submission settles, an error returned by
- * the action is toasted and the modal stays open, otherwise `then` is called
- * with the action data and the modal is closed.
- */
+import { APIError } from "@/api/problem_detail";
+
 export function useModalFetcher({
 	onClose,
 	then,
@@ -33,7 +30,11 @@ export function useModalFetcher({
 		submittedRef.current = false;
 
 		if (fetcher.data instanceof Error) {
-			toast.error(fetcher.data.message);
+			if (!(
+				fetcher.data instanceof APIError && fetcher.data.problem.errors
+			)) {
+				toast.error(fetcher.data.message || fetcher.data.name);
+			}
 			return;
 		}
 		callbacksRef.current.then?.(fetcher.data);

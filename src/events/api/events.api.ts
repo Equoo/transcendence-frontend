@@ -54,14 +54,14 @@ export function toEventInput(formData: FormData): EventInput {
 	const expire = formData.get("Expire Date") as string;
 
 	return {
-		name: formData.get("Name") as string,
+		name: (formData.get("Name") as string).trim(),
 		expireAt:
 			expire === ""
 				? new Date(maxDate).toISOString()
 				: new Date(expire).toISOString(),
 		date: new Date(formData.get("Date") as string).toISOString(),
 		size: Number(formData.get("Size")),
-		location: formData.get("Location") as string,
+		location: (formData.get("Location") as string).trim(),
 		tags: formData.getAll("Tags") as string[],
 		eventRoleIds: formData.getAll("Roles") as string[],
 		fileKeys: formData.getAll("Files") as string[],

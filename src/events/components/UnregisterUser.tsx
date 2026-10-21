@@ -39,16 +39,20 @@ export default function UnregisterUser({
 					title={t("eventDetails.unregisterUserTitle", {
 						name: registration.user.userName,
 					})}
+					confirmLabel={t("common.remove")}
 				/>
 			)}
-			<PiX
-				size={20}
-				className="shrink-0 hover:cursor-pointer text-text2 hover:text-error"
+			<button
+				type="button"
+				aria-label={t("eventDetails.unregisterUser")}
 				title={t("eventDetails.unregisterUser")}
+				className="flex items-center justify-center size-7 shrink-0 rounded-full text-text2 duration-150 cursor-pointer hover:bg-error-soft hover:text-error"
 				onClick={() => {
 					setShowConfirmation(true);
 				}}
-			/>
+			>
+				<PiX size={16} />
+			</button>
 		</>
 	);
 }

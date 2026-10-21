@@ -12,7 +12,7 @@ export async function clientAction({
 	const formdata = await request.formData();
 
 	if (!(await loginUser(formdata)).ok) {
-		return { ok: false };
+		return { ok: false, error: "Invalid username or password" };
 	}
 	return redirect("/");
 }
@@ -24,7 +24,7 @@ export default function Login({
 	const { t } = useTranslation();
 
 	return (
-		<div className="flex items-center justify-center w-full h-full bg-back gap-20 login">
+		<div className="flex items-center justify-center w-full h-full bg-back2 gap-20 login">
 			<AuthLogo side={"r"} />
 			<div className="flex flex-col lg:w-2/3 h-6/10 justify-center z-10 items-center lg:items-end">
 				<Form

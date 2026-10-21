@@ -1,5 +1,4 @@
 import { type JSX, useState } from "react";
-import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
 import { PiPlusBold } from "react-icons/pi";
 import { TbPencil } from "react-icons/tb";
@@ -66,18 +65,16 @@ export default function EventForm({
 						</CheckButton>
 					)}
 
-					{showEventForm &&
-						createPortal(
-							<EventComposer
-								roles={roles}
-								files={filesInput}
-								event={event}
-								onClose={() => {
-									setShowEventForm(false);
-								}}
-							/>,
-							document.body,
-						)}
+					{showEventForm && (
+						<EventComposer
+							roles={roles}
+							files={filesInput}
+							event={event}
+							onClose={() => {
+								setShowEventForm(false);
+							}}
+						/>
+					)}
 				</>
 			)}
 		</Promisable>

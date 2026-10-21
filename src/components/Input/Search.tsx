@@ -7,6 +7,8 @@ import {
 } from "react";
 
 import type { ValidationErrors } from "../../api/problem_detail";
+import { fieldBox } from "./Field";
+import { BARE_INPUT } from "./Slot";
 
 export type InputProps = ComponentProps<"input"> & {
 	name: string;
@@ -20,7 +22,7 @@ export type InputProps = ComponentProps<"input"> & {
 export function SearchBar({
 	name,
 	errors,
-	className,
+	className = "",
 	children,
 	grayed,
 	value,
@@ -28,7 +30,6 @@ export function SearchBar({
 	...rest
 }: InputProps): JSX.Element {
 	const [internalValue, setInternalValue] = useState(value ?? "");
-	const isError = Boolean(errors?.[name] ?? false);
 
 	useEffect(() => {
 		// eslint-disable-next-line @eslint-react/set-state-in-effect
@@ -37,12 +38,14 @@ export function SearchBar({
 
 	return (
 		<div
-			className={`relative flex flex-wrap items-center w-full border rounded-md
-				px-2 py-1 font-main ${(grayed ?? false) ? "bg-muted/20 text-text2" : "bg-surface text-text"}  
-				${isError ? "border-error" : "border-border2 focus-within:border-accent"} ${className}`}
+			className={`relative flex items-center gap-2 ${fieldBox({
+				error: Boolean(errors?.[name]),
+				grayed,
+			})} ${className}`}
 		>
+			{children}
 			<input
-				className={`bg-transparent outline-0 ring-0 border-0 p-0 w-10 grow peer`}
+				className={`${BARE_INPUT} min-w-0 grow h-6 text-sm`}
 				name={name}
 				value={internalValue}
 				{...rest}

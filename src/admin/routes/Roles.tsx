@@ -44,6 +44,7 @@ export default function AdminRoles({
 					placeholder={t("common.name")}
 					minInput={1}
 					maxInput={20}
+					submitLabel={t("common.create")}
 				></ChangeModal>
 			)}
 			<div className="flex w-full h-full justify-center bg-back">

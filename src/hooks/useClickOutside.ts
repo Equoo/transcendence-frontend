@@ -6,9 +6,18 @@ export function useClickOutside<T extends HTMLElement>(
 ): RefObject<T | null> {
 	useEffect(() => {
 		function handleClick(event: MouseEvent): void {
-			if (ref.current && !ref.current.contains(event.target as Node)) {
-				onClickOutside();
+			const target = event.target as Node;
+			if (!ref.current || ref.current.contains(target)) {
+				return;
 			}
+			const dialog =
+				target instanceof Element
+					? target.closest('[role="dialog"]')
+					: null;
+			if (dialog && !dialog.contains(ref.current)) {
+				return;
+			}
+			onClickOutside();
 		}
 
 		document.addEventListener("mousedown", handleClick);
