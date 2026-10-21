@@ -25,6 +25,8 @@ import { type ChatMode, useChatContext } from "./ChatProvider";
 
 await init({ data });
 
+const MAX_CHARS = 8192;
+
 interface EmojiMartEmoji {
 	id: string;
 	name: string;
@@ -61,6 +63,7 @@ function ChatComposer({
 	const { t } = useTranslation();
 	const user = useUser();
 	const [isEmpty, setIsEmpty] = useState(true);
+	const [charCount, setCharCount] = useState(0);
 	const [showPicker, setShowPicker] = useState(false);
 
 	const editableRef = useRef<HTMLDivElement>(null);
@@ -79,16 +82,25 @@ function ChatComposer({
 	const updateEmpty = (): void => {
 		if (editableRef.current) {
 			setIsEmpty(editableRef.current.textContent.trim().length === 0);
+			setCharCount(editableRef.current.textContent.length);
 		}
 	};
 
-	const insertText = (text: string): void => {
+	const insertText = (rawText: string): void => {
 		const editable = editableRef.current;
 		if (!editable) {
 			return;
 		}
 
 		const selection = window.getSelection();
+		const selectedLength = selection?.toString().length ?? 0;
+		const available =
+			MAX_CHARS - (editable.textContent.length - selectedLength);
+		const text = rawText.slice(0, Math.max(0, available));
+		if (text === "") {
+			return;
+		}
+
 		if (selection) {
 			if (selection.rangeCount === 0) {
 				return;
@@ -151,6 +163,7 @@ function ChatComposer({
 		editable.textContent = "";
 		setChatText("");
 		setIsEmpty(true);
+		setCharCount(0);
 	};
 
 	const [chatMode, modeTarget, modeTargetEl] = getChatMode();
@@ -314,8 +327,17 @@ function ChatComposer({
 					contentEditable="plaintext-only"
 					suppressContentEditableWarning
 					onInput={(ev) => {
+						const text = ev.currentTarget.textContent;
+						if (text.length > MAX_CHARS) {
+							setText(text.slice(0, MAX_CHARS));
+							return;
+						}
 						updateEmpty();
-						setChatText(ev.currentTarget.textContent);
+						setChatText(text);
+					}}
+					onPaste={(ev) => {
+						ev.preventDefault();
+						insertText(ev.clipboardData.getData("text/plain"));
 					}}
 					onKeyDown={handleKeyDown}
 				/>
@@ -330,6 +352,15 @@ function ChatComposer({
 					}}
 				/>
 				<span className="flex-1" />
+				{charCount >= MAX_CHARS * 0.8 && (
+					<span
+						className={`mr-1 text-xs tabular-nums ${
+							charCount >= MAX_CHARS ? "text-red-500" : "text-muted"
+						}`}
+					>
+						{charCount}/{MAX_CHARS}
+					</span>
+				)}
 				<IconBtn
 					active
 					icon={BsSend}
