@@ -13,7 +13,7 @@ import {
 } from "react";
 import { useTranslation } from "react-i18next";
 import { BsSend } from "react-icons/bs";
-import { PiImage, PiPaperclip, PiSmiley } from "react-icons/pi";
+import { PiSmiley } from "react-icons/pi";
 
 import IconBtn from "@/components/Button/IconBtn";
 import { useClickOutside } from "@/hooks/useClickOutside";
@@ -315,8 +315,6 @@ function ChatComposer({
 				/>
 			</div>
 			<div className="flex items-center gap-1 px-2 pt-1.5 pb-2">
-				<IconBtn discrete icon={PiPaperclip} size={18} />
-				<IconBtn discrete icon={PiImage} size={18} />
 				<IconBtn
 					discrete
 					icon={PiSmiley}

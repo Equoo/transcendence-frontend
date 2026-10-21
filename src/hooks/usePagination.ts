@@ -105,7 +105,7 @@ export function useScrollPagination({
 				direction === "up"
 					? el.scrollTop <= threshold
 					: el.scrollHeight - el.scrollTop - el.clientHeight <=
-						threshold;
+					threshold;
 			if (nearEdge) {
 				loadMore();
 			}

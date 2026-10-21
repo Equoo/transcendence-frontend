@@ -65,11 +65,19 @@ export function removeCategory(qc: QueryClient, id: string): void {
 const hasMessage = (data: MessagePages, id: string): boolean =>
 	data.pages.some((page) => page.some((msg) => msg.id === id));
 
+function cancelPageFetch(qc: QueryClient, channelId: string): void {
+	const queryKey = chatKeys.messages(channelId);
+	if (qc.getQueryData(queryKey) && qc.isFetching({ queryKey }) > 0) {
+		void qc.cancelQueries({ queryKey });
+	}
+}
+
 function mapPages(
 	qc: QueryClient,
 	channelId: string,
 	fn: (page: Message[]) => Message[],
 ): void {
+	cancelPageFetch(qc, channelId);
 	qc.setQueryData<MessagePages>(
 		chatKeys.messages(channelId),
 		(old) => old && { ...old, pages: old.pages.map(fn) },
@@ -119,6 +127,7 @@ export function addMessage(
 	channelId: string,
 	message: Message,
 ): void {
+	cancelPageFetch(qc, channelId);
 	qc.setQueryData<MessagePages>(chatKeys.messages(channelId), (old) => {
 		if (!old || hasMessage(old, message.id) || isDetached(old)) {
 			return old;
@@ -138,6 +147,7 @@ export function addPendingMessage(
 ): void {
 	const data = qc.getQueryData<MessagePages>(chatKeys.messages(channelId));
 	if (data && isDetached(data)) {
+		cancelPageFetch(qc, channelId);
 		qc.setQueryData<MessagePages>(chatKeys.messages(channelId), {
 			pages: [[message]],
 			pageParams: [null],
@@ -166,7 +176,6 @@ export function removeMessage(
 	mapPages(qc, channelId, (page) => without(page, id));
 }
 
-// .TODO: Some bugs on first message
 export function resolvePendingMessage(
 	qc: QueryClient,
 	channelId: string,

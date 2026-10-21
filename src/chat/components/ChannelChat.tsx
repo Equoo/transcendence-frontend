@@ -18,7 +18,7 @@ import {
 	updateMessage,
 } from "../cache/chat.cache";
 import ChatComposer, { type ChatComposerHandles } from "./ChatComposer";
-import { ChatProvider } from "./ChatProvider";
+import { type ChatMode, ChatProvider } from "./ChatProvider";
 import MessageList, { type MessageListHandles } from "./Messages/MessageList";
 
 function ChannelChat({
@@ -39,7 +39,7 @@ function ChannelChat({
 
 	const onSend = (
 		text: string,
-		mode: "default" | "edit" | "reply",
+		mode: ChatMode,
 		target: Message | null,
 	): void => {
 		if (mode === "edit" && target) {
@@ -60,7 +60,7 @@ function ChannelChat({
 			return;
 		}
 
-		const pendingId = new Date().toString() + counter;
+		const pendingId = `${new Date().getTime().toString()}_${counter}`;
 		const message = {
 			id: pendingId,
 			content: text,

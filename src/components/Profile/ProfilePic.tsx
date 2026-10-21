@@ -104,7 +104,7 @@ export default function ProfilePic({
 	}
 
 	return (
-		<div className={`flex shrink-0 ${sizeStyle} ${className}`}>
+		<div className={`relative flex shrink-0 ${sizeStyle} ${className}`}>
 			{user.avatar ? (
 				<img
 					src={`/api/files/${user.avatar.key}`}

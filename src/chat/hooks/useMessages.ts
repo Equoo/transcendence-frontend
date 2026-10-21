@@ -14,8 +14,6 @@ import {
 	olderCursor,
 } from "../cache/chat.cache";
 
-//.TODO: A tall viewport may not fill on the first load.
-// Request a larger first page so older messages stay reachable.
 const INITIAL_PAGE_SIZE = 40;
 
 function toMessages(data: MessagePages): Message[] {
