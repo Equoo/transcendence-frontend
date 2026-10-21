@@ -26,6 +26,7 @@ import Profile from "@/users/components/Profile";
 import { PermEnum } from "../../admin/api/roles";
 import InvitationForm from "../../invitations/components/InvitationForm";
 import type { User } from "../../users/api/users";
+import IconBtn from "../Button/IconBtn";
 import ProfileLine from "../Profile/ProfileLine";
 import ItemCategory from "./ItemCategory";
 import ItemChannel from "./ItemChannel";
@@ -213,15 +214,19 @@ function Sidebar({ user }: { user: User }): JSX.Element {
 							onClickOutside={profileClickOutside}
 						/>
 					)}
-					<div className="flex items-center gap-8  w-full h-20">
+					<div className="relative flex items-center gap-8  w-full h-20">
 						<ProfileLine user={user} status edit size={2} />
-						<PiGear
-							className="absolute text-muted right-5 hover:text-text2 cursor-pointer"
-							size={20}
+						<IconBtn
+							discrete
+							icon={PiGear}
+							title="Settings"
+							active={showUser}
+							className="absolute right-0 top-1/2 -translate-1/2"
 							onClick={() => {
 								setShowUser(true);
 							}}
-						></PiGear>
+						/>
+
 					</div>
 				</div>
 			</aside>

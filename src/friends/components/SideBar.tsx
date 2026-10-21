@@ -3,6 +3,7 @@ import type { JSX } from "react/jsx-runtime";
 import { PiHourglass, PiPlus, PiProhibit, PiUsers, PiUsersBold } from "react-icons/pi";
 
 import { SearchBar } from "@/components/Input/Search";
+import Tooltip from "@/components/Tooltip";
 import { useScrollPagination } from "@/hooks/usePagination";
 
 import { RelationshipState } from "../api/relationship.api";
@@ -65,14 +66,16 @@ export function ConversationSideBar({ className = "" }: { className?: string }):
 
 				<div className="relative flex justify-between items-center px-2 py-1.5 mt-3 text-[11px] text-muted font-bold tracking-wider uppercase group">
 					Messages
-					<button
-						type="button"
-						title="New conversation"
-						className="ml-auto p-0.5 cursor-pointer text-muted hover:text-text"
-						onClick={() => { setShowNewConv(true); }}
-					>
-						<PiPlus size={14} />
-					</button>
+					<Tooltip content="New conversation" focusable={false} className="ml-auto inline-flex">
+						<button
+							type="button"
+							aria-label="New conversation"
+							className="p-0.5 cursor-pointer text-muted hover:text-text"
+							onClick={() => { setShowNewConv(true); }}
+						>
+							<PiPlus size={14} />
+						</button>
+					</Tooltip>
 				</div>
 				<ul className="flex-1 overflow-hidden overflow-y-auto w-full" onScroll={onScroll} ref={containerRef}>
 					{isPending && <ConversationListSkeleton />}

@@ -359,6 +359,12 @@ export default {
 				edit: "Modifier",
 				copyText: "Copier le texte",
 				copyId: "Copier l'ID du message",
+				emoji: "Emoji",
+				send: "Envoyer",
+				moreActions: "Plus d'actions",
+				editChannel: "Modifier le canal",
+				editCategory: "Modifier la catégorie",
+				cancelMode: "Annuler (Échap)",
 				removeMessageConfirm:
 					"Voulez-vous vraiment supprimer ce message ?",
 				today: "Aujourd'hui",
