@@ -16,6 +16,7 @@ import { BsSend } from "react-icons/bs";
 import { PiSmiley } from "react-icons/pi";
 
 import IconBtn from "@/components/Button/IconBtn";
+import Tooltip from "@/components/Tooltip";
 import { useClickOutside } from "@/hooks/useClickOutside";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { resolveUser, useUser } from "@/users/hooks/users";
@@ -304,15 +305,22 @@ function ChatComposer({
 							</>
 						)}
 					</a>
-					<button
-						type="button"
-						className="ml-3 shrink-0 text-muted hover:text-text text-2xl cursor-pointer"
-						onClick={() => {
-							closeChatMode();
-						}}
+					<Tooltip
+						content={t("chat.cancelMode")}
+						focusable={false}
+						className="ml-3 inline-flex shrink-0"
 					>
-						×
-					</button>
+						<button
+							type="button"
+							aria-label={t("chat.cancelMode")}
+							className="text-muted hover:text-text text-2xl cursor-pointer"
+							onClick={() => {
+								closeChatMode();
+							}}
+						>
+							×
+						</button>
+					</Tooltip>
 				</div>
 			)}
 			<div className="relative max-h-50 min-h-6 px-4 pt-3.25 pb-1 text-[14.5px] overflow-y-auto">
@@ -346,6 +354,7 @@ function ChatComposer({
 				<IconBtn
 					discrete
 					icon={PiSmiley}
+					tooltip={t("chat.emoji")}
 					size={18}
 					onClick={() => {
 						setShowPicker((enable) => !enable);
@@ -364,6 +373,7 @@ function ChatComposer({
 				<IconBtn
 					active
 					icon={BsSend}
+					tooltip={t("chat.send")}
 					size={16}
 					disabled={isEmpty}
 					onClick={() => {

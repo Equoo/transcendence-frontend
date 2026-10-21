@@ -68,7 +68,7 @@ export default function ChannelRoute({
 					</div>
 					<span className="flex-1" />
 					{hasChannel && (
-						<IconBtn discrete icon={PiUsers} active={showMembers} onClick={() => { setMembersOpen(!showMembers); }} />
+						<IconBtn discrete icon={PiUsers} active={showMembers} tooltip={showMembers ? t("home.closeMembers") : t("home.openMembers")} onClick={() => { setMembersOpen(!showMembers); }} />
 					)}
 				</div>
 

@@ -3,6 +3,8 @@ import type { JSX } from "react/jsx-runtime";
 import { useTranslation } from "react-i18next";
 import { PiArrowDown } from "react-icons/pi";
 
+import Tooltip from "@/components/Tooltip";
+
 const SCROLLED_UP_PX = 300;
 
 export function useScrolledUp(): [
@@ -47,14 +49,20 @@ function JumpToPresentButtons({
 				</button>
 			)}
 			{(isDetached || isScrolledUp) && (
-				<button
-					type="button"
-					onClick={onClick}
-					aria-label={t("chat.jumpToPresent")}
-					className="absolute cursor-pointer bottom-4 right-4 z-40 flex size-11 items-center justify-center rounded-full bg-accent text-white shadow-main lg:hidden"
+				<Tooltip
+					content={t("chat.jumpToPresent")}
+					focusable={false}
+					className="absolute bottom-4 right-4 z-40 flex lg:hidden"
 				>
-					<PiArrowDown size={20} />
-				</button>
+					<button
+						type="button"
+						onClick={onClick}
+						aria-label={t("chat.jumpToPresent")}
+						className="cursor-pointer flex size-11 items-center justify-center rounded-full bg-accent text-white shadow-main"
+					>
+						<PiArrowDown size={20} />
+					</button>
+				</Tooltip>
 			)}
 		</>
 	);

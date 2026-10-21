@@ -120,6 +120,12 @@ function MessageActionBar({
 			(user.role.permission & PermEnum.ManageMessages) !== 0);
 	const isSent = actionBar.el.dataset.pending === "false";
 
+	const enterReply = (): void => {
+		composerRef.current?.enterReplyMode(actionBar.msg, actionBar.el);
+	};
+	const enterEdit = (): void => {
+		composerRef.current?.enterEditMode(actionBar.msg, actionBar.el);
+	};
 	const copyText = (text: string): void => {
 		navigator.clipboard.writeText(text).catch(toastError);
 	};
@@ -142,12 +148,7 @@ function MessageActionBar({
 			? [
 					{
 						id: "reply",
-						onClick: (): void => {
-							composerRef.current?.enterReplyMode(
-								actionBar.msg,
-								actionBar.el,
-							);
-						},
+						onClick: enterReply,
 						content: menuRow(PiArrowArcLeft, t("chat.reply")),
 					},
 				]
@@ -156,12 +157,7 @@ function MessageActionBar({
 			? [
 					{
 						id: "edit",
-						onClick: (): void => {
-							composerRef.current?.enterEditMode(
-								actionBar.msg,
-								actionBar.el,
-							);
-						},
+						onClick: enterEdit,
 						content: menuRow(PiPencil, t("chat.edit")),
 					},
 				]
@@ -212,33 +208,22 @@ function MessageActionBar({
 						{isOwn ? (
 							<IconBtn
 								icon={PiPencil}
+								tooltip={t("chat.edit")}
 								size={14}
-								onClick={() => {
-									if (composerRef.current) {
-										composerRef.current.enterEditMode(
-											actionBar.msg,
-											actionBar.el,
-										);
-									}
-								}}
+								onClick={enterEdit}
 							></IconBtn>
 						) : (
 							<IconBtn
 								icon={PiArrowArcLeft}
+								tooltip={t("chat.reply")}
 								size={14}
-								onClick={() => {
-									if (composerRef.current) {
-										composerRef.current.enterReplyMode(
-											actionBar.msg,
-											actionBar.el,
-										);
-									}
-								}}
+								onClick={enterReply}
 							></IconBtn>
 						)}
 						{canDelete && (
 							<IconBtn
 								icon={PiTrash}
+								tooltip={t("chat.removeMessage")}
 								className="text-red-400"
 								size={14}
 								onClick={() => {
@@ -250,6 +235,7 @@ function MessageActionBar({
 				)}
 				<IconBtn
 					icon={PiDotsThree}
+					tooltip={t("chat.moreActions")}
 					size={14}
 					onClick={() => {
 						setShowMenu((open) => !open);

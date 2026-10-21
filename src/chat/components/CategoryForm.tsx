@@ -8,6 +8,7 @@ import CheckButton from "@/components/Button/CheckButton";
 import { Input } from "@/components/Input/Input";
 import ChoiceModal from "@/components/Modal/ChoiceModal";
 import Modal, { ModalActions, ModalFooter } from "@/components/Modal/Modal";
+import Tooltip from "@/components/Tooltip";
 import { useModalFetcher } from "@/hooks/useModalFetcher";
 
 import type { ChannelCategory } from "../api/chat.api";
@@ -119,20 +120,30 @@ export default function CategoryForm({
 	edit?: ChannelCategory | null;
 	className?: string;
 }): JSX.Element {
+	// eslint-disable-next-line id-length
+	const { t } = useTranslation();
 	const [showModal, setShowModal] = useState(false);
+	const label = edit ? t("chat.editCategory") : t("chat.createCategoryTitle");
 
 	return (
 		<>
-			<button
-				className={`relative z-1 ml-auto p-0.5 cursor-pointer text-muted hover:text-text ${className}`}
-				type="button"
-				name="channelForm"
-				onClick={() => {
-					setShowModal(true);
-				}}
+			<Tooltip
+				content={label}
+				focusable={false}
+				className={`relative z-1 ml-auto inline-flex ${className}`}
 			>
-				{edit ? <PiGear size={14}></PiGear> : <PiPlus size={14} />}
-			</button>
+				<button
+					className="p-0.5 cursor-pointer text-muted hover:text-text"
+					type="button"
+					name="channelForm"
+					aria-label={label}
+					onClick={() => {
+						setShowModal(true);
+					}}
+				>
+					{edit ? <PiGear size={14}></PiGear> : <PiPlus size={14} />}
+				</button>
+			</Tooltip>
 			{showModal && (
 				<CategoryModal
 					edit={edit}

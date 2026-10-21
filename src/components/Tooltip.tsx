@@ -16,11 +16,13 @@ export default function Tooltip({
 	children,
 	className = "",
 	onlyWhenTruncated = false,
+	focusable = true,
 }: {
 	content: ReactNode;
 	children: ReactNode;
 	className?: string;
 	onlyWhenTruncated?: boolean;
+	focusable?: boolean;
 }): JSX.Element {
 	const id = useId();
 	const anchorRef = useRef<HTMLSpanElement>(null);
@@ -99,7 +101,7 @@ export default function Tooltip({
 			<span
 				ref={anchorRef}
 				className={className}
-				tabIndex={enabled ? 0 : -1}
+				tabIndex={enabled && focusable ? 0 : -1}
 				{...(open && { "aria-describedby": id })}
 				onMouseEnter={show}
 				onMouseLeave={hide}
