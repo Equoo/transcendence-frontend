@@ -340,6 +340,7 @@ export default {
 				discussionStart: "討論從這裡開始",
 				edited: "（已編輯）",
 				newMessages: "新訊息",
+				jumpToPresent: "跳至最新",
 				categoryIdRequiredDelete: "刪除分類需要分類 ID",
 				categoryIdRequiredUpdate: "更新分類需要分類 ID",
 				channelIdRequiredDelete: "刪除頻道需要頻道 ID",

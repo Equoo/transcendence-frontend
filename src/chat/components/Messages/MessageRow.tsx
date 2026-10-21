@@ -23,6 +23,7 @@ interface MessageRowProps {
 	onDeactivate?: () => void;
 	className?: string;
 	relations?: Relationship[];
+	onClickReply?: (msg: Message) => void;
 }
 
 function formatTimestamp(date: Date): string {
@@ -43,7 +44,8 @@ function MessageRow({
 	onActivate,
 	onDeactivate,
 	className,
-	relations
+	relations,
+	onClickReply,
 }: MessageRowProps): JSX.Element {
 	// eslint-disable-next-line id-length
 	const { t } = useTranslation();
@@ -77,7 +79,10 @@ function MessageRow({
 					</div>
 				)}
 				{message.messageRef && (
-					<MessageReplyPreview message={message.messageRef} />
+					<MessageReplyPreview
+						message={message.messageRef}
+						onClick={onClickReply}
+					/>
 				)}
 				<div className="whitespace-pre-wrap wrap-break-word text-[14.5px] leading-normal text-text ">
 					<MessageContent content={message.content} />

@@ -1,16 +1,26 @@
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
+import { useCallback } from "react";
 
-import { fetchMessages, type Message } from "../api/chat.api";
-import { chatKeys, type MessagePages } from "../cache/chat.cache";
+import {
+	fetchMessages,
+	type Message,
+	type MessageCursor,
+} from "../api/chat.api";
+import {
+	chatKeys,
+	type MessagePages,
+	MESSAGES_PAGE_SIZE,
+	newerCursor,
+	olderCursor,
+} from "../cache/chat.cache";
 
-// A tall viewport may not fill on the first load.
-// Request a larger first page so older messages stay reachable.
 const INITIAL_PAGE_SIZE = 40;
-const PAGE_SIZE = 10;
 
 function toMessages(data: MessagePages): Message[] {
 	const seen = new Set<string>();
-	return data.pages.toReversed().flat()
+	return data.pages
+		.toReversed()
+		.flat()
 		.filter((msg) => !seen.has(msg.id) && Boolean(seen.add(msg.id)));
 }
 
@@ -19,12 +29,57 @@ export function useMessages(channelId: string) {
 	return useInfiniteQuery({
 		queryKey: chatKeys.messages(channelId),
 		queryFn: async ({ pageParam }): Promise<Message[]> =>
-			fetchMessages(channelId, pageParam ? PAGE_SIZE : INITIAL_PAGE_SIZE, pageParam),
-		initialPageParam: null as Date | null,
-		getNextPageParam: (lastPage) => (lastPage.length === 0 ? null : lastPage[0].sentAt),
+			fetchMessages(
+				channelId,
+				pageParam === null || "around" in pageParam
+					? INITIAL_PAGE_SIZE
+					: MESSAGES_PAGE_SIZE,
+				pageParam,
+			),
+		initialPageParam: null as MessageCursor,
+		getNextPageParam: olderCursor,
+		getPreviousPageParam: (firstPage, __, firstPageParam) =>
+			newerCursor(firstPage, firstPageParam),
 		select: toMessages,
 		staleTime: Infinity,
-		// Only a failed first load reaches the ErrorBoundary, older pages are toasted
 		throwOnError: (__, query) => typeof query.state.data === "undefined",
 	});
+}
+
+export function useLoadLatestMessages(channelId: string): () => Promise<void> {
+	const qc = useQueryClient();
+
+	return useCallback(async (): Promise<void> => {
+		const page = await fetchMessages(channelId, INITIAL_PAGE_SIZE, null);
+		const queryKey = chatKeys.messages(channelId);
+		await qc.cancelQueries({ queryKey });
+		qc.setQueryData<MessagePages>(queryKey, {
+			pages: [page],
+			pageParams: [null],
+		});
+	}, [qc, channelId]);
+}
+
+export function useLoadMessagesAround(
+	channelId: string,
+): (date: Date) => Promise<void> {
+	const qc = useQueryClient();
+
+	return useCallback(
+		async (date: Date): Promise<void> => {
+			const cursor: MessageCursor = { around: date };
+			const page = await fetchMessages(
+				channelId,
+				INITIAL_PAGE_SIZE,
+				cursor,
+			);
+			const queryKey = chatKeys.messages(channelId);
+			await qc.cancelQueries({ queryKey });
+			qc.setQueryData<MessagePages>(queryKey, {
+				pages: [page],
+				pageParams: [cursor],
+			});
+		},
+		[qc, channelId],
+	);
 }

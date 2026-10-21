@@ -18,6 +18,7 @@ export function normalizeMessage(msg: Message): Message {
 		...({
 			sentAt: new Date(msg.sentAt),
 			editAt: msg.editAt && new Date(msg.editAt ?? new Date()),
+			messageRef: msg.messageRef && normalizeMessage(msg.messageRef),
 		} as Message),
 	};
 }
@@ -30,7 +31,7 @@ export interface ChannelRole {
 export enum ChannelType {
 	Text = 0,
 	DirectMessage = 1,
-	GroupDirectMessage = 2
+	GroupDirectMessage = 2,
 }
 
 export interface ChannelBase {
@@ -82,15 +83,19 @@ export async function fetchCategories(): Promise<ChannelCategory[]> {
 	return requestJson<ChannelCategory[]>("/api/categories");
 }
 
+export type MessageCursor =
+	{ before: Date } | { after: Date } | { around: Date } | null;
+
 export async function fetchMessages(
 	channelId: string,
 	limit: number,
-	before: Date | null,
+	cursor: MessageCursor,
 ): Promise<Message[]> {
 	let url = `/api/channels/${channelId}/messages?take=${limit}`;
 
-	if (before !== null) {
-		url += `&before=${before.toISOString()}`;
+	if (cursor !== null) {
+		const [[key, date]] = Object.entries(cursor);
+		url += `&${key}=${date.toISOString()}`;
 	}
 
 	const raw = await requestJson<Message[]>(url);
@@ -101,23 +106,27 @@ export async function createChannel(channel: ChannelBody): Promise<Channel> {
 	return requestJson<Channel>("/api/channels", "POST", channel);
 }
 
-export async function updateChannel(id: string, channel: ChannelBody): Promise<Channel> {
-	return requestJson<Channel>(
-		`/api/channels/${id}`,
-		"PUT",
-		channel,
-	);
+export async function updateChannel(
+	id: string,
+	channel: ChannelBody,
+): Promise<Channel> {
+	return requestJson<Channel>(`/api/channels/${id}`, "PUT", channel);
 }
 
 export async function deleteChannel(id: string): Promise<void> {
 	await request(`/api/channels/${id}`, "DELETE");
 }
 
-export async function createCategory(category: CategoryBody): Promise<ChannelCategory> {
+export async function createCategory(
+	category: CategoryBody,
+): Promise<ChannelCategory> {
 	return requestJson<ChannelCategory>("/api/categories", "POST", category);
 }
 
-export async function updateCategory(id: string, category: CategoryBody): Promise<ChannelCategory> {
+export async function updateCategory(
+	id: string,
+	category: CategoryBody,
+): Promise<ChannelCategory> {
 	return requestJson<ChannelCategory>(
 		`/api/categories/${id}`,
 		"PUT",
@@ -144,8 +153,8 @@ export async function updateMessage(
 	channelId: string,
 	id: string,
 	content: string,
-): Promise<Message> {
-	return requestJson<Message>(`/api/channels/${channelId}/messages/${id}`, "PUT", {
+): Promise<void> {
+	await request(`/api/channels/${channelId}/messages/${id}`, "PUT", {
 		content,
 	});
 }
@@ -154,7 +163,10 @@ export async function deleteMessage(
 	channelId: string,
 	id: string,
 ): Promise<string> {
-	const response = await request(`/api/channels/${channelId}/messages/${id}`, "DELETE");
+	const response = await request(
+		`/api/channels/${channelId}/messages/${id}`,
+		"DELETE",
+	);
 	return response.text();
 }
 

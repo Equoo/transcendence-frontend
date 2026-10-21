@@ -3,9 +3,18 @@ import type { InfiniteData, QueryClient } from "@tanstack/react-query";
 import { updateConversation } from "@/friends/cache/friends.cache";
 import { upsert, without } from "@/utils/cache.util";
 
-import type { Channel, ChannelCategory, Message } from "../api/chat.api";
+import type {
+	Channel,
+	ChannelCategory,
+	Message,
+	MessageCursor,
+} from "../api/chat.api";
 
-export type MessagePages = InfiniteData<Message[], Date | null>;
+// Pages are ordered newest first: "next" pages are older, "previous" are newer.
+// A null cursor on the first page means the window reaches the latest message.
+export type MessagePages = InfiniteData<Message[], MessageCursor>;
+
+export const MESSAGES_PAGE_SIZE = 10;
 
 export const chatKeys = {
 	channels: ["channels"] as const,
@@ -56,15 +65,44 @@ export function removeCategory(qc: QueryClient, id: string): void {
 const hasMessage = (data: MessagePages, id: string): boolean =>
 	data.pages.some((page) => page.some((msg) => msg.id === id));
 
+function cancelPageFetch(qc: QueryClient, channelId: string): void {
+	const queryKey = chatKeys.messages(channelId);
+	if (qc.getQueryData(queryKey) && qc.isFetching({ queryKey }) > 0) {
+		void qc.cancelQueries({ queryKey });
+	}
+}
+
 function mapPages(
 	qc: QueryClient,
 	channelId: string,
 	fn: (page: Message[]) => Message[],
 ): void {
+	cancelPageFetch(qc, channelId);
 	qc.setQueryData<MessagePages>(
 		chatKeys.messages(channelId),
 		(old) => old && { ...old, pages: old.pages.map(fn) },
 	);
+}
+
+export function olderCursor(page: Message[]): MessageCursor | null {
+	return page.length === 0 ? null : { before: page[0].sentAt };
+}
+
+export function newerCursor(
+	page: Message[],
+	cursor: MessageCursor,
+): MessageCursor | null {
+	if (cursor === null || page.length === 0) {
+		return null;
+	}
+	if ("after" in cursor && page.length < MESSAGES_PAGE_SIZE) {
+		return null;
+	}
+	return { after: page[page.length - 1].sentAt };
+}
+
+function isDetached(data: MessagePages): boolean {
+	return newerCursor(data.pages[0], data.pageParams[0]) !== null;
 }
 
 export function findMessage(
@@ -72,10 +110,16 @@ export function findMessage(
 	channelId: string,
 	id: string,
 ): Message | undefined {
-	return qc
-		.getQueryData<MessagePages>(chatKeys.messages(channelId))
-		?.pages.flat()
-		.find((msg) => msg.id === id);
+	const pages = qc.getQueryData<MessagePages>(
+		chatKeys.messages(channelId),
+	)?.pages;
+	for (const page of pages ?? []) {
+		const found = page.find((msg) => msg.id === id);
+		if (found) {
+			return found;
+		}
+	}
+	return void 0;
 }
 
 export function addMessage(
@@ -83,15 +127,33 @@ export function addMessage(
 	channelId: string,
 	message: Message,
 ): void {
+	cancelPageFetch(qc, channelId);
 	qc.setQueryData<MessagePages>(chatKeys.messages(channelId), (old) => {
-		if (!old || hasMessage(old, message.id)) {
+		if (!old || hasMessage(old, message.id) || isDetached(old)) {
 			return old;
 		}
 		const pages = [...old.pages];
 		pages[0] = [...pages[0], message];
-		return { ...old, pages };
+		const pageParams = [null, ...old.pageParams.slice(1)];
+		return { pages, pageParams };
 	});
 	updateConversation(qc, { id: channelId, lastMessage: message });
+}
+
+export function addPendingMessage(
+	qc: QueryClient,
+	channelId: string,
+	message: Message,
+): void {
+	const data = qc.getQueryData<MessagePages>(chatKeys.messages(channelId));
+	if (data && isDetached(data)) {
+		cancelPageFetch(qc, channelId);
+		qc.setQueryData<MessagePages>(chatKeys.messages(channelId), {
+			pages: [[message]],
+			pageParams: [null],
+		});
+	}
+	addMessage(qc, channelId, message);
 }
 
 export function updateMessage(
@@ -114,7 +176,6 @@ export function removeMessage(
 	mapPages(qc, channelId, (page) => without(page, id));
 }
 
-// .TODO: Some bugs on first message
 export function resolvePendingMessage(
 	qc: QueryClient,
 	channelId: string,
