@@ -5,9 +5,8 @@ import { useTranslation } from "react-i18next";
 import { PiArrowArcLeft, PiDotsThree, PiTrash } from "react-icons/pi";
 
 import { PermEnum } from "@/admin/api/roles";
-import CheckButton from "@/components/Button/CheckButton";
 import IconBtn from "@/components/Button/IconBtn";
-import Modal from "@/components/Modal/Modal";
+import ConfirmModal from "@/components/Modal/ConfirmModal";
 import { useUser } from "@/users/hooks/users";
 import { toastError } from "@/utils/error.util";
 
@@ -158,48 +157,31 @@ function MessageActionBar({
 				<IconBtn icon={PiDotsThree} size={14}></IconBtn>
 			</div>
 			{showRemoveForm && (
-				<Modal
+				<ConfirmModal
 					title={t("chat.removeMessage")}
+					description={t("chat.removeMessageConfirm")}
+					confirmLabel={t("common.delete")}
+					danger
 					onClose={() => {
 						setShowRemoveForm(false);
 					}}
+					onConfirm={() => {
+						deleteMessage(channelId, actionBar.msg.id)
+							.then(() => {
+								removeMessage(qc, channelId, actionBar.msg.id);
+							})
+							.catch(toastError);
+						setShowRemoveForm(false);
+					}}
 				>
-					<p>{t("chat.removeMessageConfirm")}</p>
-
-					<MessageRow
-						message={actionBar.msg}
-						showHeader
-						className="w-full hover:bg-transparent"
-					></MessageRow>
-
-					<div className="flex flex-row gap-4">
-						<CheckButton
-							danger
-							onClick={() => {
-								deleteMessage(channelId, actionBar.msg.id)
-									.then(() => {
-										removeMessage(
-											qc,
-											channelId,
-											actionBar.msg.id,
-										);
-									})
-									.catch(toastError);
-								setShowRemoveForm(false);
-							}}
-						>
-							{t("common.delete")}
-						</CheckButton>
-						<CheckButton
-							onClick={() => {
-								setShowRemoveForm(false);
-							}}
-							active
-						>
-							{t("common.cancel")}
-						</CheckButton>
+					<div className="max-h-48 overflow-y-auto rounded-2xl border border-border bg-surface2">
+						<MessageRow
+							message={actionBar.msg}
+							showHeader
+							className="mt-0! px-3 py-2.5 hover:bg-transparent"
+						/>
 					</div>
-				</Modal>
+				</ConfirmModal>
 			)}
 		</>
 	);

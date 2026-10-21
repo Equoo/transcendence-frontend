@@ -57,6 +57,7 @@ export default function ListRoles({ role }: { role: Role }): JSX.Element {
 							setShowConfirmation(false);
 						}}
 						desc={t("admin.deleteRoleDesc")}
+						confirmLabel={t("common.delete")}
 						action="/roles/deleteRole"
 						method="DELETE"
 						id={role.id}

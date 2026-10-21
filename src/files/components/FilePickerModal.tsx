@@ -1,9 +1,10 @@
 import type { JSX } from "react";
 import { useTranslation } from "react-i18next";
-import { PiCheck } from "react-icons/pi";
+import { PiArrowUpBold, PiCaretRight, PiCheckBold } from "react-icons/pi";
 
 import CheckButton from "../../components/Button/CheckButton";
-import Modal from "../../components/Modal/Modal";
+import { ModalList, ModalListItem } from "../../components/List/ModalList";
+import Modal, { ModalFooter } from "../../components/Modal/Modal";
 import type { AppFile } from "../api/files.api";
 import { useFileBrowser } from "../hooks/useFileBrowser";
 import { FileIcon, FolderIcon } from "./FileIcon";
@@ -25,56 +26,66 @@ export default function FilePickerModal({
 		useFileBrowser(files);
 
 	return (
-		<Modal title={t("files.selectTitle")} onClose={onClose}>
-			{files.length > 0 && (
-				<div className="w-full flex flex-col bg-surface rounded p-2">
-					{currFolder !== "/" && (
-						<div
-							className="inline-flex items-center gap-2 rounded p-2 hover:bg-surface2 hover:cursor-pointer"
-							onClick={goUp}
-						>
-							<FolderIcon />
-							<p className="text-lg font-medium">..</p>
-						</div>
-					)}
-					{folders.map((folder) => (
-						<div
-							key={folder}
-							className="inline-flex items-center gap-2 rounded p-2 hover:bg-surface2 hover:cursor-pointer"
-							onClick={() => {
-								enterFolder(folder);
-							}}
-						>
-							<FolderIcon />
-							<p className="text-lg font-medium">{folder}</p>
-						</div>
-					))}
-					{rootFiles.map((file) => (
-						<div
+		<Modal
+			title={t("files.selectTitle")}
+			subtitle={currFolder}
+			onClose={onClose}
+		>
+			<ModalList message={files.length === 0 && t("files.empty")}>
+				{currFolder !== "/" && (
+					<ModalListItem onClick={goUp}>
+						<span className="flex items-center justify-center size-6 shrink-0 rounded-md bg-back2 text-muted">
+							<PiArrowUpBold size={12} />
+						</span>
+						<span className="flex-1 font-semibold text-text2">
+							..
+						</span>
+					</ModalListItem>
+				)}
+				{folders.map((folder) => (
+					<ModalListItem
+						key={folder}
+						onClick={() => {
+							enterFolder(folder);
+						}}
+					>
+						<FolderIcon />
+						<span className="flex-1 min-w-0 truncate font-semibold">
+							{folder}
+						</span>
+						<PiCaretRight className="shrink-0 text-muted" />
+					</ModalListItem>
+				))}
+				{rootFiles.map((file) => {
+					const selected = selectedKeys.includes(file.key);
+
+					return (
+						<ModalListItem
 							key={file.key}
-							className={`inline-flex items-center gap-2 rounded p-2 hover:cursor-pointer hover:bg-surface2 ${
-								selectedKeys.includes(file.key)
-									? "bg-surface"
-									: ""
-							}`}
+							selected={selected}
 							onClick={() => {
 								onToggle(file.key);
 							}}
 						>
 							<FileIcon contentType={file.contentType} />
-							<p className="flex-1 min-w-0 truncate text-lg font-medium text-text">
+							<span className="flex-1 min-w-0 truncate">
 								{file.name.slice(currFolder.length)}
-							</p>
-							{selectedKeys.includes(file.key) && (
-								<PiCheck size={20} />
+							</span>
+							{selected && (
+								<PiCheckBold
+									size={14}
+									className="shrink-0 text-accent animate-pop"
+								/>
 							)}
-						</div>
-					))}
-				</div>
-			)}
-			<CheckButton active type="button" onClick={onClose}>
-				{t("common.ok")}
-			</CheckButton>
+						</ModalListItem>
+					);
+				})}
+			</ModalList>
+			<ModalFooter>
+				<CheckButton active activeCheck={false} onClick={onClose}>
+					{t("files.selectDone", { count: selectedKeys.length })}
+				</CheckButton>
+			</ModalFooter>
 		</Modal>
 	);
 }

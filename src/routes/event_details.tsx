@@ -10,10 +10,12 @@ import { Link, useNavigate } from "react-router";
 
 import ChannelChat from "@/chat/components/ChannelChat";
 import { useChannel } from "@/chat/hooks/useChannels";
+import { ModalList, ModalListItem } from "@/components/List/ModalList";
 import ChoiceModal from "@/components/Modal/ChoiceModal";
 import Modal from "@/components/Modal/Modal";
 import ProfileLine from "@/components/Profile/ProfileLine";
 import ProfilePic from "@/components/Profile/ProfilePic";
+import UserLine from "@/components/Profile/UserLine";
 import RoleChange from "@/events/components/RoleChange";
 import UnregisterUser from "@/events/components/UnregisterUser";
 
@@ -72,6 +74,7 @@ export default function EventDetails({
 						name: event.name,
 					})}
 					desc={t("common.irreversible")}
+					confirmLabel={t("common.delete")}
 				/>
 			)}
 			<div className="flex px-4 py-4 gap-4 items-center border-b border-border">
@@ -170,36 +173,47 @@ export default function EventDetails({
 					</span>
 					{showRegistrations && (
 						<Modal
+							size="lg"
 							title={t("eventDetails.registeredUsers")}
+							subtitle={t("eventDetails.registeredCount", {
+								registered: event.registrations.length,
+								size: event.size,
+							})}
 							onClose={() => {
 								setShowRegistrations(false);
 							}}
 						>
-							{event.registeredCount === 0 &&
-								t("eventDetails.noRegistrations")}
-							{event.registrations.map((reg) => (
-								<div
-									key={reg.user.id}
-									className="w-7/10 inline-flex justify-between items-center"
-								>
-									<ProfileLine status user={reg.user} />
-									{Boolean(
-										user.role.permission &
-										PermEnum.HandleEvent,
-									) && (
-										<div className="inline-flex items-center gap-3">
-											<RoleChange
-												registration={reg}
-												event={event}
-											/>
-											<UnregisterUser
-												registration={reg}
-												event={event}
-											/>
-										</div>
-									)}
-								</div>
-							))}
+							<ModalList
+								className="max-h-96"
+								message={
+									event.registrations.length === 0 &&
+									t("eventDetails.noRegistrations")
+								}
+							>
+								{event.registrations.map((reg) => (
+									<ModalListItem key={reg.user.id}>
+										<UserLine
+											user={reg.user}
+											subtitle={reg.user.role.name}
+										/>
+										{Boolean(
+											user.role.permission &
+											PermEnum.HandleEvent,
+										) && (
+											<div className="inline-flex shrink-0 items-center gap-2">
+												<RoleChange
+													registration={reg}
+													event={event}
+												/>
+												<UnregisterUser
+													registration={reg}
+													event={event}
+												/>
+											</div>
+										)}
+									</ModalListItem>
+								))}
+							</ModalList>
 						</Modal>
 					)}
 					<div className="min-h-10 flex">

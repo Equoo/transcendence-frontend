@@ -51,9 +51,8 @@ function GroupActions({ conv, title }: { conv: Conversation; title: string }): J
 				pending={leave.isPending}
 				onClose={() => { setConfirm(false); }}
 				onConfirm={() => { leave.mutate(conv.id); }}
-			>
-				You will stop receiving messages from “{title}”. Someone will have to add you back to rejoin.
-			</ConfirmModal>
+				description={<>You will stop receiving messages from “{title}”. Someone will have to add you back to rejoin.</>}
+			/>
 		)}
 	</>);
 }

@@ -2,10 +2,11 @@ import { type ComponentProps, type JSX, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useFetcher } from "react-router";
 
+import { Field } from "@/components/Input/Field";
 import { Select } from "@/components/Input/Select";
+import Modal, { ModalFooter } from "@/components/Modal/Modal";
 
 import CheckButton from "../../components/Button/CheckButton";
-import Modal from "../../components/Modal/Modal";
 import type { EventSummary } from "../api/events.api";
 
 export default function EventRegisterBtn({
@@ -52,39 +53,48 @@ export default function EventRegisterBtn({
 							: t("events.register")}
 				</CheckButton>
 			</div>
-			<fetcher.Form
-				action={`/events/${id}/registration`}
-				method={"POST"}
-				onSubmit={() => {
-					setShowRegister(false);
-				}}
-			>
-				{showRegister && (
-					<Modal
-						title={t("events.register")}
-						onClose={() => {
+			{showRegister && (
+				<Modal
+					size="sm"
+					title={t("events.register")}
+					subtitle={t("events.registerHint")}
+					onClose={() => {
+						setShowRegister(false);
+					}}
+				>
+					<fetcher.Form
+						action={`/events/${id}/registration`}
+						method="POST"
+						className="contents"
+						onSubmit={() => {
 							setShowRegister(false);
 						}}
 					>
-						<p className="text-muted font-main text-wrap font-light w-4/5 text-sm">
-							{t("events.registerHint")}
-						</p>
-						<Select
-							name="eventRoleId"
-							defaultValue={
-								eventRoles.find((er) => er.name === "Any")?.id
-							}
-							options={eventRoles.map((er) => ({
-								value: er.id,
-								label: er.name,
-							}))}
-						/>
-						<CheckButton type="submit">
-							{t("common.ok")}
-						</CheckButton>
-					</Modal>
-				)}
-			</fetcher.Form>
+						<Field name="eventRoleId" label={t("events.role")}>
+							<Select
+								name="eventRoleId"
+								defaultValue={
+									eventRoles.find((er) => er.name === "Any")
+										?.id
+								}
+								options={eventRoles.map((er) => ({
+									value: er.id,
+									label: er.name,
+								}))}
+							/>
+						</Field>
+						<ModalFooter>
+							<CheckButton
+								type="submit"
+								active
+								activeCheck={false}
+							>
+								{t("events.register")}
+							</CheckButton>
+						</ModalFooter>
+					</fetcher.Form>
+				</Modal>
+			)}
 		</>
 	);
 }

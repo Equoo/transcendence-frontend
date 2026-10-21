@@ -11,6 +11,8 @@ import { TbChevronDown } from "react-icons/tb";
 
 import { useClickOutside } from "@/hooks/useClickOutside";
 
+import { fieldBox } from "./Field";
+
 export interface SelectOption {
 	value: string;
 	label: ReactNode;
@@ -147,6 +149,10 @@ export function Select({
 				choose(active);
 				break;
 			case "Escape":
+				event.preventDefault();
+				event.stopPropagation();
+				setOpen(false);
+				break;
 			case "Tab":
 				setOpen(false);
 				break;
@@ -182,14 +188,13 @@ export function Select({
 					}
 				}}
 				onKeyDown={handleKeyDown}
-				className={`w-full inline-flex items-center justify-between gap-2 min-h-8 px-2 py-1 rounded-md border
-					font-main text-[15px] text-left outline-none transition-colors
+				className={`inline-flex items-center justify-between gap-2 text-left outline-none
 					${
 						ghost
-							? "border-transparent bg-transparent enabled:hover:text-accent"
-							: "bg-surface enabled:hover:bg-surface2"
+							? "w-full min-h-8 px-2 py-1 rounded-md border border-transparent bg-transparent font-main text-[15px] transition-colors enabled:hover:text-accent"
+							: `${fieldBox()} focus-visible:border-accent`
 					}
-					${open ? "border-accent" : ghost ? "" : "border-border2 focus-visible:border-accent"}
+					${open ? "border-accent!" : ""}
 					${disabled ? "text-text2 cursor-default" : "text-text cursor-pointer"}`}
 			>
 				<span className="truncate">{current?.label}</span>
@@ -205,7 +210,7 @@ export function Select({
 				id={`${id}-list`}
 				role="listbox"
 				popover="manual"
-				className="fixed inset-auto m-0 max-h-64 overflow-y-auto py-1.5 px-2.5 bg-surface border border-border rounded-lg shadow-main font-main text-[15px] text-text animate-in"
+				className="fixed inset-auto m-0 max-h-64 overflow-y-auto p-1.5 bg-surface border border-border rounded-2xl shadow-main font-main text-sm text-text animate-in"
 			>
 				{options.map((opt, idx) => (
 					<li
@@ -222,7 +227,7 @@ export function Select({
 						onClick={() => {
 							choose(idx);
 						}}
-						className={`px-2 py-1.5 rounded-md cursor-pointer whitespace-nowrap
+						className={`px-2.5 py-1.5 rounded-xl cursor-pointer whitespace-nowrap
 							${idx === active ? "bg-hover" : ""}
 							${opt.value === selected ? "text-accent font-medium" : ""}`}
 					>

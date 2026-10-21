@@ -3,12 +3,16 @@ import { useTranslation } from "react-i18next";
 import { PiPlusBold } from "react-icons/pi";
 import { useFetcher } from "react-router";
 
+import { otherErrors, validationErrors } from "@/api/problem_detail";
 import { Slidebox } from "@/components/Input/Slidebox";
+import Modal, { ModalFooter } from "@/components/Modal/Modal";
+import { toInputValue } from "@/utils/date.util";
 
 import CheckButton from "../../components/Button/CheckButton";
 import { Input } from "../../components/Input/Input";
-import Modal from "../../components/Modal/Modal";
 import type { clientAction as invitationAction } from "../routes/invitations.route";
+
+const FIELD_KEYS = ["Permanent", "Expires At", "Usages"];
 
 export default function InvitationForm({
 	className,
@@ -21,6 +25,10 @@ export default function InvitationForm({
 	const invitationFetcher = useFetcher<typeof invitationAction>();
 	const [showInvitationForm, setShowInvitationForm] = useState(false);
 	const [permanent, setPermanent] = useState(false);
+	const errors = validationErrors(invitationFetcher.data);
+	const link =
+		typeof invitationFetcher.data === "string" &&
+		`${window.location.origin}/register?invitation=${invitationFetcher.data}`;
 
 	return (
 		<>
@@ -40,73 +48,73 @@ export default function InvitationForm({
 			{showInvitationForm && (
 				<Modal
 					title={t("invitations.createTitle")}
+					subtitle={t("invitations.hint")}
+					highlight={Boolean(link)}
 					onClose={() => {
 						setShowInvitationForm(false);
 					}}
 				>
-					<p className="text-muted font-main font-light w-4/5 text-sm">
-						{t("invitations.hint")}
-					</p>
 					<invitationFetcher.Form
 						action="/invitations"
 						method="POST"
-						className="flex flex-col items-center w-4/5 gap-5 mb-4"
+						className="contents"
 					>
-						<Slidebox
-							name="Permanent"
-							checked={permanent}
-							onChange={(ev) => {
-								setPermanent(ev.target.checked);
-							}}
-						></Slidebox>
-						{!permanent && (
-							<>
+						<div className="flex flex-col gap-4">
+							<Slidebox
+								name="Permanent"
+								label={t("invitations.permanent")}
+								hint={t("invitations.permanentHint")}
+								errors={errors}
+								checked={permanent}
+								onChange={(ev) => {
+									setPermanent(ev.target.checked);
+								}}
+							/>
+							{!permanent && (
+								<div className="grid gap-4 sm:grid-cols-2">
+									<Input
+										name="Expires At"
+										label={t("invitations.expiresAt")}
+										type="datetime-local"
+										required
+										errors={errors}
+										min={toInputValue(date)}
+									/>
+									<Input
+										max={2147483646}
+										name="Usages"
+										label={t("invitations.usages")}
+										type="number"
+										required
+										errors={errors}
+										min="1"
+										placeholder={t("invitations.maxUsages")}
+									/>
+								</div>
+							)}
+							{link && (
 								<Input
-									name="Expires At"
-									label={t("invitations.expireAt")}
-									type="datetime-local"
-									required
-									min={date
-										.toISOString()
-										.slice(
-											0,
-											date.toISOString().lastIndexOf(":"),
-										)}
-									placeholder={t(
-										"invitations.expirationDate",
-									)}
+									name="Invitation Link"
+									label={t("invitations.link")}
+									readOnly
+									grayed
+									copyable
+									value={link}
 								/>
-								<Input
-									max={2147483646}
-									name="Usages"
-									label={t("invitations.usages")}
-									type="number"
-									required
-									min="1"
-									placeholder={t("invitations.maxUsages")}
-								/>
-							</>
-						)}
-
-						<Input
-							name="Invitation Link"
-							label={t("invitations.link")}
-							disabled
-							grayed
-							copyable
-							value={
-								invitationFetcher.data &&
-								`${window.location.origin}/register?invitation=${invitationFetcher.data}`
-							}
-						/>
-
-						<CheckButton
-							active
-							type="submit"
-							pending={invitationFetcher.state !== "idle"}
-						>
-							{t("common.ok")}
-						</CheckButton>
+							)}
+						</div>
+						<ModalFooter errors={otherErrors(errors, FIELD_KEYS)}>
+							<CheckButton
+								active
+								activeCheck={false}
+								type="submit"
+								pending={invitationFetcher.state !== "idle"}
+							>
+								{link
+									? t("invitations.createAnother")
+									: t("invitations.createLink")}
+							</CheckButton>
+						</ModalFooter>
 					</invitationFetcher.Form>
 				</Modal>
 			)}

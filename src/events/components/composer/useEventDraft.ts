@@ -1,8 +1,17 @@
 import { useState } from "react";
 
+import { toInputValue } from "@/utils/date.util";
+
 import { type EventData, maxDate } from "../../api/events.api";
-import { toInputValue } from "./DateSlot";
-import { REQUIRED_FIELDS, type RequiredField } from "./Slot";
+
+export type RequiredField = "name" | "location" | "date" | "size";
+
+export const REQUIRED_FIELDS: RequiredField[] = [
+	"name",
+	"location",
+	"date",
+	"size",
+];
 
 export interface EventDraft {
 	name: string;

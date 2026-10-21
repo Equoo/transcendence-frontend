@@ -1,20 +1,21 @@
 import type { JSX, ReactNode } from "react";
-import { createPortal } from "react-dom";
+import { useTranslation } from "react-i18next";
 
 import CheckButton from "../Button/CheckButton";
-import Modal from "./Modal";
+import Modal, { ModalActions, ModalFooter } from "./Modal";
 
-/** Yes/no confirmation that runs a callback instead of submitting a fetcher form. */
 export default function ConfirmModal({
 	title,
+	description,
 	children,
-	confirmLabel = "Confirm",
+	confirmLabel,
 	danger = false,
 	pending = false,
 	onConfirm,
 	onClose,
 }: {
 	title: string;
+	description?: ReactNode;
 	children?: ReactNode;
 	confirmLabel?: string;
 	danger?: boolean;
@@ -22,29 +23,28 @@ export default function ConfirmModal({
 	onConfirm: () => void;
 	onClose: () => void;
 }): JSX.Element {
-	return createPortal(
-		<Modal title={title} onClose={onClose} width="w-[calc(100%-2rem)]">
-			{children && (
-				<p className="text-muted font-main font-light text-sm text-center w-full">
-					{children}
-				</p>
-			)}
-			<div className="flex gap-5 w-full mb-2">
-				<CheckButton className="flex-1" onClick={onClose}>
-					Cancel
-				</CheckButton>
-				<CheckButton
-					className="flex-1"
-					active
-					activeCheck={false}
-					danger={danger}
-					pending={pending}
-					onClick={onConfirm}
-				>
-					{confirmLabel}
-				</CheckButton>
-			</div>
-		</Modal>,
-		document.body,
+	// eslint-disable-next-line id-length
+	const { t } = useTranslation();
+
+	return (
+		<Modal size="sm" title={title} subtitle={description} onClose={onClose}>
+			{children}
+			<ModalFooter>
+				<ModalActions>
+					<CheckButton discrete onClick={onClose}>
+						{t("common.cancel")}
+					</CheckButton>
+					<CheckButton
+						active
+						activeCheck={false}
+						danger={danger}
+						pending={pending}
+						onClick={onConfirm}
+					>
+						{confirmLabel ?? t("common.confirm")}
+					</CheckButton>
+				</ModalActions>
+			</ModalFooter>
+		</Modal>
 	);
 }

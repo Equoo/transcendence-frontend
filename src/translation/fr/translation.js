@@ -43,6 +43,14 @@ export default {
 				create: "Créer",
 				cancel: "Annuler",
 				unknown: "Inconnu",
+				close: "Fermer",
+				confirm: "Confirmer",
+				save: "Enregistrer",
+				remove: "Retirer",
+				copy: "Copier",
+				showPassword: "Afficher le mot de passe",
+				hidePassword: "Masquer le mot de passe",
+				createValue: "Créer « {{name}} »",
 			},
 			knowledge: {
 				openAssistant: "Ouvrir l'assistant",
@@ -98,6 +106,7 @@ export default {
 				participants: "PARTICIPANTS - {{registered}}/{{size}}",
 				organizedBy: "ORGANISÉ PAR",
 				resources: "RESSOURCES",
+				registeredCount: "{{registered}}/{{size}} inscrits",
 			},
 			hydrating: {
 				tagline: "Préparation de votre groupe",
@@ -121,6 +130,7 @@ export default {
 				choosePicture: "Choisir une image",
 				removeAvatar: "Supprimer l'avatar",
 				changeTitle: "Changer la photo de profil",
+				changeHint: "Choisissez une image, tout le groupe la verra.",
 			},
 			auth: {
 				username: "Nom d'utilisateur",
@@ -152,6 +162,8 @@ export default {
 				accountInfo: "Informations du compte",
 				deleteAccount: "Supprimer le compte",
 				logout: "Déconnexion",
+				changePasswordHint:
+					"Saisissez votre mot de passe actuel, puis le nouveau.",
 			},
 			admin: {
 				changeRoleName: "Modifier le nom du rôle",
@@ -243,7 +255,6 @@ export default {
 					rolesHint:
 						"Les rôles que les participants pourront choisir en s'inscrivant.",
 					rolePlaceholder: "Filtrer ou créer un rôle…",
-					createRole: "Créer « {{name}} »",
 					attachFiles: "Joindre des fichiers",
 					expireTitle: "Expiration",
 					expireHint:
@@ -255,6 +266,7 @@ export default {
 					create: "Créer l'événement",
 					save: "Enregistrer",
 				},
+				role: "Rôle",
 			},
 			files: {
 				cannotMoveIntoItself:
@@ -280,7 +292,6 @@ export default {
 					maxSize: "{{size}} maximum",
 					change: "Changer",
 					namePlaceholder: "Nom du fichier",
-					into: "Dans",
 					pickFirst: "Choisissez un fichier",
 					nameFirst: "Donnez un nom au fichier",
 					uploading: "Envoi en cours…",
@@ -306,6 +317,14 @@ export default {
 					"Tous les fichiers de ce dossier seront supprimés. Cette action est irréversible.",
 				unexpectedAction:
 					"Erreur inattendue lors de l'action sur le fichier",
+				newFolderHint:
+					"Regroupez vos fichiers pour garder la base de connaissances bien rangée.",
+				folderNamePlaceholder: "Nom du dossier",
+				nameFolderFirst: "Donnez un nom au dossier",
+				moveTo: "Déplacer vers",
+				selectDone_zero: "Terminé",
+				selectDone_one: "Terminé, 1 fichier sélectionné",
+				selectDone_other: "Terminé, {{count}} fichiers sélectionnés",
 			},
 			chat: {
 				editCategoryTitle: "Modification de la catégorie #{{name}}",
@@ -351,6 +370,7 @@ export default {
 					"L'identifiant du canal est requis pour la suppression",
 				channelIdRequiredUpdate:
 					"L'identifiant du canal est requis pour la modification",
+				whitelistHint: "Laissez vide pour ouvrir à tout le monde.",
 			},
 			sidebar: {
 				open: "Ouvrir la barre latérale",
@@ -374,6 +394,11 @@ export default {
 				expiration: "Expiration",
 				remainingUsages: "Utilisations restantes",
 				remove: "Supprimer",
+				permanent: "Lien permanent",
+				permanentHint:
+					"N'expire jamais et n'a pas de limite d'utilisations.",
+				createLink: "Créer le lien",
+				createAnother: "Créer un autre lien",
 			},
 			assistant: {
 				suggestionKnowledge: "Que contient la base de connaissances ?",

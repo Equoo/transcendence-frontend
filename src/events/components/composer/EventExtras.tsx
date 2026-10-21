@@ -1,8 +1,6 @@
 import { type JSX, type ReactNode, useState } from "react";
-import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
 import {
-	PiCheckBold,
 	PiPaperclip,
 	PiPlusBold,
 	PiTextAlignLeft,
@@ -10,13 +8,14 @@ import {
 	PiX,
 } from "react-icons/pi";
 
+import ChipPicker from "@/components/Input/ChipPicker";
+import { FieldErrors } from "@/components/Input/Field";
+import { BARE_INPUT } from "@/components/Input/Slot";
 import Promisable from "@/components/Promisable";
 
 import { type AppFile, splitFileName } from "../../../files/api/files.api";
 import { FileIcon } from "../../../files/components/FileIcon";
 import FilePickerModal from "../../../files/components/FilePickerModal";
-import { BARE_INPUT, FieldErrors } from "./Slot";
-import { MAX_CHIP_LENGTH } from "./TagsSlot";
 
 export function Tile({
 	icon,
@@ -97,37 +96,6 @@ export function RolesTile({
 }): JSX.Element {
 	// eslint-disable-next-line id-length
 	const { t } = useTranslation();
-	const [draft, setDraft] = useState("");
-
-	const query = draft.trim().toLowerCase();
-	const created = selected.filter((role) => !available.includes(role));
-	const shown = [...available, ...created].filter((role) =>
-		role.toLowerCase().includes(query),
-	);
-	const exact =
-		[...available, ...created].find(
-			(role) => role.toLowerCase() === query,
-		) ?? null;
-
-	function toggle(role: string): void {
-		onChange(
-			selected.includes(role)
-				? selected.filter((other) => other !== role)
-				: [...selected, role],
-		);
-	}
-
-	function commit(): void {
-		if (!query) {
-			return;
-		}
-		if (exact === null) {
-			onChange([...selected, draft.trim()]);
-		} else if (!selected.includes(exact)) {
-			onChange([...selected, exact]);
-		}
-		setDraft("");
-	}
 
 	return (
 		<Tile
@@ -138,59 +106,12 @@ export function RolesTile({
 			<p className="-mt-1 text-xs text-muted">
 				{t("events.composer.rolesHint")}
 			</p>
-			<div className="flex flex-wrap gap-2">
-				{shown.map((role) => {
-					const isSelected = selected.includes(role);
-
-					return (
-						<button
-							key={role}
-							type="button"
-							aria-pressed={isSelected}
-							className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold duration-150 cursor-pointer
-								${isSelected ? "border-accent bg-accent text-accent-text" : "border-border2 text-text2 hover:border-accent hover:text-accent"}`}
-							onClick={() => {
-								toggle(role);
-							}}
-						>
-							{isSelected && (
-								<PiCheckBold
-									size={10}
-									className="animate-pop"
-								/>
-							)}
-							{role}
-						</button>
-					);
-				})}
-				{query && exact === null && (
-					<button
-						type="button"
-						className="inline-flex items-center gap-1.5 rounded-full border border-dashed border-accent px-2.5 py-1 text-xs font-semibold text-accent cursor-pointer animate-pop hover:bg-accent-soft"
-						onClick={commit}
-					>
-						<PiPlusBold size={10} />
-						{t("events.composer.createRole", {
-							name: draft.trim(),
-						})}
-					</button>
-				)}
-			</div>
-			<input
-				value={draft}
-				maxLength={MAX_CHIP_LENGTH}
+			<ChipPicker
+				creatable
+				options={available}
+				selected={selected}
 				placeholder={t("events.composer.rolePlaceholder")}
-				aria-label={t("events.composer.rolePlaceholder")}
-				className="w-full rounded-xl border border-border bg-surface2 px-3 py-1.5 text-sm text-text placeholder:text-muted focus:border-accent focus:ring-0"
-				onChange={(ev) => {
-					setDraft(ev.target.value);
-				}}
-				onKeyDown={(ev) => {
-					if (ev.key === "Enter") {
-						ev.preventDefault();
-						commit();
-					}
-				}}
+				onChange={onChange}
 			/>
 			<FieldErrors errors={errors} />
 		</Tile>
@@ -272,18 +193,16 @@ export function FilesTile({
 							<PiPlusBold size={12} />
 							{t("events.composer.attachFiles")}
 						</button>
-						{picking &&
-							createPortal(
-								<FilePickerModal
-									files={files}
-									selectedKeys={selected}
-									onToggle={onToggle}
-									onClose={() => {
-										setPicking(false);
-									}}
-								/>,
-								document.body,
-							)}
+						{picking && (
+							<FilePickerModal
+								files={files}
+								selectedKeys={selected}
+								onToggle={onToggle}
+								onClose={() => {
+									setPicking(false);
+								}}
+							/>
+						)}
 					</>
 				)}
 			</Promisable>

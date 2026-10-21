@@ -136,9 +136,8 @@ function FriendActions({ rel }: { rel: Relationship }): JSX.Element {
 				pending={remove.isPending}
 				onClose={() => { setConfirm(null); }}
 				onConfirm={() => { remove.mutate(userId, { onSuccess: () => { setConfirm(null); } }); }}
-			>
-				Remove {relationName(rel)} from your friends?
-			</ConfirmModal>
+				description={<>Remove {relationName(rel)} from your friends?</>}
+			/>
 		)}
 		{confirm === "block" && (
 			<ConfirmModal
@@ -148,9 +147,8 @@ function FriendActions({ rel }: { rel: Relationship }): JSX.Element {
 				pending={block.isPending}
 				onClose={() => { setConfirm(null); }}
 				onConfirm={() => { block.mutate(userId, { onSuccess: () => { setConfirm(null); } }); }}
-			>
-				{relationName(rel)} won't be able to send you friend requests or start conversations with you.
-			</ConfirmModal>
+				description={<>{relationName(rel)} won't be able to send you friend requests or start conversations with you.</>}
+			/>
 		)}
 	</>);
 }

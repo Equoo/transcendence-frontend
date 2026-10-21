@@ -1,13 +1,13 @@
 import { type JSX, useState } from "react";
-import { createPortal } from "react-dom";
-import { PiCheckBold } from "react-icons/pi";
+import { PiCheckBold, PiX } from "react-icons/pi";
 
 import Badge from "@/components/Badge";
 import CheckButton from "@/components/Button/CheckButton";
 import { Input } from "@/components/Input/Input";
 import { SearchBar } from "@/components/Input/Search";
-import Modal from "@/components/Modal/Modal";
-import ProfilePic from "@/components/Profile/ProfilePic";
+import { ModalList, ModalListItem } from "@/components/List/ModalList";
+import Modal, { ModalFooter } from "@/components/Modal/Modal";
+import UserLine from "@/components/Profile/UserLine";
 
 import { useStartConversation } from "../hooks/useConversations";
 import { useRelationships } from "../hooks/useRelationships";
@@ -36,59 +36,59 @@ export default function NewConversationModal({ onClose }: { onClose: () => void 
 
 	const isGroup = selected.length > 1;
 
-	return createPortal(
-		<Modal title="New conversation" onClose={onClose} width="w-[calc(100%-2rem)]">
-			<div className="flex flex-col gap-4 w-full">
-				<p className="text-muted font-main font-light text-sm text-center">
-					Pick one friend for a direct message, or up to {MAX_RECIPIENTS} for a group.
-				</p>
-				<SearchBar
-					name="search"
-					placeholder="Search friends"
-					autoFocus
-					value={search}
-					onChange={(ev) => { setSearch(ev.target.value); }}
-				/>
-				{selected.length > 0 && (
-					<div className="flex flex-wrap gap-1.5">
-						{friends.filter((rel) => selected.includes(rel.user.id)).map((rel) => (
-							<Badge key={rel.user.id} bg="bg-accent-soft" border="border border-accent/30" text="text-text">
-								{relationName(rel)}
-								<button type="button" className="cursor-pointer font-bold" onClick={() => { toggle(rel.user.id); }}>×</button>
-							</Badge>
-						))}
-					</div>
-				)}
-				<ul className="flex flex-col max-h-72 overflow-y-auto -mx-2">
-					{isPending && <li className="text-muted text-sm text-center py-4">Loading friends...</li>}
-					{!isPending && friends.length === 0 && (
-						<li className="text-muted text-sm text-center py-4">You don't have any friends yet. Add some first!</li>
-					)}
-					{!isPending && friends.length > 0 && shown.length === 0 && (
-						<li className="text-muted text-sm text-center py-4">No friend matches “{search}”.</li>
-					)}
-					{shown.map((rel) => {
-						const checked = selected.includes(rel.user.id);
-						return (
-							<li key={rel.user.id}>
-								<button
-									type="button"
-									className="flex w-full items-center gap-3 px-2 py-2 rounded-base hover:bg-hover cursor-pointer text-left"
-									onClick={() => { toggle(rel.user.id); }}
-								>
-									<ProfilePic user={rel.user} size={1} status />
-									<span className="flex-1 min-w-0 truncate text-text text-[14.5px] font-semibold">
-										{relationName(rel)}
-									</span>
-									<span className={`flex items-center justify-center w-5 h-5 rounded-md border duration-120
-										${checked ? "bg-accent border-accent text-accent-text" : "border-border2 bg-surface"}`}>
-										{checked && <PiCheckBold size={12} />}
-									</span>
-								</button>
-							</li>
-						);
-					})}
-				</ul>
+	return (
+		<Modal
+			size="lg"
+			title="New conversation"
+			subtitle={`Pick one friend for a direct message, or up to ${MAX_RECIPIENTS} for a group.`}
+			onClose={onClose}
+		>
+			<SearchBar
+				name="search"
+				placeholder="Search friends"
+				autoFocus
+				value={search}
+				onChange={(ev) => { setSearch(ev.target.value); }}
+			/>
+			{selected.length > 0 && (
+				<div className="flex flex-wrap gap-1.5">
+					{friends.filter((rel) => selected.includes(rel.user.id)).map((rel) => (
+						<Badge key={rel.user.id} bg="bg-accent-soft" border="border border-accent/30" text="text-text" className="animate-pop">
+							{relationName(rel)}
+							<button
+								type="button"
+								aria-label="Remove"
+								className="-mr-0.5 rounded-full text-muted hover:text-text cursor-pointer"
+								onClick={() => { toggle(rel.user.id); }}
+							>
+								<PiX size={11} />
+							</button>
+						</Badge>
+					))}
+				</div>
+			)}
+			<ModalList
+				className="max-h-72"
+				message={
+					isPending ? "Loading friends..."
+						: friends.length === 0 ? "You don't have any friends yet. Add some first!"
+							: shown.length === 0 && `No friend matches “${search}”.`
+				}
+			>
+				{shown.map((rel) => {
+					const checked = selected.includes(rel.user.id);
+					return (
+						<ModalListItem key={rel.user.id} selected={checked} onClick={() => { toggle(rel.user.id); }}>
+							<UserLine user={rel.user} name={relationName(rel)} />
+							<span className={`flex items-center justify-center size-5 shrink-0 rounded-md border duration-150
+								${checked ? "bg-accent border-accent text-accent-text" : "border-border2 bg-surface"}`}>
+								{checked && <PiCheckBold size={12} className="animate-pop" />}
+							</span>
+						</ModalListItem>
+					);
+				})}
+			</ModalList>
+			<ModalFooter>
 				{isGroup && (
 					<Input
 						name="Group name"
@@ -99,8 +99,7 @@ export default function NewConversationModal({ onClose }: { onClose: () => void 
 					/>
 				)}
 				<CheckButton
-					className="mb-2"
-					active
+					active={selected.length > 0}
 					activeCheck={false}
 					disabled={selected.length === 0}
 					pending={start.isPending}
@@ -113,8 +112,7 @@ export default function NewConversationModal({ onClose }: { onClose: () => void 
 				>
 					{isGroup ? "Create group" : "Start conversation"}
 				</CheckButton>
-			</div>
-		</Modal>,
-		document.body,
+			</ModalFooter>
+		</Modal>
 	);
 }

@@ -2,10 +2,11 @@ import { type JSX, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { PiPlusBold, PiX } from "react-icons/pi";
 
-import Badge from "../../../components/Badge";
-import { BARE_INPUT, FieldErrors } from "./Slot";
+import { MAX_CHIP_LENGTH } from "@/components/Input/ChipPicker";
+import { FieldErrors } from "@/components/Input/Field";
+import { BARE_INPUT } from "@/components/Input/Slot";
 
-export const MAX_CHIP_LENGTH = 19;
+import Badge from "../../../components/Badge";
 
 export default function TagsSlot({
 	tags,

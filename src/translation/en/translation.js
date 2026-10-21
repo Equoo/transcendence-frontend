@@ -41,6 +41,14 @@ export default {
 				create: "Create",
 				cancel: "Cancel",
 				unknown: "Unknown",
+				close: "Close",
+				confirm: "Confirm",
+				save: "Save",
+				remove: "Remove",
+				copy: "Copy",
+				showPassword: "Show password",
+				hidePassword: "Hide password",
+				createValue: 'Create "{{name}}"',
 			},
 			knowledge: {
 				openAssistant: "Open assistant",
@@ -96,6 +104,7 @@ export default {
 				participants: "PARTICIPANTS - {{registered}}/{{size}}",
 				organizedBy: "ORGANIZED BY",
 				resources: "RESOURCES",
+				registeredCount: "{{registered}}/{{size}} registered",
 			},
 			hydrating: {
 				tagline: "Getting your group ready",
@@ -118,6 +127,7 @@ export default {
 				choosePicture: "Choose picture",
 				removeAvatar: "Remove Avatar",
 				changeTitle: "Change profile picture",
+				changeHint: "Pick an image, everyone in the group will see it.",
 			},
 			auth: {
 				username: "Username",
@@ -149,6 +159,7 @@ export default {
 				accountInfo: "Account Info",
 				deleteAccount: "Delete Account",
 				logout: "Logout",
+				changePasswordHint: "Enter your current password, then the new one.",
 			},
 			admin: {
 				changeRoleName: "Change role's name",
@@ -236,7 +247,6 @@ export default {
 						"Schedule, practical info, gear to bring…",
 					rolesHint: "Roles participants can pick when registering.",
 					rolePlaceholder: "Filter or create a role…",
-					createRole: 'Create "{{name}}"',
 					attachFiles: "Attach files",
 					expireTitle: "Expiration",
 					expireHint:
@@ -248,6 +258,7 @@ export default {
 					create: "Create event",
 					save: "Save",
 				},
+				role: "Role",
 			},
 			files: {
 				cannotMoveIntoItself: "Cannot move a folder into itself",
@@ -272,7 +283,6 @@ export default {
 					maxSize: "{{size}} maximum",
 					change: "Change",
 					namePlaceholder: "File name",
-					into: "In",
 					pickFirst: "Pick a file",
 					nameFirst: "Give the file a name",
 					uploading: "Uploading…",
@@ -297,6 +307,13 @@ export default {
 				deleteFolderDesc:
 					"All files in this folder will be deleted. This cannot be cancelled.",
 				unexpectedAction: "Unexpected error during file action",
+				newFolderHint: "Group files together to keep the knowledge base tidy.",
+				folderNamePlaceholder: "Folder name",
+				nameFolderFirst: "Give the folder a name",
+				moveTo: "Move to",
+				selectDone_zero: "Done",
+				selectDone_one: "Done, 1 file selected",
+				selectDone_other: "Done, {{count}} files selected",
 			},
 			chat: {
 				editCategoryTitle: "Editing category #{{name}}",
@@ -337,6 +354,7 @@ export default {
 				categoryIdRequiredUpdate: "Category ID is required for update",
 				channelIdRequiredDelete: "Channel ID is required for deletion",
 				channelIdRequiredUpdate: "Channel ID is required for update",
+				whitelistHint: "Leave empty to let everyone in.",
 			},
 			sidebar: {
 				open: "Open sidebar",
@@ -360,6 +378,10 @@ export default {
 				expiration: "Expiration",
 				remainingUsages: "Remaining Usages",
 				remove: "Remove",
+				permanent: "Permanent link",
+				permanentHint: "Never expires and has no usage limit.",
+				createLink: "Create link",
+				createAnother: "Create another link",
 			},
 			assistant: {
 				suggestionKnowledge: "What's in the knowledge base?",

@@ -21,3 +21,20 @@ export class APIError extends Error {
 		this.problem = prob;
 	}
 }
+
+const NO_ERRORS: ValidationErrors = {};
+
+export function validationErrors(data: unknown): ValidationErrors {
+	return data instanceof APIError
+		? (data.problem.errors ?? NO_ERRORS)
+		: NO_ERRORS;
+}
+
+export function otherErrors(
+	errors: ValidationErrors,
+	fieldKeys: string[],
+): string[] {
+	return Object.entries(errors)
+		.filter(([key]) => !fieldKeys.includes(key))
+		.flatMap(([, messages]) => messages);
+}

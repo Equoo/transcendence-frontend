@@ -3,7 +3,8 @@ import { useTranslation } from "react-i18next";
 import { GoPeople } from "react-icons/go";
 import { PiMinus, PiPlus } from "react-icons/pi";
 
-import { BARE_INPUT, FieldErrors, slotClass, SlotPopover } from "./Slot";
+import { FieldErrors } from "@/components/Input/Field";
+import { BARE_INPUT, slotClass, SlotPopover } from "@/components/Input/Slot";
 
 const MAX_SIZE = 2147483646;
 const QUICK_SIZES = [5, 10, 20, 50, 100];

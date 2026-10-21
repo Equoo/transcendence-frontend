@@ -3,16 +3,20 @@ import {
 	type JSX,
 	type ReactNode,
 	useEffect,
+	useId,
 	useState,
 } from "react";
+import { useTranslation } from "react-i18next";
 import { TbCopy, TbCopyCheck, TbEye, TbEyeOff } from "react-icons/tb";
 
 import type { ValidationErrors } from "../../api/problem_detail";
-import { Field } from "./Field";
+import { Field, fieldBox } from "./Field";
+import { BARE_INPUT } from "./Slot";
 
 export type InputProps = ComponentProps<"input"> & {
 	name: string;
 	label?: string;
+	hint?: ReactNode;
 	className?: string;
 	children?: ReactNode;
 	errors?: ValidationErrors;
@@ -20,6 +24,9 @@ export type InputProps = ComponentProps<"input"> & {
 	copyable?: boolean;
 	password?: boolean;
 };
+
+const ICON_BUTTON =
+	"shrink-0 rounded-md p-0.5 text-muted duration-150 cursor-pointer hover:text-text";
 
 function copyContent(content: string): void {
 	const clipboard = new ClipboardItem({
@@ -32,20 +39,24 @@ function copyContent(content: string): void {
 export function Input({
 	name,
 	label,
+	hint,
 	errors,
-	className,
+	className = "",
 	children,
-	grayed,
-	copyable,
-	password,
+	grayed = false,
+	copyable = false,
+	password = false,
 	value,
 	onChange,
 	...rest
 }: InputProps): JSX.Element {
+	// eslint-disable-next-line id-length
+	const { t } = useTranslation();
+	const generatedId = useId();
+	const id = rest.id ?? generatedId;
 	const [internalValue, setInternalValue] = useState(value ?? "");
-	const [passwordVisible, setPasswordVisible] = useState(password);
+	const [hidden, setHidden] = useState(password);
 	const [copied, setCopied] = useState(false);
-	const isError = Boolean(errors?.[name] ?? false);
 
 	useEffect(() => {
 		// eslint-disable-next-line @eslint-react/set-state-in-effect
@@ -56,37 +67,25 @@ export function Input({
 		<Field
 			name={name}
 			label={label}
+			htmlFor={id}
+			hint={hint}
 			required={rest.required}
 			errors={errors}
 		>
 			<div
-				className={`relative flex flex-wrap items-center w-full border rounded-md
-                    px-2 py-1 font-main ${(grayed ?? false) ? "bg-muted/20 text-text2" : "bg-surface text-text"}  
-                    ${isError ? "border-error" : "border-border2 focus-within:border-accent"} ${className}`}
+				className={`relative flex items-center gap-2 ${fieldBox({
+					error: Boolean(errors?.[name]),
+					grayed,
+				})} ${className}`}
 			>
-				{(copyable ?? false) &&
-					(copied ? (
-						<TbCopyCheck
-							size={20}
-							className="mr-1.5 hover:cursor-copy"
-						/>
-					) : (
-						<TbCopy
-							size={20}
-							onClick={() => {
-								copyContent(internalValue as string);
-								setCopied(true);
-							}}
-							className="mr-1.5 hover:cursor-copy"
-						/>
-					))}
 				{children}
 				<input
-					className={`text-[15px] bg-transparent outline-0 ring-0 border-0 p-0 w-10 grow peer h-6`}
+					className={`${BARE_INPUT} min-w-0 grow h-6 text-sm`}
 					name={name}
 					value={internalValue}
-					type={passwordVisible ? "password" : rest.type}
 					{...rest}
+					type={password ? (hidden ? "password" : "text") : rest.type}
+					id={id}
 					onChange={(ev) => {
 						if (onChange) {
 							onChange(ev);
@@ -94,26 +93,38 @@ export function Input({
 						setInternalValue(ev.target.value);
 					}}
 				/>
-				{password && (
-					<>
-						{passwordVisible ? (
-							<TbEyeOff
-								size={19}
-								className=" text-text ml-2 hover:cursor-pointer hover:text-black"
-								onClick={() => {
-									setPasswordVisible(!passwordVisible);
-								}}
-							/>
+				{copyable && (
+					<button
+						type="button"
+						aria-label={t("common.copy")}
+						className={ICON_BUTTON}
+						onClick={() => {
+							copyContent(internalValue as string);
+							setCopied(true);
+						}}
+					>
+						{copied ? (
+							<TbCopyCheck size={18} className="text-good" />
 						) : (
-							<TbEye
-								size={19}
-								className=" text-text ml-2 hover:cursor-pointer hover:text-black"
-								onClick={() => {
-									setPasswordVisible(!passwordVisible);
-								}}
-							/>
+							<TbCopy size={18} />
 						)}
-					</>
+					</button>
+				)}
+				{password && (
+					<button
+						type="button"
+						aria-label={
+							hidden
+								? t("common.showPassword")
+								: t("common.hidePassword")
+						}
+						className={ICON_BUTTON}
+						onClick={() => {
+							setHidden(!hidden);
+						}}
+					>
+						{hidden ? <TbEye size={18} /> : <TbEyeOff size={18} />}
+					</button>
 				)}
 			</div>
 		</Field>

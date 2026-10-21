@@ -11,10 +11,8 @@ import { ActivityEnum, useActivity } from "@/activity/hooks/activity.hook";
 import type { User } from "@/users/api/users";
 
 import type { clientAction as filesAction } from "../../files/routes/files.route";
-import CheckButton from "../Button/CheckButton";
-import { Input } from "../Input/Input";
 import PopupList from "../List/PopupList";
-import Modal from "../Modal/Modal";
+import AvatarModal from "./AvatarModal";
 
 function getActivityColor(activity: ActivityEnum): string {
 	switch (activity) {
@@ -247,33 +245,21 @@ export default function ProfilePic({
 			)}
 
 			{showPics && (
-				<Modal
-					title={t("profilePic.changeTitle")}
+				<AvatarModal
+					pending={filesFetcher.state !== "idle"}
 					onClose={() => {
 						setShowPics(false);
 					}}
-				>
-					<filesFetcher.Form
-						method="PATCH"
-						encType="multipart/form-data"
-						className="flex flex-col items-center w-4/5 gap-5 mb-4"
-						action="/me/avatar"
-					>
-						<Input
-							name="File"
-							label={t("files.file")}
-							type="file"
-							required
-						/>
-						<CheckButton
-							type="submit"
-							active
-							pending={filesFetcher.state !== "idle"}
-						>
-							{t("common.upload")}
-						</CheckButton>
-					</filesFetcher.Form>
-				</Modal>
+					onUpload={(file) => {
+						const body = new FormData();
+						body.set("File", file);
+						void filesFetcher.submit(body, {
+							method: "PATCH",
+							action: "/me/avatar",
+							encType: "multipart/form-data",
+						});
+					}}
+				/>
 			)}
 		</div>
 	);

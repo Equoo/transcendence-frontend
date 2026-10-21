@@ -1,15 +1,16 @@
-import { type JSX, type ReactNode, type RefObject, useRef } from "react";
+import {
+	type ComponentProps,
+	type JSX,
+	type ReactNode,
+	useEffect,
+	useRef,
+	useState,
+} from "react";
 
+import type { ValidationErrors } from "@/api/problem_detail";
 import { useClickOutside } from "@/hooks/useClickOutside";
 
-export type RequiredField = "name" | "location" | "date" | "size";
-
-export const REQUIRED_FIELDS: RequiredField[] = [
-	"name",
-	"location",
-	"date",
-	"size",
-];
+import { FieldErrors } from "./Field";
 
 export const BARE_INPUT =
 	"bg-transparent border-0 p-0 shadow-none focus:ring-0 focus:outline-0 focus-visible:outline-0 placeholder:text-muted";
@@ -53,25 +54,6 @@ export function slotClass({
 	return classes.join(" ");
 }
 
-export function FieldErrors({
-	errors,
-}: {
-	errors?: string[];
-}): JSX.Element | null {
-	if (!errors || errors.length === 0) {
-		return null;
-	}
-	return (
-		<div className="flex flex-col animate-pop">
-			{errors.map((err) => (
-				<p key={err} className="text-error text-xs tracking-wide">
-					{err}
-				</p>
-			))}
-		</div>
-	);
-}
-
 export function SlotPopover({
 	open,
 	onClose,
@@ -101,6 +83,7 @@ export function SlotPopover({
 			className={`relative ${className}`}
 			onKeyDown={(ev) => {
 				if (open && ev.key === "Escape") {
+					ev.preventDefault();
 					ev.stopPropagation();
 					onClose();
 				}
@@ -121,76 +104,76 @@ export function SlotPopover({
 	);
 }
 
+export type TextSlotProps = ComponentProps<"input"> & {
+	name: string;
+	label?: string;
+	className?: string;
+	inputClassName?: string;
+	children?: ReactNode;
+	errors?: ValidationErrors;
+	counterFrom?: number;
+	next?: boolean;
+	nudge?: boolean;
+};
+
 export function TextSlot({
-	inputRef,
+	name,
+	label,
+	errors,
+	className = "",
+	inputClassName = "",
+	children,
+	counterFrom,
+	next = false,
+	nudge = false,
 	value,
 	onChange,
-	onEnter,
-	label,
-	placeholder,
-	maxLength,
-	icon,
-	inputClassName = "",
-	counterFrom,
-	next,
-	nudge,
-	errors,
-	autoFocus = false,
-}: {
-	inputRef: RefObject<HTMLInputElement | null>;
-	value: string;
-	onChange: (value: string) => void;
-	onEnter: () => void;
-	label: string;
-	placeholder: string;
-	maxLength: number;
-	icon?: ReactNode;
-	inputClassName?: string;
-	counterFrom?: number;
-	next: boolean;
-	nudge: boolean;
-	errors?: string[];
-	autoFocus?: boolean;
-}): JSX.Element {
-	const filled = value.trim() !== "";
+	...rest
+}: TextSlotProps): JSX.Element {
+	const [internalValue, setInternalValue] = useState(value ?? "");
+	const text = String(internalValue);
+	const fieldErrors = errors?.[name];
 	const showCounter =
-		typeof counterFrom === "number" && value.length >= counterFrom;
+		typeof counterFrom === "number" &&
+		typeof rest.maxLength === "number" &&
+		text.length >= counterFrom;
+
+	useEffect(() => {
+		// eslint-disable-next-line @eslint-react/set-state-in-effect
+		setInternalValue(value ?? "");
+	}, [value]);
 
 	return (
 		<div className="flex flex-col gap-1">
 			<label
 				className={`relative -mx-2 flex items-center gap-2 rounded-xl px-2 py-1 ${slotClass(
-					{ filled, next, nudge, error: Boolean(errors) },
-				)}`}
+					{
+						filled: text.trim() !== "",
+						next,
+						nudge,
+						error: Boolean(fieldErrors),
+					},
+				)} ${className}`}
 			>
-				{icon}
+				{children}
 				<input
-					ref={inputRef}
-					autoFocus={autoFocus}
-					value={value}
-					maxLength={maxLength}
-					placeholder={placeholder}
-					aria-label={label}
+					name={name}
+					value={internalValue}
+					aria-label={label ?? name}
+					{...rest}
 					className={`${BARE_INPUT} w-full ${inputClassName}`}
 					onChange={(ev) => {
-						onChange(ev.target.value);
-					}}
-					onKeyDown={(ev) => {
-						if (ev.key === "Enter") {
-							ev.preventDefault();
-							if (filled) {
-								onEnter();
-							}
-						}
+						onChange?.(ev);
+						setInternalValue(ev.target.value);
 					}}
 				/>
 				{showCounter && (
 					<span className="absolute -bottom-4 right-2 text-[11px] tabular-nums text-muted animate-pop">
-						{value.length}/{maxLength}
+						{text.length}/{rest.maxLength}
 					</span>
 				)}
 			</label>
-			<FieldErrors errors={errors} />
+			<FieldErrors errors={fieldErrors} />
 		</div>
 	);
 }
