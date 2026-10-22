@@ -3,6 +3,7 @@ import { PiCaretRight, PiUsers } from "react-icons/pi";
 import { Link } from "react-router";
 
 import ProfilePic from "@/components/Profile/ProfilePic";
+import { resolveUser, useUser } from "@/users/hooks/users";
 
 import type { Conversation } from "../api/conversations.api";
 import { type Relationship, RelationshipState } from "../api/relationship.api";
@@ -128,6 +129,7 @@ export function RecentConversations({ limit = 6, showEmpty = false }: {
 	limit?: number;
 	showEmpty?: boolean;
 }): JSX.Element | null {
+	const user = useUser();
 	const { data: rels } = useRelationships();
 	const { recent, isPending } = useRecentConversations(limit);
 
@@ -152,7 +154,7 @@ export function RecentConversations({ limit = 6, showEmpty = false }: {
 								<span className="text-text text-[14px] font-semibold truncate">{conversationTitle(conv, rels)}</span>
 								<span className="text-muted text-[13px] truncate">
 									{conv.lastMessage
-										? `${conv.lastMessage.sender.userName}: ${conv.lastMessage.content}`
+										? `${resolveUser(conv.lastMessage.sender, user).userName}: ${conv.lastMessage.content}`
 										: "No messages yet"}
 								</span>
 							</div>

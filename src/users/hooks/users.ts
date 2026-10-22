@@ -8,3 +8,11 @@ UserReactContext.displayName = "UserReactContext";
 export function useUser(): User | null {
 	return use(UserReactContext);
 }
+
+export function resolveUser(user: User, me: User | null): User {
+	return me?.id === user.id ? me : user;
+}
+
+export function useResolvedUser(user: User): User {
+	return resolveUser(user, useUser());
+}

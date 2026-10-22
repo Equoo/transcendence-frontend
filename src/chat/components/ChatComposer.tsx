@@ -18,6 +18,7 @@ import { PiSmiley } from "react-icons/pi";
 import IconBtn from "@/components/Button/IconBtn";
 import { useClickOutside } from "@/hooks/useClickOutside";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
+import { resolveUser, useUser } from "@/users/hooks/users";
 
 import type { Message } from "../api/chat.api";
 import { type ChatMode, useChatContext } from "./ChatProvider";
@@ -58,6 +59,7 @@ function ChatComposer({
 
 	// eslint-disable-next-line id-length
 	const { t } = useTranslation();
+	const user = useUser();
 	const [isEmpty, setIsEmpty] = useState(true);
 	const [showPicker, setShowPicker] = useState(false);
 
@@ -281,7 +283,9 @@ function ChatComposer({
 							<>
 								{t("chat.replyingTo", {
 									name:
-										modeTarget?.sender.userName ??
+										(modeTarget &&
+											resolveUser(modeTarget.sender, user)
+												.userName) ??
 										t("common.unknown"),
 								})}
 							</>

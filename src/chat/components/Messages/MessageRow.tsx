@@ -6,7 +6,7 @@ import type { Relationship } from "@/friends/api/relationship.api";
 import { displayName } from "@/friends/utils/friends.util";
 import { useClickOutside } from "@/hooks/useClickOutside";
 import ProfileUser from "@/users/components/ProfileUser";
-import { useUser } from "@/users/hooks/users";
+import { resolveUser, useUser } from "@/users/hooks/users";
 
 import type { Message } from "../../api/chat.api";
 import MessageContent from "./MessageContent";
@@ -53,6 +53,7 @@ function MessageRow({
 	// eslint-disable-next-line id-length
 	const { t } = useTranslation();
 	const user = useUser();
+	const sender = resolveUser(message.sender, user);
 	const [showWatch, setShowWatch] = useState(false);
 	const watchRef = useRef<HTMLDivElement>(null);
 
@@ -73,14 +74,14 @@ function MessageRow({
 		>
 			{showHeader && (
 				<ProfilePic
-					watch={message.sender.id !== user?.id}
-					user={message.sender}
+					watch={sender.id !== user?.id}
+					user={sender}
 					size={1}
 				/>
 			)}
-			{showWatch && message.sender.id !== user?.id && (
+			{showWatch && sender.id !== user?.id && (
 				<div ref={watchRef} className="absolute bottom-7 left-15">
-					<ProfileUser user={message.sender}></ProfileUser>
+					<ProfileUser user={sender}></ProfileUser>
 				</div>
 			)}
 			<div className={showHeader ? `ml-2` : `ml-12`}>
@@ -88,12 +89,12 @@ function MessageRow({
 					<div className="mb-0.75 flex items-baseline gap-2.25">
 						<span
 							// eslint-disable-next-line no-negated-condition
-							className={`${message.sender.id !== user?.id ? "hover:underline hover:cursor-pointer" : ""} font-main font-[650] text-[14.5px]`}
+							className={`${sender.id !== user?.id ? "hover:underline hover:cursor-pointer" : ""} font-main font-[650] text-[14.5px]`}
 							onClick={() => {
 								setShowWatch(true);
 							}}
 						>
-							{displayName(message.sender, relations)}
+							{displayName(sender, relations)}
 						</span>
 						<span className="text-[11.5px] text-muted">
 							{formatTimestamp(new Date(message.sentAt))}
