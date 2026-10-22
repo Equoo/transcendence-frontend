@@ -1,8 +1,10 @@
 // Interface Api
 
+import type { ProblemDetail } from "@/api/problem_detail";
 import callApi from "@/tokens/callApi";
 
-export type UserResult = { ok: true } | { ok: false; error: string };
+export type UserResult =
+	{ ok: true } | { ok: false; error: string | undefined };
 
 interface reqLoginInput {
 	// username or email, ouais c'est moi qui ai mis le commentaire
@@ -48,7 +50,10 @@ export async function loginUser(formData: FormData): Promise<UserResult> {
 		body: JSON.stringify(req),
 	});
 	if (!response.ok) {
-		return { ok: false, error: await response.text() };
+		return {
+			ok: false,
+			error: ((await response.json()) as ProblemDetail).detail,
+		};
 	}
 	return { ok: true };
 }
@@ -65,7 +70,10 @@ export async function registerUser(formData: FormData): Promise<UserResult> {
 	});
 
 	if (!res.ok) {
-		return { ok: false, error: await res.text() };
+		return {
+			ok: false,
+			error: ((await res.json()) as ProblemDetail).detail,
+		};
 	}
 	return { ok: true };
 }

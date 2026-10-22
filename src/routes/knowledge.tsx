@@ -34,7 +34,6 @@ export default function Knowledge({
 	const isSmall = useMediaQuery("(max-width: 650px)");
 	const [showRag, setShowRag] = useState<boolean | null>(cachedOpen);
 	const [fullResize, setFullResize] = useState<boolean>(false);
-
 	const open = showRag ?? !isSmall;
 
 	const fullStyle = fullResize
