@@ -67,7 +67,7 @@ export default function ItemActions({
 		<>
 			{showSelect && (
 				<PopupList
-					className="right-15 mb-2 bg-surface2 border border-border"
+					className="right-15 mb-2 shadow-main border bg-surface border-border"
 					onClose={() => {
 						setShowSelect(false);
 					}}
