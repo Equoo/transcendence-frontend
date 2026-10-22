@@ -195,7 +195,7 @@ function Sidebar({ user }: { user: User }): JSX.Element {
 						/>
 						<ul>
 							{channelsQuery.isPending ||
-								categoriesQuery.isPending ? (
+							categoriesQuery.isPending ? (
 								<ChannelListSkeleton />
 							) : (
 								<>
