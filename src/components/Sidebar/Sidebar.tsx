@@ -1,10 +1,4 @@
-import {
-	type JSX,
-	useCallback,
-	useEffect,
-	useRef,
-	useState,
-} from "react";
+import { type JSX, useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { HiMenuAlt2 } from "react-icons/hi";
 import {
@@ -164,7 +158,7 @@ function Sidebar({ user }: { user: User }): JSX.Element {
 						</div>
 						<ul>
 							{channelsQuery.isPending ||
-								categoriesQuery.isPending ? (
+							categoriesQuery.isPending ? (
 								<ChannelListSkeleton />
 							) : (
 								<>

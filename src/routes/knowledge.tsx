@@ -23,17 +23,18 @@ export function clientLoader(): {
 	return { files, previousFiles };
 }
 
-let cachedOpen = true;
+let cachedOpen: boolean | null = null;
 
 export default function Knowledge({
 	loaderData,
 }: Route.ComponentProps): JSX.Element {
-    // eslint-disable-next-line id-length
-    const { t } = useTranslation();
-	const isLarge = useMediaQuery("(min-width: 64rem)");
+	// eslint-disable-next-line id-length
+	const { t } = useTranslation();
+	const isSmall = useMediaQuery("(max-width: 650px)");
 	const [showRag, setShowRag] = useState<boolean | null>(cachedOpen);
 	const [fullResize, setFullResize] = useState<boolean>(false);
-	const open = showRag ?? isLarge;
+
+	const open = showRag ?? !isSmall;
 
 	const fullStyle = fullResize
 		? "h-full"
