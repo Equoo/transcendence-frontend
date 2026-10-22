@@ -20,7 +20,7 @@ export default function ProfileLine({
 	size?: 1 | 2 | 3;
 }): JSX.Element {
 	return (
-		<div className="flex gap-3 items-center w-auto">
+		<div className="flex gap-3 items-center w-full">
 			<ProfilePic
 				user={user}
 				status={status}
@@ -29,8 +29,8 @@ export default function ProfileLine({
 				watch={watch}
 				size={size}
 			/>
-			<div className="flex min-w-0 flex-col w-auto">
-				<p className="text-text text-[14px] font-semibold wrap-break-word ">
+			<div className="flex min-w-0 flex-col whitespace-nowrap w-4/7 ">
+				<p className="text-text text-[14px] font-semibold wrap-break-word truncate ">
 					{user.userName}
 				</p>
 				<p className="text-text2 text-2xs font-medium truncate">
