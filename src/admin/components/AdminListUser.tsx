@@ -32,7 +32,7 @@ export default function ListUsers({
 	const fetcher = useFetcher();
 
 	return (
-		<tr className="text-sm text-body  border-b rounded-base border-border">
+		<tr className="text-sm text-text2  border-b rounded-xl border-border">
 			<td>
 				<div className="ml-2">
 					<ProfilePic user={user}></ProfilePic>

@@ -19,7 +19,7 @@ function ItemCategory({
 				end={to === "/"}
 				className={({ isActive }) =>
 					[
-						"flex items-center px-2 py-1.5 text-[14.5px] rounded-base group duration-120",
+						"flex items-center px-2 py-1.5 text-[14.5px] rounded-xl group duration-120",
 						isActive
 							? "bg-accent-soft text-text"
 							: "hover:bg-hover hover:text-text",

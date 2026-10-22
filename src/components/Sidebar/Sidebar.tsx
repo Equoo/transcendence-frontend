@@ -37,7 +37,7 @@ function ChannelListSkeleton(): JSX.Element {
 		<>
 			{Array.from({ length: 4 }, (___, index) => (
 				<li key={index}>
-					<div className="flex items-center px-2 py-1.5 text-[14px] rounded-base group duration-120 shadow-main animate-pulse">
+					<div className="flex items-center px-2 py-1.5 text-[14px] rounded-xl group duration-120 shadow-main animate-pulse">
 						<span className="font-semibold text-muted">#</span>
 						<div className="ms-3 py-1 h-3 w-32 rounded bg-muted"></div>
 					</div>
@@ -99,7 +99,7 @@ function Sidebar({ user }: { user: User }): JSX.Element {
 		<>
 			<button
 				type="button"
-				className="fixed z-39 text-heading bg-transparent box-border border border-transparent hover:bg-back2
+				className="fixed z-39 text-text bg-transparent box-border border border-transparent hover:bg-back2
 				focus:ring-4 focus:ring-border2 font-medium leading-5 rounded-xl top-4 left-6 text-sm p-1
 				focus:outline-none inline-flex lg:hidden"
 				onClick={() => {

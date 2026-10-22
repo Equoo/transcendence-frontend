@@ -21,7 +21,7 @@ export function SideBarChatItem({
 				to={`/messages/${conv.id}`}
 				className={({ isActive }) =>
 					[
-						"flex gap-2 px-2 py-1.5 text-[14.5px] rounded-base group duration-120",
+						"flex gap-2 px-2 py-1.5 text-[14.5px] rounded-xl group duration-120",
 						isActive
 							? "bg-accent-soft text-text"
 							: "hover:bg-back hover:text-text",

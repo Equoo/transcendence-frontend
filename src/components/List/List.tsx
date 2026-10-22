@@ -87,7 +87,7 @@ export default function List({
 	// eslint-disable-next-line id-length
 	const { t } = useTranslation();
 	return (
-		<div className="w-full min-w-0 overflow-x-auto rounded-base border border-border bg-surface">
+		<div className="w-full min-w-0 overflow-x-auto rounded-xl border border-border bg-surface">
 			<table
 				{...props}
 				className={`w-full text-sm font-main text-text ${className}`}

@@ -26,7 +26,7 @@ function FileRows({ files, limit }: { files: AppFile[]; limit: number }): JSX.El
 					<li key={file.key}>
 						<Link
 							to={`/knowledge/${file.key}`}
-							className="flex items-center gap-3 px-2 py-1.5 rounded-base text-[14.5px] text-text hover:bg-hover duration-120"
+							className="flex items-center gap-3 px-2 py-1.5 rounded-xl text-[14.5px] text-text hover:bg-hover duration-120"
 						>
 							<FileIcon contentType={file.contentType} />
 							<span className="flex flex-col min-w-0 flex-1">

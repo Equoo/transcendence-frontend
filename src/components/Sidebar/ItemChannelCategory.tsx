@@ -44,7 +44,7 @@ function ItemChannelCategory({
 
 	return (
 		<li className="mb-3">
-			<div className="relative flex justify-between items-center px-2 py-1 text-[13px] rounded-base group duration-120 cursor-pointer hover:text-text hover:[&_button]:visible">
+			<div className="relative flex justify-between items-center px-2 py-1 text-[13px] rounded-xl group duration-120 cursor-pointer hover:text-text hover:[&_button]:visible">
 				<div
 					className="flex flex-row gap-2 items-center after:absolute after:inset-0"
 					onClick={() => {

@@ -1,8 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Figtree:ital,wght@0,300..900;1,300..900&display=swap");
 @import "tailwindcss";
-@source "../node_modules/flowbite";
-@plugin "flowbite/plugin";
-@import "flowbite/src/themes/default";
+@import "./ui/theme.css";
 
 /* Color palette */
 @theme {
@@ -24,6 +22,13 @@
 	--color-accent-soft: color-mix(#e8743c 15%, #fffdf8);
 	--color-good: #3f9e6b;
 	--color-good-soft: #e2f0e6;
+
+	/* Radius & tracking (values previously inherited from Flowbite) */
+	--radius: 8px;
+	--radius-xs: 4px;
+	--radius-sm: 6px;
+	--radius-lg: 16px;
+	--tracking-tight: -0.4px;
 
 	--font-*: initial;
 	--font-head:

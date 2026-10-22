@@ -32,7 +32,7 @@ export default function ListRoles({ role }: { role: Role }): JSX.Element {
 	}
 
 	return (
-		<tr className="text-sm text-body border-b rounded-base border-border h-full">
+		<tr className="text-sm text-text2 border-b rounded-xl border-border h-full">
 			<td className="px-6 font-medium py-5">
 				{showChangeRole && (
 					<ChangeModal

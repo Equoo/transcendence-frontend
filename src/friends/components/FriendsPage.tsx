@@ -86,7 +86,7 @@ function RelationList({ title, rels }: { title: string; rels: Relationship[] }):
 	return (
 		<section>
 			<SectionTitle>{title} — {rels.length}</SectionTitle>
-			<ul className="flex flex-col rounded-base border border-border bg-surface">
+			<ul className="flex flex-col rounded-xl border border-border bg-surface">
 				{rels.map((rel) => <FriendRow key={rel.id} rel={rel} />)}
 			</ul>
 		</section>

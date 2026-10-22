@@ -28,10 +28,10 @@ export function ConversationListSkeleton({ count = 6 }: { count?: number }): JSX
 export function FriendListSkeleton({ count = 5 }: { count?: number }): JSX.Element {
 	return (
 		<div className="flex flex-col gap-5 animate-pulse">
-			<div className="h-10 w-full rounded-base bg-border" />
+			<div className="h-10 w-full rounded-xl bg-border" />
 			<section>
 				<div className="h-3 w-24 mx-1 mb-3 rounded bg-border" />
-				<ul className="flex flex-col rounded-base border border-border bg-surface">
+				<ul className="flex flex-col rounded-xl border border-border bg-surface">
 					{Array.from({ length: count }, (___, index) => (
 						<li key={index} className="flex items-center gap-3 px-3 py-2.5 border-t border-border first:border-t-0">
 							<Avatar />
@@ -54,7 +54,7 @@ export function OnlineFriendsSkeleton({ count = 4 }: { count?: number }): JSX.El
 			<div className="h-3 w-28 mx-1 mb-3 rounded bg-border" />
 			<div className="grid grid-cols-[repeat(auto-fill,minmax(130px,1fr))] gap-3">
 				{Array.from({ length: count }, (___, index) => (
-					<div key={index} className="flex flex-col items-center gap-2 p-4 rounded-base border border-border bg-surface">
+					<div key={index} className="flex flex-col items-center gap-2 p-4 rounded-xl border border-border bg-surface">
 						<Avatar className="size-15" />
 						<div className={`h-3.5 rounded bg-border ${NAME_WIDTHS[index % NAME_WIDTHS.length]}`} />
 					</div>
@@ -70,7 +70,7 @@ export function RecentConversationsSkeleton({ count = 4 }: { count?: number }): 
 			<div className="h-3 w-36 mx-1 mb-3 rounded bg-border" />
 			<div className="grid grid-cols-[repeat(auto-fill,minmax(240px,1fr))] gap-3">
 				{Array.from({ length: count }, (___, index) => (
-					<div key={index} className="flex items-center gap-3 p-3 rounded-base border border-border bg-surface">
+					<div key={index} className="flex items-center gap-3 p-3 rounded-xl border border-border bg-surface">
 						<Avatar />
 						<div className="flex flex-col gap-1.5 min-w-0">
 							<div className={`h-3.5 rounded bg-border ${NAME_WIDTHS[index % NAME_WIDTHS.length]}`} />
@@ -125,7 +125,7 @@ export function ConversationChatSkeleton(): JSX.Element {
 				))}
 			</div>
 			<div className="flex-none px-5.5 pb-5">
-				<div className="h-12 w-full rounded-base bg-border" />
+				<div className="h-12 w-full rounded-xl bg-border" />
 			</div>
 		</div>
 	);

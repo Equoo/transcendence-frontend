@@ -21,6 +21,17 @@ export default {
 				code: "錯誤 {{code}}",
 				trace: "追蹤碼：{{trace}}",
 			},
+			ui: {
+				muted: "已靜音",
+				channelSettings: "{{name}} 設定",
+				search: "搜尋…",
+				clear: "清除",
+				skipToContent: "跳至內容",
+				navigation: "導覽",
+				expandMenu: "展開選單",
+				openMenu: "開啟選單",
+				back: "返回",
+			},
 			common: {
 				goBack: "返回",
 				home: "首頁",

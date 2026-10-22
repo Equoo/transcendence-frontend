@@ -23,7 +23,7 @@ function ItemChannel({
 	return (
 		<li
 			className={[
-				"relative flex items-center px-2 py-1 text-[14.5px] rounded-base group duration-120 curssor-pointer hover:[&_button]:visible",
+				"relative flex items-center px-2 py-1 text-[14.5px] rounded-xl group duration-120 curssor-pointer hover:[&_button]:visible",
 				active
 					? "bg-accent-soft text-text"
 					: "hover:bg-hover hover:text-text",

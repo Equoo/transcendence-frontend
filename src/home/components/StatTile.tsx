@@ -4,7 +4,7 @@ import { Link } from "react-router";
 
 export function StatTileSkeleton(): JSX.Element {
 	return (
-		<div className="flex items-center gap-3 p-4 rounded-base border border-border bg-surface animate-pulse">
+		<div className="flex items-center gap-3 p-4 rounded-xl border border-border bg-surface animate-pulse">
 			<div className="size-11 shrink-0 rounded-2xl bg-border" />
 			<div className="flex flex-col gap-2">
 				<div className="h-6 w-10 rounded bg-border" />
@@ -31,7 +31,7 @@ export default function StatTile({
 		<Link
 			to={to}
 			className={[
-				"flex items-center gap-3 p-4 rounded-base border hover:-translate-y-0.5 hover:shadow-main duration-120",
+				"flex items-center gap-3 p-4 rounded-xl border hover:-translate-y-0.5 hover:shadow-main duration-120",
 				highlight ? "border-accent/30 bg-accent-soft" : "border-border bg-surface",
 			].join(" ")}
 		>

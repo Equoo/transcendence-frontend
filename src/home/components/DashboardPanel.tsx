@@ -17,7 +17,7 @@ export default function DashboardPanel({
 	children: ReactNode;
 }): JSX.Element {
 	return (
-		<section className="flex flex-col gap-3 p-4 rounded-base border border-border bg-surface">
+		<section className="flex flex-col gap-3 p-4 rounded-xl border border-border bg-surface">
 			<div className="flex items-center gap-2">
 				<Icon size={18} className="text-muted" />
 				<h2 className="font-head font-semibold text-[15px] text-text">{title}</h2>

@@ -128,7 +128,7 @@ export default function AddFriendModal({
 					{results.map((user) => (
 						<li
 							key={user.id}
-							className="flex items-center gap-3 px-2 py-2 rounded-base hover:bg-hover"
+							className="flex items-center gap-3 px-2 py-2 rounded-xl hover:bg-hover"
 						>
 							<ProfilePic user={user} size={1} status />
 							<div className="flex flex-col flex-1 min-w-0">

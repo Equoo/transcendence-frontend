@@ -1,0 +1,224 @@
+/* ============================================================
+   KeepGrouped UI kit: tokens, dark theme, touch rules.
+   Purely additive: existing components keep their look.
+   Dark theme is opt-in through <html data-theme="dark">.
+   ============================================================ */
+
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+@theme {
+	--color-warn: #d98a2b;
+	--color-warn-soft: #f8ead6;
+	--color-scrim: rgb(44 40 32 / 0.35);
+	--color-accent-line: color-mix(in oklab, #e8743c 50%, #ece1cf);
+
+	/* Type scale (handoff): meta 11-13, body 14.5-15.5, titles 17-30 */
+	--text-ui-2xs: 0.6875rem;
+	--text-ui-2xs--line-height: 1rem;
+	--text-ui-xs: 0.78125rem;
+	--text-ui-xs--line-height: 1.125rem;
+	--text-ui-sm: 0.8125rem;
+	--text-ui-sm--line-height: 1.25rem;
+	--text-ui-base: 0.90625rem;
+	--text-ui-base--line-height: 1.375rem;
+	--text-ui-md: 0.96875rem;
+	--text-ui-md--line-height: 1.5rem;
+	--text-ui-lg: 1.0625rem;
+	--text-ui-lg--line-height: 1.5rem;
+	--text-ui-xl: 1.3125rem;
+	--text-ui-xl--line-height: 1.75rem;
+	--text-ui-2xl: 1.875rem;
+	--text-ui-2xl--line-height: 2.25rem;
+	--text-ui-3xl: 2.5rem;
+	--text-ui-3xl--line-height: 1.1;
+
+	/* Radius scale: inner items / controls / cards / hero */
+	--radius-ui-xs: 8px;
+	--radius-ui-sm: 12px;
+	--radius-ui-md: 18px;
+	--radius-ui-lg: 26px;
+
+	/* Control heights, raised on touch screens (see below) */
+	--spacing-ctl-sm: 2rem;
+	--spacing-ctl-md: 2.5rem;
+	--spacing-ctl-lg: 2.75rem;
+	--spacing-side: 16.5rem;
+	--spacing-rail: 4.5rem;
+	--spacing-aside: 20rem;
+
+	--shadow-ui-sm: 0 1px 2px var(--ui-shadow-1), 0 3px 8px var(--ui-shadow-2);
+	--shadow-ui-md: 0 2px 6px var(--ui-shadow-1), 0 12px 30px var(--ui-shadow-3);
+	--shadow-ui-lg: 0 12px 50px var(--ui-shadow-4);
+
+	--animate-sheet-in: ui-sheet-in 0.28s cubic-bezier(0.32, 0.72, 0, 1);
+	--animate-drawer-start-in: ui-drawer-start-in 0.25s cubic-bezier(0.32, 0.72, 0, 1);
+	--animate-drawer-end-in: ui-drawer-end-in 0.25s cubic-bezier(0.32, 0.72, 0, 1);
+	--animate-dialog-in: fade-in 0.2s ease-out, zoom-in-95 0.2s ease-out;
+	--animate-hold: ui-hold var(--ui-hold-delay, 450ms) linear forwards;
+
+	@keyframes ui-hold {
+		from {
+			transform: scaleX(0);
+		}
+		to {
+			transform: scaleX(1);
+		}
+	}
+
+	@keyframes ui-sheet-in {
+		from {
+			transform: translateY(100%);
+		}
+		to {
+			transform: translateY(0);
+		}
+	}
+
+	@keyframes ui-drawer-start-in {
+		from {
+			transform: translateX(-100%);
+		}
+		to {
+			transform: translateX(0);
+		}
+	}
+
+	@keyframes ui-drawer-end-in {
+		from {
+			transform: translateX(100%);
+		}
+		to {
+			transform: translateX(0);
+		}
+	}
+
+	@keyframes ui-shimmer {
+		from {
+			background-position: 100% 0;
+		}
+		to {
+			background-position: -100% 0;
+		}
+	}
+}
+
+:root {
+	--ui-shadow-1: rgb(125 95 55 / 0.06);
+	--ui-shadow-2: rgb(125 95 55 / 0.05);
+	--ui-shadow-3: rgb(125 95 55 / 0.09);
+	--ui-shadow-4: rgb(110 80 45 / 0.18);
+}
+
+:root[data-theme="dark"] {
+	color-scheme: dark;
+	--color-back: #1a1613;
+	--color-back2: #131009;
+	--color-back3: #1e1915;
+	--color-surface: #241f19;
+	--color-surface2: #2c261e;
+	--color-hover: #2f281f;
+	--color-text: #f4ede1;
+	--color-text2: #b7ad9b;
+	--color-muted: #857b6b;
+	--color-border: #342c22;
+	--color-border2: #40372b;
+	--color-error: #e5534b;
+	--color-error-soft: #3b201c;
+	--color-accent-soft: color-mix(in oklab, #e8743c 24%, #241f19);
+	--color-accent-line: color-mix(in oklab, #e8743c 50%, #342c22);
+	--color-good: #4cb784;
+	--color-good-soft: #1d2c23;
+	--color-warn-soft: #3a2a17;
+	--color-scrim: rgb(0 0 0 / 0.55);
+	--ui-shadow-1: rgb(0 0 0 / 0.25);
+	--ui-shadow-2: rgb(0 0 0 / 0.22);
+	--ui-shadow-3: rgb(0 0 0 / 0.36);
+	--ui-shadow-4: rgb(0 0 0 / 0.5);
+}
+
+/* Touch screens: every control reaches the 40-48px tap target */
+@media (pointer: coarse) {
+	:root {
+		--spacing-ctl-sm: 2.5rem;
+		--spacing-ctl-md: 2.75rem;
+		--spacing-ctl-lg: 3rem;
+	}
+}
+
+/* No grey flash on tap, no double-tap zoom delay */
+@utility tap {
+	-webkit-tap-highlight-color: transparent;
+	touch-action: manipulation;
+}
+
+/* Hidden until hover/focus with a mouse, always visible on touch */
+@utility reveal {
+	@media (hover: hover) and (pointer: fine) {
+		opacity: 0;
+		transition: opacity 120ms;
+
+		&:focus-within,
+		&:is(:where(.group):hover *),
+		&:is(:where(.group):focus-within *) {
+			opacity: 1;
+		}
+	}
+}
+
+@utility ui-skeleton {
+	background-image: linear-gradient(
+		90deg,
+		var(--color-hover) 0%,
+		var(--color-surface2) 40%,
+		var(--color-hover) 80%
+	);
+	background-size: 200% 100%;
+	animation: ui-shimmer 1.8s linear infinite;
+
+	@media (prefers-reduced-motion: reduce) {
+		animation: none;
+	}
+}
+
+/* Long-press targets: no iOS callout / text selection while holding */
+@utility no-callout {
+	-webkit-touch-callout: none;
+	user-select: none;
+}
+
+/*
+ * Press feedback. Long-press fill: an accent layer sweeping in while
+ * the finger is held ([data-pressing]), the item shrinks slightly.
+ */
+@utility hold-fill {
+	position: relative;
+	isolation: isolate;
+	transition: scale 200ms ease-out, background-color 120ms;
+
+	&::before {
+		content: "";
+		position: absolute;
+		inset: 0;
+		z-index: -1;
+		border-radius: inherit;
+		background: color-mix(in oklab, var(--color-accent) 18%, transparent);
+		transform: scaleX(0);
+		transform-origin: left;
+		pointer-events: none;
+	}
+
+	&[data-pressing] {
+		scale: 0.97;
+	}
+
+	&[data-pressing]::before {
+		animation: var(--animate-hold);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		&[data-pressing]::before {
+			animation: none;
+			transform: scaleX(1);
+		}
+	}
+}

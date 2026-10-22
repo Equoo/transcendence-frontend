@@ -36,7 +36,7 @@ function MemberRow({ user, name, isSelf, offline }: {
 	const startConv = useStartConversation();
 
 	return (
-		<li className={`flex items-center gap-2.5 px-2 py-1.5 rounded-base group hover:bg-hover duration-120 ${offline ? "opacity-55 hover:opacity-100" : ""}`}>
+		<li className={`flex items-center gap-2.5 px-2 py-1.5 rounded-xl group hover:bg-hover duration-120 ${offline ? "opacity-55 hover:opacity-100" : ""}`}>
 			<ProfilePic user={user} size={1} status={!offline} />
 			<div className="flex flex-col min-w-0 flex-1">
 				<p className="text-text text-[14px] font-semibold truncate">

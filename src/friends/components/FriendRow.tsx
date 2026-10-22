@@ -155,7 +155,7 @@ function FriendActions({ rel }: { rel: Relationship }): JSX.Element {
 
 export default function FriendRow({ rel }: { rel: Relationship }): JSX.Element {
 	return (
-		<li className="flex items-center gap-3 px-3 py-2.5 rounded-base border-t border-border first:border-t-0 hover:bg-hover duration-120">
+		<li className="flex items-center gap-3 px-3 py-2.5 rounded-xl border-t border-border first:border-t-0 hover:bg-hover duration-120">
 			<ProfilePic user={rel.user} size={1} status={rel.type === RelationshipState.Friend} />
 			<div className="flex flex-col min-w-0 flex-1">
 				<p className="text-text text-[14.5px] font-semibold truncate">

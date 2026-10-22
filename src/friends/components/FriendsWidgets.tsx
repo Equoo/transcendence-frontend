@@ -54,7 +54,7 @@ export function PendingRequestsBanner(): JSX.Element | null {
 	return (
 		<Link
 			to="/messages/pending"
-			className="flex items-center gap-4 p-4 rounded-base border border-accent/30 bg-accent-soft hover:brightness-98 duration-120"
+			className="flex items-center gap-4 p-4 rounded-xl border border-accent/30 bg-accent-soft hover:brightness-98 duration-120"
 		>
 			<div className="flex -space-x-3">
 				{incoming.slice(0, 3).map((rel, idx) => (
@@ -82,7 +82,7 @@ function OnlineFriendCard({ rel }: { rel: Relationship }): JSX.Element {
 			type="button"
 			disabled={startConv.isPending}
 			onClick={() => { startConv.mutate({ recipients: [rel.user.id] }); }}
-			className="flex flex-col items-center gap-2 p-4 rounded-base border border-border bg-surface cursor-pointer
+			className="flex flex-col items-center gap-2 p-4 rounded-xl border border-border bg-surface cursor-pointer
 				hover:-translate-y-0.5 hover:shadow-main duration-120"
 		>
 			<ProfilePic user={rel.user} size={2} status />
@@ -144,7 +144,7 @@ export function RecentConversations({ limit = 6, showEmpty = false }: {
 						<Link
 							key={conv.id}
 							to={`/messages/${conv.id}`}
-							className="flex items-center gap-3 p-3 rounded-base border border-border bg-surface
+							className="flex items-center gap-3 p-3 rounded-xl border border-border bg-surface
 								hover:-translate-y-0.5 hover:shadow-main duration-120"
 						>
 							<ConversationAvatar conv={conv} />

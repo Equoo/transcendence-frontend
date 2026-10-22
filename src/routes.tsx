@@ -21,6 +21,8 @@ export default [
 	]),
 
 	route("*", "routes/404Page.tsx"),
+	// Dev-only component showcase (404 in production)
+	route("/_ui/:channel?", "ui/showcase/showcase.route.tsx"),
 
 	route("/register", "auth/routes/register.tsx"),
 	route("/login", "auth/routes/login.tsx"),

@@ -33,7 +33,7 @@ export default function ProfileLine({
 				<p className="text-text text-[14px] font-semibold wrap-break-word ">
 					{user.userName}
 				</p>
-				<p className="text-text2 text-2xs font-medium truncate">
+				<p className="text-text2 text-[0.625rem] font-medium truncate">
 					{user.role.name}
 				</p>
 			</div>

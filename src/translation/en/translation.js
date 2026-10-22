@@ -23,6 +23,17 @@ export default {
 				code: "Error {{code}}",
 				trace: "Trace: {{trace}}",
 			},
+			ui: {
+				muted: "Muted",
+				channelSettings: "Settings for {{name}}",
+				search: "Search…",
+				clear: "Clear",
+				skipToContent: "Skip to content",
+				navigation: "Navigation",
+				expandMenu: "Expand menu",
+				openMenu: "Open menu",
+				back: "Back",
+			},
 			common: {
 				goBack: "Go Back",
 				home: "Home",
