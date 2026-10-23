@@ -163,13 +163,6 @@ function Sidebar({ user }: { user: User }): JSX.Element {
 					</ul>
 
 					<div className="flex-1 overflow-y-auto">
-						<ul>
-							<li className="flex justify-between items-center px-2 py-1.5 mt-3 text-[11px] text-muted font-bold tracking-wider uppercase whitespace-nowrap group">
-								{t("sidebar.upcoming")}
-								<span className="ml-auto">0</span>
-							</li>
-						</ul>
-
 						<div className="relative flex justify-between items-center px-2 py-1.5 mt-3 text-[11px] text-muted font-bold tracking-wider uppercase whitespace-nowrap group">
 							{t("sidebar.channels")}{" "}
 							{Boolean(

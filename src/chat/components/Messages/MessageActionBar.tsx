@@ -14,20 +14,20 @@ import {
 import { PermEnum } from "@/admin/api/roles";
 import IconBtn from "@/components/Button/IconBtn";
 import PopupList from "@/components/List/PopupList";
-import ConfirmModal from "@/components/Modal/ConfirmModal";
 import { useUser } from "@/users/hooks/users";
 import { toastError } from "@/utils/error.util";
 
-import { deleteMessage, type Message } from "../../api/chat.api";
-import { findMessage, removeMessage } from "../../cache/chat.cache";
+import type { Message } from "../../api/chat.api";
+import { findMessage } from "../../cache/chat.cache";
 import { useChatContext } from "../ChatProvider";
-import MessageRow from "./MessageRow";
+import RemoveMessageModal from "./RemoveMessageModal";
 
 export interface MessageActionBarHandles {
 	show: (
 		e: React.MouseEvent<HTMLDivElement> | React.FocusEvent<HTMLDivElement>,
 	) => void;
 	hide: () => void;
+	openMenu: (row: HTMLDivElement) => void;
 }
 
 interface ActionBar {
@@ -35,6 +35,7 @@ interface ActionBar {
 	el: HTMLDivElement;
 	top: number;
 	left: number;
+	menuOnly: boolean;
 }
 
 function MessageActionBar({
@@ -49,7 +50,7 @@ function MessageActionBar({
 	const { t } = useTranslation();
 
 	const [actionBar, setActionBar] = useState<ActionBar | null>(null);
-	const [showRemoveForm, setShowRemoveForm] = useState(false);
+	const [removeTarget, setRemoveTarget] = useState<Message | null>(null);
 	const [showMenu, setShowMenu] = useState(false);
 	const actionBarTimerRef = useRef<number | null>(null);
 	const activeRowRef = useRef<HTMLDivElement | null>(null);
@@ -59,6 +60,34 @@ function MessageActionBar({
 			clearTimeout(actionBarTimerRef.current);
 			actionBarTimerRef.current = null;
 		}
+	};
+
+	const select = (row: HTMLDivElement, menuOnly: boolean): void => {
+		const msg = findMessage(qc, channelId, row.dataset.id ?? "");
+		if (!msg) {
+			return;
+		}
+
+		const top = row.offsetTop - (row.parentElement?.scrollTop ?? 0) - 20;
+		const left = row.offsetLeft + row.offsetWidth / 2;
+
+		if (activeRowRef.current) {
+			activeRowRef.current.ariaSelected = "false";
+		}
+		row.ariaSelected = "true";
+		activeRowRef.current = row;
+
+		setShowMenu(menuOnly);
+		setActionBar({ msg, el: row, top, left, menuOnly });
+	};
+
+	const deselect = (): void => {
+		if (activeRowRef.current) {
+			activeRowRef.current.ariaSelected = "false";
+			activeRowRef.current = null;
+		}
+		setShowMenu(false);
+		setActionBar(null);
 	};
 
 	useImperativeHandle(ref, () => ({
@@ -73,44 +102,39 @@ function MessageActionBar({
 			if (typeof row === "undefined" || row === activeRowRef.current) {
 				return;
 			}
-
-			const msg = findMessage(qc, channelId, row.dataset.id ?? "");
-			if (!msg) {
-				return;
-			}
-
-			const top =
-				row.offsetTop - (row.parentElement?.scrollTop ?? 0) - 20;
-			const left = row.offsetLeft + row.offsetWidth / 2;
-
-			if (activeRowRef.current) {
-				activeRowRef.current.ariaSelected = "false";
-			}
-			row.ariaSelected = "true";
-			activeRowRef.current = row;
-
-			setShowMenu(false);
-			setActionBar({ msg, el: row, top, left });
+			select(row, false);
 		},
 		hide: (): void => {
+			if (actionBar?.menuOnly) {
+				return;
+			}
 			clearHideTimer();
 			actionBarTimerRef.current = setTimeout(() => {
 				actionBarTimerRef.current = null;
-				if (activeRowRef.current) {
-					activeRowRef.current.ariaSelected = "false";
-					activeRowRef.current = null;
-				}
-				setShowMenu(false);
-				setActionBar(null);
+				deselect();
 			}, 80);
+		},
+		openMenu: (row: HTMLDivElement): void => {
+			clearHideTimer();
+			select(row, true);
 		},
 	}));
 
 	const { composerRef } = useChatContext();
 	const user = useUser();
 
+	const removeModal = removeTarget && (
+		<RemoveMessageModal
+			channelId={channelId}
+			message={removeTarget}
+			onClose={() => {
+				setRemoveTarget(null);
+			}}
+		/>
+	);
+
 	if (!actionBar) {
-		return <div></div>;
+		return <>{removeModal}</>;
 	}
 
 	const isOwn = actionBar.msg.sender.id === user?.id;
@@ -125,6 +149,9 @@ function MessageActionBar({
 	};
 	const enterEdit = (): void => {
 		composerRef.current?.enterEditMode(actionBar.msg, actionBar.el);
+	};
+	const askRemove = (): void => {
+		setRemoveTarget(actionBar.msg);
 	};
 	const copyText = (text: string): void => {
 		navigator.clipboard.writeText(text).catch(toastError);
@@ -146,21 +173,21 @@ function MessageActionBar({
 	const menuRows = [
 		...(isSent
 			? [
-					{
-						id: "reply",
-						onClick: enterReply,
-						content: menuRow(PiArrowArcLeft, t("chat.reply")),
-					},
-				]
+				{
+					id: "reply",
+					onClick: enterReply,
+					content: menuRow(PiArrowArcLeft, t("chat.reply")),
+				},
+			]
 			: []),
 		...(isSent && isOwn
 			? [
-					{
-						id: "edit",
-						onClick: enterEdit,
-						content: menuRow(PiPencil, t("chat.edit")),
-					},
-				]
+				{
+					id: "edit",
+					onClick: enterEdit,
+					content: menuRow(PiPencil, t("chat.edit")),
+				},
+			]
 			: []),
 		{
 			id: "copy",
@@ -171,31 +198,44 @@ function MessageActionBar({
 		},
 		...(isSent
 			? [
-					{
-						id: "copyId",
-						onClick: (): void => {
-							copyText(actionBar.msg.id);
-						},
-						content: menuRow(PiHash, t("chat.copyId")),
+				{
+					id: "copyId",
+					onClick: (): void => {
+						copyText(actionBar.msg.id);
 					},
-				]
+					content: menuRow(PiHash, t("chat.copyId")),
+				},
+			]
 			: []),
 		...(isSent && canDelete
 			? [
-					{
-						id: "delete",
-						onClick: (): void => {
-							setShowRemoveForm(true);
-						},
-						content: menuRow(
-							PiTrash,
-							t("chat.removeMessage"),
-							true,
-						),
-					},
-				]
+				{
+					id: "delete",
+					onClick: askRemove,
+					content: menuRow(
+						PiTrash,
+						t("chat.removeMessage"),
+						true,
+					),
+				},
+			]
 			: []),
 	];
+
+	if (actionBar.menuOnly) {
+		return (
+			<>
+				{showMenu && (
+					<PopupList
+						onClose={deselect}
+						rows={menuRows}
+					/>
+				)}
+				{removeModal}
+			</>
+		);
+	}
+
 	return (
 		<>
 			<div
@@ -226,9 +266,7 @@ function MessageActionBar({
 								tooltip={t("chat.removeMessage")}
 								className="text-red-400"
 								size={14}
-								onClick={() => {
-									setShowRemoveForm(true);
-								}}
+								onClick={askRemove}
 							></IconBtn>
 						)}
 					</>
@@ -251,33 +289,7 @@ function MessageActionBar({
 					/>
 				)}
 			</div>
-			{showRemoveForm && (
-				<ConfirmModal
-					title={t("chat.removeMessage")}
-					description={t("chat.removeMessageConfirm")}
-					confirmLabel={t("common.delete")}
-					danger
-					onClose={() => {
-						setShowRemoveForm(false);
-					}}
-					onConfirm={() => {
-						deleteMessage(channelId, actionBar.msg.id)
-							.then(() => {
-								removeMessage(qc, channelId, actionBar.msg.id);
-							})
-							.catch(toastError);
-						setShowRemoveForm(false);
-					}}
-				>
-					<div className="max-h-48 overflow-y-auto rounded-2xl border border-border bg-surface2">
-						<MessageRow
-							message={actionBar.msg}
-							showHeader
-							className="mt-0! px-3 py-2.5 hover:bg-transparent"
-						/>
-					</div>
-				</ConfirmModal>
-			)}
+			{removeModal}
 		</>
 	);
 }

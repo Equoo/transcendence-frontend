@@ -5,6 +5,7 @@ import ProfilePic from "@/components/Profile/ProfilePic";
 import type { Relationship } from "@/friends/api/relationship.api";
 import { displayName } from "@/friends/utils/friends.util";
 import { useClickOutside } from "@/hooks/useClickOutside";
+import { useLongPress } from "@/hooks/useLongPress";
 import ProfileUser from "@/users/components/ProfileUser";
 import { resolveUser, useUser } from "@/users/hooks/users";
 
@@ -17,13 +18,12 @@ type ActivateEvent =
 
 interface MessageRowProps {
 	message: Message;
-	/** Show the avatar and sender/time header (first message of a group). */
 	showHeader: boolean;
-	/** Highlighted because it is the target of an edit or reply. */
 	isFocused?: boolean;
 	rowRef?: Ref<HTMLDivElement> | null;
 	onActivate?: (ev: ActivateEvent) => void;
 	onDeactivate?: () => void;
+	onLongPress?: (row: HTMLDivElement) => void;
 	className?: string;
 	relations?: Relationship[];
 	onClickReply?: (msg: Message) => void;
@@ -46,6 +46,7 @@ function MessageRow({
 	rowRef,
 	onActivate,
 	onDeactivate,
+	onLongPress,
 	className,
 	relations,
 	onClickReply,
@@ -61,6 +62,13 @@ function MessageRow({
 		setShowWatch(false);
 	});
 
+	const longPress = useLongPress(
+		(_point, target) => {
+			onLongPress?.(target as HTMLDivElement);
+		},
+		{ disabled: !onLongPress },
+	);
+
 	return (
 		<div
 			ref={rowRef}
@@ -70,7 +78,8 @@ function MessageRow({
 			onMouseEnter={onActivate}
 			onFocus={onActivate}
 			onMouseLeave={onDeactivate}
-			className={`flex items-center relative shrink-0 ${showHeader ? "mt-4.5" : "mt-0.75"} hover:bg-back2 aria-selected:bg-back2 data-[pending=true]:animate-pulse data-[focus=true]:bg-accent-soft ${className}`}
+			{...(onLongPress && longPress)}
+			className={`flex items-center relative shrink-0 ${onLongPress ? "hold-fill no-callout" : ""} ${showHeader ? "mt-4.5" : "mt-0.75"} hover:bg-back2 aria-selected:bg-back2 data-[pending=true]:animate-pulse data-[focus=true]:bg-accent-soft ${className}`}
 		>
 			{showHeader && (
 				<ProfilePic

@@ -13,7 +13,6 @@ export interface PressPoint {
 }
 
 const MOVE_TOLERANCE = 10;
-// Short taps should not flash the hold animation
 const FEEDBACK_DELAY = 120;
 
 let touchActiveReady = false;
@@ -46,12 +45,13 @@ interface LongPressHandlers {
 
 /**
  * Long press (touch / pen only, never mouse), right click and the
- * keyboard context-menu key all call `onLongPress` with a screen point.
+ * keyboard context-menu key all call `onLongPress` with a screen point
+ * and the pressed element.
  * Spread the returned props on the element and give it the
  * `hold-fill no-callout` classes for the visual feedback.
  */
 export function useLongPress(
-	onLongPress: (point: PressPoint) => void,
+	onLongPress: (point: PressPoint, target: HTMLElement) => void,
 	{ delay = 450, disabled = false }: { delay?: number; disabled?: boolean } = {},
 ): LongPressHandlers {
 	const [pressing, setPressing] = useState(false);
@@ -89,7 +89,7 @@ export function useLongPress(
 		};
 	}, []);
 
-	function fire(point: PressPoint): void {
+	function fire(point: PressPoint, target: HTMLElement): void {
 		clearTimers();
 		firedRef.current = true;
 		startRef.current = null;
@@ -97,7 +97,7 @@ export function useLongPress(
 		if ("vibrate" in navigator) {
 			navigator.vibrate(12);
 		}
-		onLongPress(point);
+		onLongPress(point, target);
 	}
 
 	return {
@@ -109,12 +109,13 @@ export function useLongPress(
 			}
 			firedRef.current = false;
 			const point = { left: ev.clientX, top: ev.clientY };
+			const target = ev.currentTarget;
 			startRef.current = point;
 			feedbackRef.current = window.setTimeout(() => {
 				setPressing(true);
 			}, FEEDBACK_DELAY);
 			timerRef.current = window.setTimeout(() => {
-				fire(point);
+				fire(point, target);
 			}, delay);
 		},
 		onPointerMove(ev): void {
@@ -130,7 +131,6 @@ export function useLongPress(
 		onPointerLeave: cancel,
 		onPointerCancel: cancel,
 		onClickCapture(ev): void {
-			// The release after a long press must not also navigate
 			if (firedRef.current) {
 				ev.preventDefault();
 				ev.stopPropagation();
@@ -139,18 +139,17 @@ export function useLongPress(
 		},
 		onContextMenu(ev): void {
 			ev.preventDefault();
-			// Android also sends contextmenu on long press: already handled
 			if (disabled || startRef.current || firedRef.current) {
 				return;
 			}
-			fire({ left: ev.clientX, top: ev.clientY });
+			fire({ left: ev.clientX, top: ev.clientY }, ev.currentTarget);
 			firedRef.current = false;
 		},
 		onKeyDown(ev): void {
 			if (!disabled && (ev.key === "ContextMenu" || (ev.shiftKey && ev.key === "F10"))) {
 				ev.preventDefault();
 				const rect = ev.currentTarget.getBoundingClientRect();
-				fire({ left: rect.left, top: rect.bottom });
+				fire({ left: rect.left, top: rect.bottom }, ev.currentTarget);
 				firedRef.current = false;
 			}
 		},
