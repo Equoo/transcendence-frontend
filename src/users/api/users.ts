@@ -24,6 +24,7 @@ export enum Language {
 export interface User {
 	id: string;
 	userName: string;
+	email?: string;
 	channelsAckMsg: Map<string, Date>;
 	role: Role;
 	avatar?: AppFile;
@@ -33,6 +34,7 @@ export interface User {
 interface UserDto {
 	id: string;
 	userName: string;
+	email?: string;
 	channelsAckMsg: Record<string, string>;
 	role: Role;
 	avatar?: AppFile;
@@ -54,6 +56,7 @@ function normalizeUser(dto: UserDto): User {
 	return {
 		id: dto.id,
 		userName: dto.userName,
+		email: dto.email,
 		language: dto.language,
 		channelsAckMsg: new Map(
 			Object.entries(dto.channelsAckMsg).map(([key, val]) => [

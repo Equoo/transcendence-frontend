@@ -1,6 +1,6 @@
 import type { JSX } from "react";
 import { useTranslation } from "react-i18next";
-import { PiUser } from "react-icons/pi";
+import { PiEnvelopeSimple, PiUser } from "react-icons/pi";
 import { SlLock } from "react-icons/sl";
 import { Link, useNavigation } from "react-router";
 
@@ -88,17 +88,50 @@ export function AuthForm({
 
 	return (
 		<div className="flex flex-col w-3/4 gap-4">
-			<Input
-				maxLength={25}
-				className="h-12"
-				placeholder={t("auth.username")}
-				type="text"
-				name="Username"
-				label={t("auth.username")}
-				required
-			>
-				<PiUser className="ml-2 mr-2 text-text2" size={20} />
-			</Input>
+			{register ? (
+				<>
+					<Input
+						maxLength={25}
+						className="h-12"
+						placeholder={t("auth.username")}
+						type="text"
+						name="Username"
+						label={t("auth.username")}
+						autoComplete="username"
+						required
+					>
+						<PiUser className="ml-2 mr-2 text-text2" size={20} />
+					</Input>
+					<Input
+						maxLength={255}
+						className="h-12"
+						placeholder={t("auth.emailPlaceholder")}
+						type="email"
+						name="Email"
+						label={t("auth.email")}
+						autoComplete="email"
+						required
+					>
+						<PiEnvelopeSimple
+							className="ml-2 mr-2 text-text2"
+							size={20}
+						/>
+					</Input>
+				</>
+			) : (
+				<Input
+					maxLength={254}
+					className="h-12"
+					placeholder={t("auth.identifier")}
+					type="text"
+					name="Login"
+					label={t("auth.identifier")}
+					autoComplete="username"
+					required
+				>
+					<PiUser className="ml-2 mr-2 text-text2" size={20} />
+				</Input>
+			)}
 			<Input
 				password
 				maxLength={256}
@@ -107,6 +140,7 @@ export function AuthForm({
 				type="password"
 				name="Password"
 				label={t("auth.password")}
+				autoComplete={register ? "new-password" : "current-password"}
 				required
 			>
 				<SlLock className="ml-2 mr-2 text-text2" size={20} />

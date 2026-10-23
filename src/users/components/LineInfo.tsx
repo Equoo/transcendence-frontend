@@ -25,7 +25,7 @@ export default function LineInfo({
 						{value}
 					</h1>
 				)}
-				{role.name !== "\\(*-*)/" && (
+				{action && role.name !== "\\(*-*)/" && (
 					<div className="shrink-0">
 						<TbPencil
 							onClick={action}

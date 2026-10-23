@@ -130,6 +130,9 @@ export default {
 				changeHint: "Pick an image, everyone in the group will see it.",
 			},
 			auth: {
+				email: "Email",
+				emailPlaceholder: "name@example.com",
+				identifier: "Username or email",
 				username: "Username",
 				password: "Password",
 				invitationCode: "Invitation Code",
@@ -147,6 +150,7 @@ export default {
 				register: "Register",
 			},
 			profile: {
+				email: "Email",
 				username: "Username",
 				password: "Password",
 				language: "Language",

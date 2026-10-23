@@ -5,12 +5,14 @@ import callApi from "@/tokens/callApi";
 export type UserResult = { ok: true } | { ok: false; error: string };
 
 interface reqLoginInput {
-	username: string;
+	// username or email, ouais c'est moi qui ai mis le commentaire
+	login: string;
 	password: string;
 }
 
 interface reqRegisterInput {
 	username: string;
+	email: string;
 	password: string;
 	invitationCode: string;
 }
@@ -19,14 +21,15 @@ interface reqRegisterInput {
 
 function toLoginInput(formData: FormData): reqLoginInput {
 	return {
-		username: formData.get("Username") as string,
+		login: (formData.get("Login") as string).trim(),
 		password: formData.get("Password") as string,
 	};
 }
 
 function toRegisterInput(formData: FormData): reqRegisterInput {
 	return {
-		username: formData.get("Username") as string,
+		username: (formData.get("Username") as string).trim(),
+		email: (formData.get("Email") as string).trim(),
 		password: formData.get("Password") as string,
 		invitationCode: formData.get("Code") as string,
 	};
