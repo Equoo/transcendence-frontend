@@ -1,108 +1,159 @@
-import { useEffect, useRef } from "react";
+import {
+	type KeyboardEvent,
+	type MouseEvent,
+	type PointerEvent,
+	useEffect,
+	useRef,
+	useState,
+} from "react";
 
-export type LongPressProps = Pick<
-	React.HTMLAttributes<HTMLElement>,
-	| "onPointerDown"
-	| "onPointerMove"
-	| "onPointerUp"
-	| "onPointerCancel"
-	| "onPointerLeave"
-	| "onContextMenu"
-	| "onClickCapture"
-	| "onDragStart"
-	| "draggable"
->;
-
-export interface LongPressOptions {
-	delay?: number;
-	moveThreshold?: number;
+export interface PressPoint {
+	left: number;
+	top: number;
 }
 
+const MOVE_TOLERANCE = 10;
+// Short taps should not flash the hold animation
+const FEEDBACK_DELAY = 120;
+
+let touchActiveReady = false;
+
+/** iOS Safari only applies :active styles once a touch listener exists */
+export function ensureTouchActive(): void {
+	if (!touchActiveReady && typeof document !== "undefined") {
+		touchActiveReady = true;
+		document.addEventListener(
+			"touchstart",
+			() => {
+				// Intentionally empty
+			},
+			{ passive: true },
+		);
+	}
+}
+
+interface LongPressHandlers {
+	"data-pressing"?: true;
+	onPointerDown: (ev: PointerEvent<HTMLElement>) => void;
+	onPointerMove: (ev: PointerEvent<HTMLElement>) => void;
+	onPointerUp: () => void;
+	onPointerLeave: () => void;
+	onPointerCancel: () => void;
+	onClickCapture: (ev: MouseEvent<HTMLElement>) => void;
+	onContextMenu: (ev: MouseEvent<HTMLElement>) => void;
+	onKeyDown: (ev: KeyboardEvent<HTMLElement>) => void;
+}
+
+/**
+ * Long press (touch / pen only, never mouse), right click and the
+ * keyboard context-menu key all call `onLongPress` with a screen point.
+ * Spread the returned props on the element and give it the
+ * `hold-fill no-callout` classes for the visual feedback.
+ */
 export function useLongPress(
-	callback: (event: React.PointerEvent<HTMLElement>) => void,
-	{ delay = 500, moveThreshold = 10 }: LongPressOptions = {},
-): LongPressProps {
-	const callbackRef = useRef(callback);
-	const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-	const startRef = useRef<{ posX: number; posY: number } | null>(null);
-	const triggeredRef = useRef(false);
+	onLongPress: (point: PressPoint) => void,
+	{ delay = 450, disabled = false }: { delay?: number; disabled?: boolean } = {},
+): LongPressHandlers {
+	const [pressing, setPressing] = useState(false);
+	const timerRef = useRef<number | null>(null);
+	const feedbackRef = useRef<number | null>(null);
+	const startRef = useRef<PressPoint | null>(null);
+	const firedRef = useRef(false);
+
+	function clearTimers(): void {
+		if (timerRef.current !== null) {
+			window.clearTimeout(timerRef.current);
+			timerRef.current = null;
+		}
+		if (feedbackRef.current !== null) {
+			window.clearTimeout(feedbackRef.current);
+			feedbackRef.current = null;
+		}
+	}
+
+	function cancel(): void {
+		clearTimers();
+		startRef.current = null;
+		setPressing(false);
+	}
 
 	useEffect(() => {
-		callbackRef.current = callback;
-	}, [callback]);
+		ensureTouchActive();
+		return (): void => {
+			if (timerRef.current !== null) {
+				window.clearTimeout(timerRef.current);
+			}
+			if (feedbackRef.current !== null) {
+				window.clearTimeout(feedbackRef.current);
+			}
+		};
+	}, []);
 
-	const clear = (): void => {
-		if (timerRef.current !== null) {
-			clearTimeout(timerRef.current);
-			timerRef.current = null;
-		}
+	function fire(point: PressPoint): void {
+		clearTimers();
+		firedRef.current = true;
 		startRef.current = null;
-	};
-
-	useEffect(() => clear, []);
-
-	const handlePointerDown = (event: React.PointerEvent<HTMLElement>): void => {
-		triggeredRef.current = false;
-		if (event.pointerType !== "touch") {
-			return;
+		setPressing(false);
+		if ("vibrate" in navigator) {
+			navigator.vibrate(12);
 		}
-		clear();
-		startRef.current = { posX: event.clientX, posY: event.clientY };
-		timerRef.current = setTimeout(() => {
-			triggeredRef.current = true;
-			timerRef.current = null;
-			callbackRef.current(event);
-		}, delay);
-	};
-
-	const handlePointerMove = (event: React.PointerEvent<HTMLElement>): void => {
-		if (event.pointerType !== "touch" || !startRef.current) {
-			return;
-		}
-		const dx = event.clientX - startRef.current.posX;
-		const dy = event.clientY - startRef.current.posY;
-		if (Math.hypot(dx, dy) > moveThreshold) {
-			clear();
-		}
-	};
-
-	const handlePointerEnd = (event: React.PointerEvent<HTMLElement>): void => {
-		if (event.pointerType !== "touch") {
-			return;
-		}
-		clear();
-	};
-
-	const handleContextMenu = (event: React.MouseEvent<HTMLElement>): void => {
-		if (startRef.current || triggeredRef.current) {
-			event.preventDefault();
-		}
-	};
-
-	const handleClickCapture = (event: React.MouseEvent<HTMLElement>): void => {
-		if (!triggeredRef.current) {
-			return;
-		}
-		triggeredRef.current = false;
-		event.preventDefault();
-		event.stopPropagation();
-	};
-
-	const handleDragStart = (event: React.DragEvent<HTMLElement>): void => {
-		if (startRef.current || triggeredRef.current) {
-			event.preventDefault();
-		}
-	};
+		onLongPress(point);
+	}
 
 	return {
-		draggable: false,
-		onDragStart: handleDragStart,
-		onPointerDown: handlePointerDown,
-		onPointerMove: handlePointerMove,
-		onPointerUp: handlePointerEnd,
-		onPointerCancel: handlePointerEnd,
-		onPointerLeave: handlePointerEnd,
-		onContextMenu: handleContextMenu,
-		onClickCapture: handleClickCapture,
+		...(pressing && { "data-pressing": true }),
+		onPointerDown(ev): void {
+			// Desktop uses right click: holding the mouse does nothing
+			if (disabled || ev.button !== 0 || ev.pointerType === "mouse") {
+				return;
+			}
+			firedRef.current = false;
+			const point = { left: ev.clientX, top: ev.clientY };
+			startRef.current = point;
+			feedbackRef.current = window.setTimeout(() => {
+				setPressing(true);
+			}, FEEDBACK_DELAY);
+			timerRef.current = window.setTimeout(() => {
+				fire(point);
+			}, delay);
+		},
+		onPointerMove(ev): void {
+			const start = startRef.current;
+			if (
+				start &&
+				Math.hypot(ev.clientX - start.left, ev.clientY - start.top) > MOVE_TOLERANCE
+			) {
+				cancel();
+			}
+		},
+		onPointerUp: cancel,
+		onPointerLeave: cancel,
+		onPointerCancel: cancel,
+		onClickCapture(ev): void {
+			// The release after a long press must not also navigate
+			if (firedRef.current) {
+				ev.preventDefault();
+				ev.stopPropagation();
+				firedRef.current = false;
+			}
+		},
+		onContextMenu(ev): void {
+			ev.preventDefault();
+			// Android also sends contextmenu on long press: already handled
+			if (disabled || startRef.current || firedRef.current) {
+				return;
+			}
+			fire({ left: ev.clientX, top: ev.clientY });
+			firedRef.current = false;
+		},
+		onKeyDown(ev): void {
+			if (!disabled && (ev.key === "ContextMenu" || (ev.shiftKey && ev.key === "F10"))) {
+				ev.preventDefault();
+				const rect = ev.currentTarget.getBoundingClientRect();
+				fire({ left: rect.left, top: rect.bottom });
+				firedRef.current = false;
+			}
+		},
 	};
 }
+
