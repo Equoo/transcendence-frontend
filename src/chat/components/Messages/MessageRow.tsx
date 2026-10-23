@@ -81,19 +81,19 @@ function MessageRow({
 			{...(onLongPress && longPress)}
 			className={`flex items-center relative shrink-0 ${onLongPress ? "hold-fill no-callout" : ""} ${showHeader ? "mt-4.5" : "mt-0.75"} hover:bg-back2 aria-selected:bg-back2 data-[pending=true]:animate-pulse data-[focus=true]:bg-accent-soft ${className}`}
 		>
-			{showHeader && (
+			{showHeader && (<div className="absolute top-0">
 				<ProfilePic
 					watch={sender.id !== user?.id}
 					user={sender}
 					size={1}
 				/>
-			)}
+			</div>)}
 			{showWatch && sender.id !== user?.id && (
 				<div ref={watchRef} className="absolute bottom-7 left-15">
 					<ProfileUser user={sender}></ProfileUser>
 				</div>
 			)}
-			<div className={`min-w-0 ${showHeader ? "ml-2" : "ml-12"}`}>
+			<div className="min-w-0 ml-12">
 				{showHeader && (
 					<div className="mb-0.75 flex items-baseline gap-2.25">
 						<span
