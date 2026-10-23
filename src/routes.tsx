@@ -24,6 +24,8 @@ export default [
 
 	route("/register", "auth/routes/register.tsx"),
 	route("/login", "auth/routes/login.tsx"),
+	route("/privacy", "legal/routes/privacy.tsx"),
+	route("/terms", "legal/routes/terms.tsx"),
 	// Resources routes
 	route(
 		"/events/:eventId/registration/:userId?",

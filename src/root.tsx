@@ -29,6 +29,9 @@ const alertStyle = {
 	default: "bg-bg",
 };
 
+// Pages reachable without being logged in.
+const publicPaths = ["/login", "/register", "/privacy", "/terms"];
+
 export const clientMiddleware: Route.MiddlewareFunction[] = [
 	// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/explicit-function-return-type, @typescript-eslint/consistent-return
 	async ({ context, request, url }, next) => {
@@ -55,7 +58,7 @@ export const clientMiddleware: Route.MiddlewareFunction[] = [
 			}
 		} else {
 			await queryClient.invalidateQueries({ queryKey: ["me"] });
-			if (url.pathname !== "/login" && url.pathname !== "/register") {
+			if (!publicPaths.includes(url.pathname)) {
 				return redirect("/login");
 			}
 		}

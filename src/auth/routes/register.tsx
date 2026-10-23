@@ -1,8 +1,9 @@
 import type { JSX } from "react";
 import { useTranslation } from "react-i18next";
-import { Form, redirect, useLocation } from "react-router";
+import { Form, Link, redirect, useLocation } from "react-router";
 
 import { AuthForm, AuthLogo, AuthTitle } from "../../auth/components/AuthForm";
+import { LegalLinks } from "../../legal/components/LegalPage";
 import { registerUser, type UserResult } from "../api/auth";
 import type { Route } from "./+types/register";
 
@@ -27,7 +28,7 @@ export default function Register({
 	const code = new URLSearchParams(location.search).get("invitation");
 
 	return (
-		<div className="flex items-center justify-center w-full h-full bg-back gap-20 signup">
+		<div className="flex items-center justify-center w-full h-full bg-back gap-20 signup relative">
 			<AuthLogo side={"l"} />
 			<div className="flex flex-col lg:w-2/3 h-6/10 justify-center items-center lg:items-start z-10 ">
 				<Form
@@ -43,15 +44,34 @@ export default function Register({
 					/>
 					{actionData?.ok === false && (
 						<div className="text-error">{actionData.error}</div>
-	
 					)}
 					<AuthForm
 						btnName={t("auth.register")}
 						register
 						code={code}
 					/>
+					<p className="text-xs text-muted w-3/4 text-center">
+						{t("legal.byContinuing")}
+						<Link
+							to="/terms"
+							className="text-accent"
+							viewTransition
+						>
+							{t("legal.terms.title")}
+						</Link>
+						{t("legal.and")}
+						<Link
+							to="/privacy"
+							className="text-accent"
+							viewTransition
+						>
+							{t("legal.privacy.title")}
+						</Link>
+						.
+					</p>
 				</Form>
 			</div>
+			<LegalLinks className="absolute bottom-4 z-10" />
 		</div>
 	);
 }

@@ -129,6 +129,119 @@ export default {
 				changeTitle: "Change profile picture",
 				changeHint: "Pick an image, everyone in the group will see it.",
 			},
+			legal: {
+				label: "LEGAL",
+				lastUpdated: "Last updated: {{date}}",
+				updatedOn: "October 23, 2026",
+				byContinuing: "By continuing, you agree to our ",
+				and: " and ",
+				privacy: {
+					title: "Privacy Policy",
+					sections: {
+						intro: {
+							title: "Introduction",
+							body: "KeepGrouped is a self-hosted group management and communication tool. This policy explains which personal data is processed when you use this instance, why, and what rights you have over it.",
+						},
+						controller: {
+							title: "Who is responsible",
+							body: "Each KeepGrouped instance is installed and operated by its own administrator. **The administrator of this instance is the data controller** for the data stored on it. The KeepGrouped developers have no access to your instance or its data.",
+						},
+						collected: {
+							title: "Data we collect",
+							body: "- **Account data:** username, email address and password (stored only as a secure hash).\n- **Profile data:** avatar, language and activity status preferences.\n- **Content you create:** messages, reactions, conversations, events, registrations, uploaded files and folders.\n- **Social data:** friend requests, relationships and nicknames you assign.\n- **Technical data:** presence (online/offline), read receipts, invitation codes used and server logs (IP address, date, requested resource).",
+						},
+						usage: {
+							title: "How we use your data",
+							body: "Your data is used only to provide the service: authenticating you, displaying your profile to other members, delivering messages and notifications in real time, organising events and storing your files. It is never sold or used for advertising.",
+						},
+						assistant: {
+							title: "AI assistant",
+							body: "If the assistant is enabled, your questions and the documents of the knowledge base are processed to generate answers. Depending on the instance configuration, this processing may rely on a third-party language model provider. Avoid sharing sensitive information with the assistant.",
+						},
+						sharing: {
+							title: "Sharing",
+							body: "Content you post in channels, events or the knowledge base is visible to the members allowed to access it, according to their roles. Private conversations are visible only to their participants and, technically, to the administrator. Data is shared with third parties only when required by law or by the hosting and AI providers chosen by the administrator.",
+						},
+						retention: {
+							title: "Retention",
+							body: "Your data is kept as long as your account exists. When you delete your account, your personal data is deleted or anonymised, except where the administrator must keep it to meet a legal obligation. Server logs are kept for a limited period.",
+						},
+						security: {
+							title: "Security",
+							body: "Connections are encrypted (HTTPS), passwords are hashed and access to content is restricted by roles and permissions. No system is perfectly secure: please use a strong, unique password.",
+						},
+						cookies: {
+							title: "Cookies and local storage",
+							body: "KeepGrouped uses only strictly necessary cookies to keep you signed in (session and refresh tokens). Your browser's local storage keeps a few preferences, such as your activity status. No tracking or advertising cookies are used.",
+						},
+						rights: {
+							title: "Your rights",
+							body: "Under the GDPR and similar laws, you can access, correct, export or delete your data, object to or restrict its processing, and lodge a complaint with your data protection authority. You can edit or delete your account from your profile, or contact the administrator for any other request.",
+						},
+						changes: {
+							title: "Changes",
+							body: "This policy may be updated. The date at the top of this page shows the latest version; significant changes will be announced to members.",
+						},
+						contact: {
+							title: "Contact",
+							body: "For any question about your data, contact the administrator of this instance.",
+						},
+					},
+				},
+				terms: {
+					title: "Terms of Service",
+					sections: {
+						acceptance: {
+							title: "Acceptance",
+							body: "By creating an account or using this KeepGrouped instance, you agree to these Terms of Service and to the [Privacy Policy](/privacy). If you do not agree, do not use the service.",
+						},
+						service: {
+							title: "The service",
+							body: "KeepGrouped lets a group communicate and organise itself: channels, private messages, events, file sharing, knowledge base and AI assistant. Each instance is hosted and managed by its own administrator, who decides which features are available.",
+						},
+						account: {
+							title: "Your account",
+							body: "Registration requires a valid invitation code. You must provide accurate information, keep your password confidential and are responsible for all activity on your account. Notify the administrator immediately if you suspect unauthorised access.",
+						},
+						conduct: {
+							title: "Acceptable use",
+							body: "You agree not to:\n- harass, threaten or discriminate against other members;\n- post illegal, hateful, violent or sexually explicit content;\n- share content you do not have the rights to;\n- spread malware, spam or attempt to disrupt the service;\n- access accounts or data that are not yours.",
+						},
+						content: {
+							title: "Your content",
+							body: "You keep ownership of the content you post. You grant the instance a licence to store, display and share it with the members allowed to see it, solely to operate the service. You are responsible for what you publish.",
+						},
+						assistant: {
+							title: "AI assistant",
+							body: "Answers produced by the assistant are generated automatically and may be inaccurate or incomplete. Check important information before relying on it.",
+						},
+						moderation: {
+							title: "Moderation",
+							body: "Administrators and members with the right permissions may edit or remove content, change roles or suspend accounts that break these terms or the group's rules.",
+						},
+						availability: {
+							title: "Availability",
+							body: "The service is provided \"as is\". The administrator does its best to keep it available and to back up data, but does not guarantee uninterrupted service or the absence of data loss.",
+						},
+						liability: {
+							title: "Liability",
+							body: "To the extent permitted by law, neither the administrator nor the KeepGrouped developers are liable for indirect damages resulting from the use of the service or from content posted by members.",
+						},
+						termination: {
+							title: "Termination",
+							body: "You can delete your account at any time from your profile. Your access may be suspended or terminated if you break these terms.",
+						},
+						changes: {
+							title: "Changes",
+							body: "These terms may be updated. Continuing to use the service after a change means you accept the new version.",
+						},
+						contact: {
+							title: "Contact",
+							body: "For any question about these terms, contact the administrator of this instance.",
+						},
+					},
+				},
+			},
 			auth: {
 				email: "Email",
 				emailPlaceholder: "name@example.com",

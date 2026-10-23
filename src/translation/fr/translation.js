@@ -132,6 +132,119 @@ export default {
 				changeTitle: "Changer la photo de profil",
 				changeHint: "Choisissez une image, tout le groupe la verra.",
 			},
+			legal: {
+				label: "MENTIONS LÉGALES",
+				lastUpdated: "Dernière mise à jour : {{date}}",
+				updatedOn: "23 octobre 2026",
+				byContinuing: "En continuant, vous acceptez nos ",
+				and: " et notre ",
+				privacy: {
+					title: "Politique de confidentialité",
+					sections: {
+						intro: {
+							title: "Introduction",
+							body: "KeepGrouped est un outil auto-hébergé de gestion et de communication de groupe. Cette politique explique quelles données personnelles sont traitées lorsque vous utilisez cette instance, pourquoi, et quels sont vos droits.",
+						},
+						controller: {
+							title: "Responsable du traitement",
+							body: "Chaque instance KeepGrouped est installée et gérée par son propre administrateur. **L'administrateur de cette instance est le responsable du traitement** des données qui y sont stockées. Les développeurs de KeepGrouped n'ont accès ni à votre instance ni à ses données.",
+						},
+						collected: {
+							title: "Données collectées",
+							body: "- **Données de compte :** nom d'utilisateur, adresse e-mail et mot de passe (stocké uniquement sous forme de hash sécurisé).\n- **Données de profil :** avatar, langue et préférences de statut d'activité.\n- **Contenus que vous créez :** messages, réactions, conversations, événements, inscriptions, fichiers et dossiers envoyés.\n- **Données sociales :** demandes d'ami, relations et surnoms que vous attribuez.\n- **Données techniques :** présence (en ligne/hors ligne), accusés de lecture, codes d'invitation utilisés et journaux serveur (adresse IP, date, ressource demandée).",
+						},
+						usage: {
+							title: "Utilisation des données",
+							body: "Vos données servent uniquement à fournir le service : vous authentifier, afficher votre profil aux autres membres, distribuer messages et notifications en temps réel, organiser les événements et stocker vos fichiers. Elles ne sont jamais vendues ni utilisées à des fins publicitaires.",
+						},
+						assistant: {
+							title: "Assistant IA",
+							body: "Si l'assistant est activé, vos questions et les documents de la base de connaissances sont traités pour générer des réponses. Selon la configuration de l'instance, ce traitement peut s'appuyer sur un fournisseur tiers de modèle de langage. Évitez de partager des informations sensibles avec l'assistant.",
+						},
+						sharing: {
+							title: "Partage",
+							body: "Les contenus publiés dans les salons, les événements ou la base de connaissances sont visibles par les membres autorisés selon leurs rôles. Les conversations privées ne sont visibles que par leurs participants et, techniquement, par l'administrateur. Les données ne sont partagées avec des tiers que si la loi l'exige ou avec les hébergeurs et fournisseurs d'IA choisis par l'administrateur.",
+						},
+						retention: {
+							title: "Conservation",
+							body: "Vos données sont conservées tant que votre compte existe. À la suppression de votre compte, vos données personnelles sont supprimées ou anonymisées, sauf obligation légale de conservation. Les journaux serveur sont conservés pour une durée limitée.",
+						},
+						security: {
+							title: "Sécurité",
+							body: "Les connexions sont chiffrées (HTTPS), les mots de passe sont hashés et l'accès aux contenus est restreint par rôles et permissions. Aucun système n'est parfaitement sûr : utilisez un mot de passe robuste et unique.",
+						},
+						cookies: {
+							title: "Cookies et stockage local",
+							body: "KeepGrouped utilise uniquement des cookies strictement nécessaires pour maintenir votre connexion (jetons de session et de rafraîchissement). Le stockage local de votre navigateur conserve quelques préférences, comme votre statut d'activité. Aucun cookie de suivi ou publicitaire n'est utilisé.",
+						},
+						rights: {
+							title: "Vos droits",
+							body: "Conformément au RGPD, vous pouvez accéder à vos données, les rectifier, les exporter ou les supprimer, vous opposer à leur traitement ou le limiter, et introduire une réclamation auprès de la CNIL ou de votre autorité de protection des données. Vous pouvez modifier ou supprimer votre compte depuis votre profil, ou contacter l'administrateur pour toute autre demande.",
+						},
+						changes: {
+							title: "Modifications",
+							body: "Cette politique peut être mise à jour. La date en haut de cette page indique la dernière version ; les changements importants seront annoncés aux membres.",
+						},
+						contact: {
+							title: "Contact",
+							body: "Pour toute question concernant vos données, contactez l'administrateur de cette instance.",
+						},
+					},
+				},
+				terms: {
+					title: "Conditions d'utilisation",
+					sections: {
+						acceptance: {
+							title: "Acceptation",
+							body: "En créant un compte ou en utilisant cette instance KeepGrouped, vous acceptez les présentes Conditions d'utilisation ainsi que la [Politique de confidentialité](/privacy). Si vous n'êtes pas d'accord, n'utilisez pas le service.",
+						},
+						service: {
+							title: "Le service",
+							body: "KeepGrouped permet à un groupe de communiquer et de s'organiser : salons, messages privés, événements, partage de fichiers, base de connaissances et assistant IA. Chaque instance est hébergée et gérée par son propre administrateur, qui décide des fonctionnalités disponibles.",
+						},
+						account: {
+							title: "Votre compte",
+							body: "L'inscription nécessite un code d'invitation valide. Vous devez fournir des informations exactes, garder votre mot de passe confidentiel et êtes responsable de toute activité sur votre compte. Prévenez immédiatement l'administrateur en cas de suspicion d'accès non autorisé.",
+						},
+						conduct: {
+							title: "Utilisation acceptable",
+							body: "Vous vous engagez à ne pas :\n- harceler, menacer ou discriminer d'autres membres ;\n- publier de contenu illégal, haineux, violent ou sexuellement explicite ;\n- partager de contenu sur lequel vous n'avez pas de droits ;\n- diffuser de logiciels malveillants, de spam ou tenter de perturber le service ;\n- accéder à des comptes ou données qui ne sont pas les vôtres.",
+						},
+						content: {
+							title: "Vos contenus",
+							body: "Vous restez propriétaire des contenus que vous publiez. Vous accordez à l'instance une licence pour les stocker, les afficher et les partager avec les membres autorisés, uniquement pour faire fonctionner le service. Vous êtes responsable de ce que vous publiez.",
+						},
+						assistant: {
+							title: "Assistant IA",
+							body: "Les réponses de l'assistant sont générées automatiquement et peuvent être inexactes ou incomplètes. Vérifiez les informations importantes avant de vous y fier.",
+						},
+						moderation: {
+							title: "Modération",
+							body: "Les administrateurs et les membres disposant des permissions adéquates peuvent modifier ou supprimer des contenus, changer des rôles ou suspendre des comptes qui enfreignent ces conditions ou les règles du groupe.",
+						},
+						availability: {
+							title: "Disponibilité",
+							body: "Le service est fourni « en l'état ». L'administrateur fait de son mieux pour le maintenir disponible et sauvegarder les données, sans garantir un service ininterrompu ni l'absence de perte de données.",
+						},
+						liability: {
+							title: "Responsabilité",
+							body: "Dans les limites permises par la loi, ni l'administrateur ni les développeurs de KeepGrouped ne sauraient être tenus responsables des dommages indirects liés à l'utilisation du service ou aux contenus publiés par les membres.",
+						},
+						termination: {
+							title: "Résiliation",
+							body: "Vous pouvez supprimer votre compte à tout moment depuis votre profil. Votre accès peut être suspendu ou résilié en cas de non-respect de ces conditions.",
+						},
+						changes: {
+							title: "Modifications",
+							body: "Ces conditions peuvent être mises à jour. Continuer à utiliser le service après une modification vaut acceptation de la nouvelle version.",
+						},
+						contact: {
+							title: "Contact",
+							body: "Pour toute question sur ces conditions, contactez l'administrateur de cette instance.",
+						},
+					},
+				},
+			},
 			auth: {
 				email: "E-mail",
 				emailPlaceholder: "nom@exemple.com",

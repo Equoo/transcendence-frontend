@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Form, redirect } from "react-router";
 
 import { AuthForm, AuthLogo, AuthTitle } from "../../auth/components/AuthForm";
+import { LegalLinks } from "../../legal/components/LegalPage";
 import { loginUser, type UserResult } from "../api/auth";
 import type { Route } from "./+types/login";
 
@@ -24,7 +25,7 @@ export default function Login({
 	const { t } = useTranslation();
 
 	return (
-		<div className="flex items-center justify-center w-full h-full bg-back2 gap-20 login">
+		<div className="flex items-center justify-center w-full h-full bg-back2 gap-20 login relative">
 			<AuthLogo side={"r"} />
 			<div className="flex flex-col lg:w-2/3 h-6/10 justify-center z-10 items-center lg:items-end">
 				<Form
@@ -46,6 +47,7 @@ export default function Login({
 					<AuthForm btnName={t("auth.login")} />
 				</Form>
 			</div>
+			<LegalLinks className="absolute bottom-4 z-10" />
 		</div>
 	);
 }
