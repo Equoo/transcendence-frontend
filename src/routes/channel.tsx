@@ -8,6 +8,7 @@ import { useCategory, useChannel } from "@/chat/hooks/useChannels";
 import { isWhitelisted } from "@/chat/utils/channel.util";
 import IconBtn from "@/components/Button/IconBtn";
 import MembersSidebar from "@/components/MembersSidebar";
+import { HEADER_PADDING } from "@/friends/components/BackToList";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { fetchUsers, type User } from "@/users/api/users";
 
@@ -51,15 +52,17 @@ export default function ChannelRoute({
 	return (
 		<div className="flex w-full h-full">
 			<div className="flex flex-col flex-1 min-w-0 min-h-0">
-				<div className="flex flex-none items-center gap-3 border-b border-border pl-16 lg:p-6 pr-6 py-4">
-					<div className="flex flex-col">
-						<div className="flex items-center gap-1.75 font-head text-[17px] font-[650]">
+				<div className={`flex flex-none items-center gap-3 border-b border-border py-3 lg:py-4 ${HEADER_PADDING}`}>
+					<div className="flex flex-col min-w-0">
+						<div className="flex items-center gap-1.75 font-head text-[17px] font-[650] min-w-0">
 							<span className="text-muted">#</span>
-							{isPending
-								? ""
-								: (channel?.name ?? t("channel.notFoundTitle"))}
+							<span className="truncate">
+								{isPending
+									? ""
+									: (channel?.name ?? t("channel.notFoundTitle"))}
+							</span>
 						</div>
-						<div className="text-[12.5px] text-muted">
+						<div className="text-[12.5px] text-muted truncate">
 							{channel?.topic ?? ""}
 						</div>
 					</div>
@@ -73,8 +76,8 @@ export default function ChannelRoute({
 					<ChannelChat channel={channel}></ChannelChat>
 				) : (
 					!isPending && (
-						<div className="absolute flex flex-col items-center top-1/2 left-1/2 -translate-1/2">
-							<h1 className="font-bold text-6xl text-text2">
+						<div className="flex flex-1 flex-col items-center justify-center gap-1 px-6 text-center">
+							<h1 className="font-bold text-4xl sm:text-6xl text-text2">
 								{t("channel.notFoundHeading")}
 							</h1>
 							<p className="text-text2">

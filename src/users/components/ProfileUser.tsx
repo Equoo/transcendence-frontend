@@ -25,7 +25,7 @@ export default function ProfileUser({ user }: { user: User }): JSX.Element {
 	const startConv = useStartConversation();
 
 	return (
-		<div className="flex justify-between items-center rounded-xl z-500 w-60  h-auto p-2 bg-white">
+		<div className="flex justify-between items-center rounded-xl z-500 w-60 max-w-[calc(100vw-5rem)] h-auto p-2 bg-white">
 			<ProfileLine status user={user} />
 
 			<div className="flex">

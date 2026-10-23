@@ -375,6 +375,7 @@ export default {
 			},
 			sidebar: {
 				open: "Ouvrir la barre latérale",
+				close: "Fermer la barre latérale",
 				label: "Barre latérale",
 				subtitle: "Projet Transcendance",
 				calendar: "Calendrier",

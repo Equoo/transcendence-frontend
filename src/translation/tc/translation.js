@@ -349,6 +349,7 @@ export default {
 			},
 			sidebar: {
 				open: "開啟側邊欄",
+				close: "關閉側邊欄",
 				label: "側邊欄",
 				subtitle: "Transcendance 專案",
 				calendar: "行事曆",

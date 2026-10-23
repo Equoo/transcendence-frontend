@@ -70,7 +70,7 @@ export function ErrorBoundary({
 
 	return (
 		<div className="flex h-full items-center justify-center w-full p-6 font-main">
-			<div className="flex flex-col items-center gap-6 w-md px-10 py-9 rounded-2xl bg-surface border border-border shadow-main text-center animate-in">
+			<div className="flex flex-col items-center gap-6 w-full max-w-md px-6 py-8 sm:px-10 sm:py-9 rounded-2xl bg-surface border border-border shadow-main text-center animate-in">
 				<div className="flex items-center justify-center size-14 rounded-2xl bg-error-soft text-error">
 					<PiWarningCircle size={30} />
 				</div>
@@ -87,7 +87,7 @@ export function ErrorBoundary({
 					<p className="text-sm text-text2">{detail}</p>
 				</div>
 
-				<div className="flex gap-3">
+				<div className="flex flex-wrap justify-center gap-3">
 					<CheckButton
 						active={false}
 						onClick={() => {

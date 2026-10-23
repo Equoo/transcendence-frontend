@@ -174,7 +174,7 @@ export default function Profile({
 				</Modal>
 			)}
 			<div
-				className="flex items-center justify-center absolute bottom-15 left-55 flex-col border-border2 shadow-md bg-surface w-75 min-h-95 py-4 rounded-2xl z-10"
+				className="flex items-center justify-center absolute inset-x-2 bottom-20 lg:inset-x-auto lg:bottom-15 lg:left-55 flex-col border-border2 shadow-md bg-surface lg:w-75 min-h-95 py-4 rounded-2xl z-10"
 				ref={clickOutsideRef}
 				{...rest}
 			>

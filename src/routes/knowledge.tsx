@@ -1,8 +1,9 @@
 import { type JSX, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { PiSparkle } from "react-icons/pi";
+import { PiBookOpen, PiSparkle } from "react-icons/pi";
 
 import ChatbotPanel from "@/ai/components/ChatbotPanel";
+import { HEADER_PADDING } from "@/friends/components/BackToList";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 import Promisable from "../components/Promisable";
@@ -23,7 +24,7 @@ export function clientLoader(): {
 	return { files, previousFiles };
 }
 
-let cachedOpen = true;
+let cachedOpen: boolean | null = null;
 
 export default function Knowledge({
 	loaderData,
@@ -41,8 +42,16 @@ export default function Knowledge({
 
 	return (
 		<div className="flex flex-col w-full h-full">
-			<main className="flex flex-1 min-w-0 justify-center overflow-y-auto">
-				<div className="w-7/10 flex flex-col gap-1">
+			<div
+				className={`flex flex-none items-center gap-3 border-b border-border py-3 ${HEADER_PADDING}`}
+			>
+				<h1 className="font-head font-[650] text-[17px] text-text inline-flex gap-2 items-center">
+					<PiBookOpen size={20} className="text-muted" />
+					{t("sidebar.knowledge")}
+				</h1>
+			</div>
+			<main className="flex flex-1 min-h-0 min-w-0 justify-center overflow-y-auto">
+				<div className="w-full max-w-5xl px-4 sm:px-6 pb-6 flex flex-col gap-1">
 					<Promisable
 						data={loaderData.files}
 						cached_data={loaderData.previousFiles}

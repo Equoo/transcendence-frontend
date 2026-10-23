@@ -48,9 +48,9 @@ export default function AdminRoles({
 				></ChangeModal>
 			)}
 			<div className="flex w-full h-full justify-center bg-back">
-				<div className="w-11/12 my-10">
-					<div className="flex justify-between items-center w-full ">
-						<h1 className="text-3xl m-4 font-semibold font-head">
+				<div className="w-11/12 min-w-0 my-10">
+					<div className="flex flex-wrap justify-between items-center gap-x-4 w-full mt-6 mb-4 lg:mt-0">
+						<h1 className="text-2xl sm:text-3xl m-4 font-semibold font-head">
 							{t("admin.rolesManagement")}
 						</h1>
 

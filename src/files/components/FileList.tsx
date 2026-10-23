@@ -22,7 +22,7 @@ export default function FileList({ files }: { files: AppFile[] }): JSX.Element {
 	const allFolders = listFolders(files);
 
 	return (
-		<div className="mt-20">
+		<div className="mt-6">
 			<div className="flex flex-wrap w-full justify-between items-end gap-2 mb-2">
 				<p className="font-main text-text2 pl-1.5 text-base font-semibold min-w-0 truncate">
 					{currFolder}

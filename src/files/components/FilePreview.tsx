@@ -85,7 +85,7 @@ export function BlobView({
 		);
 	}
 	return (
-		<h1 className="text-center mt-10 font-semibold font-main text-text text-4xl">
+		<h1 className="text-center mt-10 px-4 font-semibold font-main text-text text-2xl sm:text-4xl">
 			{t("files.cannotPreview")}
 		</h1>
 	);
@@ -122,7 +122,7 @@ export default function FilePreview({
 							name={file.name}
 							blob={blob}
 							url={url}
-							className="h-9/10"
+							className="h-9/10 max-w-full object-contain"
 						/>
 						<a download={file.name} href={url}>
 							<CheckButton active activeCheck={false}>

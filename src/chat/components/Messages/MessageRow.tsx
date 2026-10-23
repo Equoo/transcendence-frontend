@@ -84,7 +84,7 @@ function MessageRow({
 					<ProfileUser user={sender}></ProfileUser>
 				</div>
 			)}
-			<div className={showHeader ? `ml-2` : `ml-12`}>
+			<div className={`min-w-0 ${showHeader ? "ml-2" : "ml-12"}`}>
 				{showHeader && (
 					<div className="mb-0.75 flex items-baseline gap-2.25">
 						<span

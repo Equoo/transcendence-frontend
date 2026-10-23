@@ -14,4 +14,4 @@ export default function BackToList(): JSX.Element {
 	);
 }
 
-export const HEADER_PADDING = "pl-12 pr-4 sm:px-5.5";
+export const HEADER_PADDING = "pl-14 pr-4 lg:px-5.5";
