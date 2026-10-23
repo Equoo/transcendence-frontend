@@ -16,7 +16,7 @@ import RolesField from "./RolesField";
 
 const FIELD_KEYS = ["Name", "Roles"];
 
-function CategoryModal({
+export function CategoryModal({
 	edit,
 	onClose,
 }: {

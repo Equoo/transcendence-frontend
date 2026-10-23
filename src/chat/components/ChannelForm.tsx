@@ -17,7 +17,7 @@ import RolesField from "./RolesField";
 
 const FIELD_KEYS = ["Name", "Topic", "Syncronised", "Roles"];
 
-function ChannelModal({
+export function ChannelModal({
 	edit,
 	category,
 	onClose,
@@ -33,7 +33,7 @@ function ChannelModal({
 	const [whitelist, setWhitelist] = useState(
 		() => edit?.rolesWhitelist.map((role) => role.name) ?? [],
 	);
-	const [sync, setSync] = useState(edit?.categorySync ?? false);
+	const [sync, setSync] = useState(edit?.categorySync ?? true);
 	const [confirmDelete, setConfirmDelete] = useState(false);
 	const errors = validationErrors(fetcher.data);
 

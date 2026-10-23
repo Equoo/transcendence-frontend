@@ -460,6 +460,8 @@ export default {
 				moreActions: "更多操作",
 				editChannel: "編輯頻道",
 				editCategory: "編輯分類",
+				deleteChannel: "刪除頻道",
+				deleteCategory: "刪除分類",
 				cancelMode: "取消 (Esc)",
 				removeMessageConfirm: "確定要刪除這則訊息嗎？",
 				today: "今天",

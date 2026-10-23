@@ -7,6 +7,7 @@ import {
 	PiChat,
 	PiGear,
 	PiHouse,
+	PiPlus,
 } from "react-icons/pi";
 import { Link, useFetcher, useLocation } from "react-router";
 
@@ -26,6 +27,7 @@ import ProfileLine from "../Profile/ProfileLine";
 import ItemCategory from "./ItemCategory";
 import ItemChannel from "./ItemChannel";
 import ItemChannelCategory from "./ItemChannelCategory";
+import SidebarMenu, { useSidebarMenu } from "./SidebarMenu";
 
 function ChannelListSkeleton(): JSX.Element {
 	return (
@@ -88,6 +90,10 @@ function Sidebar({ user }: { user: User }): JSX.Element {
 	}, [showSide, showUser]);
 
 	const isTouch = useMediaQuery("(pointer: coarse)");
+	const canEditChannels = Boolean(
+		user.role.permission & PermEnum.HandleChannels,
+	);
+	const channelsMenu = useSidebarMenu(canEditChannels);
 	const [settingIsHover, settingHoverProps] = useHover();
 	const profileClickOutside = useCallback(() => {
 		if (settingIsHover && !isTouch) {
@@ -163,13 +169,30 @@ function Sidebar({ user }: { user: User }): JSX.Element {
 					</ul>
 
 					<div className="flex-1 overflow-y-auto">
-						<div className="relative flex justify-between items-center px-2 py-1.5 mt-3 text-[11px] text-muted font-bold tracking-wider uppercase whitespace-nowrap group">
+						<div
+							{...channelsMenu.pressProps}
+							className={`relative flex justify-between items-center px-2 py-1.5 mt-3 rounded-base text-[11px] text-muted font-bold tracking-wider uppercase whitespace-nowrap group ${channelsMenu.pressClass}`}
+						>
 							{t("sidebar.channels")}{" "}
-							{Boolean(
-								user.role.permission & PermEnum.HandleChannels,
-							) &&
-								!isTouch && <CategoryForm></CategoryForm>}
+							{canEditChannels && !isTouch && (
+								<CategoryForm></CategoryForm>
+							)}
 						</div>
+						<SidebarMenu
+							menu={channelsMenu}
+							rows={[
+								{
+									icon: PiPlus,
+									label: t("chat.createChannelTitle"),
+									action: { kind: "createChannel" },
+								},
+								{
+									icon: PiPlus,
+									label: t("chat.createCategoryTitle"),
+									action: { kind: "createCategory" },
+								},
+							]}
+						/>
 						<ul>
 							{channelsQuery.isPending ||
 								categoriesQuery.isPending ? (

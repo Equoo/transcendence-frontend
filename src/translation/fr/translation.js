@@ -481,6 +481,8 @@ export default {
 				moreActions: "Plus d'actions",
 				editChannel: "Modifier le canal",
 				editCategory: "Modifier la catégorie",
+				deleteChannel: "Supprimer le canal",
+				deleteCategory: "Supprimer la catégorie",
 				cancelMode: "Annuler (Échap)",
 				removeMessageConfirm:
 					"Voulez-vous vraiment supprimer ce message ?",

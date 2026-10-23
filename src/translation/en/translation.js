@@ -469,6 +469,8 @@ export default {
 				moreActions: "More actions",
 				editChannel: "Edit channel",
 				editCategory: "Edit category",
+				deleteChannel: "Delete channel",
+				deleteCategory: "Delete category",
 				cancelMode: "Cancel (Escape)",
 				removeMessageConfirm: "Are you sure to remove this message ?",
 				today: "Today",

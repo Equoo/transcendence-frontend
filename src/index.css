@@ -278,7 +278,8 @@ body,
 		inset: 0;
 		z-index: -1;
 		pointer-events: none;
-		background-color: var(--color-accent-soft);
+		border-radius: inherit;
+		background-color: color-mix(in srgb, var(--color-accent) 22%, transparent);
 		transform: scaleX(0);
 		transform-origin: left;
 		opacity: 0;
