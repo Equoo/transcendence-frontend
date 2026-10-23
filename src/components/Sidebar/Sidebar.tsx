@@ -1,10 +1,4 @@
-import {
-	type JSX,
-	useCallback,
-	useEffect,
-	useRef,
-	useState,
-} from "react";
+import { type JSX, useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { HiMenuAlt2 } from "react-icons/hi";
 import {
@@ -20,7 +14,6 @@ import AdminSidebar from "@/admin/components/AdminSidebar";
 import CategoryForm from "@/chat/components/CategoryForm";
 import { useCategories, useChannels } from "@/chat/hooks/useChannels";
 import { isWhitelisted } from "@/chat/utils/channel.util";
-import { useClickOutside } from "@/hooks/useClickOutside";
 import Profile from "@/users/components/Profile";
 
 import { PermEnum } from "../../admin/api/roles";
@@ -72,48 +65,61 @@ function Sidebar({ user }: { user: User }): JSX.Element {
 	const [showSide, setShowSide] = useState(false);
 	const [showUser, setShowUser] = useState(false);
 
-	const barClickOutsideRef = useClickOutside(
-		useRef<HTMLDivElement>(null),
-		() => {
-			if (!showUser) {
+	// Drawer only matters below `lg`, where it closes on every navigation.
+	const [prevPath, setPrevPath] = useState(location.pathname);
+	if (prevPath !== location.pathname) {
+		setPrevPath(location.pathname);
+		setShowSide(false);
+	}
+
+	useEffect(() => {
+		function handleKey(event: KeyboardEvent): void {
+			if (event.key === "Escape" && showSide && !showUser) {
 				setShowSide(false);
 			}
-		},
-	);
+		}
+		document.addEventListener("keydown", handleKey);
+		return (): void => {
+			document.removeEventListener("keydown", handleKey);
+		};
+	}, [showSide, showUser]);
 
 	const profileClickOutside = useCallback(() => {
 		setShowUser(false);
 	}, [setShowUser]);
 
-	useEffect(() => {
-		const isMobile = window.matchMedia("(max-width: 64rem)").matches;
-		if (!isMobile) {
-			return;
-		}
-		// eslint-disable-next-line @eslint-react/set-state-in-effect
-		setShowSide(false);
-	}, [location.pathname]);
-
 	return (
 		<>
 			<button
 				type="button"
-				className="fixed z-39 text-heading bg-transparent box-border border border-transparent hover:bg-back2
-				focus:ring-4 focus:ring-border2 font-medium leading-5 rounded-xl top-4 left-6 text-sm p-1
-				focus:outline-none inline-flex lg:hidden"
+				aria-controls="app-sidebar"
+				aria-expanded={showSide}
+				className="fixed z-30 top-3 left-2.5 inline-flex lg:hidden p-1.5 rounded-xl text-text2 bg-back/80 backdrop-blur-sm
+				hover:bg-hover hover:text-text duration-120 cursor-pointer"
 				onClick={() => {
-					setShowSide(!showSide);
+					setShowSide(true);
 				}}
 			>
 				<span className="sr-only">{t("sidebar.open")}</span>
-				<HiMenuAlt2 size={25} />
+				<HiMenuAlt2 size={24} />
 			</button>
 
+			<button
+				type="button"
+				tabIndex={-1}
+				aria-label={t("sidebar.close")}
+				className={`fixed inset-0 z-40 bg-black/25 lg:hidden duration-200 ${showSide ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+				onClick={() => {
+					setShowSide(false);
+				}}
+			/>
+
 			<aside
-				className={`fixed top-0 left-0 z-40 w-64 h-full transition-transform bg-back2
-						${showSide ? "translate-x-0" : "-translate-x-full"}
-          				 lg:translate-x-0`}
-				ref={barClickOutsideRef}
+				id="app-sidebar"
+				aria-label={t("sidebar.label")}
+				className={`fixed top-0 left-0 z-40 w-64 max-w-[85vw] h-full bg-back2 transition-transform duration-200
+					${showSide ? "translate-x-0 shadow-main" : "-translate-x-full"}
+					lg:translate-x-0 lg:shadow-none`}
 			>
 				<div className="h-full flex flex-col px-3 py-4 border-e border-border space-y-3 font-main font-medium text-muted text-[14.5px]">
 					<Link to="/" className="flex items-center ps-1 mb-5">

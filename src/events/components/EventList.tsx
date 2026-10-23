@@ -38,7 +38,7 @@ function EventCardSkeleton(): JSX.Element {
 
 function EventListSkeleton({ count = 3 }: { count?: number }): JSX.Element {
 	return (
-		<div className=" w-full flex shrink-0 px-4 py-6 gap-6 overflow-x-scroll items-stretch justify-center-safe">
+		<div className="w-full flex shrink-0 px-4 py-6 gap-4 sm:gap-6 overflow-x-auto snap-x snap-mandatory scroll-px-4 items-stretch justify-center-safe">
 			{Array.from({ length: count }, (___, index) => (
 				<EventCardSkeleton key={index} />
 			))}
@@ -58,7 +58,7 @@ export default function EventList({
 	empty?: ReactNode;
 }): JSX.Element {
 	return (
-		<div className=" w-full flex shrink-0 px-4 py-6 gap-6 overflow-x-scroll items-stretch justify-center-safe">
+		<div className="w-full flex shrink-0 px-4 py-6 gap-4 sm:gap-6 overflow-x-auto snap-x snap-mandatory scroll-px-4 items-stretch justify-center-safe">
 			<Promisable
 				data={events}
 				skeleton={<EventListSkeleton count={skeletonCount} />}

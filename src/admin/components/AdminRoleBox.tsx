@@ -22,7 +22,7 @@ export function RolesBox({
 				name="perms"
 				type="checkbox"
 				defaultChecked={Boolean(perm.code & role.permission)}
-				className={`text-accent cursor-pointer  rounded-sm w-6 h-6 text-2xl hover:bg-gray-50 hover:inset-shadow-2xs focus:ring-0 ${anim} `}
+				className={`checkbox text-accent cursor-pointer rounded-sm w-6 h-6 text-2xl hover:bg-gray-50 hover:inset-shadow-2xs ${anim} `}
 				onClick={(box) => {
 					if (box.currentTarget.checked) {
 						setAnim("animate-checked");

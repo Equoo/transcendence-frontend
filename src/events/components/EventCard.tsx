@@ -133,7 +133,7 @@ export default function EventCard({
 	const { t } = useTranslation();
 
 	return (
-		<div className="@container bg-surface flex w-full max-w-md shrink-0 min-w-0 flex-col gap-4 border border-border rounded-3xl p-5 shadow-main sm:p-8">
+		<div className="@container bg-surface flex w-full max-w-md shrink-0 min-w-0 snap-start flex-col gap-4 border border-border rounded-3xl p-5 shadow-main sm:p-8">
 			<h2 className="text-2xl @sm:text-3xl font-semibold font-head leading-tight text-text tracking-tight min-w-0">
 				<Tooltip
 					content={event.name}

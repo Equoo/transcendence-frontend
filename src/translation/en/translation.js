@@ -359,6 +359,7 @@ export default {
 			},
 			sidebar: {
 				open: "Open sidebar",
+				close: "Close sidebar",
 				label: "Sidebar",
 				subtitle: "Transcendance Project",
 				calendar: "Calendar",

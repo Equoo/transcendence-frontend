@@ -26,6 +26,7 @@ import { fetchEvent } from "../events/api/events.api";
 import EventForm from "../events/components/EventForm";
 import EventRegisterBtn from "../events/components/EventRegisterBtn";
 import { fetchFiles } from "../files/api/files.api";
+import { HEADER_PADDING } from "../friends/components/BackToList";
 import { UserContext } from "../users/api/users";
 import type { Route } from "./+types/event_details";
 
@@ -77,18 +78,20 @@ export default function EventDetails({
 					confirmLabel={t("common.delete")}
 				/>
 			)}
-			<div className="flex px-4 py-4 gap-4 items-center border-b border-border">
-				<FiChevronLeft
-					size={25}
-					color="#9c9384"
+			<div className={`flex flex-none flex-wrap py-3 lg:py-4 gap-x-4 gap-y-2 items-center border-b border-border ${HEADER_PADDING}`}>
+				<button
+					type="button"
+					aria-label={t("common.goBack")}
+					className="shrink-0 -ml-1.5 p-1 rounded-xl text-muted hover:bg-hover hover:text-text cursor-pointer"
 					onClick={() => {
 						void navigate(-1);
 					}}
-					className="cursor-pointer"
-				/>
-				<div className="inline-flex items-center gap-4">
-					<div className="flex flex-col">
-						<div className="font-head text-text font-semibold text-lg">
+				>
+					<FiChevronLeft size={25} />
+				</button>
+				<div className="inline-flex items-center gap-4 min-w-0">
+					<div className="flex flex-col min-w-0">
+						<div className="font-head text-text font-semibold text-lg truncate">
 							{event.name}
 						</div>
 						<div className="font-main text-muted text-sm font-light">
@@ -106,7 +109,7 @@ export default function EventDetails({
 							<PiTrash
 								size={26}
 								color="var(--color-text2)"
-								className="hover:cursor-pointer"
+								className="shrink-0 hover:cursor-pointer"
 								onClick={() => {
 									setShowConfirmation(true);
 								}}
@@ -114,20 +117,21 @@ export default function EventDetails({
 						</>
 					)}
 				</div>
-				<div className="ml-auto"></div>
-				{event.isRegistered && (
-					<RoleChange
-						// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-						registration={event.registrations.find(
-							(reg) => reg.user.id === user.id,
-						)!}
-						event={event}
-					/>
-				)}
-				<EventRegisterBtn event={event} className="shrink-0" />
+				<div className="flex flex-wrap items-center gap-2 ml-auto">
+					{event.isRegistered && (
+						<RoleChange
+							// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+							registration={event.registrations.find(
+								(reg) => reg.user.id === user.id,
+							)!}
+							event={event}
+						/>
+					)}
+					<EventRegisterBtn event={event} className="shrink-0" />
+				</div>
 			</div>
-			<div className="flex h-full">
-				<div className="flex flex-col gap-1 border-r border-border w-1/5 p-6">
+			<div className="flex flex-col lg:flex-row flex-1 min-h-0">
+				<div className="flex flex-col flex-none gap-1 p-4 sm:p-6 max-h-[40%] overflow-y-auto border-b border-border lg:max-h-none lg:w-80 xl:w-96 lg:border-b-0 lg:border-r">
 					<span className="font-bold text-muted text-xs tracking-wider">
 						{t("eventDetails.when")}
 					</span>
@@ -235,7 +239,7 @@ export default function EventDetails({
 					<span className="font-bold text-muted text-xs tracking-wider mt-4">
 						{t("eventDetails.resources")} - {event.files.length}
 					</span>
-					<div className="flex flex-col mt-1 items-center gap-1 w-fit">
+					<div className="flex flex-col mt-1 items-center gap-1 w-full">
 						{event.files.map((file) => (
 							<div
 								key={file.key}
@@ -245,12 +249,12 @@ export default function EventDetails({
 									to={`/knowledge/${file.key}`}
 									className="inline-flex items-center w-full"
 								>
-									<p className={`text-sm mr-6`}>
+									<p className="text-sm mr-6 min-w-0 truncate">
 										{file.name.slice(
 											file.name.lastIndexOf("/") + 1,
 										)}
 									</p>
-									<p className="text-xs ml-auto">
+									<p className="text-xs ml-auto shrink-0">
 										{file.length / 1000000 < 1
 											? t("files.sizeKb", {
 													size: Math.floor(
