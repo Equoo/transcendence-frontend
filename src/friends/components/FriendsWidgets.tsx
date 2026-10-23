@@ -2,6 +2,7 @@ import type { JSX, ReactNode } from "react";
 import { PiCaretRight, PiUsers } from "react-icons/pi";
 import { Link } from "react-router";
 
+import { previewMessageContent } from "@/chat/utils/message.util";
 import ProfilePic from "@/components/Profile/ProfilePic";
 import { resolveUser, useUser } from "@/users/hooks/users";
 
@@ -154,7 +155,7 @@ export function RecentConversations({ limit = 6, showEmpty = false }: {
 								<span className="text-text text-[14px] font-semibold truncate">{conversationTitle(conv, rels)}</span>
 								<span className="text-muted text-[13px] truncate">
 									{conv.lastMessage
-										? `${resolveUser(conv.lastMessage.sender, user).userName}: ${conv.lastMessage.content}`
+										? `${resolveUser(conv.lastMessage.sender, user).userName}: ${previewMessageContent(conv.lastMessage.content)}`
 										: "No messages yet"}
 								</span>
 							</div>

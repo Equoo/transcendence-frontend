@@ -19,6 +19,7 @@ import { toastError } from "@/utils/error.util";
 
 import type { Message } from "../../api/chat.api";
 import { findMessage } from "../../cache/chat.cache";
+import { parseMessageContent } from "../../utils/message.util";
 import { useChatContext } from "../ChatProvider";
 import RemoveMessageModal from "./RemoveMessageModal";
 
@@ -192,7 +193,7 @@ function MessageActionBar({
 		{
 			id: "copy",
 			onClick: (): void => {
-				copyText(actionBar.msg.content);
+				copyText(parseMessageContent(actionBar.msg.content).text);
 			},
 			content: menuRow(PiCopy, t("chat.copyText")),
 		},

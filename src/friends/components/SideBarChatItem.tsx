@@ -1,6 +1,7 @@
 import type { JSX } from "react/jsx-runtime";
 import { NavLink } from "react-router";
 
+import { previewMessageContent } from "@/chat/utils/message.util";
 import { resolveUser, useUser } from "@/users/hooks/users";
 
 import type { Conversation } from "../api/conversations.api";
@@ -35,7 +36,7 @@ export function SideBarChatItem({
 				<div className="flex truncate flex-col justify-center min-w-0">
 					<p className="text-text text-[14px] font-semibold truncate">{conversationTitle(conv, rels)}</p>
 					{last ? (
-						<p className="text-muted text-[14px] block truncate min-w-0">{resolveUser(last.sender, user).userName}: {last.content}</p>
+						<p className="text-muted text-[14px] block truncate min-w-0">{resolveUser(last.sender, user).userName}: {previewMessageContent(last.content)}</p>
 					) : isGroup(conv) && (
 						<p className="text-muted text-[13px]">{conv.recipients.length + 1} members</p>
 					)}
