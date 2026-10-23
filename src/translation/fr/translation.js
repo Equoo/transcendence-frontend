@@ -133,6 +133,9 @@ export default {
 				changeHint: "Choisissez une image, tout le groupe la verra.",
 			},
 			auth: {
+				email: "E-mail",
+				emailPlaceholder: "nom@exemple.com",
+				identifier: "Pseudo ou e-mail",
 				username: "Nom d'utilisateur",
 				password: "Mot de passe",
 				invitationCode: "Code d'invitation",
@@ -150,6 +153,7 @@ export default {
 				register: "S'inscrire",
 			},
 			profile: {
+				email: "E-mail",
 				username: "Nom d'utilisateur",
 				password: "Mot de passe",
 				language: "Langue",

@@ -128,6 +128,9 @@ export default {
 				changeHint: "選擇一張圖片，群組中的所有人都會看到。",
 			},
 			auth: {
+				email: "電子郵件",
+				emailPlaceholder: "name@example.com",
+				identifier: "使用者名稱或電子郵件",
 				username: "使用者名稱",
 				password: "密碼",
 				invitationCode: "邀請碼",
@@ -145,6 +148,7 @@ export default {
 				register: "註冊",
 			},
 			profile: {
+				email: "電子郵件",
 				username: "使用者名稱",
 				password: "密碼",
 				language: "語言",

@@ -67,6 +67,7 @@ export default function Profile({
 			value: user.userName,
 			action: openUsername,
 		},
+		{ name: t("profile.email"), value: user.email },
 		{
 			name: t("profile.password"),
 			value: "***********",
