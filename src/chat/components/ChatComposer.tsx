@@ -18,6 +18,7 @@ import { PiSmiley } from "react-icons/pi";
 import IconBtn from "@/components/Button/IconBtn";
 import Tooltip from "@/components/Tooltip";
 import { useClickOutside } from "@/hooks/useClickOutside";
+import { useHover } from "@/hooks/useHover";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { resolveUser, useUser } from "@/users/hooks/users";
 
@@ -59,7 +60,6 @@ function ChatComposer({
 	placeholder: string;
 	onSend: (text: string, mode: ChatMode, target: Message | null) => void;
 }): JSX.Element {
-
 	// eslint-disable-next-line id-length
 	const { t } = useTranslation();
 	const user = useUser();
@@ -238,11 +238,15 @@ function ChatComposer({
 		insertText(emojiText);
 	};
 
+	const isTouch = useMediaQuery("(pointer: coarse)");
+	const [pickerIsHover, pickerHoverProps] = useHover();
 	useClickOutside(pickerRef, (): void => {
+		if (pickerIsHover && !isTouch) {
+			return;
+		}
 		setShowPicker(false);
 	});
 
-	const isTouch = useMediaQuery("(pointer: coarse)");
 	useEffect(() => {
 		function handleEscape(ev: KeyboardEvent): void {
 			if (ev.key === "Escape") {
@@ -279,7 +283,7 @@ function ChatComposer({
 					<Picker data={data} onEmojiSelect={handleEmojiSelect} />
 				</div>
 			)}
-			
+
 			{chatMode !== "default" && (
 				<div className="flex rounded-t-xl bg-back px-4 items-center justify-between">
 					<a
@@ -356,15 +360,19 @@ function ChatComposer({
 					icon={PiSmiley}
 					tooltip={t("chat.emoji")}
 					size={18}
+					active={showPicker}
 					onClick={() => {
 						setShowPicker((enable) => !enable);
 					}}
+					{...pickerHoverProps}
 				/>
 				<span className="flex-1" />
 				{charCount >= MAX_CHARS * 0.8 && (
 					<span
 						className={`mr-1 text-xs tabular-nums ${
-							charCount >= MAX_CHARS ? "text-red-500" : "text-muted"
+							charCount >= MAX_CHARS
+								? "text-red-500"
+								: "text-muted"
 						}`}
 					>
 						{charCount}/{MAX_CHARS}

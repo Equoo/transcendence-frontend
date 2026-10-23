@@ -14,6 +14,8 @@ import AdminSidebar from "@/admin/components/AdminSidebar";
 import CategoryForm from "@/chat/components/CategoryForm";
 import { useCategories, useChannels } from "@/chat/hooks/useChannels";
 import { isWhitelisted } from "@/chat/utils/channel.util";
+import { useHover } from "@/hooks/useHover";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 import Profile from "@/users/components/Profile";
 
 import { PermEnum } from "../../admin/api/roles";
@@ -85,9 +87,14 @@ function Sidebar({ user }: { user: User }): JSX.Element {
 		};
 	}, [showSide, showUser]);
 
+	const isTouch = useMediaQuery("(pointer: coarse)");
+	const [settingIsHover, settingHoverProps] = useHover();
 	const profileClickOutside = useCallback(() => {
+		if (settingIsHover && !isTouch) {
+			return;
+		}
 		setShowUser(false);
-	}, [setShowUser]);
+	}, [settingIsHover, isTouch, setShowUser]);
 
 	return (
 		<>
@@ -167,7 +174,8 @@ function Sidebar({ user }: { user: User }): JSX.Element {
 							{t("sidebar.channels")}{" "}
 							{Boolean(
 								user.role.permission & PermEnum.HandleChannels,
-							) && <CategoryForm></CategoryForm>}
+							) &&
+								!isTouch && <CategoryForm></CategoryForm>}
 						</div>
 						<ul>
 							{channelsQuery.isPending ||
@@ -229,10 +237,10 @@ function Sidebar({ user }: { user: User }): JSX.Element {
 							active={showUser}
 							className="absolute right-0 top-1/2 -translate-1/2"
 							onClick={() => {
-								setShowUser(true);
+								setShowUser(!showUser);
 							}}
+							{...settingHoverProps}
 						/>
-
 					</div>
 				</div>
 			</aside>

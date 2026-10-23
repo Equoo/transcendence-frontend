@@ -4,6 +4,7 @@ import { NavLink, useLocation } from "react-router";
 import { PermEnum } from "@/admin/api/roles";
 import type { Channel } from "@/chat/api/chat.api";
 import ChannelForm from "@/chat/components/ChannelForm";
+import { useLongPress } from "@/hooks/useLongPress";
 import type { User } from "@/users/api/users";
 
 function ItemChannel({
@@ -20,6 +21,10 @@ function ItemChannel({
 		location.pathname,
 	);
 
+	const longPressEvent = useLongPress(() => {
+		console.log("feur");
+	});
+
 	return (
 		<li
 			className={[
@@ -32,6 +37,7 @@ function ItemChannel({
 			<NavLink
 				to={`/channels/${channel.id}`}
 				className="after:absolute after:inset-0"
+				{...longPressEvent}
 			>
 				{({ isActive }) => (
 					<>

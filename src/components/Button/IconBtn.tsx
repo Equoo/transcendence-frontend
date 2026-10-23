@@ -26,7 +26,7 @@ export default function IconBtn({
 }: Props): JSX.Element {
 	const label = tooltip ?? title ?? rest["aria-label"];
 	const activeStyle =
-		"text-accent-text bg-accent hover:brightness-110 active:translate-y-[1px] shadow-accent hover:shadow-xs disabled:bg-muted disabled:hover:brightness-100";
+		"text-accent-text bg-accent hover:brightness-110 shadow-accent hover:shadow-xs disabled:bg-muted disabled:hover:brightness-100";
 	const unactiveStyle =
 		"text-text bg-surface border border-border hover:bg-border";
 	const discreteStyle = "text-text2 hover:bg-border hover:border-border";
@@ -47,7 +47,11 @@ export default function IconBtn({
 		return button;
 	}
 	return (
-		<Tooltip content={label} focusable={false} className="inline-flex shrink-0">
+		<Tooltip
+			content={label}
+			focusable={false}
+			className="inline-flex shrink-0"
+		>
 			{button}
 		</Tooltip>
 	);
