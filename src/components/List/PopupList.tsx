@@ -1,6 +1,7 @@
 import {
 	type PointerEvent,
 	type ReactNode,
+	type TouchEvent,
 	useEffect,
 	useEffectEvent,
 	useRef,
@@ -35,6 +36,7 @@ function BottomSheet({
 	const close = useEffectEvent(onClose);
 	const [dragStart, setDragStart] = useState<number | null>(null);
 	const [dragY, setDragY] = useState(0);
+	const listRef = useRef<HTMLUListElement>(null);
 
 	useEffect(() => {
 		function onKeyDown(ev: KeyboardEvent): void {
@@ -53,18 +55,35 @@ function BottomSheet({
 		};
 	}, []);
 
+	function onTouchStart(ev: TouchEvent<HTMLDivElement>): void {
+		if ((listRef.current?.scrollTop ?? 0) <= 0) {
+			setDragStart(ev.touches[0].clientY);
+		}
+	}
+
+	function onTouchMove(ev: TouchEvent<HTMLDivElement>): void {
+		if (dragStart !== null) {
+			setDragY(Math.max(0, ev.touches[0].clientY - dragStart));
+		}
+	}
+
 	function onDragStart(ev: PointerEvent<HTMLDivElement>): void {
-		setDragStart(ev.clientY);
-		ev.currentTarget.setPointerCapture(ev.pointerId);
+		if (ev.pointerType === "mouse") {
+			setDragStart(ev.clientY);
+			ev.currentTarget.setPointerCapture(ev.pointerId);
+		}
 	}
 
 	function onDragMove(ev: PointerEvent<HTMLDivElement>): void {
-		if (dragStart !== null) {
+		if (ev.pointerType === "mouse" && dragStart !== null) {
 			setDragY(Math.max(0, ev.clientY - dragStart));
 		}
 	}
 
 	function onDragEnd(): void {
+		if (dragStart === null) {
+			return;
+		}
 		setDragStart(null);
 		if (dragY > DISMISS_DISTANCE) {
 			onClose();
@@ -91,6 +110,10 @@ function BottomSheet({
 			<div
 				ref={clickOutsideRef}
 				style={{ transform: `translateY(${dragY}px)` }}
+				onTouchStart={onTouchStart}
+				onTouchMove={onTouchMove}
+				onTouchEnd={onDragEnd}
+				onTouchCancel={onDragEnd}
 				className={`bg-surface border-t border-border rounded-t-lg shadow-main pb-[max(0.5rem,env(safe-area-inset-bottom))] max-h-[80dvh] flex flex-col animate-sheet-up ${dragStart === null ? "transition-transform duration-200" : ""}`}
 			>
 				<div
@@ -102,7 +125,10 @@ function BottomSheet({
 				>
 					<div className="h-1 w-10 rounded-full bg-border2" />
 				</div>
-				<ul className="flex flex-col px-2 overflow-y-auto">
+				<ul
+					ref={listRef}
+					className="flex flex-col px-2 overflow-y-auto overscroll-contain"
+				>
 					{rows.map((row) => (
 						<li
 							key={row.id}
