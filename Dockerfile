@@ -14,10 +14,14 @@ RUN npm run build
 
 FROM nginx:alpine AS runner
 
+RUN apk add --no-cache openssl
+
 COPY --from=builder /build/build/client /app
 
 COPY conf/nginx.conf.template /etc/nginx/templates/default.conf.template
 
-EXPOSE 80
+COPY --chmod=755 conf/generate-cert.sh /docker-entrypoint.d/05-generate-cert.sh
+
+EXPOSE 443
 
 CMD ["nginx", "-g", "daemon off;"]
