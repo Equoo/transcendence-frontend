@@ -2,7 +2,7 @@ import "./index.css";
 import "./translation/i18n";
 
 import { QueryClientProvider } from "@tanstack/react-query";
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import type { JSX, ReactNode } from "react";
 import {
 	Links,
@@ -31,8 +31,13 @@ const alertStyle = {
 
 export const clientMiddleware: Route.MiddlewareFunction[] = [
 	// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/explicit-function-return-type, @typescript-eslint/consistent-return
-	async ({ context, url }, next) => {
-		const user = await fetchUser();
+	async ({ context, request, url }, next) => {
+		const user = await queryClient.query({
+			queryKey: ["me"],
+			queryFn: fetchUser,
+			staleTime: 60 * 60_000,
+		});
+		console.warn(user);
 		if (user) {
 			context.set(UserContext, user);
 			if (url.pathname === "/login" || url.pathname === "/register") {
@@ -48,10 +53,19 @@ export const clientMiddleware: Route.MiddlewareFunction[] = [
 					return redirect("*");
 				}
 			}
-		} else if (url.pathname !== "/login" && url.pathname !== "/register") {
-			return redirect("/login");
+		} else {
+			await queryClient.invalidateQueries({ queryKey: ["me"] });
+			if (url.pathname !== "/login" && url.pathname !== "/register") {
+				return redirect("/login");
+			}
 		}
-		await next();
+		try {
+			await next();
+		} finally {
+			if (request.method !== "GET" && url.pathname.startsWith("/me")) {
+				await queryClient.invalidateQueries({ queryKey: ["me"] });
+			}
+		}
 	},
 ];
 
