@@ -18,7 +18,7 @@ export default function DashboardContent(): JSX.Element {
 	return <Outlet />;
 }
 
-interface ErrorInfos {
+export interface ErrorInfos {
 	code: number | string | null;
 	title: string;
 	detail: string;
@@ -26,7 +26,7 @@ interface ErrorInfos {
 }
 
 // eslint-disable-next-line id-length
-function describeError(error: unknown, t: TFunction): ErrorInfos {
+export function describeError(error: unknown, t: TFunction): ErrorInfos {
 	if (isRouteErrorResponse(error)) {
 		return {
 			trace: null,
@@ -63,8 +63,8 @@ function describeError(error: unknown, t: TFunction): ErrorInfos {
 export function ErrorBoundary({
 	error,
 }: Route.ErrorBoundaryProps): JSX.Element {
-    // eslint-disable-next-line id-length
-    const { t } = useTranslation();
+	// eslint-disable-next-line id-length
+	const { t } = useTranslation();
 	const revalidator = useRevalidator();
 	const { code, title, detail, trace } = describeError(error, t);
 
