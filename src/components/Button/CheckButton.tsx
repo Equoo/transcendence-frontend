@@ -18,10 +18,11 @@ export default function CheckButton({
 	danger = false,
 	type = "button",
 	pending = false,
+	disabled = false,
 	...rest
 }: Props): JSX.Element {
 	let style =
-		"inline-flex items-center font-semibold duration-150 justify-center w-full py-2 px-4 gap-2 rounded-full  cursor-pointer disabled:bg-muted disabled:hover:brightness-100";
+		"inline-flex items-center font-semibold duration-150 justify-center w-full py-2 px-4 gap-2 rounded-full cursor-pointer";
 
 	if (active) {
 		style +=
@@ -47,11 +48,14 @@ export default function CheckButton({
 			<button
 				type={type}
 				{...rest}
-				disabled={pending || rest.disabled}
+				disabled={pending || disabled}
 				aria-pressed={active}
 				className={`${style} ${rest.className}`}
 			>
-				{pending && <TbLoader2 className="animate-spin" />}
+				{(pending || disabled) && (
+					<TbLoader2 className="animate-spin" />
+				)}
+
 				{active && activeCheck && !pending && <PiCheckFatFill />}
 				{children}
 			</button>

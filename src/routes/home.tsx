@@ -31,24 +31,29 @@ import { fetchUsers, type User, UserContext } from "../users/api/users";
 import type { Route } from "./+types/home";
 
 let cachedEvents: EventSummary[] | undefined;
+let cachedFiles: AppFile[] | undefined;
 
 export function clientLoader({ context }: Route.ClientLoaderArgs): {
 	previousEvents: EventSummary[] | undefined;
 	events: Promise<EventSummary[]>;
 	roles: Promise<EventRole[]>;
+	previousFiles: AppFile[] | undefined;
 	files: Promise<AppFile[]>;
 	users: Promise<User[]>;
 	user: User;
 } {
 	const previousEvents = cachedEvents;
+	const previousFiles = cachedFiles;
 
 	const events = fetchEvents().then((result) => (cachedEvents = result));
+	const files = fetchFiles().then((result) => (cachedFiles = result));
 
 	return {
 		previousEvents,
 		events,
 		roles: fetchEventRoles(),
-		files: fetchFiles(),
+		previousFiles,
+		files,
 		users: fetchUsers(),
 		user: context.get(UserContext),
 	};
@@ -100,7 +105,15 @@ function MembersToggle({
 }
 
 export default function Home({
-	loaderData: { previousEvents, events, roles, files, users, user },
+	loaderData: {
+		previousEvents,
+		events,
+		roles,
+		previousFiles,
+		files,
+		users,
+		user,
+	},
 }: Route.ComponentProps): JSX.Element {
 	// eslint-disable-next-line id-length
 	const { t } = useTranslation();
@@ -196,7 +209,10 @@ export default function Home({
 								</DashboardPanel>
 							</div>
 							<div className="flex flex-col gap-6 min-w-0">
-								<RecentFilesPanel files={files} />
+								<RecentFilesPanel
+									previousFiles={previousFiles}
+									files={files}
+								/>
 							</div>
 						</div>
 					</div>
