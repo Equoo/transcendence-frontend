@@ -106,13 +106,12 @@ export default function Calendar({
 	return (
 		<main className="flex flex-col w-full min-h-full">
 			<div
-				className={`flex flex-none flex-wrap items-center gap-3 border-b border-border py-3 ${HEADER_PADDING}`}
+				className={`flex flex-none items-center gap-3 border-b justify-between border-border py-3 ${HEADER_PADDING}`}
 			>
 				<h1 className="font-head font-[650] text-[17px] text-text inline-flex gap-2 items-center">
 					<PiCalendarBlank size={20} className="text-muted" />
 					{t("sidebar.calendar")}
 				</h1>
-				<span className="flex-1" />
 				{Boolean(
 					loaderData.user.role.permission & PermEnum.HandleEvent,
 				) && (
@@ -122,6 +121,7 @@ export default function Calendar({
 					/>
 				)}
 			</div>
+
 			<div className="w-full max-w-6xl mx-auto px-2 sm:px-6 mt-2">
 				<div className="flex w-full items-center justify-between p-2 sm:p-4">
 					<button

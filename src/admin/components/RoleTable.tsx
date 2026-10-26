@@ -27,7 +27,11 @@ export default function RoleTable({ role }: { role: Role[] }): JSX.Element {
 	const { t } = useTranslation();
 
 	return (
-		<List cols={getHeader(t)}>
+		<List
+			cols={getHeader(t)}
+			empty={role.length === 0}
+			emptyMessage={"No role to display."}
+		>
 			{role.map((rls) => (
 				<ListRoles key={rls.id} role={rls}></ListRoles>
 			))}

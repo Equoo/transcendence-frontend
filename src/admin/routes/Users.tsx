@@ -64,7 +64,7 @@ export default function AdminUsers({
 			>
 				<h1 className="font-head font-[650] text-[17px] text-text inline-flex gap-2 items-center">
 					<PiUser size={20} className="text-muted" />
-					{"Role Management"}
+					{t("admin.userManagement")}
 				</h1>
 			</div>
 			<div className="flex flex-col w-11/12 min-w-0 my-10">

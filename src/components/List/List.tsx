@@ -24,11 +24,13 @@ export function ListRow({
 export function ListCell({
 	pos = "text-left",
 	rowHeader = false,
+	pp = false,
 	className = "",
 	...props
 }: ComponentProps<"td"> & {
 	pos?: Alignment;
 	rowHeader?: boolean;
+	pp?: boolean;
 }): JSX.Element {
 	return rowHeader ? (
 		<th
@@ -39,7 +41,7 @@ export function ListCell({
 	) : (
 		<td
 			{...props}
-			className={`px-6 py-4 align-middle  ${pos} ${className}`}
+			className={`align-middle ${pp ? "px-4 py-1" : "px-6 py-4"} ${pos} ${className}`}
 		/>
 	);
 }
@@ -113,8 +115,7 @@ export default function List({
 								pos="text-center"
 								className="text-muted"
 							>
-								{emptyMessage ??
-									t("common.nothingToDisplay")}
+								{emptyMessage ?? t("common.nothingToDisplay")}
 							</ListCell>
 						</ListRow>
 					) : (

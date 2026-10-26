@@ -12,7 +12,7 @@ import { fetchRoles, type Role } from "../api/roles";
 import RoleTable from "../components/RoleTable";
 import type { Route } from "./+types/Roles";
 
-let cachedRoles: Role[] | undefined;
+let cachedRoles: Role[] = [];
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
 export function clientLoader() {
@@ -56,10 +56,14 @@ export default function AdminRoles({
 				>
 					<h1 className="font-head font-[650] text-[17px] text-text inline-flex gap-2 items-center">
 						<PiComputerTower size={20} className="text-muted" />
-						{"Role Management"}
+						{t("admin.rolesManagement")}
 					</h1>
+				</div>
+
+				<div className="w-18/20 h-100 mt-10 flex flex-col items-end gap-2">
 					<CheckButton
 						type="button"
+						className="w-25"
 						onClick={() => {
 							setShowRoleForm(true);
 						}}
@@ -69,8 +73,6 @@ export default function AdminRoles({
 						<PiPlusBold />
 						{t("admin.addRole")}
 					</CheckButton>
-				</div>
-				<div className="w-18/20 h-100 mt-10 justify-center items-center ">
 					<Promisable
 						data={roles}
 						skeleton={
