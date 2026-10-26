@@ -1,16 +1,16 @@
 /* eslint-disable id-length */
 import { type JSX, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { PiComputerTower, PiPlusBold } from "react-icons/pi";
 
 import ChangeModal from "@/components/Modal/ChangeModal";
 import Promisable from "@/components/Promisable";
+import { HEADER_PADDING } from "@/friends/components/BackToList";
 
 import CheckButton from "../../components/Button/CheckButton";
 import { fetchRoles, type Role } from "../api/roles";
 import RoleTable from "../components/RoleTable";
 import type { Route } from "./+types/Roles";
-import { PiBookOpen, PiComputerTower, PiPlusBold } from "react-icons/pi";
-import { HEADER_PADDING } from "@/friends/components/BackToList";
 
 let cachedRoles: Role[] | undefined;
 

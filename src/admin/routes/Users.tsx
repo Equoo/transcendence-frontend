@@ -1,7 +1,9 @@
 import type { JSX } from "react";
 import { useTranslation } from "react-i18next";
+import { PiUser } from "react-icons/pi";
 
 import Promisable from "@/components/Promisable";
+import { HEADER_PADDING } from "@/friends/components/BackToList";
 import {
 	fetchInvitations,
 	type Invitation,
@@ -12,9 +14,6 @@ import { fetchUsers, type User, UserContext } from "../../users/api/users";
 import { fetchRoles, type Role } from "../api/roles";
 import UserTable from "../components/UserTable";
 import type { Route } from "./+types/Users";
-import { PiUser } from "react-icons/pi";
-import CheckButton from "@/components/Button/CheckButton";
-import { HEADER_PADDING } from "@/friends/components/BackToList";
 
 let cachedUsers: User[] = [];
 let cachedRoles: Role[] = [];
