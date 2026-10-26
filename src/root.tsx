@@ -41,7 +41,6 @@ export const clientMiddleware: Route.MiddlewareFunction[] = [
 			queryFn: fetchUser,
 			staleTime: 60 * 60_000,
 		});
-		console.warn(user);
 		if (user) {
 			context.set(UserContext, user);
 			if (url.pathname === "/login" || url.pathname === "/register") {
