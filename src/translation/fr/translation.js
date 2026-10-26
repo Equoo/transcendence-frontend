@@ -304,7 +304,7 @@ export default {
 				noUser: "Aucun utilisateur à afficher.",
 				createRole: "Créer un rôle",
 				rolesManagement: "Gestion des rôles",
-				addRole: "Ajouter un rôle",
+				addRole: "Rôle",
 				userManagement: "Gestion des utilisateurs",
 				invitationsManagement: "Gestion des invitations",
 				permissionGranted: "« {{perm}} » accordé au rôle {{role}}",

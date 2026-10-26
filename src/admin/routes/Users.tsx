@@ -12,6 +12,9 @@ import { fetchUsers, type User, UserContext } from "../../users/api/users";
 import { fetchRoles, type Role } from "../api/roles";
 import UserTable from "../components/UserTable";
 import type { Route } from "./+types/Users";
+import { PiUser } from "react-icons/pi";
+import CheckButton from "@/components/Button/CheckButton";
+import { HEADER_PADDING } from "@/friends/components/BackToList";
 
 let cachedUsers: User[] = [];
 let cachedRoles: Role[] = [];
@@ -56,33 +59,36 @@ export default function AdminUsers({
 	} = loaderData;
 
 	return (
-		<div className="w-full h-full bg-back">
-			<div className="flex justify-center flex-row w-full h-full">
-				<div className="flex flex-col w-11/12 min-w-0 my-10">
-					<h1 className="text-2xl sm:text-3xl m-4 mt-6 lg:mt-4 font-semibold font-head">
-						{t("admin.userManagement")}
-					</h1>
-					<Promisable
-						data={usersRoles}
-						cached_data={[previousUsers, previousRoles]}
-					>
-						{(data) => (
-							<UserTable
-								currentUser={user}
-								roles={data[1] as Role[]}
-								users={data[0] as User[]}
-							></UserTable>
-						)}
-					</Promisable>
-					<h1 className="text-2xl sm:text-3xl ml-4 mb-4 mt-10 font-semibold font-head">
-						{t("admin.invitationsManagement")}
-					</h1>
-					<InvitationPromisable
-						className="overflow-y-auto max-h-3/10"
-						previousInvitations={previousInvitations}
-						invitations={invitations}
-					/>
-				</div>
+		<div className="flex flex-col w-full h-full items-center ">
+			<div
+				className={`flex flex-none items-center justify-between gap-3 border-b w-full border-border py-3 ${HEADER_PADDING}`}
+			>
+				<h1 className="font-head font-[650] text-[17px] text-text inline-flex gap-2 items-center">
+					<PiUser size={20} className="text-muted" />
+					{"Role Management"}
+				</h1>
+			</div>
+			<div className="flex flex-col w-11/12 min-w-0 my-10">
+				<Promisable
+					data={usersRoles}
+					cached_data={[previousUsers, previousRoles]}
+				>
+					{(data) => (
+						<UserTable
+							currentUser={user}
+							roles={data[1] as Role[]}
+							users={data[0] as User[]}
+						></UserTable>
+					)}
+				</Promisable>
+				<h1 className="text-2xl sm:text-3xl ml-4 mb-4 mt-10 font-semibold font-head">
+					{t("admin.invitationsManagement")}
+				</h1>
+				<InvitationPromisable
+					className="overflow-y-auto max-h-3/10"
+					previousInvitations={previousInvitations}
+					invitations={invitations}
+				/>
 			</div>
 		</div>
 	);
