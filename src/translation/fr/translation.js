@@ -307,6 +307,9 @@ export default {
 				addRole: "Ajouter un rôle",
 				userManagement: "Gestion des utilisateurs",
 				invitationsManagement: "Gestion des invitations",
+				permissionGranted: "« {{perm}} » accordé au rôle {{role}}",
+				permissionRevoked: "« {{perm}} » retiré du rôle {{role}}",
+				userRoleChanged: "{{name}} a maintenant le rôle {{role}}",
 			},
 			permissions: {
 				HandleEvent: "Gérer les événements",

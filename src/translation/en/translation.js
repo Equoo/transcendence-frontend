@@ -303,6 +303,9 @@ export default {
 				addRole: "Add Role",
 				userManagement: "User Management",
 				invitationsManagement: "Invitations Management",
+				permissionGranted: "“{{perm}}” granted to {{role}}",
+				permissionRevoked: "“{{perm}}” removed from {{role}}",
+				userRoleChanged: "{{name}} is now {{role}}",
 			},
 			permissions: {
 				HandleEvent: "Manage events",

@@ -31,6 +31,8 @@ export async function clientAction({
 	if (params.action === "checkRole") {
 		res = await handleCheckbox(formdata);
 	}
-
-	return data(res, { status: 201 });
+	return data({
+		res,
+		status: (formdata.get("IsChecked") as string) === "true" ? 201 : 204,
+	});
 }

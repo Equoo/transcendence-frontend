@@ -299,6 +299,9 @@ export default {
 				addRole: "新增角色",
 				userManagement: "使用者管理",
 				invitationsManagement: "邀請管理",
+				permissionGranted: "已將「{{perm}}」授予 {{role}}",
+				permissionRevoked: "已從 {{role}} 移除「{{perm}}」",
+				userRoleChanged: "{{name}} 的角色已變更為 {{role}}",
 			},
 			permissions: {
 				HandleEvent: "管理活動",

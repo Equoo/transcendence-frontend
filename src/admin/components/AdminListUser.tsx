@@ -1,4 +1,5 @@
 import { type ComponentProps, type JSX, useState } from "react";
+import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import { useFetcher } from "react-router";
 
@@ -115,16 +116,25 @@ export default function ListUsers({
 								if (!role) {
 									return;
 								}
-								void fetcher.submit(
-									{
-										UserId: user.id,
-										RoleId: role.id,
-									},
-									{
-										method: "PATCH",
-										action: "/users/roleUser",
-									},
-								);
+								void fetcher
+									.submit(
+										{
+											UserId: user.id,
+											RoleId: role.id,
+										},
+										{
+											method: "PATCH",
+											action: "/users/roleUser",
+										},
+									)
+									.then(() => {
+										toast.success(
+											t("admin.userRoleChanged", {
+												name: user.userName,
+												role: role.name,
+											}),
+										);
+									});
 							}}
 						/>
 					)}
