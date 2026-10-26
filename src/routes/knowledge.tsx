@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { PiBookOpen, PiSparkle } from "react-icons/pi";
 
 import ChatbotPanel from "@/ai/components/ChatbotPanel";
+import fetchHealthCheckIa, { type IaResult } from "@/files/api/ia.api";
 import { HEADER_PADDING } from "@/friends/components/BackToList";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 
@@ -16,12 +17,14 @@ let cachedFiles: AppFile[] = [];
 export function clientLoader(): {
 	files: Promise<AppFile[]>;
 	previousFiles: AppFile[];
+	availableIa: Promise<IaResult>;
 } {
 	const previousFiles = cachedFiles;
 
+	const availableIa = fetchHealthCheckIa();
 	const files = fetchFiles().then((result) => (cachedFiles = result));
 
-	return { files, previousFiles };
+	return { files, previousFiles, availableIa };
 }
 
 let cachedOpen: boolean | null = null;
@@ -61,32 +64,44 @@ export default function Knowledge({
 				</div>
 			</main>
 
-			{open ? (
-				<ChatbotPanel
-					isFull={fullResize}
-					onResize={(isFull: boolean) => {
-						setFullResize(isFull);
-					}}
-					onClose={() => {
-						setShowRag(false);
-						cachedOpen = false;
-					}}
-					className={`${fullStyle} absolute inset-0 z-50  lg:static lg:z-auto  lg:w-full lg:flex-none lg:rounded-none lg:border-0 lg:border-t lg:border-border lg:shadow-none`}
-				/>
-			) : (
-				<button
-					type="button"
-					aria-label={t("knowledge.openAssistant")}
-					className="fixed right-4 bottom-4 z-30 inline-flex cursor-pointer items-center gap-2 rounded-full bg-accent px-4 py-3 font-semibold text-accent-text shadow-main transition-transform duration-75 hover:brightness-110 active:translate-y-px"
-					onClick={() => {
-						setShowRag(true);
-						cachedOpen = true;
-					}}
-				>
-					<PiSparkle size={18} />
-					{t("knowledge.assistant")}
-				</button>
-			)}
+			<Promisable data={loaderData.availableIa}>
+				{(ia) => (
+					<>
+						{ia.ok && (
+							<>
+								{open ? (
+									<ChatbotPanel
+										isFull={fullResize}
+										onResize={(isFull: boolean) => {
+											setFullResize(isFull);
+										}}
+										onClose={() => {
+											setShowRag(false);
+											cachedOpen = false;
+										}}
+										className={`${fullStyle} absolute inset-0 z-50  lg:static lg:z-auto  lg:w-full lg:flex-none lg:rounded-none lg:border-0 lg:border-t lg:border-border lg:shadow-none`}
+									/>
+								) : (
+									<button
+										type="button"
+										aria-label={t(
+											"knowledge.openAssistant",
+										)}
+										className="fixed right-4 bottom-4 z-30 inline-flex cursor-pointer items-center gap-2 rounded-full bg-accent px-4 py-3 font-semibold text-accent-text shadow-main transition-transform duration-75 hover:brightness-110 active:translate-y-px"
+										onClick={() => {
+											setShowRag(true);
+											cachedOpen = true;
+										}}
+									>
+										<PiSparkle size={18} />
+										{t("knowledge.assistant")}
+									</button>
+								)}
+							</>
+						)}
+					</>
+				)}
+			</Promisable>
 		</div>
 	);
 }
