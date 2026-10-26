@@ -64,6 +64,7 @@ export async function fetchFiles(): Promise<AppFile[]> {
 	return files;
 }
 
+
 export async function deleteFile(key: string): Promise<Response> {
 	return request(`/api/files/${key}`, "DELETE");
 }
