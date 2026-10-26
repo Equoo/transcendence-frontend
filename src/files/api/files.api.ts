@@ -1,5 +1,6 @@
 import i18n from "i18next";
 
+import { APIError, type ProblemDetail } from "@/api/problem_detail";
 import { request, requestJson } from "@/api/request";
 import callApi from "@/tokens/callApi";
 
@@ -31,6 +32,21 @@ export async function createFile(data: FormData): Promise<Response> {
 	});
 
 	return res;
+}
+
+export async function uploadChatImage(
+	channelId: string,
+	file: File,
+): Promise<AppFile> {
+	const body = new FormData();
+	body.set("Name", `chat_${channelId}_${file.name}`.slice(0, 255));
+	body.set("File", file);
+
+	const res = await createFile(body);
+	if (!res.ok) {
+		throw new APIError((await res.json()) as ProblemDetail);
+	}
+	return (await res.json()) as AppFile;
 }
 
 export async function downloadFile(key: string): Promise<Blob> {

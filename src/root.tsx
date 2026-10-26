@@ -17,6 +17,7 @@ import { ToastContainer } from "react-toastify";
 import type { Route } from "./+types/root";
 import { PermEnum } from "./admin/api/roles";
 import HydratingScreen from "./components/HydratingScreen";
+import { useViewportHeight } from "./hooks/useViewportHeight";
 import { queryClient } from "./queryClient";
 import { fetchUser, UserContext } from "./users/api/users";
 
@@ -80,13 +81,13 @@ export function Layout({ children }: { children: ReactNode }): JSX.Element {
 				<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 				<meta
 					name="viewport"
-					content="width=device-width, initial-scale=1.0"
+					content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content"
 				/>
 				<title>KeepGrouped</title>
 				<Meta />
 				<Links />
 			</head>
-			<body className="w-screen h-screen bg-back">
+			<body className="w-screen h-(--app-height,100dvh) bg-back">
 				<ToastContainer
 					position="top-center"
 					newestOnTop
@@ -109,6 +110,7 @@ export function Layout({ children }: { children: ReactNode }): JSX.Element {
 }
 
 export default function App(): JSX.Element {
+	useViewportHeight();
 	return <Outlet />;
 }
 

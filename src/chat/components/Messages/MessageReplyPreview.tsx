@@ -4,6 +4,7 @@ import ProfilePic from "@/components/Profile/ProfilePic";
 import { useResolvedUser } from "@/users/hooks/users";
 
 import type { Message } from "../../api/chat.api";
+import { previewMessageContent } from "../../utils/message.util";
 
 function MessageReplyPreview({
 	message,
@@ -29,7 +30,7 @@ function MessageReplyPreview({
 					{sender.userName}
 				</span>
 				<span className="text-[14.5px] text-text2 whitespace-pre-wrap wrap-break-word line-clamp-6">
-					{message.content}
+					{previewMessageContent(message.content)}
 				</span>
 			</div>
 		</div>

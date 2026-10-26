@@ -7,6 +7,7 @@ import {
 	PiChat,
 	PiGear,
 	PiHouse,
+	PiPlus,
 } from "react-icons/pi";
 import { Link, useFetcher, useLocation } from "react-router";
 
@@ -14,15 +15,19 @@ import AdminSidebar from "@/admin/components/AdminSidebar";
 import CategoryForm from "@/chat/components/CategoryForm";
 import { useCategories, useChannels } from "@/chat/hooks/useChannels";
 import { isWhitelisted } from "@/chat/utils/channel.util";
+import { useHover } from "@/hooks/useHover";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 import Profile from "@/users/components/Profile";
 
 import { PermEnum } from "../../admin/api/roles";
 import InvitationForm from "../../invitations/components/InvitationForm";
 import type { User } from "../../users/api/users";
+import IconBtn from "../Button/IconBtn";
 import ProfileLine from "../Profile/ProfileLine";
 import ItemCategory from "./ItemCategory";
 import ItemChannel from "./ItemChannel";
 import ItemChannelCategory from "./ItemChannelCategory";
+import SidebarMenu, { useSidebarMenu } from "./SidebarMenu";
 
 function ChannelListSkeleton(): JSX.Element {
 	return (
@@ -84,9 +89,18 @@ function Sidebar({ user }: { user: User }): JSX.Element {
 		};
 	}, [showSide, showUser]);
 
+	const isTouch = useMediaQuery("(pointer: coarse)");
+	const canEditChannels = Boolean(
+		user.role.permission & PermEnum.HandleChannels,
+	);
+	const channelsMenu = useSidebarMenu(canEditChannels);
+	const [settingIsHover, settingHoverProps] = useHover();
 	const profileClickOutside = useCallback(() => {
+		if (settingIsHover && !isTouch) {
+			return;
+		}
 		setShowUser(false);
-	}, [setShowUser]);
+	}, [settingIsHover, isTouch, setShowUser]);
 
 	return (
 		<>
@@ -155,19 +169,30 @@ function Sidebar({ user }: { user: User }): JSX.Element {
 					</ul>
 
 					<div className="flex-1 overflow-y-auto">
-						<ul>
-							<li className="flex justify-between items-center px-2 py-1.5 mt-3 text-[11px] text-muted font-bold tracking-wider uppercase whitespace-nowrap group">
-								{t("sidebar.upcoming")}
-								<span className="ml-auto">0</span>
-							</li>
-						</ul>
-
-						<div className="relative flex justify-between items-center px-2 py-1.5 mt-3 text-[11px] text-muted font-bold tracking-wider uppercase whitespace-nowrap group">
+						<div
+							{...channelsMenu.pressProps}
+							className={`relative flex justify-between items-center px-2 py-1.5 mt-3 rounded-base text-[11px] text-muted font-bold tracking-wider uppercase whitespace-nowrap group ${channelsMenu.pressClass}`}
+						>
 							{t("sidebar.channels")}{" "}
-							{Boolean(
-								user.role.permission & PermEnum.HandleChannels,
-							) && <CategoryForm></CategoryForm>}
+							{canEditChannels && !isTouch && (
+								<CategoryForm></CategoryForm>
+							)}
 						</div>
+						<SidebarMenu
+							menu={channelsMenu}
+							rows={[
+								{
+									icon: PiPlus,
+									label: t("chat.createChannelTitle"),
+									action: { kind: "createChannel" },
+								},
+								{
+									icon: PiPlus,
+									label: t("chat.createCategoryTitle"),
+									action: { kind: "createCategory" },
+								},
+							]}
+						/>
 						<ul>
 							{channelsQuery.isPending ||
 								categoriesQuery.isPending ? (
@@ -219,15 +244,19 @@ function Sidebar({ user }: { user: User }): JSX.Element {
 							onClickOutside={profileClickOutside}
 						/>
 					)}
-					<div className="flex items-center gap-8  w-full h-20">
+					<div className="relative flex items-center gap-8  w-full h-20">
 						<ProfileLine user={user} status edit size={2} />
-						<PiGear
-							className="absolute text-muted right-5 hover:text-text2 cursor-pointer"
-							size={20}
+						<IconBtn
+							discrete
+							icon={PiGear}
+							title="Settings"
+							active={showUser}
+							className="absolute right-0 top-1/2 -translate-1/2"
 							onClick={() => {
-								setShowUser(true);
+								setShowUser(!showUser);
 							}}
-						></PiGear>
+							{...settingHoverProps}
+						/>
 					</div>
 				</div>
 			</aside>

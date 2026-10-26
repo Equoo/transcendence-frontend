@@ -2,6 +2,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { type JSX, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
+import { uploadChatImage } from "@/files/api/files.api";
 import { useUser } from "@/users/hooks/users";
 import { toastError } from "@/utils/error.util";
 
@@ -17,9 +18,36 @@ import {
 	resolvePendingMessage,
 	updateMessage,
 } from "../cache/chat.cache";
-import ChatComposer, { type ChatComposerHandles } from "./ChatComposer";
+import {
+	formatImage,
+	type MessageImage,
+	parseMessageContent,
+} from "../utils/message.util";
+import ChatComposer, {
+	type ChatComposerHandles,
+	type ChatDraft,
+} from "./ChatComposer";
 import { type ChatMode, ChatProvider } from "./ChatProvider";
 import MessageList, { type MessageListHandles } from "./Messages/MessageList";
+
+function withImages(text: string, images: MessageImage[]): string {
+	return [text, ...images.map(formatImage)]
+		.filter((line) => line !== "")
+		.join("\n");
+}
+
+async function uploadImages(
+	channelId: string,
+	images: File[],
+): Promise<MessageImage[]> {
+	const files = await Promise.all(
+		images.map(async (image) => uploadChatImage(channelId, image)),
+	);
+	return files.map((file, idx) => ({
+		name: images[idx].name,
+		src: `/api/files/${file.key}`,
+	}));
+}
 
 function ChannelChat({
 	channel,
@@ -38,17 +66,22 @@ function ChannelChat({
 	const user = useUser();
 
 	const onSend = (
-		text: string,
+		{ text, images }: ChatDraft,
 		mode: ChatMode,
 		target: Message | null,
 	): void => {
 		if (mode === "edit" && target) {
+			// Only the text is editable, attached images are kept as is
+			const content = withImages(
+				text,
+				parseMessageContent(target.content).images,
+			);
 			updateMessage(qc, channel.id, {
 				id: target.id,
-				content: text,
+				content,
 				editAt: new Date(),
 			});
-			putMessage(channel.id, target.id, text).catch((err: unknown) => {
+			putMessage(channel.id, target.id, content).catch((err: unknown) => {
 				updateMessage(qc, channel.id, {
 					id: target.id,
 					content: target.content,
@@ -61,9 +94,13 @@ function ChannelChat({
 		}
 
 		const pendingId = `${new Date().getTime().toString()}_${counter}`;
+		const localImages = images.map((image) => ({
+			name: image.name,
+			src: URL.createObjectURL(image),
+		}));
 		const message = {
 			id: pendingId,
-			content: text,
+			content: withImages(text, localImages),
 			channel: { id: channel.id },
 			sentAt: new Date(),
 			sender: user,
@@ -74,12 +111,18 @@ function ChannelChat({
 		setCounter(counter + 1);
 		addPendingMessage(qc, channel.id, message);
 
-		sendMessage(channel.id, text, target?.id)
+		uploadImages(channel.id, images)
+			.then(async (uploaded) =>
+				sendMessage(channel.id, withImages(text, uploaded), target?.id),
+			)
 			.then((msg) => {
 				resolvePendingMessage(qc, channel.id, {
 					pendingId,
 					message: { ...normalizeMessage(msg), status: "sended" },
 				});
+				for (const { src } of localImages) {
+					URL.revokeObjectURL(src);
+				}
 			})
 			.catch((err: unknown) => {
 				updateMessage(qc, channel.id, {

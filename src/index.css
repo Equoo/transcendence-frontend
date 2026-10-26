@@ -56,6 +56,17 @@
 
 	--animate-nudge: nudge 0.4s ease-in-out;
 
+	--animate-sheet-up: sheet-up 0.25s cubic-bezier(0.32, 0.72, 0, 1);
+
+	@keyframes sheet-up {
+		from {
+			transform: translateY(100%);
+		}
+		to {
+			transform: translateY(0);
+		}
+	}
+
 	@keyframes pop {
 		from {
 			opacity: 0;
@@ -256,6 +267,52 @@ body,
 }
 
 @layer components {
+	/* Long press feedback (see useLongPress): the element must be positioned */
+	.hold-fill {
+		isolation: isolate;
+		transition: scale 200ms ease-out;
+	}
+	.hold-fill::before {
+		content: "";
+		position: absolute;
+		inset: 0;
+		z-index: -1;
+		pointer-events: none;
+		border-radius: inherit;
+		background-color: color-mix(in srgb, var(--color-accent) 22%, transparent);
+		transform: scaleX(0);
+		transform-origin: left;
+		opacity: 0;
+		transition:
+			transform 150ms ease-out,
+			opacity 150ms ease-out;
+	}
+	.hold-fill[data-pressing] {
+		scale: 0.985;
+	}
+	/* Fills over the remaining hold time (delay 450ms - feedback 120ms) */
+	.hold-fill[data-pressing]::before {
+		transform: scaleX(1);
+		opacity: 1;
+		transition:
+			transform 330ms linear,
+			opacity 80ms ease-out;
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.hold-fill,
+		.hold-fill::before {
+			scale: none;
+			transform: none;
+		}
+	}
+
+	/* Keep the native callout and text selection from fighting the long press */
+	.no-callout {
+		-webkit-touch-callout: none;
+		-webkit-user-select: none;
+		user-select: none;
+	}
+
 	.checkbox {
 		appearance: none;
 		flex-shrink: 0;

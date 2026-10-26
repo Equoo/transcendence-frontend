@@ -1,10 +1,14 @@
 import type { JSX } from "react";
+import { useTranslation } from "react-i18next";
+import { PiGear, PiTrash } from "react-icons/pi";
 import { NavLink, useLocation } from "react-router";
 
 import { PermEnum } from "@/admin/api/roles";
 import type { Channel } from "@/chat/api/chat.api";
 import ChannelForm from "@/chat/components/ChannelForm";
 import type { User } from "@/users/api/users";
+
+import SidebarMenu, { useSidebarMenu } from "./SidebarMenu";
 
 function ItemChannel({
 	channel,
@@ -15,18 +19,27 @@ function ItemChannel({
 	category?: string;
 	user: User;
 }): JSX.Element {
+	// eslint-disable-next-line id-length
+	const { t } = useTranslation();
 	const location = useLocation();
 	const active = new RegExp(`^/channels/${channel.id}/?$`, "u").test(
 		location.pathname,
 	);
+	const canEdit = Boolean(user.role.permission & PermEnum.HandleChannels);
+	const menu = useSidebarMenu(canEdit);
 
+	// The menu renders in portals: kept outside the <li> so its events do not
+	// bubble into the long press handlers
 	return (
+		<>
 		<li
+			{...menu.pressProps}
 			className={[
 				"relative flex items-center px-2 py-1 text-[14.5px] rounded-base group duration-120 curssor-pointer hover:[&_button]:visible",
 				active
 					? "bg-accent-soft text-text"
 					: "hover:bg-hover hover:text-text",
+				menu.pressClass,
 			].join(" ")}
 		>
 			<NavLink
@@ -44,7 +57,7 @@ function ItemChannel({
 					</>
 				)}
 			</NavLink>
-			{Boolean(user.role.permission & PermEnum.HandleChannels) && (
+			{canEdit && !menu.active && (
 				<ChannelForm
 					edit={channel}
 					category={category}
@@ -52,6 +65,23 @@ function ItemChannel({
 				></ChannelForm>
 			)}
 		</li>
+			<SidebarMenu
+				menu={menu}
+				rows={[
+					{
+						icon: PiGear,
+						label: t("chat.editChannel"),
+						action: { kind: "editChannel", channel, category },
+					},
+					{
+						icon: PiTrash,
+						label: t("chat.deleteChannel"),
+						action: { kind: "deleteChannel", channel },
+						danger: true,
+					},
+				]}
+			/>
+		</>
 	);
 }
 

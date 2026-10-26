@@ -11,6 +11,7 @@ import {
 import { useTranslation } from "react-i18next";
 
 import { useRelationships } from "@/friends/hooks/useRelationships";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { useScrollPagination } from "@/hooks/usePagination";
 import { useUser } from "@/users/hooks/users";
 import { toastError } from "@/utils/error.util";
@@ -204,6 +205,9 @@ function MessageList({
 		ev: React.MouseEvent<HTMLDivElement> | React.FocusEvent<HTMLDivElement>,
 	): void => actionBarRef.current?.show(ev);
 	const hideActionBar = (): void => actionBarRef.current?.hide();
+	const rowHandlers = useMediaQuery("(pointer: coarse)")
+		? { onLongPress: (row: HTMLDivElement): void => actionBarRef.current?.openMenu(row) }
+		: { onActivate: showActionBar, onDeactivate: hideActionBar };
 
 	const loadMessagesAround = useLoadMessagesAround(channelId);
 	const [gotoTarget, setGotoTarget] = useState<{
@@ -277,8 +281,7 @@ function MessageList({
 								showHeader={startsNewGroup(msg, previous)}
 								isFocused={isModeTarget(msg.id)}
 								rowRef={isLast ? lastMessageRef : null}
-								onActivate={showActionBar}
-								onDeactivate={hideActionBar}
+								{...rowHandlers}
 								className="px-5.5"
 								relations={relations}
 								onClickReply={goto}

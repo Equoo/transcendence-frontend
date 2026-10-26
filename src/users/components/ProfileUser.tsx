@@ -41,7 +41,13 @@ export default function ProfileUser({ user }: { user: User }): JSX.Element {
 								? PiUserMinus
 								: PiUserPlus
 					}
-
+					tooltip={
+						rel?.type === RelationshipState.PendingRequest
+							? "Friend request sent"
+							: rel
+								? "Remove friend"
+								: "Add friend"
+					}
 					disabled={add.isPending}
 					onClick={() => {
 						rel?.type === RelationshipState.PendingRequest
