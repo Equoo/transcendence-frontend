@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
+import toast from "react-hot-toast";
 import { type FetcherWithComponents, useFetcher } from "react-router";
-import { toast } from "react-toastify";
 
 import { APIError } from "@/api/problem_detail";
 

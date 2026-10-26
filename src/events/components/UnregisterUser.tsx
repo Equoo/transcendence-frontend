@@ -1,7 +1,7 @@
 import { type JSX, useState } from "react";
+import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import { PiX } from "react-icons/pi";
-import { toast } from "react-toastify";
 
 import ChoiceModal from "@/components/Modal/ChoiceModal";
 

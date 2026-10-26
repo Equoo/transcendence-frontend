@@ -4,6 +4,7 @@ import "./translation/i18n";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import type { JSX, ReactNode } from "react";
+import { type DefaultToastOptions, Toaster } from "react-hot-toast";
 import {
 	Links,
 	Meta,
@@ -12,7 +13,6 @@ import {
 	Scripts,
 	ScrollRestoration,
 } from "react-router";
-import { ToastContainer } from "react-toastify";
 
 import type { Route } from "./+types/root";
 import { PermEnum } from "./admin/api/roles";
@@ -21,13 +21,41 @@ import { useViewportHeight } from "./hooks/useViewportHeight";
 import { queryClient } from "./queryClient";
 import { fetchUser, UserContext } from "./users/api/users";
 
-const alertStyle = {
-	success: "bg-good-soft text-good",
-	error: "bg-error-soft text-error",
-	info: "",
-	warning: "",
-	dark: "",
-	default: "bg-bg",
+const toastOptions: DefaultToastOptions = {
+	style: {
+		maxWidth: 420,
+		padding: "10px 14px",
+		gap: 2,
+		borderRadius: "var(--radius-base)",
+		border: "1px solid var(--color-border)",
+		background: "var(--color-surface)",
+		color: "var(--color-text)",
+		boxShadow: "var(--shadow-main)",
+		fontFamily: "var(--font-main)",
+		fontSize: "0.875rem",
+		lineHeight: 1.4,
+	},
+	success: {
+		iconTheme: {
+			primary: "var(--color-good)",
+			secondary: "var(--color-surface)",
+		},
+		style: { borderColor: "var(--color-good-soft)" },
+	},
+	error: {
+		duration: 5000,
+		iconTheme: {
+			primary: "var(--color-error)",
+			secondary: "var(--color-surface)",
+		},
+		style: { borderColor: "var(--color-error-soft)" },
+	},
+	loading: {
+		iconTheme: {
+			primary: "var(--color-accent)",
+			secondary: "var(--color-border)",
+		},
+	},
 };
 
 // Pages reachable without being logged in.
@@ -87,16 +115,7 @@ export function Layout({ children }: { children: ReactNode }): JSX.Element {
 				<Links />
 			</head>
 			<body className="w-screen h-(--app-height,100dvh) bg-back">
-				<ToastContainer
-					position="top-center"
-					newestOnTop
-					pauseOnHover
-					toastClassName={(context) =>
-						`${
-							alertStyle[context?.type ?? "default"]
-						} relative flex px-4 gap-1 py-2 min-h-10 rounded-lg justify-between overflow-hidden cursor-pointer`
-					}
-				/>
+				<Toaster position="top-center" toastOptions={toastOptions} />
 				<QueryClientProvider client={queryClient}>
 					{children}
 					<ReactQueryDevtools initialIsOpen={false} />

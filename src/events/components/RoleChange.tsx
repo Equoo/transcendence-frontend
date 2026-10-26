@@ -1,7 +1,7 @@
 import type { JSX } from "react/jsx-runtime";
+import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import { useFetcher } from "react-router";
-import { toast } from "react-toastify";
 
 import { Select } from "@/components/Input/Select";
 
@@ -51,7 +51,7 @@ export default function RoleChange({
 								name: registration.user.userName,
 								role: role?.name,
 							}),
-							{ autoClose: 2000 },
+							{ duration: 2000 },
 						);
 					});
 			}}
