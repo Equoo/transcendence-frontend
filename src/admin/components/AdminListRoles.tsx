@@ -4,12 +4,12 @@ import type { JSX } from "react/jsx-runtime";
 import { useTranslation } from "react-i18next";
 import { TbPencil, TbTrash } from "react-icons/tb";
 
+import { ListCell, ListRow } from "@/components/List/List";
 import ChangeModal from "@/components/Modal/ChangeModal";
 import ChoiceModal from "@/components/Modal/ChoiceModal";
 
 import { PermEnum, type Role } from "../api/roles";
 import { RolesBox } from "./AdminRoleBox";
-import { ListCell, ListRow } from "@/components/List/List";
 
 export interface Perm {
 	name: string;
