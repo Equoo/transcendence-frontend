@@ -17,11 +17,8 @@ export function RolesBox({
 	// eslint-disable-next-line id-length
 	const { t } = useTranslation();
 	const fetcher = useFetcher<typeof clientAction>();
-
-	const [anim, setAnim] = useState(
-		perm.code & role.permission
-			? "animate-checked hover:brightness-110"
-			: "animate-unchecked",
+	const [check, setCheck] = useState<boolean>(
+		Boolean(role.permission & perm.code),
 	);
 
 	useEffect(() => {
@@ -47,14 +44,10 @@ export function RolesBox({
 				name="perms"
 				type="checkbox"
 				defaultChecked={Boolean(perm.code & role.permission)}
-				className={`checkbox text-accent cursor-pointer rounded-sm w-6 h-6 text-2xl ${anim} `}
+				className={`checkbox text-accent cursor-pointer rounded-sm w-6 h-6 text-2xl ${check ? "animate-checked hover:brightness-110" : "animate-unchecked"}`}
 				onClick={(box) => {
 					const isChecked = box.currentTarget.checked;
-					if (isChecked) {
-						setAnim("animate-checked hover:brightness-110");
-					} else {
-						setAnim("animate-unchecked");
-					}
+					setCheck(isChecked);
 					void fetcher.submit(
 						{
 							RoleId: role.id,
