@@ -105,7 +105,7 @@ export default function Dropzone({
 						<FileIcon contentType={file.type} />
 						<span
 							key={file.name}
-							className="flex flex-1 min-w-0 flex-col animate-pop"
+							className="flex flex-1 w-1 flex-col animate-pop"
 						>
 							<span className="truncate text-sm font-semibold text-text">
 								{file.name}

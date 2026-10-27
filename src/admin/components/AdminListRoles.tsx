@@ -4,6 +4,7 @@ import type { JSX } from "react/jsx-runtime";
 import { useTranslation } from "react-i18next";
 import { TbPencil, TbTrash } from "react-icons/tb";
 
+import { ListCell, ListRow } from "@/components/List/List";
 import ChangeModal from "@/components/Modal/ChangeModal";
 import ChoiceModal from "@/components/Modal/ChoiceModal";
 
@@ -32,8 +33,8 @@ export default function ListRoles({ role }: { role: Role }): JSX.Element {
 	}
 
 	return (
-		<tr className="text-sm text-body border-b rounded-base border-border h-full">
-			<td className="px-6 font-medium py-5">
+		<ListRow className="text-sm text-body border-b rounded-base border-border">
+			<ListCell rowHeader className="px-6 font-medium py-5">
 				{showChangeRole && (
 					<ChangeModal
 						title={t("admin.changeRoleName")}
@@ -64,11 +65,11 @@ export default function ListRoles({ role }: { role: Role }): JSX.Element {
 					></ChoiceModal>
 				)}
 				{role.name}
-			</td>
+			</ListCell>
 			{checkboxes.map((check, index) => (
 				<RolesBox role={role} perm={check} key={index}></RolesBox>
 			))}
-			<td className="flex flex-row items-center justify-between w-full h-full px-6 py-3 ">
+			<ListCell className="flex flex-row items-center justify-between w-full h-full px-6 py-3 ">
 				{role.name !== "Member" && (
 					<>
 						<TbPencil
@@ -87,7 +88,7 @@ export default function ListRoles({ role }: { role: Role }): JSX.Element {
 						/>
 					</>
 				)}
-			</td>
-		</tr>
+			</ListCell>
+		</ListRow>
 	);
 }

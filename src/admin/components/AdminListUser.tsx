@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useFetcher } from "react-router";
 
 import { Select } from "@/components/Input/Select";
+import { ListCell, ListRow } from "@/components/List/List";
 import ChangeModal from "@/components/Modal/ChangeModal";
 import ChoiceModal from "@/components/Modal/ChoiceModal";
 import ProfilePic from "@/components/Profile/ProfilePic";
@@ -33,144 +34,143 @@ export default function ListUsers({
 	const fetcher = useFetcher();
 
 	return (
-		<tr className="text-sm text-body  border-b rounded-base border-border">
-			<td>
-				<div className="ml-2">
-					<ProfilePic user={user}></ProfilePic>
-				</div>
-			</td>
-			<td className="px-6 py-3 font-medium ">
-				{showConfirmationDelete && (
-					<ChoiceModal
-						title={t("admin.deleteUserTitle", {
-							name: user.userName,
-						})}
-						onClose={() => {
-							setShowConfirmationDelete(false);
-						}}
-						action="/users/removeUser"
-						method="DELETE"
-						desc={t("admin.deleteUserDesc")}
-						confirmLabel={t("common.delete")}
-						id={user.id}
-					></ChoiceModal>
-				)}
-				{showConfirmationDisconnect && (
-					<ChoiceModal
-						title={t("admin.disconnectTitle", {
-							name: user.userName,
-						})}
-						onClose={() => {
-							setShowConfirmationDisconnect(false);
-						}}
-						action="/users/disconnectUser"
-						method="DELETE"
-						desc={t("admin.reloginDesc")}
-						confirmLabel={t("admin.disconnect")}
-						id={user.id}
-					></ChoiceModal>
-				)}
-				{showChangePass && (
-					<ChangeModal
-						password
-						title={t("admin.changePasswordTitle", {
-							name: user.userName,
-						})}
-						onClose={() => {
-							setShowChangePass(false);
-						}}
-						action="/users/passwordUser"
-						method="PATCH"
-						desc={t("admin.reloginDesc")}
-						id={user.id}
-						inputName="password"
-						inputLabel={t("profile.password")}
-						placeholder={t("profile.newPassword")}
-						minInput={8}
-						maxInput={256}
-					></ChangeModal>
-				)}
-				{user.userName}
-			</td>
-			<td className="px-6 py-3 font-medium">
-				<Promisable data={roles}>
-					{(listRole) => (
-						<Select
-							defaultValue={user.role.name}
-							disabled={
-								!(
-									currentUser.role.permission &
-									PermEnum.HandleRoles
-								)
-							}
-							ghost
-							options={listRole.map((rl) => ({
-								value: rl.name,
-								label: rl.name,
-							}))}
-							onChange={(value) => {
-								const role = listRole.find(
-									(rl) => value === rl.name,
-								);
+		<>
+			{showConfirmationDelete && (
+				<ChoiceModal
+					title={t("admin.deleteUserTitle", {
+						name: user.userName,
+					})}
+					onClose={() => {
+						setShowConfirmationDelete(false);
+					}}
+					action="/users/removeUser"
+					method="DELETE"
+					desc={t("admin.deleteUserDesc")}
+					confirmLabel={t("common.delete")}
+					id={user.id}
+				></ChoiceModal>
+			)}
+			{showConfirmationDisconnect && (
+				<ChoiceModal
+					title={t("admin.disconnectTitle", {
+						name: user.userName,
+					})}
+					onClose={() => {
+						setShowConfirmationDisconnect(false);
+					}}
+					action="/users/disconnectUser"
+					method="DELETE"
+					desc={t("admin.reloginDesc")}
+					confirmLabel={t("admin.disconnect")}
+					id={user.id}
+				></ChoiceModal>
+			)}
+			{showChangePass && (
+				<ChangeModal
+					password
+					title={t("admin.changePasswordTitle", {
+						name: user.userName,
+					})}
+					onClose={() => {
+						setShowChangePass(false);
+					}}
+					action="/users/passwordUser"
+					method="PATCH"
+					desc={t("admin.reloginDesc")}
+					id={user.id}
+					inputName="password"
+					inputLabel={t("profile.password")}
+					placeholder={t("profile.newPassword")}
+					minInput={8}
+					maxInput={256}
+				></ChangeModal>
+			)}
 
-								if (!role) {
-									return;
-								}
-								void fetcher
-									.submit(
-										{
-											UserId: user.id,
-											RoleId: role.id,
-										},
-										{
-											method: "PATCH",
-											action: "/users/roleUser",
-										},
+			<ListRow className="text-sm text-body  border-b rounded-base border-border">
+				<ListCell pp>
+					<ProfilePic size={2} user={user}></ProfilePic>
+				</ListCell>
+				<ListCell pp>{user.userName}</ListCell>
+				<ListCell pp>
+					<Promisable data={roles}>
+						{(listRole) => (
+							<Select
+								defaultValue={user.role.name}
+								disabled={
+									!(
+										currentUser.role.permission &
+										PermEnum.HandleRoles
 									)
-									.then(() => {
-										toast.success(
-											t("admin.userRoleChanged", {
-												name: user.userName,
-												role: role.name,
-											}),
-										);
-									});
+								}
+								ghost
+								options={listRole.map((rl) => ({
+									value: rl.name,
+									label: rl.name,
+								}))}
+								onChange={(value) => {
+									const role = listRole.find(
+										(rl) => value === rl.name,
+									);
+
+									if (!role) {
+										return;
+									}
+									void fetcher
+										.submit(
+											{
+												UserId: user.id,
+												RoleId: role.id,
+											},
+											{
+												method: "PATCH",
+												action: "/users/roleUser",
+											},
+										)
+										.then(() => {
+											toast.success(
+												t("admin.userRoleChanged", {
+													name: user.userName,
+													role: role.name,
+												}),
+											);
+										});
+								}}
+							/>
+						)}
+					</Promisable>
+				</ListCell>
+				<ListCell pp>
+					<div className="flex flex-wrap items-center gap-x-6 ">
+						<button
+							type="submit"
+							className="whitespace-nowrap hover:text-accent hover:cursor-pointer"
+							onClick={() => {
+								setShowConfirmationDelete(true);
 							}}
-						/>
-					)}
-				</Promisable>
-			</td>
-			<td className="px-6 py-3 font-medium">
-				<div className="flex flex-wrap items-center gap-x-6 gap-y-1">
-					<button
-						type="submit"
-						className="whitespace-nowrap hover:text-accent hover:cursor-pointer"
-						onClick={() => {
-							setShowConfirmationDelete(true);
-						}}
-					>
-						{t("admin.removeUser")}
-					</button>
-					<button
-						type="submit"
-						className="whitespace-nowrap hover:text-accent hover:cursor-pointer"
-						onClick={() => {
-							setShowChangePass(true);
-						}}
-					>
-						{t("admin.resetPassword")}
-					</button>
-					<button
-						type="submit"
-						className="whitespace-nowrap hover:text-accent hover:cursor-pointer"
-						onClick={() => {
-							setShowConfirmationDisconnect(true);
-						}}
-					>
-						{t("admin.disconnect")}
-					</button>
-				</div>
-			</td>
-		</tr>
+						>
+							{t("admin.removeUser")}
+						</button>
+						<button
+							type="submit"
+							className="whitespace-nowrap hover:text-accent hover:cursor-pointer"
+							onClick={() => {
+								setShowChangePass(true);
+							}}
+						>
+							{t("admin.resetPassword")}
+						</button>
+						<button
+							type="submit"
+							className="whitespace-nowrap hover:text-accent hover:cursor-pointer"
+							onClick={() => {
+								setShowConfirmationDisconnect(true);
+							}}
+						>
+							{t("admin.disconnect")}
+						</button>
+					</div>
+				</ListCell>
+			</ListRow>
+		</>
 	);
 }

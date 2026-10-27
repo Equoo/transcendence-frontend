@@ -68,8 +68,8 @@ export default function EventList({
 					data.length === 0 && empty
 						? empty
 						: data.map((event) => (
-							<EventCard key={event.id} event={event} />
-						))
+								<EventCard key={event.id} event={event} />
+							))
 				}
 			</Promisable>
 		</div>

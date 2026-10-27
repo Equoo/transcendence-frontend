@@ -300,7 +300,7 @@ export default {
 				noUser: "No user to display.",
 				createRole: "Create Role",
 				rolesManagement: "Roles Management",
-				addRole: "Add Role",
+				addRole: "Role",
 				userManagement: "User Management",
 				invitationsManagement: "Invitations Management",
 				permissionGranted: "“{{perm}}” granted to {{role}}",

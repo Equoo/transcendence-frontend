@@ -17,6 +17,8 @@ import { type AppFile, splitFileName } from "../../../files/api/files.api";
 import { FileIcon } from "../../../files/components/FileIcon";
 import FilePickerModal from "../../../files/components/FilePickerModal";
 
+export const DESCRIPTION_LIMIT = 800;
+
 export function Tile({
 	icon,
 	title,
@@ -29,7 +31,7 @@ export function Tile({
 	children: ReactNode;
 }): JSX.Element {
 	return (
-		<section className="flex flex-col gap-3 rounded-2xl border border-border bg-surface p-4 duration-200 focus-within:border-border2 focus-within:shadow-main">
+		<section className="relative flex flex-col gap-3 rounded-2xl border border-border bg-surface p-4 duration-200 focus-within:border-border2 focus-within:shadow-main">
 			<header className="flex items-center gap-2.5 text-text">
 				<span className="flex items-center justify-center size-7 shrink-0 rounded-lg bg-accent-soft text-accent">
 					{icon}
@@ -63,21 +65,31 @@ export function DescriptionTile({
 	onChange: (value: string) => void;
 	errors?: string[];
 }): JSX.Element {
+	const [textLength, setTextLength] = useState(0);
 	// eslint-disable-next-line id-length
 	const { t } = useTranslation();
+	const showCounter = textLength >= DESCRIPTION_LIMIT - 100;
 
 	return (
 		<Tile icon={<PiTextAlignLeft />} title={t("events.description")}>
+			{showCounter && (
+				<span className="absolute right-4 ml-auto text-[11px] tabular-nums text-muted animate-pop">
+					{textLength}/{DESCRIPTION_LIMIT}
+				</span>
+			)}
 			<textarea
 				value={value}
 				rows={3}
+				maxLength={DESCRIPTION_LIMIT}
 				placeholder={t("events.composer.descriptionPlaceholder")}
 				aria-label={t("events.description")}
 				className={`${BARE_INPUT} w-full resize-none field-sizing-content min-h-16 max-h-72 text-sm leading-relaxed text-text`}
 				onChange={(ev) => {
 					onChange(ev.target.value);
+					setTextLength(ev.target.textLength);
 				}}
 			/>
+
 			<FieldErrors errors={errors} />
 		</Tile>
 	);

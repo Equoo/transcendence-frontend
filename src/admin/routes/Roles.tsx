@@ -1,16 +1,18 @@
 /* eslint-disable id-length */
 import { type JSX, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { PiComputerTower, PiPlusBold } from "react-icons/pi";
 
 import ChangeModal from "@/components/Modal/ChangeModal";
 import Promisable from "@/components/Promisable";
+import { HEADER_PADDING } from "@/friends/components/BackToList";
 
 import CheckButton from "../../components/Button/CheckButton";
 import { fetchRoles, type Role } from "../api/roles";
 import RoleTable from "../components/RoleTable";
 import type { Route } from "./+types/Roles";
 
-let cachedRoles: Role[] | undefined;
+let cachedRoles: Role[] = [];
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
 export function clientLoader() {
@@ -47,24 +49,30 @@ export default function AdminRoles({
 					submitLabel={t("common.create")}
 				></ChangeModal>
 			)}
-			<div className="flex w-full h-full justify-center bg-back">
-				<div className="w-11/12 min-w-0 my-10">
-					<div className="flex flex-wrap justify-between items-center gap-x-4 w-full mt-6 mb-4 lg:mt-0">
-						<h1 className="text-2xl sm:text-3xl m-4 font-semibold font-head">
-							{t("admin.rolesManagement")}
-						</h1>
 
-						<CheckButton
-							type="button"
-							onClick={() => {
-								setShowRoleForm(true);
-							}}
-							activeCheck={false}
-							active
-						>
-							{t("admin.addRole")}
-						</CheckButton>
-					</div>
+			<div className="flex flex-col w-full h-full items-center bg-back">
+				<div
+					className={`flex flex-none items-center justify-between gap-3 border-b w-full border-border py-3 ${HEADER_PADDING}`}
+				>
+					<h1 className="font-head font-[650] text-[17px] text-text inline-flex gap-2 items-center">
+						<PiComputerTower size={20} className="text-muted" />
+						{t("admin.rolesManagement")}
+					</h1>
+				</div>
+
+				<div className="w-18/20 h-100 mt-10 flex flex-col items-end gap-2">
+					<CheckButton
+						type="button"
+						className="w-25"
+						onClick={() => {
+							setShowRoleForm(true);
+						}}
+						activeCheck={false}
+						active
+					>
+						<PiPlusBold />
+						{t("admin.addRole")}
+					</CheckButton>
 					<Promisable
 						data={roles}
 						skeleton={
