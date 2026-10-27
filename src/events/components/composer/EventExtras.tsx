@@ -31,7 +31,7 @@ export function Tile({
 	children: ReactNode;
 }): JSX.Element {
 	return (
-		<section className="flex flex-col gap-3 rounded-2xl border border-border bg-surface p-4 duration-200 focus-within:border-border2 focus-within:shadow-main">
+		<section className="relative flex flex-col gap-3 rounded-2xl border border-border bg-surface p-4 duration-200 focus-within:border-border2 focus-within:shadow-main">
 			<header className="flex items-center gap-2.5 text-text">
 				<span className="flex items-center justify-center size-7 shrink-0 rounded-lg bg-accent-soft text-accent">
 					{icon}
@@ -73,7 +73,7 @@ export function DescriptionTile({
 	return (
 		<Tile icon={<PiTextAlignLeft />} title={t("events.description")}>
 			{showCounter && (
-				<span className="absolute right-15 ml-auto text-[11px] tabular-nums text-muted animate-pop">
+				<span className="absolute right-4 ml-auto text-[11px] tabular-nums text-muted animate-pop">
 					{textLength}/{DESCRIPTION_LIMIT}
 				</span>
 			)}
