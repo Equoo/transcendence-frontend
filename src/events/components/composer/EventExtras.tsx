@@ -17,6 +17,8 @@ import { type AppFile, splitFileName } from "../../../files/api/files.api";
 import { FileIcon } from "../../../files/components/FileIcon";
 import FilePickerModal from "../../../files/components/FilePickerModal";
 
+export const DESCRIPTION_LIMIT = 800;
+
 export function Tile({
 	icon,
 	title,
@@ -63,22 +65,31 @@ export function DescriptionTile({
 	onChange: (value: string) => void;
 	errors?: string[];
 }): JSX.Element {
+	const [textLength, setTextLength] = useState(0);
 	// eslint-disable-next-line id-length
 	const { t } = useTranslation();
+	const showCounter = textLength >= DESCRIPTION_LIMIT - 100;
 
 	return (
 		<Tile icon={<PiTextAlignLeft />} title={t("events.description")}>
+			{showCounter && (
+				<span className="absolute right-15 ml-auto text-[11px] tabular-nums text-muted animate-pop">
+					{textLength}/{DESCRIPTION_LIMIT}
+				</span>
+			)}
 			<textarea
 				value={value}
 				rows={3}
-				maxLength={800}
+				maxLength={DESCRIPTION_LIMIT}
 				placeholder={t("events.composer.descriptionPlaceholder")}
 				aria-label={t("events.description")}
 				className={`${BARE_INPUT} w-full resize-none field-sizing-content min-h-16 max-h-72 text-sm leading-relaxed text-text`}
 				onChange={(ev) => {
 					onChange(ev.target.value);
+					setTextLength(ev.target.textLength);
 				}}
 			/>
+
 			<FieldErrors errors={errors} />
 		</Tile>
 	);
