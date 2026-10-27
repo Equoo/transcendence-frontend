@@ -78,7 +78,9 @@ export default function EventDetails({
 					confirmLabel={t("common.delete")}
 				/>
 			)}
-			<div className={`flex flex-none flex-wrap py-3 lg:py-4 gap-x-4 gap-y-2 items-center border-b border-border ${HEADER_PADDING}`}>
+			<div
+				className={`flex flex-none flex-wrap py-3 lg:py-4 gap-x-4 gap-y-2 items-center border-b border-border ${HEADER_PADDING}`}
+			>
 				<button
 					type="button"
 					aria-label={t("common.goBack")}
@@ -132,20 +134,22 @@ export default function EventDetails({
 			</div>
 			<div className="flex flex-col lg:flex-row flex-1 min-h-0">
 				<div className="flex flex-col flex-none gap-1 p-4 sm:p-6 max-h-[40%] overflow-y-auto border-b border-border lg:max-h-none lg:w-80 xl:w-96 lg:border-b-0 lg:border-r">
-					<span className="font-bold text-muted text-xs tracking-wider">
+					<span className="font-bold text-muted text-xs w-full  ">
 						{t("eventDetails.when")}
 					</span>
-					<span className="text-text">{dateString}</span>
-					<span className="font-bold text-muted text-xs tracking-wider mt-4">
+					<span className="text-text ">{dateString}</span>
+					<span className="font-bold text-muted text-xs overflow-clip mt-4 w-full">
 						{t("eventDetails.where")}
 					</span>
-					<span className="text-text">{event.location}</span>
+					<span className="wrap-anywhere text-text">
+						{event.location}
+					</span>
 					{(event.description ?? "") && (
 						<>
-							<span className="font-bold text-muted text-xs tracking-wider mt-4">
+							<span className="font-bold text-muted text-xs wrap-anywhere mt-4">
 								{t("eventDetails.description")}
 							</span>
-							<span className="text-text">
+							<span className="wrap-anywhere text-text">
 								{event.description}
 							</span>
 						</>
