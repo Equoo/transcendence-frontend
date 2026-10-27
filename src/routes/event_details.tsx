@@ -79,7 +79,7 @@ export default function EventDetails({
 				/>
 			)}
 			<div
-				className={`flex flex-none flex-wrap py-3 lg:py-4 gap-x-4 gap-y-2 items-center border-b border-border ${HEADER_PADDING}`}
+				className={`flex flex-wrap justify-center border-b border-border ${HEADER_PADDING}`}
 			>
 				<button
 					type="button"
@@ -95,9 +95,6 @@ export default function EventDetails({
 					<div className="flex flex-col min-w-0">
 						<div className="font-head text-text font-semibold text-lg truncate">
 							{event.name}
-						</div>
-						<div className="font-main text-muted text-sm font-light">
-							{dateString}
 						</div>
 					</div>
 					{Boolean(user.role.permission & PermEnum.HandleEvent) && (

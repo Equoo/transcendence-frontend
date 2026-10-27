@@ -71,6 +71,7 @@ export function DescriptionTile({
 			<textarea
 				value={value}
 				rows={3}
+				maxLength={800}
 				placeholder={t("events.composer.descriptionPlaceholder")}
 				aria-label={t("events.description")}
 				className={`${BARE_INPUT} w-full resize-none field-sizing-content min-h-16 max-h-72 text-sm leading-relaxed text-text`}

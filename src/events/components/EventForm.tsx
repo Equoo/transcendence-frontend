@@ -45,7 +45,7 @@ export default function EventForm({
 						<TbPencil
 							size={26}
 							color="var(--color-text2)"
-							className={`cursor-pointer ${className}`}
+							className={`shrink-0 cursor-pointer ${className}`}
 							onClick={() => {
 								setShowEventForm(true);
 							}}
