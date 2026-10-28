@@ -28,7 +28,7 @@ export function FormatEventSize({
 	string?: boolean;
 }): JSX.Element {
 	return isUnlimited(size) ? (
-		<PiInfinity className="size-5 -mx-0.5"></PiInfinity>
+		<PiInfinity className="size-4 -mx-0.5"></PiInfinity>
 	) : (
 		<span>{String(size)}</span>
 	);
@@ -200,11 +200,11 @@ export default function EventCard({
 						<span className="inline-flex items-center gap-1">
 							<span>{event.registeredCount}</span>
 							<span>/</span>
-							{event.size === -1 ? (
-								<PiInfinity className="size-4 -mx-0.5" />
-							) : (
-								<span>{event.size}</span>
-							)}
+							{
+								<FormatEventSize
+									size={event.size}
+								></FormatEventSize>
+							}
 						</span>
 					</Badge>
 				</div>
