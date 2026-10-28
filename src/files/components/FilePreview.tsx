@@ -124,7 +124,12 @@ export default function FilePreview({
 							url={url}
 							className="h-9/10 max-w-full object-contain"
 						/>
-						<a download={file.name} href={url}>
+						<a
+							download={file.name.slice(
+								file.name.lastIndexOf("/") + 1,
+							)}
+							href={url}
+						>
 							<CheckButton active activeCheck={false}>
 								{t("files.download")}
 							</CheckButton>
