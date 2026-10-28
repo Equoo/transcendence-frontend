@@ -7,7 +7,7 @@ import { Select } from "@/components/Input/Select";
 import Modal, { ModalFooter } from "@/components/Modal/Modal";
 
 import CheckButton from "../../components/Button/CheckButton";
-import type { EventSummary } from "../api/events.api";
+import { type EventSummary, isEventFull } from "../api/events.api";
 
 export default function EventRegisterBtn({
 	event: { isRegistered, size, registeredCount, id, eventRoles },
@@ -20,7 +20,7 @@ export default function EventRegisterBtn({
 	const [showRegister, setShowRegister] = useState(false);
 	const fetcher = useFetcher();
 
-	const isFull = size <= registeredCount;
+	const isFull = isEventFull({ size, registeredCount });
 	const presence =
 		fetcher.state === "idle" ? isRegistered : fetcher.formMethod === "POST";
 

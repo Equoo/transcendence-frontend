@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import { toInputValue } from "@/utils/date.util";
 
-import { type EventData, maxDate } from "../../api/events.api";
+import { type EventData, isUnlimited, maxDate } from "../../api/events.api";
 
 export type RequiredField = "name" | "location" | "date" | "size";
 
@@ -79,7 +79,7 @@ export function useEventDraft(event?: EventData): {
 		name: draft.name.trim() !== "",
 		location: draft.location.trim() !== "",
 		date: draft.date !== "",
-		size: Number(draft.size) >= 1,
+		size: Number(draft.size) >= 1 || isUnlimited(Number(draft.size)),
 	};
 
 	return {

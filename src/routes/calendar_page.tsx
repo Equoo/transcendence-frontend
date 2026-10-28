@@ -20,7 +20,11 @@ import { Link } from "react-router";
 import { PermEnum } from "../admin/api/roles";
 import Promisable from "../components/Promisable";
 import { type EventRole, fetchEventRoles } from "../events/api/event_roles.api";
-import { type EventSummary, fetchEvents } from "../events/api/events.api";
+import {
+	type EventSummary,
+	fetchEvents,
+	isEventFull,
+} from "../events/api/events.api";
 import EventForm from "../events/components/EventForm";
 import EventList from "../events/components/EventList";
 import { type AppFile, fetchFiles } from "../files/api/files.api";
@@ -64,7 +68,7 @@ function DayEvents({
 				{dayEvents.map((ev) => (
 					<span
 						key={ev.id}
-						className={`size-1.5 rounded-full ${ev.size === ev.registeredCount ? "bg-muted" : "bg-accent"}`}
+						className={`size-1.5 rounded-full ${isEventFull(ev) ? "bg-muted" : "bg-accent"}`}
 					/>
 				))}
 			</div>
@@ -74,7 +78,7 @@ function DayEvents({
 						to={`/calendar/${ev.id}`}
 						key={ev.id}
 						className={`text-xs px-1 w-full truncate font-light text-white rounded-xs hover:bg-accent/90
-						${ev.size === ev.registeredCount ? "bg-muted" : "bg-accent"}`}
+						${isEventFull(ev) ? "bg-muted" : "bg-accent"}`}
 					>
 						{ev.name}
 					</Link>

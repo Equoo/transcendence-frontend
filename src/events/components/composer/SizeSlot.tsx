@@ -1,13 +1,20 @@
 import type { JSX } from "react";
 import { useTranslation } from "react-i18next";
 import { GoPeople } from "react-icons/go";
-import { PiMinus, PiPlus } from "react-icons/pi";
+import { PiInfinity, PiMinus, PiPlus } from "react-icons/pi";
 
 import { FieldErrors } from "@/components/Input/Field";
 import { BARE_INPUT, slotClass, SlotPopover } from "@/components/Input/Slot";
 
+import {
+	formatEventSize,
+	isUnlimited,
+	UNLIMITED_SIZE,
+} from "../../api/events.api";
+import { FormatEventSize } from "../EventCard";
+
 const MAX_SIZE = 2147483646;
-const QUICK_SIZES = [5, 10, 20, 50, 100];
+const QUICK_SIZES = [5, 10, 20, 50, UNLIMITED_SIZE];
 
 function clampSize(size: number): string {
 	return String(Math.min(Math.max(size, 1), MAX_SIZE));
@@ -37,7 +44,8 @@ export default function SizeSlot({
 	// eslint-disable-next-line id-length
 	const { t } = useTranslation();
 	const size = Number(value);
-	const filled = size >= 1;
+	const unlimited = value !== "" && isUnlimited(size);
+	const filled = size >= 1 || unlimited;
 
 	return (
 		<div className="flex flex-col items-end gap-1 shrink-0">
@@ -60,9 +68,16 @@ export default function SizeSlot({
 						}}
 					>
 						<GoPeople className="shrink-0" />
-						{registeredCount}/{filled ? size : "?"}
-						<span className="hidden @xs:block">
-							{t("events.registeredCount")}
+						<span className="inline-flex items-center gap-1">
+							<span>{registeredCount}</span>
+							<span>/</span>
+							{size === -1 ? (
+								<PiInfinity className="size-4 -mx-0.5" />
+							) : filled ? (
+								<span>{size}</span>
+							) : (
+								"?"
+							)}
 						</span>
 					</button>
 				}
@@ -74,10 +89,12 @@ export default function SizeSlot({
 					<button
 						type="button"
 						aria-label="-1"
-						disabled={size <= 1}
+						disabled={size <= 1 && !unlimited}
 						className="flex items-center justify-center size-10 shrink-0 rounded-full border border-border2 text-text cursor-pointer hover:bg-hover disabled:opacity-40 disabled:cursor-default"
 						onClick={() => {
-							onChange(clampSize(size - 1));
+							onChange(
+								unlimited ? clampSize(1) : clampSize(size - 1),
+							);
 						}}
 					>
 						<PiMinus />
@@ -88,8 +105,8 @@ export default function SizeSlot({
 						inputMode="numeric"
 						min={1}
 						max={MAX_SIZE}
-						value={value}
-						placeholder="0"
+						value={unlimited ? "" : value}
+						placeholder={unlimited ? formatEventSize(size) : "0"}
 						aria-label={t("events.composer.spots")}
 						className={`${BARE_INPUT} w-full min-w-0 text-center font-head font-bold text-3xl tabular-nums text-text [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none`}
 						onChange={(ev) => {
@@ -113,7 +130,9 @@ export default function SizeSlot({
 						aria-label="+1"
 						className="flex items-center justify-center size-10 shrink-0 rounded-full border border-border2 text-text cursor-pointer hover:bg-hover"
 						onClick={() => {
-							onChange(clampSize(size + 1));
+							onChange(
+								unlimited ? clampSize(1) : clampSize(size + 1),
+							);
 						}}
 					>
 						<PiPlus />
@@ -124,14 +143,14 @@ export default function SizeSlot({
 						<button
 							key={quick}
 							type="button"
-							className={`flex-1 rounded-full border px-2 py-1 text-xs font-semibold tabular-nums duration-150 cursor-pointer
+							className={`flex flex-1 items-center justify-center rounded-full border px-2 py-1 text-xs font-semibold tabular-nums duration-150 cursor-pointer
 								${size === quick ? "border-accent bg-accent-soft text-accent" : "border-border text-text2 hover:bg-hover"}`}
 							onClick={() => {
 								onChange(String(quick));
 								onPicked();
 							}}
 						>
-							{quick}
+							{<FormatEventSize size={quick}></FormatEventSize>}
 						</button>
 					))}
 				</div>
