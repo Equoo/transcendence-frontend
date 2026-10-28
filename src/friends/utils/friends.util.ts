@@ -1,3 +1,4 @@
+import { ChannelType } from "@/chat/api/chat.api";
 import type { User } from "@/users/api/users";
 
 import type { Conversation } from "../api/conversations.api";
@@ -13,7 +14,7 @@ export function displayName(user: User, rels: Relationship[] | undefined): strin
 }
 
 export function isGroup(conv: Conversation): boolean {
-	return conv.recipients.length !== 1;
+	return conv.type === ChannelType.GroupDirectMessage;
 }
 
 export function conversationTitle(conv: Conversation, rels?: Relationship[]): string {
@@ -26,7 +27,6 @@ export function conversationTitle(conv: Conversation, rels?: Relationship[]): st
 	return conv.recipients.map((us) => displayName(us, rels)).join(", ");
 }
 
-/** Timestamp of the latest message, or of the creation if there is none. */
 export const lastActivity = (conv: Conversation): number =>
 	(conv.lastMessage?.sentAt ?? conv.createAt).getTime();
 
