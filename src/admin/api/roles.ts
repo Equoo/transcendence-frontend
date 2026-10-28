@@ -29,12 +29,18 @@ export interface Role {
 	id: string;
 	name: string;
 	permission: number;
+	ranking: number;
 }
 
 // Interface API
 
 interface reqCreateRole {
 	name: string;
+}
+
+interface reqRanking {
+	direction: string;
+	id: string;
 }
 
 interface reqCheckRole {
@@ -59,6 +65,13 @@ function toChangeRole(formdata: FormData): reqChangeRole {
 	return {
 		Id: formdata.get("id") as string,
 		Name: formdata.get("name") as string,
+	};
+}
+
+function toRanking(formdata: FormData): reqRanking {
+	return {
+		direction: formdata.get("direction") as string,
+		id: formdata.get("id") as string,
 	};
 }
 
@@ -131,6 +144,22 @@ export async function changeRoleName(formdata: FormData): Promise<Response> {
 			"Content-Type": "application/json",
 		},
 		body: JSON.stringify(req.Name),
+	});
+
+	if (!res.ok) {
+		throw new APIError((await res.json()) as ProblemDetail);
+	}
+
+	return res;
+}
+
+export async function ranking(formdata: FormData): Promise<Response> {
+	const req = toRanking(formdata);
+
+    console
+
+	const res = await callApi(`/api/roles/${req.id}/rank/${req.direction}`, {
+		method: "POST",
 	});
 
 	if (!res.ok) {
