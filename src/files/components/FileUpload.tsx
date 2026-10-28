@@ -24,10 +24,12 @@ export default function FileUpload({
 	onClose,
 	currentPath = "/",
 	folders,
+	maxSize,
 }: {
 	onClose: () => void;
 	currentPath?: string;
 	folders: string[];
+	maxSize?: number;
 }): JSX.Element {
 	// eslint-disable-next-line id-length
 	const { t } = useTranslation();
@@ -131,6 +133,7 @@ export default function FileUpload({
 						errors={errors.File}
 						nudge={nudged === "file"}
 						onPick={pick}
+						maxSize={maxSize}
 						onReject={(reason) => {
 							nudge("file");
 							setErrors({ File: [reason] });

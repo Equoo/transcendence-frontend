@@ -71,6 +71,7 @@ export default function ProfilePic({
 	const filesFetcher = useFetcher<typeof filesAction>();
 	const fetcher = useFetcher();
 	const watchRef = useRef<HTMLDivElement>(null);
+	const [validAvatar, setValidAvatar] = useState(true);
 
 	const [showSelect, setShowSelect] = useState(false);
 	const [showPics, setShowPics] = useState(false);
@@ -95,6 +96,11 @@ export default function ProfilePic({
 		}
 	}, [fetcher.data]);
 
+	useEffect(() => {
+		// eslint-disable-next-line @eslint-react/set-state-in-effect
+		setValidAvatar(true);
+	}, [user.avatar]);
+
 	const activity = useActivity();
 
 	const activities: [ActivityEnum, string][] = [
@@ -118,11 +124,14 @@ export default function ProfilePic({
 		<div
 			className={`relative flex shrink-0 ${sizeStyle} ${className} ${watch || changePicture ? "group" : ""}`}
 		>
-			{user.avatar ? (
+			{user.avatar && validAvatar ? (
 				<img
 					src={`/api/files/${user.avatar.key}`}
 					className={`rounded-full w-full h-full border-2 border-accent-text  ${watch || changePicture ? "group-hover:brightness-120" : ""}`}
 					style={{ zIndex: idx }}
+					onError={() => {
+						setValidAvatar(false);
+					}}
 				/>
 			) : (
 				<Blobatar
