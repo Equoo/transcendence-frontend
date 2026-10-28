@@ -7,6 +7,7 @@ export interface Message {
 	sentAt: Date;
 	editAt?: Date;
 	messageRef?: Message;
+	hasMessageRef: boolean;
 	sender: User;
 	channel: Channel;
 	status: string;
