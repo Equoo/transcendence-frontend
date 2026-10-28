@@ -22,7 +22,7 @@ import UnregisterUser from "@/events/components/UnregisterUser";
 import { PermEnum } from "../admin/api/roles";
 import Badge from "../components/Badge";
 import { fetchEventRoles } from "../events/api/event_roles.api";
-import { fetchEvent } from "../events/api/events.api";
+import { fetchEvent, formatEventSize } from "../events/api/events.api";
 import EventForm from "../events/components/EventForm";
 import EventRegisterBtn from "../events/components/EventRegisterBtn";
 import { fetchFiles } from "../files/api/files.api";
@@ -166,7 +166,7 @@ export default function EventDetails({
 					<span className="font-bold text-muted text-xs tracking-wider mt-4 inline-flex items-center gap-2">
 						{t("eventDetails.participants", {
 							registered: event.registrations.length,
-							size: event.size,
+							size: formatEventSize(event.size),
 						})}
 						<PiDotsThreeVerticalBold
 							size={18}
@@ -182,7 +182,7 @@ export default function EventDetails({
 							title={t("eventDetails.registeredUsers")}
 							subtitle={t("eventDetails.registeredCount", {
 								registered: event.registrations.length,
-								size: event.size,
+								size: formatEventSize(event.size),
 							})}
 							onClose={() => {
 								setShowRegistrations(false);

@@ -4,13 +4,13 @@ import { useTranslation } from "react-i18next";
 import { FiChevronRight } from "react-icons/fi";
 import { GoPeople } from "react-icons/go";
 import { IoLocationOutline } from "react-icons/io5";
-import { PiClock } from "react-icons/pi";
+import { PiClock, PiInfinity } from "react-icons/pi";
 import { Link } from "react-router";
 
 import Badge from "../../components/Badge";
 import CheckButton from "../../components/Button/CheckButton";
 import Tooltip from "../../components/Tooltip";
-import type { EventSummary } from "../api/events.api";
+import { type EventSummary, isUnlimited } from "../api/events.api";
 import EventRegisterBtn from "./EventRegisterBtn";
 
 interface CountdownType {
@@ -19,6 +19,19 @@ interface CountdownType {
 	minutes: number;
 	seconds: number;
 	totalMs: number;
+}
+
+export function FormatEventSize({
+	size,
+}: {
+	size: number;
+	string?: boolean;
+}): JSX.Element {
+	return isUnlimited(size) ? (
+		<PiInfinity className="size-5 -mx-0.5"></PiInfinity>
+	) : (
+		<span>{String(size)}</span>
+	);
 }
 
 function getCountdown(targetDate: Date): CountdownType {
@@ -184,9 +197,14 @@ export default function EventCard({
 						className="whitespace-nowrap shrink-0"
 					>
 						<GoPeople className="shrink-0" />
-						{event.registeredCount}/{event.size}
-						<span className="hidden @xs:block">
-							{t("events.registeredCount")}
+						<span className="inline-flex items-center gap-1">
+							<span>{event.registeredCount}</span>
+							<span>/</span>
+							{event.size === -1 ? (
+								<PiInfinity className="size-4 -mx-0.5" />
+							) : (
+								<span>{event.size}</span>
+							)}
 						</span>
 					</Badge>
 				</div>

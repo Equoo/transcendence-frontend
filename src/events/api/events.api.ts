@@ -8,6 +8,26 @@ import type { Registration } from "./registrations.api";
 
 export const maxDate = 199999999999999;
 
+export const UNLIMITED_SIZE = -1;
+
+export function isUnlimited(size: number): boolean {
+	return size === UNLIMITED_SIZE;
+}
+
+export function isEventFull({
+	size,
+	registeredCount,
+}: {
+	size: number;
+	registeredCount: number;
+}): boolean {
+	return !isUnlimited(size) && size <= registeredCount;
+}
+
+export function formatEventSize(size: number): string {
+	return isUnlimited(size) ? "∞" : String(size);
+}
+
 export interface EventData {
 	id: string;
 	name: string;
