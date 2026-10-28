@@ -79,8 +79,11 @@ export default function FolderUpload({
 						label={t("common.name")}
 						placeholder={t("files.folderNamePlaceholder")}
 						errors={
-							name.includes("/")
-								? { ...errors, Name: [t("files.noSlash")] }
+							name.includes("/") || name.includes(".")
+								? {
+										...errors,
+										Name: [`${t("files.noSlash")} .`],
+									}
 								: errors
 						}
 						onChange={(ev) => {
