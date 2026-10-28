@@ -5,6 +5,7 @@ import {
 	createRole,
 	deleteRole,
 	handleCheckbox,
+	ranking,
 } from "../api/roles";
 import type { Route } from "./+types/RolesAction";
 
@@ -31,6 +32,11 @@ export async function clientAction({
 	if (params.action === "checkRole") {
 		res = await handleCheckbox(formdata);
 	}
+
+	if (params.action === "ranking") {
+		res = await ranking(formdata);
+	}
+
 	return data({
 		res,
 		status: (formdata.get("IsChecked") as string) === "true" ? 201 : 204,

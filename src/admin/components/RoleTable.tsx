@@ -33,7 +33,11 @@ export default function RoleTable({ role }: { role: Role[] }): JSX.Element {
 			emptyMessage={"No role to display."}
 		>
 			{role.map((rls) => (
-				<ListRoles key={rls.id} role={rls}></ListRoles>
+				<ListRoles
+					key={rls.id}
+					role={rls}
+					count={role.length}
+				></ListRoles>
 			))}
 		</List>
 	);

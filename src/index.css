@@ -7,7 +7,7 @@
 	--color-back2: #f0e7d8;
 	--color-back3: #f4ece0;
 	--color-surface: #fffdf8;
-	--color-surface2: #faf4ea;
+	--color-hide: #fcfcfc;
 	--color-hover: #f3ecdf;
 	--color-text: #2c2820;
 	--color-text2: #716856;
@@ -279,7 +279,11 @@ body,
 		z-index: -1;
 		pointer-events: none;
 		border-radius: inherit;
-		background-color: color-mix(in srgb, var(--color-accent) 22%, transparent);
+		background-color: color-mix(
+			in srgb,
+			var(--color-accent) 22%,
+			transparent
+		);
 		transform: scaleX(0);
 		transform-origin: left;
 		opacity: 0;
@@ -331,7 +335,6 @@ body,
 		}
 
 		&:disabled {
-			cursor: wait;
 			opacity: 0.6;
 		}
 	}
