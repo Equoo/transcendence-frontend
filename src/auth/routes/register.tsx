@@ -4,17 +4,16 @@ import { Form, Link, redirect, useLocation } from "react-router";
 
 import { AuthForm, AuthLogo, AuthTitle } from "../../auth/components/AuthForm";
 import { LegalLinks } from "../../legal/components/LegalPage";
-import { registerUser, type UserResult } from "../api/auth";
+import { registerUser } from "../api/auth";
 import type { Route } from "./+types/register";
 
-export async function clientAction({
-	request,
-}: Route.ClientActionArgs): Promise<UserResult | Response> {
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
+export async function clientAction({ request }: Route.ClientActionArgs) {
 	const formdata = await request.formData();
 	const res = await registerUser(formdata);
 
 	if (!res.ok) {
-		return res;
+		return res.error;
 	}
 	return redirect("/");
 }
@@ -42,12 +41,11 @@ export default function Register({
 						nameLink={t("auth.logIn")}
 						link="/login"
 					/>
-					{actionData?.ok === false && (
-						<div className="text-error">{actionData.error}</div>
-					)}
+					<div className="text-error">{actionData?.detail}</div>
 					<AuthForm
 						btnName={t("auth.register")}
 						register
+						errors={actionData?.errors}
 						code={code}
 					/>
 					<p className="text-xs text-muted w-3/4 text-center">

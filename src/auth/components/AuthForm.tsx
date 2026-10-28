@@ -4,6 +4,8 @@ import { PiEnvelopeSimple, PiUser } from "react-icons/pi";
 import { SlLock } from "react-icons/sl";
 import { Link, useNavigation } from "react-router";
 
+import type { ValidationErrors } from "@/api/problem_detail";
+
 import CheckButton from "../../components/Button/CheckButton";
 import { Input } from "../../components/Input/Input";
 
@@ -77,10 +79,12 @@ export function AuthForm({
 	btnName,
 	code,
 	register = false,
+	errors,
 }: {
 	btnName: string;
 	code?: string | null;
 	register?: boolean;
+	errors?: ValidationErrors;
 }): JSX.Element {
 	// eslint-disable-next-line id-length
 	const { t } = useTranslation();
@@ -98,6 +102,7 @@ export function AuthForm({
 						name="Username"
 						label={t("auth.username")}
 						autoComplete="username"
+						errors={errors}
 						required
 					>
 						<PiUser className="ml-2 mr-2 text-text2" size={20} />
@@ -110,6 +115,7 @@ export function AuthForm({
 						name="Email"
 						label={t("auth.email")}
 						autoComplete="email"
+						errors={errors}
 						required
 					>
 						<PiEnvelopeSimple
@@ -127,6 +133,7 @@ export function AuthForm({
 					name="Login"
 					label={t("auth.identifier")}
 					autoComplete="username"
+					errors={errors}
 					required
 				>
 					<PiUser className="ml-2 mr-2 text-text2" size={20} />
@@ -141,6 +148,7 @@ export function AuthForm({
 				name="Password"
 				label={t("auth.password")}
 				autoComplete={register ? "new-password" : "current-password"}
+				errors={errors}
 				required
 			>
 				<SlLock className="ml-2 mr-2 text-text2" size={20} />
@@ -155,6 +163,7 @@ export function AuthForm({
 					type="text"
 					name="Code"
 					label={t("auth.code")}
+					errors={errors}
 					required
 				/>
 			)}

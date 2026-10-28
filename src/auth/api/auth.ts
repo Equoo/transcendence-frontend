@@ -4,7 +4,7 @@ import type { ProblemDetail } from "@/api/problem_detail";
 import callApi from "@/tokens/callApi";
 
 export type UserResult =
-	{ ok: true } | { ok: false; error: string | undefined };
+	{ ok: true } | { ok: false; error: ProblemDetail | undefined };
 
 interface reqLoginInput {
 	// username or email, ouais c'est moi qui ai mis le commentaire
@@ -52,7 +52,7 @@ export async function loginUser(formData: FormData): Promise<UserResult> {
 	if (!response.ok) {
 		return {
 			ok: false,
-			error: ((await response.json()) as ProblemDetail).detail,
+			error: (await response.json()) as ProblemDetail,
 		};
 	}
 	return { ok: true };
@@ -72,7 +72,7 @@ export async function registerUser(formData: FormData): Promise<UserResult> {
 	if (!res.ok) {
 		return {
 			ok: false,
-			error: ((await res.json()) as ProblemDetail).detail,
+			error: (await res.json()) as ProblemDetail,
 		};
 	}
 	return { ok: true };
