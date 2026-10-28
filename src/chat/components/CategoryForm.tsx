@@ -52,6 +52,7 @@ export function CategoryModal({
 					action="/category"
 					method={edit ? "put" : "post"}
 					className="contents"
+					onSubmit={fetcher.markSubmitted}
 				>
 					<div className="flex flex-col gap-4">
 						<Input
