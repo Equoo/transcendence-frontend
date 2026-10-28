@@ -7,6 +7,8 @@ import Dropzone from "@/files/components/UploadDropzone";
 import CheckButton from "../Button/CheckButton";
 import Modal, { ModalFooter } from "../Modal/Modal";
 
+const MAX_AVATAR_SIZE = 10_000_000;
+
 export default function AvatarModal({
 	pending,
 	onUpload,
@@ -46,6 +48,7 @@ export default function AvatarModal({
 						setFile(picked);
 						setError(null);
 					}}
+					maxSize={MAX_AVATAR_SIZE}
 					onReject={setError}
 				/>
 				<ModalFooter>

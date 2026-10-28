@@ -25,6 +25,7 @@ export default function Dropzone({
 	autoFocus = false,
 	onPick,
 	onReject,
+	maxSize = MAX_FILE_SIZE,
 }: {
 	file: File | null;
 	errors?: string[];
@@ -33,6 +34,7 @@ export default function Dropzone({
 	autoFocus?: boolean;
 	onPick: (file: File) => void;
 	onReject: (reason: string) => void;
+	maxSize?: number;
 }): JSX.Element {
 	// eslint-disable-next-line id-length
 	const { t } = useTranslation();
@@ -40,10 +42,8 @@ export default function Dropzone({
 	const [dragging, setDragging] = useState(false);
 
 	function pick(picked: File): void {
-		if (picked.size > MAX_FILE_SIZE) {
-			onReject(
-				t("files.tooLarge", { size: formatSize(MAX_FILE_SIZE, t) }),
-			);
+		if (picked.size > maxSize) {
+			onReject(t("files.tooLarge", { size: formatSize(maxSize, t) }));
 		} else {
 			onPick(picked);
 		}
@@ -95,7 +95,7 @@ export default function Dropzone({
 							</span>
 							<span className="text-xs text-muted">
 								{t("files.upload.maxSize", {
-									size: formatSize(MAX_FILE_SIZE, t),
+									size: formatSize(maxSize, t),
 								})}
 							</span>
 						</span>
