@@ -110,9 +110,9 @@ function MessageRow({
 						</span>
 					</div>
 				)}
-				{message.messageRef && (
+				{(message.messageRef ?? message.hasMessageRef) && (
 					<MessageReplyPreview
-						message={message.messageRef}
+						message={message.messageRef ?? null}
 						onClick={onClickReply}
 					/>
 				)}

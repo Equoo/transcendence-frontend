@@ -10,7 +10,7 @@ export function useModalFetcher({
 }: {
 	onClose: () => void;
 	then?: (data?: unknown) => void;
-}): FetcherWithComponents<unknown> {
+}): FetcherWithComponents<unknown> & { markSubmitted: () => void } {
 	const fetcher = useFetcher();
 	const submittedRef = useRef(false);
 	const callbacksRef = useRef({ onClose, then });
@@ -51,5 +51,16 @@ export function useModalFetcher({
 		[],
 	);
 
-	return fetcher;
+	const markSubmitted = (): void => {
+		submittedRef.current = true;
+	};
+
+	return {
+		...fetcher,
+		markSubmitted,
+		submit: async (...args): Promise<void> => {
+			markSubmitted();
+			return fetcher.submit(...args);
+		},
+	};
 }

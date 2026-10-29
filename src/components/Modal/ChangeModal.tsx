@@ -46,7 +46,12 @@ export default function ChangeModal({
 
 	return (
 		<Modal title={title} subtitle={desc} onClose={onClose}>
-			<fetcher.Form action={action} method={method} className="contents">
+			<fetcher.Form
+				action={action}
+				method={method}
+				className="contents"
+				onSubmit={fetcher.markSubmitted}
+			>
 				{id && <HiddenValues name="id" values={[id]} />}
 				<Input
 					autoFocus

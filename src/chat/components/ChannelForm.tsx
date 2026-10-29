@@ -56,6 +56,7 @@ export function ChannelModal({
 					action="/channels"
 					method={edit ? "put" : "post"}
 					className="contents"
+					onSubmit={fetcher.markSubmitted}
 				>
 					<div className="flex flex-col gap-4">
 						<Input

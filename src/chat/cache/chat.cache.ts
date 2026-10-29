@@ -162,9 +162,15 @@ export function updateMessage(
 	updates: Partial<Message> & Pick<Message, "id">,
 ): void {
 	mapPages(qc, channelId, (page) =>
-		page.map((msg) =>
-			msg.id === updates.id ? { ...msg, ...updates } : msg,
-		),
+		page.map((msg) => {
+			if (msg.id === updates.id) {
+				return { ...msg, ...updates };
+			}
+			if (msg.messageRef?.id === updates.id) {
+				return { ...msg, messageRef: { ...msg.messageRef, ...updates } };
+			}
+			return msg;
+		}),
 	);
 }
 
@@ -173,7 +179,13 @@ export function removeMessage(
 	channelId: string,
 	id: string,
 ): void {
-	mapPages(qc, channelId, (page) => without(page, id));
+	mapPages(qc, channelId, (page) =>
+		without(page, id).map((msg) =>
+			msg.messageRef?.id === id
+				? { ...msg, messageRef: void 0, hasMessageRef: true }
+				: msg,
+		),
+	);
 }
 
 export function resolvePendingMessage(
