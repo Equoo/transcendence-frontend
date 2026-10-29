@@ -42,6 +42,9 @@ export default function ListUsers({
 		!isSelf &&
 		user.role.ranking > currentUser.role.ranking;
 
+	const canActionToUser =
+		!isSelf && user.role.ranking > currentUser.role.ranking;
+
 	return (
 		<>
 			{showConfirmationDelete && (
@@ -153,35 +156,37 @@ export default function ListUsers({
 					</Promisable>
 				</ListCell>
 				<ListCell pp>
-					<div className="flex flex-wrap items-center gap-x-6 ">
-						<button
-							type="submit"
-							className="whitespace-nowrap hover:text-accent hover:cursor-pointer"
-							onClick={() => {
-								setShowConfirmationDelete(true);
-							}}
-						>
-							{t("admin.removeUser")}
-						</button>
-						<button
-							type="submit"
-							className="whitespace-nowrap hover:text-accent hover:cursor-pointer"
-							onClick={() => {
-								setShowChangePass(true);
-							}}
-						>
-							{t("admin.resetPassword")}
-						</button>
-						<button
-							type="submit"
-							className="whitespace-nowrap hover:text-accent hover:cursor-pointer"
-							onClick={() => {
-								setShowConfirmationDisconnect(true);
-							}}
-						>
-							{t("admin.disconnect")}
-						</button>
-					</div>
+					{canActionToUser && (
+						<div className="flex flex-wrap items-center gap-x-6 ">
+							<button
+								type="submit"
+								className="whitespace-nowrap hover:text-accent hover:cursor-pointer"
+								onClick={() => {
+									setShowConfirmationDelete(true);
+								}}
+							>
+								{t("admin.removeUser")}
+							</button>
+							<button
+								type="submit"
+								className="whitespace-nowrap hover:text-accent hover:cursor-pointer"
+								onClick={() => {
+									setShowChangePass(true);
+								}}
+							>
+								{t("admin.resetPassword")}
+							</button>
+							<button
+								type="submit"
+								className="whitespace-nowrap hover:text-accent hover:cursor-pointer"
+								onClick={() => {
+									setShowConfirmationDisconnect(true);
+								}}
+							>
+								{t("admin.disconnect")}
+							</button>
+						</div>
+					)}
 				</ListCell>
 			</ListRow>
 		</>
