@@ -1,8 +1,11 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { type JSX, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { PiFolderPlus, PiUploadSimple } from "react-icons/pi";
 
+import { PermEnum } from "@/admin/api/roles";
 import CheckButton from "@/components/Button/CheckButton";
+import { useUser } from "@/users/hooks/users";
 
 import List from "../../components/List/List";
 import { type AppFile, listFolders } from "../api/files.api";
@@ -20,6 +23,11 @@ export default function FileList({ files }: { files: AppFile[] }): JSX.Element {
 	const { currFolder, folders, rootFiles, enterFolder, goUp } =
 		useFileBrowser(files);
 	const allFolders = listFolders(files);
+	const user = useUser();
+
+	const canHandleKnowledge = Boolean(
+		user!.role.permission & PermEnum.HandleKnowledge,
+	);
 
 	return (
 		<div className="mt-6">
@@ -27,34 +35,38 @@ export default function FileList({ files }: { files: AppFile[] }): JSX.Element {
 				<p className="font-main text-text2 pl-1.5 text-base font-semibold min-w-0 truncate">
 					{currFolder}
 				</p>
-				<div className="inline-flex shrink-0 gap-2">
-					<CheckButton
-						className=""
-						onClick={() => {
-							setShowNewFolder(true);
-						}}
-					>
-						<PiFolderPlus />
-						{t("files.newFolder")}
-					</CheckButton>
-					<CheckButton
-						active
-						activeCheck={false}
-						className=""
-						onClick={() => {
-							setShowUpload(true);
-						}}
-					>
-						<PiUploadSimple />
-						{t("common.upload")}
-					</CheckButton>
-				</div>
+				{Boolean(user!.role.permission & PermEnum.HandleKnowledge) && (
+					<div className="inline-flex shrink-0 gap-2">
+						<CheckButton
+							className=""
+							onClick={() => {
+								setShowNewFolder(true);
+							}}
+						>
+							<PiFolderPlus />
+							{t("files.newFolder")}
+						</CheckButton>
+						<CheckButton
+							active
+							activeCheck={false}
+							className=""
+							onClick={() => {
+								setShowUpload(true);
+							}}
+						>
+							<PiUploadSimple />
+							{t("common.upload")}
+						</CheckButton>
+					</div>
+				)}
 			</div>
 			<List
 				cols={[
 					{ id: t("common.name") },
 					{ id: t("files.size") },
-					{ id: t("common.actions"), pos: "text-right" },
+					canHandleKnowledge
+						? { id: t("common.actions"), pos: "text-right" }
+						: { id: null, pos: null },
 				]}
 				empty={
 					currFolder === "/" &&

@@ -1,6 +1,10 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import type { JSX } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
+
+import { PermEnum } from "@/admin/api/roles";
+import { useUser } from "@/users/hooks/users";
 
 import { ListCell, ListRow } from "../../components/List/List";
 import type { AppFile } from "../api/files.api";
@@ -19,6 +23,7 @@ export default function FileItem({
 	// eslint-disable-next-line id-length
 	const { t } = useTranslation();
 	const name = file.name.slice(parent.length);
+	const user = useUser();
 
 	return (
 		<ListRow>
@@ -40,14 +45,16 @@ export default function FileItem({
 							size: Math.floor(file.length / 1000000),
 						})}
 			</ListCell>
-			<ListCell>
-				<ItemActions
-					fileKey={file.key}
-					parent={parent}
-					name={name}
-					folders={folders}
-				/>
-			</ListCell>
+			{Boolean(user!.role.permission & PermEnum.HandleKnowledge) && (
+				<ListCell>
+					<ItemActions
+						fileKey={file.key}
+						parent={parent}
+						name={name}
+						folders={folders}
+					/>
+				</ListCell>
+			)}
 		</ListRow>
 	);
 }
