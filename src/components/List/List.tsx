@@ -4,8 +4,8 @@ import { useTranslation } from "react-i18next";
 type Alignment = "text-left" | "text-center" | "text-right";
 
 export interface ListColumn {
-	id: string;
-	pos?: Alignment;
+	id: string | null;
+	pos?: Alignment | null;
 	className?: string;
 }
 
