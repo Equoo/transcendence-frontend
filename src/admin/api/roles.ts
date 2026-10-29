@@ -156,7 +156,7 @@ export async function changeRoleName(formdata: FormData): Promise<Response> {
 export async function ranking(formdata: FormData): Promise<Response> {
 	const req = toRanking(formdata);
 
-    console
+	console;
 
 	const res = await callApi(`/api/roles/${req.id}/rank/${req.direction}`, {
 		method: "POST",
@@ -175,9 +175,9 @@ export async function handleCheckbox(formdata: FormData): Promise<Response> {
 	let finalCode: number;
 
 	if (req.IsChecked === "true") {
-		finalCode = req.RolePerm | req.CheckPerm;
+		finalCode = req.CheckPerm;
 	} else {
-		finalCode = req.RolePerm & ~req.CheckPerm;
+		finalCode = -req.CheckPerm;
 	}
 
 	const res = await callApi(`/api/roles/${req.RoleId}/permission`, {
