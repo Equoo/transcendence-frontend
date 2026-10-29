@@ -11,7 +11,7 @@ import {
 import InvitationPromisable from "@/invitations/components/InvitationPromisable";
 
 import { fetchUsers, type User, UserContext } from "../../users/api/users";
-import { fetchRoles, type Role } from "../api/roles";
+import { fetchRoles, PermEnum, type Role } from "../api/roles";
 import UserTable from "../components/UserTable";
 import type { Route } from "./+types/Users";
 
@@ -28,10 +28,14 @@ export function clientLoader({ context }: Route.ClientLoaderArgs) {
 	const users = fetchUsers().then((result) => (cachedUsers = result));
 	const roles = fetchRoles().then((result) => (cachedRoles = result));
 	const usersRoles = Promise.all([users, roles]);
-	const invitations = fetchInvitations().then(
-		(result) => (cachedInvitations = result),
-	);
+	let invitations;
 	const user = context.get(UserContext);
+
+	if (user.role.permission & PermEnum.InviteUser) {
+		invitations = fetchInvitations().then(
+			(result) => (cachedInvitations = result),
+		);
+	}
 
 	return {
 		user,
@@ -57,6 +61,8 @@ export default function AdminUsers({
 		invitations,
 	} = loaderData;
 
+	const AccessInvitation = user.role.permission & PermEnum.InviteUser;
+
 	return (
 		<div className="flex flex-col w-full h-full items-center ">
 			<div
@@ -80,14 +86,19 @@ export default function AdminUsers({
 						></UserTable>
 					)}
 				</Promisable>
-				<h1 className="text-2xl sm:text-3xl ml-4 mb-4 mt-10 font-semibold font-head">
-					{t("admin.invitationsManagement")}
-				</h1>
-				<InvitationPromisable
-					className="overflow-y-auto max-h-3/10"
-					previousInvitations={previousInvitations}
-					invitations={invitations}
-				/>
+				{Boolean(AccessInvitation) && (
+					<>
+						<h1 className="text-2xl sm:text-3xl ml-4 mb-4 mt-10 font-semibold font-head">
+							{t("admin.invitationsManagement")}
+						</h1>
+						<InvitationPromisable
+							className="overflow-y-auto max-h-3/10"
+							previousInvitations={previousInvitations}
+							// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+							invitations={invitations!}
+						/>
+					</>
+				)}
 			</div>
 		</div>
 	);
