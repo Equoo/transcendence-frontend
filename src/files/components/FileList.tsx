@@ -64,9 +64,14 @@ export default function FileList({ files }: { files: AppFile[] }): JSX.Element {
 				cols={[
 					{ id: t("common.name") },
 					{ id: t("files.size") },
-					canHandleKnowledge
-						? { id: t("common.actions"), pos: "text-right" }
-						: { id: null, pos: null },
+					...(canHandleKnowledge
+						? [
+								{
+									id: t("common.actions"),
+									pos: "text-right" as const,
+								},
+							]
+						: []),
 				]}
 				empty={
 					currFolder === "/" &&
