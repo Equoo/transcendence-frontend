@@ -69,52 +69,54 @@ export default function ItemActions({
 
 	return (
 		<>
-			{showSelect && (
-				<PopupList
-					className="right-15 mb-2 shadow-main border bg-surface border-border"
-					onClose={() => {
-						setShowSelect(false);
-					}}
-					rows={[
-						{
-							id: "rename",
-							onClick: (): void => {
-								open("rename");
-							},
-							content: <div>{t("files.rename")}</div>,
-						},
-						{
-							id: "move",
-							onClick: (): void => {
-								open("move");
-							},
-							content: <div>{t("files.move")}</div>,
-						},
-						{
-							id: "delete",
-							onClick: (): void => {
-								open("delete");
-							},
-							content: <div>{t("files.delete")}</div>,
-						},
-					]}
-				/>
-			)}
 			{Boolean(user!.role.permission & PermEnum.HandleKnowledge) && (
-				<ListActions className="relative">
-					<PiDotsThreeVerticalBold
-						aria-label={
-							isFolder
-								? t("files.actionsForFolder", { name })
-								: t("files.actionsForFile", { name })
-						}
-						onClick={() => {
-							setShowSelect(true);
-						}}
-						size={18}
-						className="cursor-pointer hover:text-accent focus-visible:outline-2 focus-visible:outline-accent"
-					/>
-				</ListActions>
+				<div className="relative">
+					{showSelect && (
+						<PopupList
+							className="left-1  shadow-main border bg-surface border-border"
+							onClose={() => {
+								setShowSelect(false);
+							}}
+							rows={[
+								{
+									id: "rename",
+									onClick: (): void => {
+										open("rename");
+									},
+									content: <div>{t("files.rename")}</div>,
+								},
+								{
+									id: "move",
+									onClick: (): void => {
+										open("move");
+									},
+									content: <div>{t("files.move")}</div>,
+								},
+								{
+									id: "delete",
+									onClick: (): void => {
+										open("delete");
+									},
+									content: <div>{t("files.delete")}</div>,
+								},
+							]}
+						/>
+					)}
+					<ListActions className="relative">
+						<PiDotsThreeVerticalBold
+							aria-label={
+								isFolder
+									? t("files.actionsForFolder", { name })
+									: t("files.actionsForFile", { name })
+							}
+							onClick={() => {
+								setShowSelect(true);
+							}}
+							size={18}
+							className="cursor-pointer hover:text-accent focus-visible:outline-2 focus-visible:outline-accent"
+						/>
+					</ListActions>
+				</div>
 			)}
 			{dialog === "rename" && (
 				<Modal
