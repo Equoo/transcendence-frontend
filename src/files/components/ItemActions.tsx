@@ -85,13 +85,19 @@ export default function ItemActions({
 									},
 									content: <div>{t("files.rename")}</div>,
 								},
-								{
-									id: "move",
-									onClick: (): void => {
-										open("move");
-									},
-									content: <div>{t("files.move")}</div>,
-								},
+								...(destinations.length > 0
+									? [
+											{
+												id: "move",
+												onClick: (): void => {
+													open("move");
+												},
+												content: (
+													<div>{t("files.move")}</div>
+												),
+											},
+										]
+									: []),
 								{
 									id: "delete",
 									onClick: (): void => {
