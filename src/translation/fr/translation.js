@@ -1,9 +1,6 @@
 export default {
 	fr: {
 		translation: {
-			notFound: {
-				title: "Page introuvable.",
-			},
 			channel: {
 				notFoundTitle: "404 canal introuvable",
 				notFoundHeading: "Canal introuvable",

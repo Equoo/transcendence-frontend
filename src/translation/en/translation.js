@@ -1,9 +1,6 @@
 export default {
 	en: {
 		translation: {
-			notFound: {
-				title: "Page not found.",
-			},
 			channel: {
 				notFoundTitle: "404 no such channel",
 				notFoundHeading: "No such channel",
