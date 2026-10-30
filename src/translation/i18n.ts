@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
+import type { Locale } from "date-fns";
+import { enUS, fr as frLocale, zhTW } from "date-fns/locale";
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 
@@ -66,6 +68,20 @@ void i18n.use(initReactI18next).init({
 i18n.use(initReactI18next);
 
 const htmlLang: Record<string, string> = { en: "en", fr: "fr", tc: "zh-TW" };
+
+const dateFnsLocales: Record<string, Locale> = {
+	en: enUS,
+	fr: frLocale,
+	tc: zhTW,
+};
+
+export function dateLocale(): string {
+	return htmlLang[i18n.language] ?? "en";
+}
+
+export function dateFnsLocale(): Locale {
+	return dateFnsLocales[i18n.language] ?? enUS;
+}
 
 // Keep <html lang> in sync so CSS (:lang()) and the browser pick the right
 // fonts and line-breaking rules for the active language.

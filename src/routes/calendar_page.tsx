@@ -17,6 +17,8 @@ import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { PiCalendarBlank } from "react-icons/pi";
 import { Link } from "react-router";
 
+import { dateFnsLocale } from "@/translation/i18n";
+
 import { PermEnum } from "../admin/api/roles";
 import Promisable from "../components/Promisable";
 import { type EventRole, fetchEventRoles } from "../events/api/event_roles.api";
@@ -138,7 +140,7 @@ export default function Calendar({
 						<FiChevronLeft size={21} />
 					</button>
 					<div className="text-text font-head font-semibold select-none capitalize">
-						{format(month, "MMMM yyyy")}
+						{format(month, "LLLL yyyy", { locale: dateFnsLocale() })}
 					</div>
 					<button
 						type="button"
@@ -154,10 +156,10 @@ export default function Calendar({
 					{days.map((day) => (
 						<span key={day.toString()} className="text-text2">
 							<span className="sm:hidden">
-								{format(day, "EEEEE")}
+								{format(day, "EEEEE", { locale: dateFnsLocale() })}
 							</span>
 							<span className="hidden sm:inline">
-								{format(day, "EEE")}
+								{format(day, "EEE", { locale: dateFnsLocale() })}
 							</span>
 						</span>
 					))}

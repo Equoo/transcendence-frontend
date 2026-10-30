@@ -3,6 +3,8 @@ import type { TFunction } from "i18next";
 import type { JSX } from "react/jsx-runtime";
 import { useTranslation } from "react-i18next";
 
+import { dateLocale } from "@/translation/i18n";
+
 // eslint-disable-next-line id-length
 function formatDaySeparator(date: Date, t: TFunction): string {
 	if (isToday(date)) {
@@ -12,7 +14,7 @@ function formatDaySeparator(date: Date, t: TFunction): string {
 		return t("chat.yesterday");
 	}
 
-	return date.toLocaleDateString([], {
+	return date.toLocaleDateString(dateLocale(), {
 		weekday: "long",
 		day: "numeric",
 		month: "long",

@@ -18,6 +18,7 @@ import ProfilePic from "@/components/Profile/ProfilePic";
 import UserLine from "@/components/Profile/UserLine";
 import RoleChange from "@/events/components/RoleChange";
 import UnregisterUser from "@/events/components/UnregisterUser";
+import { dateLocale } from "@/translation/i18n";
 
 import { PermEnum } from "../admin/api/roles";
 import Badge from "../components/Badge";
@@ -51,7 +52,7 @@ export default function EventDetails({
 	// eslint-disable-next-line id-length
 	const { t } = useTranslation();
 	const navigate = useNavigate();
-	const dateString: string = new Date(event.date).toLocaleString([], {
+	const dateString: string = new Date(event.date).toLocaleString(dateLocale(), {
 		hour: "2-digit",
 		minute: "2-digit",
 		month: "short",
