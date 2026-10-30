@@ -178,6 +178,7 @@ export default function EventComposer({
 					/>
 					<ExpireTile
 						value={draft.expireAt}
+						minExpire={draft.date}
 						errors={errorsOf(errors, "ExpireAt", "Expire Date")}
 						onChange={(value) => {
 							update("expireAt", value);
