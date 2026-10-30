@@ -279,7 +279,12 @@ export default {
 				changePasswordHint:
 					"Saisissez votre mot de passe actuel, puis le nouveau.",
 			},
+			calendar: {
+				previousMonth: "Mois précédent",
+				nextMonth: "Mois suivant",
+			},
 			admin: {
+				permissionFor: "{{perm}} pour {{role}}",
 				noRole: "Aucun rôle à afficher.",
 				changeRoleName: "Modifier le nom du rôle",
 				deleteRoleTitle: "Supprimer votre rôle ?",

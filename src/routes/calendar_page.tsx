@@ -132,6 +132,7 @@ export default function Calendar({
 				<div className="flex w-full items-center justify-between p-2 sm:p-4">
 					<button
 						type="button"
+						aria-label={t("calendar.previousMonth")}
 						className="p-1.5 rounded-xl text-text2 hover:bg-hover hover:text-text cursor-pointer"
 						onClick={() => {
 							setMonth(addMonths(month, -1));
@@ -146,6 +147,7 @@ export default function Calendar({
 					</div>
 					<button
 						type="button"
+						aria-label={t("calendar.nextMonth")}
 						className="p-1.5 rounded-xl text-text2 hover:bg-hover hover:text-text cursor-pointer"
 						onClick={() => {
 							setMonth(addMonths(month, 1));

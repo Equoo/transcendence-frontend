@@ -72,20 +72,28 @@ export default function ListRoles({ role }: { role: Role }): JSX.Element {
 			<ListCell className="flex flex-row items-center justify-between w-full h-full px-6 py-3 ">
 				{role.name !== "Member" && (
 					<>
-						<TbPencil
-							size={26}
-							className={` text-text2 hover:text-text cursor-pointer hover:animate-rotate`}
+						<button
+							type="button"
+							aria-label={t("admin.changeRoleName")}
+							title={t("admin.changeRoleName")}
+							className="text-text2 hover:text-text cursor-pointer hover:animate-rotate"
 							onClick={() => {
 								setShowChangeRole(true);
 							}}
-						/>
-						<TbTrash
-							size={26}
-							className="hover:cursor-pointer text-text2 hover:text-text"
+						>
+							<TbPencil size={26} />
+						</button>
+						<button
+							type="button"
+							aria-label={t("common.delete")}
+							title={t("common.delete")}
+							className="text-text2 hover:text-text cursor-pointer"
 							onClick={() => {
 								setShowConfirmation(true);
 							}}
-						/>
+						>
+							<TbTrash size={26} />
+						</button>
 					</>
 				)}
 			</ListCell>

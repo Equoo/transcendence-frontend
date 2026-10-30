@@ -44,6 +44,10 @@ export function RolesBox({
 				disabled={fetcher.state !== "idle"}
 				name="perms"
 				type="checkbox"
+				aria-label={t("admin.permissionFor", {
+					perm: t(`permissions.${perm.name}`),
+					role: role.name,
+				})}
 				defaultChecked={Boolean(perm.code & role.permission)}
 				className={`checkbox text-accent cursor-pointer rounded-sm w-6 h-6 text-2xl ${anim ? "animate-checked" : ""} ${check ? "hover:brightness-110  " : ""}`}
 				onClick={(box) => {

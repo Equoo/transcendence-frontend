@@ -127,6 +127,7 @@ export default function ProfilePic({
 			{user.avatar && validAvatar ? (
 				<img
 					src={`/api/files/${user.avatar.key}`}
+					alt={user.userName}
 					className={`rounded-full w-full h-full border-2 border-accent-text  ${watch || changePicture ? "group-hover:brightness-120" : ""}`}
 					style={{ zIndex: idx }}
 					onError={() => {
@@ -277,7 +278,6 @@ export default function ProfilePic({
 					]}
 				></PopupList>
 			)}
-
 			{showPics && (
 				<AvatarModal
 					pending={filesFetcher.state !== "idle"}

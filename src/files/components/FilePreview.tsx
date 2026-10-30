@@ -66,6 +66,7 @@ export function BlobView({
 	} else if (type.startsWith("image")) {
 		return (
 			<img
+				alt={name}
 				className={className}
 				// eslint-disable-next-line no-undefined
 				src={url.length === 0 ? undefined : url}

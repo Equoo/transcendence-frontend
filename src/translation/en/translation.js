@@ -275,7 +275,12 @@ export default {
 				logout: "Logout",
 				changePasswordHint: "Enter your current password, then the new one.",
 			},
+			calendar: {
+				previousMonth: "Previous month",
+				nextMonth: "Next month",
+			},
 			admin: {
+				permissionFor: "{{perm}} for {{role}}",
 				noRole: "No role to display.",
 				changeRoleName: "Change role's name",
 				deleteRoleTitle: "Delete your role ?",

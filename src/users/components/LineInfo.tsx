@@ -26,13 +26,15 @@ export default function LineInfo({
 					</h1>
 				)}
 				{action && role.name !== "\\(*-*)/" && (
-					<div className="shrink-0">
-						<TbPencil
-							onClick={action}
-							size={20}
-							className=" hover:text-text text-text2 hover:cursor-pointer"
-						></TbPencil>
-					</div>
+					<button
+						type="button"
+						aria-label={name}
+						title={name}
+						onClick={action}
+						className="shrink-0 hover:text-text text-text2 cursor-pointer"
+					>
+						<TbPencil size={20} />
+					</button>
 				)}
 			</div>
 		</div>
