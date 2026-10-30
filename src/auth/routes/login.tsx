@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Form, redirect } from "react-router";
 
 import { AuthForm, AuthLogo, AuthTitle } from "../../auth/components/AuthForm";
+import LanguageSwitcher from "../../components/LanguageSwitcher";
 import { LegalLinks } from "../../legal/components/LegalPage";
 import { loginUser, type UserResult } from "../api/auth";
 import type { Route } from "./+types/login";
@@ -27,6 +28,7 @@ export default function Login({
 	return (
 		<div className="flex items-center justify-center w-full h-full bg-back2 gap-20 login relative">
 			<AuthLogo side={"r"} />
+			<LanguageSwitcher className="absolute top-4 right-4 z-20" />
 			<div className="flex flex-col lg:w-2/3 h-6/10 justify-center z-10 items-center lg:items-end">
 				<Form
 					method="POST"

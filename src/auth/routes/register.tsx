@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Form, Link, redirect, useLocation } from "react-router";
 
 import { AuthForm, AuthLogo, AuthTitle } from "../../auth/components/AuthForm";
+import LanguageSwitcher from "../../components/LanguageSwitcher";
 import { LegalLinks } from "../../legal/components/LegalPage";
 import { registerUser } from "../api/auth";
 import type { Route } from "./+types/register";
@@ -29,6 +30,7 @@ export default function Register({
 	return (
 		<div className="flex items-center justify-center w-full h-full bg-back gap-20 signup relative">
 			<AuthLogo side={"l"} />
+			<LanguageSwitcher className="absolute top-4 right-4 z-20" />
 			<div className="flex flex-col lg:w-2/3 h-6/10 justify-center items-center lg:items-start z-10 ">
 				<Form
 					method="POST"
