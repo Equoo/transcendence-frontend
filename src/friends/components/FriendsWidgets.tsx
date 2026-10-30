@@ -1,4 +1,5 @@
 import type { JSX, ReactNode } from "react";
+import { useTranslation } from "react-i18next";
 import { PiCaretRight, PiUsers } from "react-icons/pi";
 import { Link } from "react-router";
 
@@ -49,6 +50,8 @@ export function useRecentConversations(limit: number): {
 }
 
 export function PendingRequestsBanner(): JSX.Element | null {
+	// eslint-disable-next-line id-length
+	const { t } = useTranslation();
 	const { data: rels } = useRelationships();
 	const incoming = (rels ?? []).filter((rel) => rel.type === RelationshipState.PendingResponse);
 
@@ -65,11 +68,11 @@ export function PendingRequestsBanner(): JSX.Element | null {
 			</div>
 			<div className="flex flex-col flex-1 min-w-0">
 				<span className="text-text font-semibold">
-					{incoming.length} pending friend request{incoming.length > 1 ? "s" : ""}
+					{t("friends.pendingRequests", { count: incoming.length })}
 				</span>
 				<span className="text-text2 text-sm truncate">
 					{incoming.slice(0, 3).map(relationName).join(", ")}
-					{incoming.length > 3 && ` and ${incoming.length - 3} more`}
+					{incoming.length > 3 && ` ${t("friends.andMore", { count: incoming.length - 3 })}`}
 				</span>
 			</div>
 			<PiCaretRight className="text-text2" />
@@ -94,6 +97,8 @@ function OnlineFriendCard({ rel }: { rel: Relationship }): JSX.Element {
 }
 
 export function OnlineFriends({ limit }: { limit?: number }): JSX.Element {
+	// eslint-disable-next-line id-length
+	const { t } = useTranslation();
 	const { data: rels, isPending } = useRelationships();
 	const isOnline = useIsOnline();
 
@@ -106,17 +111,17 @@ export function OnlineFriends({ limit }: { limit?: number }): JSX.Element {
 	if (friends.length === 0) {
 		return (
 			<section>
-				<SectionTitle>ONLINE NOW</SectionTitle>
-				<p className="text-sm text-text2 px-1">Make you more friends and see them here later !</p>
-				<p className="text-sm text-text2 px-1">{outgoing > 0 && ` You have ${outgoing} request${outgoing > 1 ? "s" : ""} waiting for an answer.`}</p>
+				<SectionTitle>{t("friends.onlineNow")}</SectionTitle>
+				<p className="text-sm text-text2 px-1">{t("friends.noFriendsHint")}</p>
+				<p className="text-sm text-text2 px-1">{outgoing > 0 && t("friends.waitingRequests", { count: outgoing })}</p>
 			</section>
 		);
 	}
 	return (
 		<section>
-			<SectionTitle>Online now — {online.length}</SectionTitle>
+			<SectionTitle>{t("friends.onlineNow")} — {online.length}</SectionTitle>
 			{online.length === 0 ? (
-				<p className="text-sm text-text2 px-1">None of your {friends.length} friends are online right now.</p>
+				<p className="text-sm text-text2 px-1">{t("friends.noneOnline", { count: friends.length })}</p>
 			) : (
 				<div className="grid grid-cols-[repeat(auto-fill,minmax(130px,1fr))] gap-3">
 					{online.slice(0, limit).map((rel) => <OnlineFriendCard key={rel.id} rel={rel} />)}
@@ -130,6 +135,8 @@ export function RecentConversations({ limit = 6, showEmpty = false }: {
 	limit?: number;
 	showEmpty?: boolean;
 }): JSX.Element | null {
+	// eslint-disable-next-line id-length
+	const { t } = useTranslation();
 	const user = useUser();
 	const { data: rels } = useRelationships();
 	const { recent, isPending } = useRecentConversations(limit);
@@ -138,9 +145,9 @@ export function RecentConversations({ limit = 6, showEmpty = false }: {
 	if (recent.length === 0 && !showEmpty) { return null; }
 	return (
 		<section>
-			<SectionTitle>Recent conversations</SectionTitle>
+			<SectionTitle>{t("friends.recentConversations")}</SectionTitle>
 			{recent.length === 0 ? (
-				<p className="text-sm text-text2 px-1">No conversation yet.</p>
+				<p className="text-sm text-text2 px-1">{t("friends.noConversation")}</p>
 			) : (
 				<div className="grid grid-cols-[repeat(auto-fill,minmax(240px,1fr))] gap-3">
 					{recent.map((conv) => (
@@ -156,7 +163,7 @@ export function RecentConversations({ limit = 6, showEmpty = false }: {
 								<span className="text-muted text-[13px] truncate">
 									{conv.lastMessage
 										? `${resolveUser(conv.lastMessage.sender, user).userName}: ${previewMessageContent(conv.lastMessage.content)}`
-										: "No messages yet"}
+										: t("friends.noMessages")}
 								</span>
 							</div>
 						</Link>

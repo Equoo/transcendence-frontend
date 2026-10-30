@@ -4,6 +4,8 @@ import { PiArrowLeft } from "react-icons/pi";
 import Markdown, { type Components } from "react-markdown";
 import { Link, useNavigate } from "react-router";
 
+import LanguageSwitcher from "../../components/LanguageSwitcher";
+
 export type LegalDoc = "privacy" | "terms";
 
 // Section keys, in display order. Content lives in translations under
@@ -75,11 +77,14 @@ export default function LegalPage({ doc }: { doc: LegalDoc }): JSX.Element {
 							<PiArrowLeft size={16} />
 							{t("common.goBack")}
 						</button>
-						<img
-							src="/logo/icon-mono.svg"
-							alt=""
-							className="size-8 opacity-40"
-						/>
+						<div className="flex items-center gap-3">
+							<LanguageSwitcher />
+							<img
+								src="/logo/icon-mono.svg"
+								alt=""
+								className="size-8 opacity-40"
+							/>
+						</div>
 					</div>
 					<h3 className="text-text2 font-bold tracking-tight uppercase text-sm">
 						{t("legal.label")}

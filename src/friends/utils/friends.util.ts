@@ -1,3 +1,5 @@
+import i18n from "i18next";
+
 import { ChannelType } from "@/chat/api/chat.api";
 import type { User } from "@/users/api/users";
 
@@ -22,7 +24,7 @@ export function conversationTitle(conv: Conversation, rels?: Relationship[]): st
 		return conv.name;
 	}
 	if (conv.recipients.length === 0) {
-		return "Empty conversation";
+		return i18n.t("friends.emptyConversation");
 	}
 	return conv.recipients.map((us) => displayName(us, rels)).join(", ");
 }

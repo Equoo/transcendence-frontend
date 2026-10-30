@@ -1,4 +1,5 @@
 import { type JSX, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { PiHourglass, PiSignOut, PiUserPlus } from "react-icons/pi";
 
 import ChannelChat from "@/chat/components/ChannelChat";
@@ -16,6 +17,8 @@ import ConversationAvatar from "./ConversationAvatar";
 import { ConversationChatSkeleton } from "./Skeletons";
 
 function DirectActions({ conv }: { conv: Conversation }): JSX.Element | null {
+	// eslint-disable-next-line id-length
+	const { t } = useTranslation();
 	const [other] = conv.recipients;
 	const rel = useRelationship(other.id);
 	const add = useAddFriend();
@@ -25,39 +28,43 @@ function DirectActions({ conv }: { conv: Conversation }): JSX.Element | null {
 			<IconBtn
 				discrete
 				icon={PiUserPlus}
-				title={rel ? "Accept friend request" : "Add friend"}
+				title={rel ? t("friends.acceptRequest") : t("friends.addFriend")}
 				disabled={add.isPending}
 				onClick={() => { add.mutate(other.id); }}
 			/>
 		);
 	}
 	if (rel.type === RelationshipState.PendingRequest) {
-		return <IconBtn discrete disabled icon={PiHourglass} title="Friend request sent" />;
+		return <IconBtn discrete disabled icon={PiHourglass} title={t("friends.requestSent")} />;
 	}
 	return null;
 }
 
 function GroupActions({ conv, title }: { conv: Conversation; title: string }): JSX.Element {
+	// eslint-disable-next-line id-length
+	const { t } = useTranslation();
 	const leave = useLeaveConversation();
 	const [confirm, setConfirm] = useState(false);
 
 	return (<>
-		<IconBtn discrete icon={PiSignOut} title="Leave group" onClick={() => { setConfirm(true); }} />
+		<IconBtn discrete icon={PiSignOut} title={t("friends.leaveGroup")} onClick={() => { setConfirm(true); }} />
 		{confirm && (
 			<ConfirmModal
-				title="Leave group"
-				confirmLabel="Leave"
+				title={t("friends.leaveGroup")}
+				confirmLabel={t("friends.leave")}
 				danger
 				pending={leave.isPending}
 				onClose={() => { setConfirm(false); }}
 				onConfirm={() => { leave.mutate(conv.id); }}
-				description={<>You will stop receiving messages from “{title}”. Someone will have to add you back to rejoin.</>}
+				description={<>{t("friends.leaveGroupConfirm", { name: title })}</>}
 			/>
 		)}
 	</>);
 }
 
 function ChatHeader({ conv }: { conv: Conversation }): JSX.Element {
+	// eslint-disable-next-line id-length
+	const { t } = useTranslation();
 	const { data: rels } = useRelationships();
 	const title = conversationTitle(conv, rels);
 	const group = isGroup(conv);
@@ -70,7 +77,7 @@ function ChatHeader({ conv }: { conv: Conversation }): JSX.Element {
 				<div className="font-head text-[17px] font-[650] text-text truncate">{title}</div>
 				<div className="text-[12.5px] text-muted truncate">
 					{group
-						? `${conv.recipients.length + 1} members`
+						? t("friends.membersCount", { count: conv.recipients.length + 1 })
 						: <ActivityLabel userId={conv.recipients[0].id} />}
 				</div>
 			</div>
@@ -81,6 +88,8 @@ function ChatHeader({ conv }: { conv: Conversation }): JSX.Element {
 }
 
 export default function ConversationChat({ chatId }: { chatId: string }): JSX.Element {
+	// eslint-disable-next-line id-length
+	const { t } = useTranslation();
 	const { data: conv, isPending, error } = useConversation(chatId);
 	const { data: rels } = useRelationships();
 
@@ -91,8 +100,8 @@ export default function ConversationChat({ chatId }: { chatId: string }): JSX.El
 		return (
 			<div className="flex flex-col items-center justify-center gap-1 w-full h-full">
 				<h1 className="font-bold text-6xl text-text2">404</h1>
-				<h2 className="font-bold text-3xl text-text2">No such conversation</h2>
-				<p className="text-text2">You may have left it, or it never existed.</p>
+				<h2 className="font-bold text-3xl text-text2">{t("friends.conversationNotFound")}</h2>
+				<p className="text-text2">{t("friends.conversationNotFoundHint")}</p>
 			</div>
 		);
 	}
@@ -103,7 +112,7 @@ export default function ConversationChat({ chatId }: { chatId: string }): JSX.El
 			<ChannelChat
 				key={conv.id}
 				channel={conv}
-				placeholder={`Message ${conversationTitle(conv, rels)}...`}
+				placeholder={t("friends.messageTo", { name: conversationTitle(conv, rels) })}
 			/>
 		</div>
 	);

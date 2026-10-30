@@ -5,6 +5,7 @@ import { PiClock } from "react-icons/pi";
 
 import { fieldBox, FieldErrors } from "@/components/Input/Field";
 import { slotClass, SlotPopover } from "@/components/Input/Slot";
+import { dateLocale } from "@/translation/i18n";
 import { toInputValue } from "@/utils/date.util";
 
 const EVENING_HOUR = 20;
@@ -16,7 +17,7 @@ function atHour(day: Date, hours: number): Date {
 }
 
 function formatLong(date: Date): string {
-	return date.toLocaleString([], {
+	return date.toLocaleString(dateLocale(), {
 		hour: "2-digit",
 		minute: "2-digit",
 		month: "short",
@@ -26,7 +27,7 @@ function formatLong(date: Date): string {
 }
 
 function formatShort(date: Date): string {
-	return date.toLocaleString([], {
+	return date.toLocaleString(dateLocale(), {
 		weekday: "short",
 		day: "numeric",
 		month: "short",

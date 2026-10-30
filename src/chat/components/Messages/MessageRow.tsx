@@ -6,6 +6,7 @@ import type { Relationship } from "@/friends/api/relationship.api";
 import { displayName } from "@/friends/utils/friends.util";
 import { useClickOutside } from "@/hooks/useClickOutside";
 import { useLongPress } from "@/hooks/useLongPress";
+import { dateLocale } from "@/translation/i18n";
 import ProfileUser from "@/users/components/ProfileUser";
 import { resolveUser, useUser } from "@/users/hooks/users";
 
@@ -30,7 +31,7 @@ interface MessageRowProps {
 }
 
 function formatTimestamp(date: Date): string {
-	return date.toLocaleString([], {
+	return date.toLocaleString(dateLocale(), {
 		hour: "2-digit",
 		minute: "2-digit",
 		month: "2-digit",

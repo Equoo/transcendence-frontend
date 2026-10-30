@@ -1,4 +1,5 @@
 import type { JSX } from "react";
+import { useTranslation } from "react-i18next";
 import {
 	PiChatCircleDots,
 	PiClockUser,
@@ -19,6 +20,8 @@ import {
 import type { User } from "../api/users";
 
 export default function ProfileUser({ user }: { user: User }): JSX.Element {
+	// eslint-disable-next-line id-length
+	const { t } = useTranslation();
 	const add = useAddFriend();
 	const rm = useRemoveFriend();
 	const rel = useRelationship(user.id);
@@ -43,10 +46,10 @@ export default function ProfileUser({ user }: { user: User }): JSX.Element {
 					}
 					tooltip={
 						rel?.type === RelationshipState.PendingRequest
-							? "Friend request sent"
+							? t("friends.requestSent")
 							: rel
-								? "Remove friend"
-								: "Add friend"
+								? t("friends.removeFriend")
+								: t("friends.addFriend")
 					}
 					disabled={add.isPending}
 					onClick={() => {
@@ -61,7 +64,7 @@ export default function ProfileUser({ user }: { user: User }): JSX.Element {
 				<IconBtn
 					discrete
 					icon={PiChatCircleDots}
-					title="Message"
+					title={t("friends.message")}
 					disabled={startConv.isPending}
 					onClick={() => {
 						startConv.mutate({ recipients: [user.id] });

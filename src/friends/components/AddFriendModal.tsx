@@ -1,5 +1,6 @@
 import { type JSX, useState } from "react";
 import { createPortal } from "react-dom";
+import { useTranslation } from "react-i18next";
 import { PiCheckBold, PiHourglass, PiUserPlus } from "react-icons/pi";
 
 import CheckButton from "@/components/Button/CheckButton";
@@ -24,6 +25,8 @@ function UserAction({
 	user: User;
 	rel?: Relationship;
 }): JSX.Element {
+	// eslint-disable-next-line id-length
+	const { t } = useTranslation();
 	const add = useAddFriend();
 
 	if (!rel) {
@@ -37,7 +40,7 @@ function UserAction({
 				}}
 			>
 				<PiUserPlus />
-				Add
+				{t("friends.add")}
 			</CheckButton>
 		);
 	}
@@ -47,20 +50,20 @@ function UserAction({
 			return (
 				<span className="inline-flex items-center gap-1.5 text-good text-sm font-semibold">
 					<PiCheckBold />
-					Friend
+					{t("friends.friend")}
 				</span>
 			);
 		case RelationshipState.PendingRequest:
 			return (
 				<span className="inline-flex items-center gap-1.5 text-muted text-sm font-semibold">
 					<PiHourglass />
-					Pending
+					{t("friends.tabs.pending")}
 				</span>
 			);
 		case RelationshipState.Blocked:
 			return (
 				<span className="text-muted text-sm font-semibold">
-					Blocked
+					{t("friends.tabs.blocked")}
 				</span>
 			);
 		case RelationshipState.PendingResponse:
@@ -73,7 +76,7 @@ function UserAction({
 						add.mutate(user.id);
 					}}
 				>
-					Accept
+					{t("friends.accept")}
 				</CheckButton>
 			);
 	}
@@ -84,6 +87,8 @@ export default function AddFriendModal({
 }: {
 	onClose: () => void;
 }): JSX.Element {
+	// eslint-disable-next-line id-length
+	const { t } = useTranslation();
 	const me = useUser();
 	const [search, setSearch] = useState("");
 	const { data: users, isPending, error } = useUsers();
@@ -94,15 +99,14 @@ export default function AddFriendModal({
 		.toSorted((lhs, rhs) => lhs.userName.localeCompare(rhs.userName));
 
 	return createPortal(
-		<Modal title="Add a friend" onClose={onClose}>
+		<Modal title={t("friends.addFriendTitle")} onClose={onClose}>
 			<div className="flex flex-col gap-5 w-full">
 				<p className="text-muted font-main font-light text-sm text-center">
-					Search a member of the group by username and send them a
-					friend request.
+					{t("friends.addFriendHint")}
 				</p>
 				<SearchBar
 					name="search"
-					placeholder="Username"
+					placeholder={t("friends.username")}
 					autoFocus
 					value={search}
 					onChange={(ev) => {
@@ -112,17 +116,17 @@ export default function AddFriendModal({
 				<ul className="flex flex-col max-h-80 overflow-y-auto -mx-2 mb-2">
 					{isPending && (
 						<li className="text-muted text-sm text-center py-4">
-							Loading members...
+							{t("friends.loadingMembers")}
 						</li>
 					)}
 					{error && (
 						<li className="text-error text-sm text-center py-4">
-							Couldn't load members.
+							{t("friends.loadMembersFailed")}
 						</li>
 					)}
 					{!isPending && !error && results.length === 0 && (
 						<li className="text-muted text-sm text-center py-4">
-							No member matches “{search}”.
+							{t("friends.noMemberMatches", { search })}
 						</li>
 					)}
 					{results.map((user) => (

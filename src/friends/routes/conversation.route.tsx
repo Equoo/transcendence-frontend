@@ -1,3 +1,4 @@
+import i18n from "i18next";
 import { data, redirect } from "react-router";
 
 import { APIError } from "@/api/problem_detail";
@@ -24,7 +25,7 @@ export async function clientAction({ request }: Route.ClientActionArgs) {
 
 		if (request.method === "DELETE") {
 			if (!id) {
-				throw new Error("Conversation ID is required for deletion");
+				throw new Error(i18n.t("friends.conversationIdRequiredDelete"));
 			}
 			await deleteConv(id);
 
@@ -37,7 +38,7 @@ export async function clientAction({ request }: Route.ClientActionArgs) {
 			return redirect(`/conversations/${res.id}`);
 		} else if (request.method === "PUT") {
 			if (!id) {
-				throw new Error("Conversation ID is required for update");
+				throw new Error(i18n.t("friends.conversationIdRequiredUpdate"));
 			}
 			res = await updateConv(id, conversation);
 

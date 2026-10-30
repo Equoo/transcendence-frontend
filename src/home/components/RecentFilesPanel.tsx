@@ -11,6 +11,7 @@ import {
 } from "@/files/api/files.api";
 import { FileIcon } from "@/files/components/FileIcon";
 import { ListRowsSkeleton } from "@/friends/components/Skeletons";
+import { dateLocale } from "@/translation/i18n";
 
 import DashboardPanel from "./DashboardPanel";
 
@@ -54,7 +55,7 @@ function FileRows({
 								className="text-muted text-[12.5px] shrink-0"
 							>
 								{new Date(file.lastUpdated).toLocaleDateString(
-									[],
+									dateLocale(),
 									{ day: "2-digit", month: "short" },
 								)}
 							</time>

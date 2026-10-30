@@ -1,4 +1,5 @@
 import { type JSX, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { PiCheckBold, PiX } from "react-icons/pi";
 
 import Badge from "@/components/Badge";
@@ -16,6 +17,8 @@ import { isFriend, matchesSearch, relationName } from "../utils/friends.util";
 const MAX_RECIPIENTS = 9;
 
 export default function NewConversationModal({ onClose }: { onClose: () => void }): JSX.Element {
+	// eslint-disable-next-line id-length
+	const { t } = useTranslation();
 	const [search, setSearch] = useState("");
 	const [selected, setSelected] = useState<string[]>([]);
 	const [name, setName] = useState("");
@@ -39,13 +42,13 @@ export default function NewConversationModal({ onClose }: { onClose: () => void 
 	return (
 		<Modal
 			size="lg"
-			title="New conversation"
-			subtitle={`Pick one friend for a direct message, or up to ${MAX_RECIPIENTS} for a group.`}
+			title={t("friends.newConversation")}
+			subtitle={t("friends.newConversationHint", { max: MAX_RECIPIENTS })}
 			onClose={onClose}
 		>
 			<SearchBar
 				name="search"
-				placeholder="Search friends"
+				placeholder={t("friends.searchFriends")}
 				autoFocus
 				value={search}
 				onChange={(ev) => { setSearch(ev.target.value); }}
@@ -57,7 +60,7 @@ export default function NewConversationModal({ onClose }: { onClose: () => void 
 							{relationName(rel)}
 							<button
 								type="button"
-								aria-label="Remove"
+								aria-label={t("common.remove")}
 								className="-mr-0.5 rounded-full text-muted hover:text-text cursor-pointer"
 								onClick={() => { toggle(rel.user.id); }}
 							>
@@ -70,9 +73,9 @@ export default function NewConversationModal({ onClose }: { onClose: () => void 
 			<ModalList
 				className="max-h-72"
 				message={
-					isPending ? "Loading friends..."
-						: friends.length === 0 ? "You don't have any friends yet. Add some first!"
-							: shown.length === 0 && `No friend matches “${search}”.`
+					isPending ? t("friends.loadingFriends")
+						: friends.length === 0 ? t("friends.noFriendsYet")
+							: shown.length === 0 && t("friends.noFriendMatches", { search })
 				}
 			>
 				{shown.map((rel) => {
@@ -93,7 +96,7 @@ export default function NewConversationModal({ onClose }: { onClose: () => void 
 					<Input
 						name="Group name"
 						maxLength={25}
-						placeholder="Optional"
+						placeholder={t("friends.optional")}
 						value={name}
 						onChange={(ev) => { setName(ev.target.value); }}
 					/>
@@ -110,7 +113,7 @@ export default function NewConversationModal({ onClose }: { onClose: () => void 
 						);
 					}}
 				>
-					{isGroup ? "Create group" : "Start conversation"}
+					{isGroup ? t("friends.createGroup") : t("friends.startConversation")}
 				</CheckButton>
 			</ModalFooter>
 		</Modal>

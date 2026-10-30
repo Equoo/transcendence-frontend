@@ -1,4 +1,5 @@
 import { type JSX, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { PiChatCircleDots, PiUserPlus, PiUsers } from "react-icons/pi";
 import { Link, NavLink } from "react-router";
 
@@ -25,14 +26,11 @@ import { FriendListSkeleton, OnlineFriendsSkeleton } from "./Skeletons";
 
 export type FriendsFilter = "all" | "online" | "pending" | "blocked";
 
-const TABS: [FriendsFilter, string][] = [
-	["online", "Online"],
-	["all", "All"],
-	["pending", "Pending"],
-	["blocked", "Blocked"],
-];
+const TABS: FriendsFilter[] = ["online", "all", "pending", "blocked"];
 
 function FriendsHeader(): JSX.Element {
+	// eslint-disable-next-line id-length
+	const { t } = useTranslation();
 	const { data: rels } = useRelationships();
 	const incoming = rels?.filter((rel) => rel.type === RelationshipState.PendingResponse).length ?? 0;
 	const [modal, setModal] = useState<"add" | "conv" | null>(null);
@@ -42,11 +40,11 @@ function FriendsHeader(): JSX.Element {
 			<BackToList />
 			<Link to="/messages" className="flex items-center gap-2 font-head text-[17px] font-[650] text-text">
 				<PiUsers size={20} className="text-muted" />
-				Friends
+				{t("friends.title")}
 			</Link>
 			<span className="hidden xl:block w-px h-5 bg-border mx-1" />
 			<nav className="order-last w-full flex gap-1 overflow-x-auto xl:order-0 xl:w-auto">
-				{TABS.map(([to, label]) => (
+				{TABS.map((to) => (
 					<NavLink
 						key={to}
 						to={`/messages/${to}`}
@@ -55,7 +53,7 @@ function FriendsHeader(): JSX.Element {
 							isActive ? "bg-accent-soft text-text" : "text-text2 hover:bg-hover hover:text-text",
 						].join(" ")}
 					>
-						{label}
+						{t(`friends.tabs.${to}`)}
 						{to === "pending" && incoming > 0 && (
 							<span className="min-w-5 px-1.5 rounded-full bg-accent text-accent-text text-[11px] leading-5 text-center">
 								{incoming}
@@ -67,12 +65,12 @@ function FriendsHeader(): JSX.Element {
 			<span className="flex-1" />
 			<IconBtn
 				icon={PiChatCircleDots}
-				title="New conversation"
+				title={t("friends.newConversation")}
 				onClick={() => { setModal("conv"); }}
 			/>
-			<CheckButton active activeCheck={false} title="Add friend" onClick={() => { setModal("add"); }}>
+			<CheckButton active activeCheck={false} title={t("friends.addFriend")} onClick={() => { setModal("add"); }}>
 				<PiUserPlus size={18} />
-				<span className="hidden sm:inline">Add friend</span>
+				<span className="hidden sm:inline">{t("friends.addFriend")}</span>
 			</CheckButton>
 
 			{modal === "add" && <AddFriendModal onClose={() => { setModal(null); }} />}
@@ -94,6 +92,8 @@ function RelationList({ title, rels }: { title: string; rels: Relationship[] }):
 }
 
 function FriendsList({ filter }: { filter: FriendsFilter }): JSX.Element {
+	// eslint-disable-next-line id-length
+	const { t } = useTranslation();
 	const { data: rels, isPending: loading, error } = useRelationships();
 	const isOnline = useIsOnline();
 	const [search, setSearch] = useState("");
@@ -102,7 +102,7 @@ function FriendsList({ filter }: { filter: FriendsFilter }): JSX.Element {
 		return <FriendListSkeleton />;
 	}
 	if (error) {
-		return <EmptyState title="Couldn't load your friends">{error.message}</EmptyState>;
+		return <EmptyState title={t("friends.loadFriendsFailed")}>{error.message}</EmptyState>;
 	}
 
 	const matching = rels
@@ -113,24 +113,24 @@ function FriendsList({ filter }: { filter: FriendsFilter }): JSX.Element {
 	let empty: [string, string];
 	switch (filter) {
 		case "online":
-			sections = [["Online", matching.filter((rel) => isFriend(rel) && isOnline(rel.user.id))]];
-			empty = ["Nobody's around", "None of your friends are online right now."];
+			sections = [[t("friends.sections.online"), matching.filter((rel) => isFriend(rel) && isOnline(rel.user.id))]];
+			empty = [t("friends.empty.onlineTitle"), t("friends.empty.online")];
 			break;
 		case "pending":
 			sections = [
-				["Incoming", matching.filter((rel) => rel.type === RelationshipState.PendingResponse)],
-				["Outgoing", matching.filter((rel) => rel.type === RelationshipState.PendingRequest)],
+				[t("friends.sections.incoming"), matching.filter((rel) => rel.type === RelationshipState.PendingResponse)],
+				[t("friends.sections.outgoing"), matching.filter((rel) => rel.type === RelationshipState.PendingRequest)],
 			];
-			empty = ["No pending requests", "Friend requests you send or receive will show up here."];
+			empty = [t("friends.empty.pendingTitle"), t("friends.empty.pending")];
 			break;
 		case "blocked":
-			sections = [["Blocked", matching.filter(isBlocked)]];
-			empty = ["No blocked users", "Users you block can't send you requests or messages."];
+			sections = [[t("friends.sections.blocked"), matching.filter(isBlocked)]];
+			empty = [t("friends.empty.blockedTitle"), t("friends.empty.blocked")];
 			break;
 		case "all":
 		default:
-			sections = [["All friends", matching.filter(isFriend)]];
-			empty = ["No friends yet", "Use “Add friend” to send a request to another member."];
+			sections = [[t("friends.sections.all"), matching.filter(isFriend)]];
+			empty = [t("friends.empty.allTitle"), t("friends.empty.all")];
 	}
 
 	const isEmpty = sections.every(([, list]) => list.length === 0);
@@ -139,18 +139,20 @@ function FriendsList({ filter }: { filter: FriendsFilter }): JSX.Element {
 		<div className="flex flex-col gap-5">
 			<SearchBar
 				name="search"
-				placeholder="Search"
+				placeholder={t("friends.search")}
 				value={search}
 				onChange={(ev) => { setSearch(ev.target.value); }}
 			/>
 			{isEmpty
-				? <EmptyState title={search ? "No results" : empty[0]}>{search ? `Nobody matches “${search}”.` : empty[1]}</EmptyState>
+				? <EmptyState title={search ? t("friends.noResults") : empty[0]}>{search ? t("friends.nobodyMatches", { search }) : empty[1]}</EmptyState>
 				: sections.map(([title, list]) => <RelationList key={title} title={title} rels={list} />)}
 		</div>
 	);
 }
 
 export function FriendsHome(): JSX.Element {
+	// eslint-disable-next-line id-length
+	const { t } = useTranslation();
 	const { data: rels, isPending } = useRelationships();
 
 	if (isPending) { return <OnlineFriendsSkeleton />; }
@@ -162,9 +164,9 @@ export function FriendsHome(): JSX.Element {
 		<div className="flex flex-col gap-8">
 			<PendingRequestsBanner />
 			{friends.length === 0 ? (
-				<EmptyState title="Welcome to your private space">
-					Add friends to chat with them directly or create small groups.
-					{outgoing > 0 && ` You have ${outgoing} request${outgoing > 1 ? "s" : ""} waiting for an answer.`}
+				<EmptyState title={t("friends.welcomeTitle")}>
+					{t("friends.welcome")}
+					{outgoing > 0 && ` ${t("friends.waitingRequests", { count: outgoing })}`}
 				</EmptyState>
 			) : (<>
 				<OnlineFriends />

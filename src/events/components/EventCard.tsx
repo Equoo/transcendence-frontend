@@ -7,6 +7,8 @@ import { IoLocationOutline } from "react-icons/io5";
 import { PiClock, PiInfinity } from "react-icons/pi";
 import { Link } from "react-router";
 
+import { dateLocale } from "@/translation/i18n";
+
 import Badge from "../../components/Badge";
 import CheckButton from "../../components/Button/CheckButton";
 import Tooltip from "../../components/Tooltip";
@@ -134,7 +136,7 @@ export default function EventCard({
 	event: EventSummary;
 }): JSX.Element {
 	const date = new Date(event.date);
-	const formattedDate = date.toLocaleString([], {
+	const formattedDate = date.toLocaleString(dateLocale(), {
 		hour: "2-digit",
 		minute: "2-digit",
 		month: "short",
