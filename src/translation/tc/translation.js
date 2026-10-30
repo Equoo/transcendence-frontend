@@ -1,9 +1,6 @@
 export default {
 	tc: {
 		translation: {
-			notFound: {
-				title: "找不到頁面。",
-			},
 			channel: {
 				notFoundTitle: "404 找不到此頻道",
 				notFoundHeading: "找不到此頻道",
