@@ -458,7 +458,7 @@ function ChatComposer({
 			)}
 			<div className="relative max-h-50 min-h-6 px-4 pt-3.25 pb-1 text-[14.5px] overflow-y-auto">
 				{isEmpty && (
-					<span className="pointer-events-none absolute text-muted">
+					<span className="pointer-events-none absolute inset-x-4 truncate text-muted">
 						{placeholder}
 					</span>
 				)}

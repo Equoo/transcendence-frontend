@@ -23,9 +23,12 @@ export default function FolderItem({
 						onClick(name);
 					}}
 					className="gap-3 whitespace-nowrap"
+					title={name}
 				>
 					<FolderIcon />
-					{name}
+					<span className="truncate max-w-[25vw] xl:max-w-md">
+						{name}
+					</span>
 				</ListAction>
 			</ListCell>
 			<ListCell>-</ListCell>
