@@ -273,7 +273,12 @@ export default {
 				logout: "登出",
 				changePasswordHint: "請輸入目前密碼，再輸入新密碼。",
 			},
+			calendar: {
+				previousMonth: "上個月",
+				nextMonth: "下個月",
+			},
 			admin: {
+				permissionFor: "{{role}}：{{perm}}",
 				noRole: "沒有可顯示的角色。",
 				changeRoleName: "變更角色名稱",
 				deleteRoleTitle: "要刪除您的角色嗎？",

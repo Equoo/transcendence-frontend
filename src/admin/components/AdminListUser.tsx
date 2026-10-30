@@ -90,7 +90,14 @@ export default function ListUsers({
 				<ListCell pp>
 					<ProfilePic size={2} user={user}></ProfilePic>
 				</ListCell>
-				<ListCell pp>{user.userName}</ListCell>
+				<ListCell pp>
+					<span
+						title={user.userName}
+						className="block truncate max-w-[25vw] xl:max-w-xs"
+					>
+						{user.userName}
+					</span>
+				</ListCell>
 				<ListCell pp>
 					<Promisable data={roles}>
 						{(listRole) => (

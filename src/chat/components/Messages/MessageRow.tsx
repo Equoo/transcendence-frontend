@@ -96,17 +96,17 @@ function MessageRow({
 			)}
 			<div className="min-w-0 ml-12">
 				{showHeader && (
-					<div className="mb-0.75 flex items-baseline gap-2.25">
+					<div className="mb-0.75 flex min-w-0 items-baseline gap-2.25">
 						<span
 							// eslint-disable-next-line no-negated-condition
-							className={`${sender.id !== user?.id ? "hover:underline hover:cursor-pointer" : ""} font-main font-[650] text-[14.5px]`}
+							className={`${sender.id !== user?.id ? "hover:underline hover:cursor-pointer" : ""} min-w-0 truncate font-main font-[650] text-[14.5px]`}
 							onClick={() => {
 								setShowWatch(true);
 							}}
 						>
 							{displayName(sender, relations)}
 						</span>
-						<span className="text-[11.5px] text-muted">
+						<span className="shrink-0 text-[11.5px] text-muted">
 							{formatTimestamp(new Date(message.sentAt))}
 						</span>
 					</div>

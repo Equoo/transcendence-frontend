@@ -6,10 +6,13 @@ import {
 	useEffectEvent,
 	useId,
 	useRef,
+	useState,
 } from "react";
 import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
 import { PiX } from "react-icons/pi";
+
+import { initialFocus, restoreFocus, trapFocus } from "@/utils/focus.util";
 
 import { FieldErrors } from "../Input/Field";
 
@@ -129,6 +132,7 @@ export default function Modal({
 	const titleId = useId();
 	const subtitleId = useId();
 	const panelRef = useRef<HTMLDivElement>(null);
+	const [opener] = useState(() => document.activeElement);
 	const close = useEffectEvent(onClose);
 	const page = size === "page";
 
@@ -136,18 +140,20 @@ export default function Modal({
 		const token = Symbol("modal");
 		openModals.push(token);
 
-		if (!panelRef.current?.contains(document.activeElement)) {
-			panelRef.current?.focus({ preventScroll: true });
+		const panel = panelRef.current;
+		if (panel && !panel.contains(document.activeElement)) {
+			initialFocus(panel).focus({ preventScroll: true });
 		}
 
 		function onKeyDown(ev: KeyboardEvent): void {
-			if (
-				ev.key === "Escape" &&
-				!ev.defaultPrevented &&
-				openModals.at(-1) === token
-			) {
+			if (ev.defaultPrevented || openModals.at(-1) !== token) {
+				return;
+			}
+			if (ev.key === "Escape") {
 				ev.preventDefault();
 				close();
+			} else if (panelRef.current) {
+				trapFocus(ev, panelRef.current);
 			}
 		}
 
@@ -155,8 +161,9 @@ export default function Modal({
 		return (): void => {
 			document.removeEventListener("keydown", onKeyDown);
 			openModals.splice(openModals.indexOf(token), 1);
+			restoreFocus(opener);
 		};
-	}, []);
+	}, [opener]);
 
 	const header = (
 		<ModalHeader

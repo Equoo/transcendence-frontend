@@ -42,14 +42,17 @@ export default function EventForm({
 			{(roles) => (
 				<>
 					{edit ? (
-						<TbPencil
-							size={26}
-							color="var(--color-text2)"
+						<button
+							type="button"
+							aria-label={t("events.editTitle")}
+							title={t("events.editTitle")}
 							className={`shrink-0 cursor-pointer ${className}`}
 							onClick={() => {
 								setShowEventForm(true);
 							}}
-						/>
+						>
+							<TbPencil size={26} color="var(--color-text2)" />
+						</button>
 					) : (
 						<CheckButton
 							type="button"

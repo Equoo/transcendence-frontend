@@ -2,6 +2,8 @@ import type { JSX } from "react/jsx-runtime";
 import { useTranslation } from "react-i18next";
 
 import ProfilePic from "@/components/Profile/ProfilePic";
+import { useRelationships } from "@/friends/hooks/useRelationships";
+import { displayName } from "@/friends/utils/friends.util";
 import { useResolvedUserNull } from "@/users/hooks/users";
 
 import type { Message } from "../../api/chat.api";
@@ -17,6 +19,7 @@ function MessageReplyPreview({
 	// eslint-disable-next-line id-length
 	const { t } = useTranslation();
 	const sender = useResolvedUserNull(message?.sender);
+	const { data: rels } = useRelationships();
 
 	return (
 		<div
@@ -30,8 +33,8 @@ function MessageReplyPreview({
 			{message && sender ? (<>
 				<ProfilePic user={sender} size={1} />
 				<div className="flex flex-col min-w-0 mx-1">
-					<span className="font-head text-[14.5px] text-text">
-						{sender.userName}
+					<span className="font-head text-[14.5px] text-text truncate">
+						{displayName(sender, rels)}
 					</span>
 					<span className="text-[14.5px] text-text2 whitespace-pre-wrap wrap-break-word line-clamp-6">
 						{previewMessageContent(message.content)}

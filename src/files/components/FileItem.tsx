@@ -26,9 +26,12 @@ export default function FileItem({
 				<Link
 					className="inline-flex items-center gap-3 rounded-sm p-1 hover:underline focus-visible:outline-accent"
 					to={`/knowledge/${file.key}`}
+					title={name}
 				>
 					<FileIcon contentType={file.contentType} />
-					{name}
+					<span className="truncate max-w-[25vw] xl:max-w-md">
+						{name}
+					</span>
 				</Link>
 			</ListCell>
 			<ListCell>

@@ -139,6 +139,7 @@ function Sidebar({ user }: { user: User }): JSX.Element {
 					<Link to="/" className="flex items-center ps-1 mb-5">
 						<img
 							src="/logo/icon-tile.svg"
+							alt=""
 							className="h-10 me-3 shrink-0"
 						/>
 						<div className="flex min-w-0 flex-col self-center">

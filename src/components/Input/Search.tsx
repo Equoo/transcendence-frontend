@@ -48,6 +48,7 @@ export function SearchBar({
 				className={`${BARE_INPUT} min-w-0 grow h-6 text-sm`}
 				name={name}
 				value={internalValue}
+				aria-label={rest.placeholder}
 				{...rest}
 				onChange={(ev) => {
 					if (onChange) {

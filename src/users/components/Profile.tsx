@@ -12,6 +12,7 @@ import ChoiceModal from "@/components/Modal/ChoiceModal";
 import Modal, { ModalFooter } from "@/components/Modal/Modal";
 import ProfileLine from "@/components/Profile/ProfileLine";
 import { useClickOutside } from "@/hooks/useClickOutside";
+import { useDialogFocus } from "@/hooks/useDialogFocus";
 import Section, { type LineInfos } from "@/users/components/Section";
 
 import { Language, type User } from "../api/users";
@@ -91,6 +92,8 @@ export default function Profile({
 			onClickOutside();
 		},
 	);
+
+	useDialogFocus(clickOutsideRef, onClose);
 
 	return (
 		<>
@@ -177,6 +180,10 @@ export default function Profile({
 			<div
 				className="flex items-center justify-center absolute inset-x-2 bottom-20 lg:inset-x-auto lg:bottom-15 lg:left-55 flex-col border-border2 shadow-md bg-surface lg:w-75 min-h-95 py-4 rounded-2xl z-10"
 				ref={clickOutsideRef}
+				role="dialog"
+				aria-modal="true"
+				aria-label={t("profile.accountInfo")}
+				tabIndex={-1}
 				{...rest}
 			>
 				{showLanguage && (
@@ -240,6 +247,7 @@ export default function Profile({
 				<button
 					type="button"
 					onClick={onClose}
+					aria-label={t("common.close")}
 					className="absolute right-5 top-3  text-muted hover:text-text text-3xl cursor-pointer ml-auto"
 				>
 					×

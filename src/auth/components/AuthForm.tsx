@@ -69,6 +69,7 @@ export function AuthLogo({ side }: { side: Side }): JSX.Element {
 		<div className={`absolute z-0  mt-40 ${sideCss}`}>
 			<img
 				src="/logo/icon-mono.svg"
+				alt=""
 				className={`min-w-100 scale-500 opacity-20 ${animChoice} ${animTime} `}
 			/>
 		</div>
