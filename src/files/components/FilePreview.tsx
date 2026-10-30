@@ -71,6 +71,14 @@ export function BlobView({
 				src={url.length === 0 ? undefined : url}
 			></img>
 		);
+	} else if (type === "application/pdf") {
+		return (
+			<embed
+				// eslint-disable-next-line no-undefined
+				src={url.length === 0 ? undefined : url}
+				className="w-full h-full"
+			/>
+		);
 	} else if (isTextLikeFile(name, type)) {
 		return (
 			<Promisable data={blob.text()}>
