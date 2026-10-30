@@ -11,7 +11,7 @@ import type { Conversation } from "../api/conversations.api";
 import { type Relationship, RelationshipState } from "../api/relationship.api";
 import { useConversations, useStartConversation } from "../hooks/useConversations";
 import { useRelationships } from "../hooks/useRelationships";
-import { conversationTitle, isFriend, lastActivity, relationName } from "../utils/friends.util";
+import { conversationTitle, displayName, isFriend, lastActivity, relationName } from "../utils/friends.util";
 import { useIsOnline } from "./ActivityLabel";
 import ConversationAvatar from "./ConversationAvatar";
 import { OnlineFriendsSkeleton, RecentConversationsSkeleton } from "./Skeletons";
@@ -162,7 +162,7 @@ export function RecentConversations({ limit = 6, showEmpty = false }: {
 								<span className="text-text text-[14px] font-semibold truncate">{conversationTitle(conv, rels)}</span>
 								<span className="text-muted text-[13px] truncate">
 									{conv.lastMessage
-										? `${resolveUser(conv.lastMessage.sender, user).userName}: ${previewMessageContent(conv.lastMessage.content)}`
+										? `${displayName(resolveUser(conv.lastMessage.sender, user), rels)}: ${previewMessageContent(conv.lastMessage.content)}`
 										: t("friends.noMessages")}
 								</span>
 							</div>

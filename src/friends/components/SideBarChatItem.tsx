@@ -7,7 +7,7 @@ import { resolveUser, useUser } from "@/users/hooks/users";
 
 import type { Conversation } from "../api/conversations.api";
 import type { Relationship } from "../api/relationship.api";
-import { conversationTitle, isGroup } from "../utils/friends.util";
+import { conversationTitle, displayName, isGroup } from "../utils/friends.util";
 import ConversationAvatar from "./ConversationAvatar";
 
 export function SideBarChatItem({
@@ -39,7 +39,7 @@ export function SideBarChatItem({
 				<div className="flex truncate flex-col justify-center min-w-0">
 					<p className="text-text text-[14px] font-semibold truncate">{conversationTitle(conv, rels)}</p>
 					{last ? (
-						<p className="text-muted text-[14px] block truncate min-w-0">{resolveUser(last.sender, user).userName}: {previewMessageContent(last.content)}</p>
+						<p className="text-muted text-[14px] block truncate min-w-0">{displayName(resolveUser(last.sender, user), rels)}: {previewMessageContent(last.content)}</p>
 					) : isGroup(conv) && (
 						<p className="text-muted text-[13px]">{t("friends.membersCount", { count: conv.recipients.length + 1 })}</p>
 					)}
