@@ -1,3 +1,5 @@
+import { queryClient } from "@/queryClient";
+
 let refresh: Promise<Response> | null = null;
 
 export default async function callApi(
@@ -6,7 +8,7 @@ export default async function callApi(
 ): Promise<Response> {
 	let res = await fetch(input, init);
 
-	if (res.headers.get("Token-Expired") !== "True") {
+	if (res.status !== 401) {
 		return res;
 	}
 
@@ -17,6 +19,7 @@ export default async function callApi(
 	const refreshResponse = await refresh;
 
 	if (!refreshResponse.ok) {
+		await queryClient.invalidateQueries({ queryKey: ["me"] });
 		return res;
 	}
 

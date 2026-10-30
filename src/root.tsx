@@ -58,7 +58,6 @@ const toastOptions: DefaultToastOptions = {
 	},
 };
 
-// Pages reachable without being logged in.
 const publicPaths = ["/login", "/register", "/privacy", "/terms"];
 
 export const clientMiddleware: Route.MiddlewareFunction[] = [
