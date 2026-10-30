@@ -96,10 +96,10 @@ function MemberRow({
 						}
 						tooltip={
 							rel?.type === RelationshipState.PendingRequest
-								? "Friend request sent"
+								? t("friends.requestSent")
 								: rel
-									? "Remove friend"
-									: "Add friend"
+									? t("friends.removeFriend")
+									: t("friends.addFriend")
 						}
 						disabled={add.isPending}
 						onClick={() => {

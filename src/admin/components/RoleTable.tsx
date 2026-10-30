@@ -30,7 +30,7 @@ export default function RoleTable({ role }: { role: Role[] }): JSX.Element {
 		<List
 			cols={getHeader(t)}
 			empty={role.length === 0}
-			emptyMessage={"No role to display."}
+			emptyMessage={t("admin.noRole")}
 		>
 			{role.map((rls) => (
 				<ListRoles key={rls.id} role={rls}></ListRoles>

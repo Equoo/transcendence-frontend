@@ -1,4 +1,5 @@
 import type { JSX } from "react/jsx-runtime";
+import { useTranslation } from "react-i18next";
 import { NavLink } from "react-router";
 
 import { previewMessageContent } from "@/chat/utils/message.util";
@@ -16,6 +17,8 @@ export function SideBarChatItem({
 	conv: Conversation;
 	rels?: Relationship[];
 }): JSX.Element {
+	// eslint-disable-next-line id-length
+	const { t } = useTranslation();
 	const user = useUser();
 	const last = conv.lastMessage;
 
@@ -38,7 +41,7 @@ export function SideBarChatItem({
 					{last ? (
 						<p className="text-muted text-[14px] block truncate min-w-0">{resolveUser(last.sender, user).userName}: {previewMessageContent(last.content)}</p>
 					) : isGroup(conv) && (
-						<p className="text-muted text-[13px]">{conv.recipients.length + 1} members</p>
+						<p className="text-muted text-[13px]">{t("friends.membersCount", { count: conv.recipients.length + 1 })}</p>
 					)}
 				</div>
 			</NavLink>

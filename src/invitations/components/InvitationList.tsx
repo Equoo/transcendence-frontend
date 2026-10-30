@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useFetcher } from "react-router";
 
 import List, { ListAction, ListCell, ListRow } from "@/components/List/List";
+import { dateLocale } from "@/translation/i18n";
 
 import type { Invitation } from "../api/invitations.api";
 import type { clientAction } from "../routes/invitations.route";
@@ -32,12 +33,14 @@ export default function InvitationList({
 					<ListCell rowHeader>{invitation.id}</ListCell>
 					<ListCell pos="text-center">
 						{invitation.usages === -1
-							? "Never"
-							: new Date(invitation.expireAt).toLocaleString()}
+							? t("invitations.never")
+							: new Date(invitation.expireAt).toLocaleString(
+									dateLocale(),
+								)}
 					</ListCell>
 					<ListCell pos="text-center">
 						{invitation.usages === -1
-							? "Infinite"
+							? t("invitations.infinite")
 							: invitation.usages}
 					</ListCell>
 					<ListCell pos="text-right">

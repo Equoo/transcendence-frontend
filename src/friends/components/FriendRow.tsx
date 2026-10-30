@@ -1,4 +1,5 @@
 import { type JSX, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
 	PiChatCircleDots,
 	PiCheckBold,
@@ -27,13 +28,16 @@ import ActivityLabel from "./ActivityLabel";
 import RenameFriendModal from "./RenameFriendModal";
 
 function Subtitle({ rel }: { rel: Relationship }): JSX.Element {
+	// eslint-disable-next-line id-length
+	const { t } = useTranslation();
+
 	switch (rel.type) {
 		case RelationshipState.PendingRequest:
-			return <>Outgoing friend request</>;
+			return <>{t("friends.outgoingRequest")}</>;
 		case RelationshipState.PendingResponse:
-			return <>Incoming friend request</>;
+			return <>{t("friends.incomingRequest")}</>;
 		case RelationshipState.Blocked:
-			return <>Blocked</>;
+			return <>{t("friends.tabs.blocked")}</>;
 		case RelationshipState.Friend:
 		default:
 			return <ActivityLabel userId={rel.user.id} />;
@@ -43,6 +47,8 @@ function Subtitle({ rel }: { rel: Relationship }): JSX.Element {
 type Confirm = "remove" | "block" | null;
 
 function FriendActions({ rel }: { rel: Relationship }): JSX.Element {
+	// eslint-disable-next-line id-length
+	const { t } = useTranslation();
 	const userId = rel.user.id;
 	const add = useAddFriend();
 	const remove = useRemoveFriend();
@@ -59,7 +65,7 @@ function FriendActions({ rel }: { rel: Relationship }): JSX.Element {
 				<IconBtn
 					active
 					icon={PiCheckBold}
-					title="Accept"
+					title={t("friends.accept")}
 					disabled={add.isPending}
 					onClick={() => {
 						add.mutate(userId);
@@ -67,7 +73,7 @@ function FriendActions({ rel }: { rel: Relationship }): JSX.Element {
 				/>
 				<IconBtn
 					icon={PiXBold}
-					title="Decline"
+					title={t("friends.decline")}
 					disabled={remove.isPending}
 					onClick={() => {
 						remove.mutate(userId);
@@ -80,7 +86,7 @@ function FriendActions({ rel }: { rel: Relationship }): JSX.Element {
 		return (
 			<IconBtn
 				icon={PiXBold}
-				title="Cancel request"
+				title={t("friends.cancelRequest")}
 				disabled={remove.isPending}
 				onClick={() => {
 					remove.mutate(userId);
@@ -96,7 +102,7 @@ function FriendActions({ rel }: { rel: Relationship }): JSX.Element {
 					remove.mutate(userId);
 				}}
 			>
-				Unblock
+				{t("friends.unblock")}
 			</CheckButton>
 		);
 	}
@@ -105,7 +111,7 @@ function FriendActions({ rel }: { rel: Relationship }): JSX.Element {
 		<>
 			<IconBtn
 				icon={PiChatCircleDots}
-				title="Message"
+				title={t("friends.message")}
 				disabled={startConv.isPending}
 				onClick={() => {
 					startConv.mutate({ recipients: [userId] });
@@ -114,7 +120,7 @@ function FriendActions({ rel }: { rel: Relationship }): JSX.Element {
 			<div className="relative">
 				<IconBtn
 					icon={PiDotsThreeVerticalBold}
-					title="More"
+					title={t("friends.more")}
 					onClick={() => {
 						setShowMenu(true);
 					}}
@@ -135,7 +141,7 @@ function FriendActions({ rel }: { rel: Relationship }): JSX.Element {
 								content: (
 									<span className="inline-flex items-center gap-2.5">
 										<TbPencil />
-										Rename
+										{t("friends.rename")}
 									</span>
 								),
 							},
@@ -148,7 +154,7 @@ function FriendActions({ rel }: { rel: Relationship }): JSX.Element {
 								content: (
 									<span className="inline-flex items-center gap-2.5 text-error">
 										<PiUserMinus />
-										Remove friend
+										{t("friends.removeFriend")}
 									</span>
 								),
 							},
@@ -161,7 +167,7 @@ function FriendActions({ rel }: { rel: Relationship }): JSX.Element {
 								content: (
 									<span className="inline-flex items-center gap-2.5 text-error">
 										<PiProhibit />
-										Block
+										{t("friends.block")}
 									</span>
 								),
 							},
@@ -180,8 +186,8 @@ function FriendActions({ rel }: { rel: Relationship }): JSX.Element {
 			)}
 			{confirm === "remove" && (
 				<ConfirmModal
-					title="Remove friend"
-					confirmLabel="Remove"
+					title={t("friends.removeFriend")}
+					confirmLabel={t("common.remove")}
 					danger
 					pending={remove.isPending}
 					onClose={() => {
@@ -195,14 +201,14 @@ function FriendActions({ rel }: { rel: Relationship }): JSX.Element {
 						});
 					}}
 					description={
-						<>Remove {relationName(rel)} from your friends?</>
+						<>{t("friends.removeConfirm", { name: relationName(rel) })}</>
 					}
 				/>
 			)}
 			{confirm === "block" && (
 				<ConfirmModal
-					title="Block user"
-					confirmLabel="Block"
+					title={t("friends.blockUser")}
+					confirmLabel={t("friends.block")}
 					danger
 					pending={block.isPending}
 					onClose={() => {
@@ -217,8 +223,9 @@ function FriendActions({ rel }: { rel: Relationship }): JSX.Element {
 					}}
 					description={
 						<>
-							{relationName(rel)} won't be able to send you friend
-							requests or start conversations with you.
+							{t("friends.blockConfirm", {
+								name: relationName(rel),
+							})}
 						</>
 					}
 				/>

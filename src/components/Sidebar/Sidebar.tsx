@@ -249,7 +249,7 @@ function Sidebar({ user }: { user: User }): JSX.Element {
 						<IconBtn
 							discrete
 							icon={PiGear}
-							title="Settings"
+							title={t("sidebar.settings")}
 							active={showUser}
 							className="absolute right-0 top-1/2 -translate-1/2"
 							onClick={() => {

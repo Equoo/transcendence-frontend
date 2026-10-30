@@ -166,7 +166,7 @@ export default function ChatbotPanel({
 					discrete
 					icon={isFull ? PiArrowsInSimple : PiResize}
 					size={18}
-					aria-label="Resize the assistant"
+					aria-label={t("assistant.resize")}
 					onClick={() => {
 						onResize(!isFull);
 					}}
@@ -177,7 +177,7 @@ export default function ChatbotPanel({
 					discrete
 					icon={PiX}
 					size={18}
-					aria-label="Close assistant"
+					aria-label={t("assistant.close")}
 					onClick={onClose}
 					className="p-1.5!"
 				/>

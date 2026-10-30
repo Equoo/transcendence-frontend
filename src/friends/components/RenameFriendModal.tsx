@@ -1,4 +1,5 @@
 import type { JSX } from "react";
+import { useTranslation } from "react-i18next";
 
 import CheckButton from "@/components/Button/CheckButton";
 import { Input } from "@/components/Input/Input";
@@ -14,6 +15,8 @@ export default function RenameFriendModal({
 	rel: Relationship;
 	onClose: () => void;
 }): JSX.Element {
+	// eslint-disable-next-line id-length
+	const { t } = useTranslation();
 	const rename = useRenameFriend();
 
 	const submit = (nickname: string | null): void => {
@@ -25,8 +28,8 @@ export default function RenameFriendModal({
 
 	return (
 		<Modal
-			title={`Rename ${rel.user.userName}`}
-			subtitle={`Only you can see the nickname you give to ${rel.user.userName}.`}
+			title={t("friends.renameTitle", { name: rel.user.userName })}
+			subtitle={t("friends.renameHint", { name: rel.user.userName })}
 			onClose={onClose}
 		>
 			<form
@@ -39,7 +42,7 @@ export default function RenameFriendModal({
 			>
 				<Input
 					name="Nickname"
-					label="Nickname"
+					label={t("friends.nickname")}
 					maxLength={255}
 					placeholder={rel.user.userName}
 					value={rel.nickname ?? ""}
@@ -52,10 +55,10 @@ export default function RenameFriendModal({
 							disabled={rel.nickname === null || rename.isPending}
 							onClick={() => { submit(null); }}
 						>
-							Reset
+							{t("friends.reset")}
 						</CheckButton>
 						<CheckButton type="submit" active activeCheck={false} pending={rename.isPending}>
-							Save
+							{t("common.save")}
 						</CheckButton>
 					</ModalActions>
 				</ModalFooter>
