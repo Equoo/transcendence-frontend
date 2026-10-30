@@ -1,0 +1,167 @@
+import { APIError, type ProblemDetail } from "@/api/problem_detail";
+import { requestJson } from "@/api/request";
+import callApi from "@/tokens/callApi";
+
+import { toUserId } from "./users";
+
+export enum PermEnum {
+	// Event
+	HandleEvent = 1 << 0,
+
+	// User
+	HandleUsers = 1 << 1,
+	InviteUser = 1 << 2,
+
+	// Chat
+	HandleChannels = 1 << 3,
+	ManageMessages = 1 << 4,
+
+	// Roles
+	HandleRoles = 1 << 5,
+
+	// Knowledge
+	HandleKnowledge = 1 << 6,
+
+	// Calendar
+}
+
+export interface Role {
+	id: string;
+	name: string;
+	permission: number;
+}
+
+// Interface API
+
+interface reqCreateRole {
+	name: string;
+}
+
+interface reqCheckRole {
+	IsChecked: string;
+	RoleId: string;
+	RolePerm: number;
+	CheckPerm: number;
+}
+
+interface reqChangeRole {
+	Id: string;
+	Name: string;
+}
+
+interface PermInput {
+	permission: number;
+}
+
+// Function Interface
+
+function toChangeRole(formdata: FormData): reqChangeRole {
+	return {
+		Id: formdata.get("id") as string,
+		Name: formdata.get("name") as string,
+	};
+}
+
+function toCheckRole(formdata: FormData): reqCheckRole {
+	return {
+		IsChecked: formdata.get("IsChecked") as string,
+		RoleId: formdata.get("RoleId") as string,
+		RolePerm: Number(formdata.get("RolePerm")),
+		CheckPerm: Number(formdata.get("CheckPerm")),
+	};
+}
+
+function toRoleInput(formdata: FormData): reqCreateRole {
+	return {
+		name: formdata.get("name") as string,
+	};
+}
+
+function toPermInput(perm: number): PermInput {
+	return { permission: perm };
+}
+
+// Function API
+
+export async function fetchRoles(): Promise<Role[]> {
+	return requestJson<Role[]>("/api/roles");
+}
+
+export async function createRole(formdata: FormData): Promise<Response> {
+	const req = toRoleInput(formdata);
+
+	const res = await callApi("/api/roles", {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify(req.name),
+	});
+
+	if (!res.ok) {
+		throw new APIError((await res.json()) as ProblemDetail);
+	}
+
+	return res;
+}
+
+export async function deleteRole(formdata: FormData): Promise<Response> {
+	const req = toUserId(formdata);
+
+	const res = await callApi(`/api/roles/${req.Id}`, {
+		method: "DELETE",
+		headers: {
+			"Content-Type": "application/json",
+		},
+	});
+
+	if (!res.ok) {
+		throw new APIError((await res.json()) as ProblemDetail);
+	}
+
+	return res;
+}
+
+export async function changeRoleName(formdata: FormData): Promise<Response> {
+	const req = toChangeRole(formdata);
+
+	const res = await callApi(`/api/roles/${req.Id}/name`, {
+		method: "PATCH",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify(req.Name),
+	});
+
+	if (!res.ok) {
+		throw new APIError((await res.json()) as ProblemDetail);
+	}
+
+	return res;
+}
+
+export async function handleCheckbox(formdata: FormData): Promise<Response> {
+	const req: reqCheckRole = toCheckRole(formdata);
+
+	let finalCode: number;
+
+	if (req.IsChecked === "true") {
+		finalCode = req.RolePerm | req.CheckPerm;
+	} else {
+		finalCode = req.RolePerm & ~req.CheckPerm;
+	}
+
+	const res = await callApi(`/api/roles/${req.RoleId}/permission`, {
+		method: "PATCH",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify(toPermInput(finalCode).permission),
+	});
+
+	if (!res.ok) {
+		throw new APIError((await res.json()) as ProblemDetail);
+	}
+
+	return res;
+}

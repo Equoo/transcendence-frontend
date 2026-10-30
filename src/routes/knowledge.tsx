@@ -1,5 +1,107 @@
-import type { JSX } from "react";
+import { type JSX, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { PiBookOpen, PiSparkle } from "react-icons/pi";
 
-export default function Knowledge(): JSX.Element {
-	return <main className="flex-1"></main>;
+import ChatbotPanel from "@/ai/components/ChatbotPanel";
+import fetchHealthCheckIa, { type IaResult } from "@/files/api/ia.api";
+import { HEADER_PADDING } from "@/friends/components/BackToList";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
+
+import Promisable from "../components/Promisable";
+import { type AppFile, fetchFiles } from "../files/api/files.api";
+import FileList from "../files/components/FileList";
+import type { Route } from "./+types/knowledge";
+
+let cachedFiles: AppFile[] = [];
+
+export function clientLoader(): {
+	files: Promise<AppFile[]>;
+	previousFiles: AppFile[];
+	availableIa: Promise<IaResult>;
+} {
+	const previousFiles = cachedFiles;
+
+	const availableIa = fetchHealthCheckIa();
+	const files = fetchFiles().then((result) => (cachedFiles = result));
+
+	return { files, previousFiles, availableIa };
+}
+
+let cachedOpen: boolean | null = null;
+
+export default function Knowledge({
+	loaderData,
+}: Route.ComponentProps): JSX.Element {
+	// eslint-disable-next-line id-length
+	const { t } = useTranslation();
+	const isSmall = useMediaQuery("(max-width: 650px)");
+	const [showRag, setShowRag] = useState<boolean | null>(cachedOpen);
+	const [fullResize, setFullResize] = useState<boolean>(false);
+	const open = showRag ?? !isSmall;
+
+	const fullStyle = fullResize
+		? "h-full"
+		: "lg:h-[min(440px,45%)] sm:h-[min(640px,calc(100dvh-2rem))] sm:inset-auto sm:right-4 sm:bottom-4 sm:w-100 sm:rounded-2xl sm:border sm:border-border sm:shadow-main";
+
+	return (
+		<div className="flex flex-col w-full h-full">
+			<div
+				className={`flex flex-none items-center gap-3 border-b border-border py-3 ${HEADER_PADDING}`}
+			>
+				<h1 className="font-head font-[650] text-[17px] text-text inline-flex gap-2 items-center">
+					<PiBookOpen size={20} className="text-muted" />
+					{t("sidebar.knowledge")}
+				</h1>
+			</div>
+			<main className="flex flex-1 min-h-0 min-w-0 justify-center overflow-y-auto">
+				<div className="w-full max-w-5xl px-4 sm:px-6 pb-6 flex flex-col gap-1">
+					<Promisable
+						data={loaderData.files}
+						cached_data={loaderData.previousFiles}
+					>
+						{(files) => <FileList files={files}></FileList>}
+					</Promisable>
+				</div>
+			</main>
+
+			<Promisable data={loaderData.availableIa}>
+				{(ia) => (
+					<>
+						{ia.ok && (
+							<>
+								{open ? (
+									<ChatbotPanel
+										isFull={fullResize}
+										onResize={(isFull: boolean) => {
+											setFullResize(isFull);
+										}}
+										onClose={() => {
+											setShowRag(false);
+											cachedOpen = false;
+										}}
+										className={`${fullStyle} absolute inset-0 z-50  lg:static lg:z-auto  lg:w-full lg:flex-none lg:rounded-none lg:border-0 lg:border-t lg:border-border lg:shadow-none`}
+									/>
+								) : (
+									<button
+										type="button"
+										aria-label={t(
+											"knowledge.openAssistant",
+										)}
+										className="fixed right-4 bottom-4 z-30 inline-flex cursor-pointer items-center gap-2 rounded-full bg-accent px-4 py-3 font-semibold text-accent-text shadow-main transition-transform duration-75 hover:brightness-110 active:translate-y-px"
+										onClick={() => {
+											setShowRag(true);
+											cachedOpen = true;
+										}}
+									>
+										<PiSparkle size={18} />
+										{t("knowledge.assistant")}
+									</button>
+								)}
+							</>
+						)}
+					</>
+				)}
+			</Promisable>
+		</div>
+	);
 }

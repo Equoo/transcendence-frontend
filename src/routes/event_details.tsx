@@ -1,75 +1,153 @@
-import type { JSX } from "react";
-import type { Route } from "./+types/event_details";
-import { fetchEvent, type EventData } from "../models/events";
+import { type JSX, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { FiChevronLeft } from "react-icons/fi";
-import { redirect, useNavigate } from "react-router";
-import EventRegisterBtn from "../components/Events/EventRegisterBtn";
-import { toast } from "react-toastify";
-import Alert from "../components/Alert";
-import ProfilePic from "../components/ProfilePic";
-import EventBadge from "../components/Events/EventBadge";
+import {
+	PiArrowBendUpRight,
+	PiDotsThreeVerticalBold,
+	PiTrash,
+} from "react-icons/pi";
+import { Link, useNavigate } from "react-router";
 
+import ChannelChat from "@/chat/components/ChannelChat";
+import { useChannel } from "@/chat/hooks/useChannels";
+import { ModalList, ModalListItem } from "@/components/List/ModalList";
+import ChoiceModal from "@/components/Modal/ChoiceModal";
+import Modal from "@/components/Modal/Modal";
+import ProfileLine from "@/components/Profile/ProfileLine";
+import ProfilePic from "@/components/Profile/ProfilePic";
+import UserLine from "@/components/Profile/UserLine";
+import RoleChange from "@/events/components/RoleChange";
+import UnregisterUser from "@/events/components/UnregisterUser";
+import { dateLocale } from "@/translation/i18n";
+
+import { PermEnum } from "../admin/api/roles";
+import Badge from "../components/Badge";
+import { fetchEventRoles } from "../events/api/event_roles.api";
+import { fetchEvent, formatEventSize } from "../events/api/events.api";
+import EventForm from "../events/components/EventForm";
+import EventRegisterBtn from "../events/components/EventRegisterBtn";
+import { fetchFiles } from "../files/api/files.api";
+import { HEADER_PADDING } from "../friends/components/BackToList";
+import { UserContext } from "../users/api/users";
+import type { Route } from "./+types/event_details";
+
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
 export async function clientLoader({
 	params,
-}: Route.ClientLoaderArgs): Promise<EventData | Response> {
+	context,
+}: Route.ClientLoaderArgs) {
 	const res = await fetchEvent(params.eventId);
 
-	if (!res.ok) {
-		toast.error(Alert, { data: { ...res.error } });
-		return redirect("/");
-	}
-	return res.event;
+	return {
+		event: res,
+		roles: await fetchEventRoles(),
+		files: fetchFiles(),
+		user: context.get(UserContext),
+	};
 }
 
 export default function EventDetails({
-	loaderData: event,
+	loaderData: { event, roles, files, user },
 }: Route.ComponentProps): JSX.Element {
-	const dateString: string = new Date(event.date).toLocaleString([], {
+	// eslint-disable-next-line id-length
+	const { t } = useTranslation();
+	const navigate = useNavigate();
+	const dateString: string = new Date(event.date).toLocaleString(dateLocale(), {
 		hour: "2-digit",
 		minute: "2-digit",
 		month: "short",
 		day: "2-digit",
 		year: "numeric",
 	});
-	const navigate = useNavigate();
+	const [showConfirmation, setShowConfirmation] = useState(false);
+	const [showRegistrations, setShowRegistrations] = useState(false);
+	const { data: channel } = useChannel(event.channel.id);
 
 	return (
 		<div className="flex flex-col w-full h-full">
-			<div className="flex px-4 py-4 gap-4 items-center border-b border-border">
-				<FiChevronLeft
-					size={25}
-					color="#9c9384"
+			{showConfirmation && (
+				<ChoiceModal
+					action={`/events/${event.id}`}
+					method="DELETE"
+					onClose={() => {
+						setShowConfirmation(false);
+					}}
+					title={t("eventDetails.deleteTitle", {
+						name: event.name,
+					})}
+					desc={t("common.irreversible")}
+					confirmLabel={t("common.delete")}
+				/>
+			)}
+			<div
+				className={`flex flex-wrap justify-center border-b border-border ${HEADER_PADDING}`}
+			>
+				<button
+					type="button"
+					aria-label={t("common.goBack")}
+					className="shrink-0 -ml-1.5 p-1 rounded-xl text-muted hover:bg-hover hover:text-text cursor-pointer"
 					onClick={() => {
 						void navigate(-1);
 					}}
-					className="cursor-pointer"
-				/>
-				<div className="flex flex-col">
-					<div className="font-head text-text font-semibold text-lg">
-						{event.name}
+				>
+					<FiChevronLeft size={25} />
+				</button>
+				<div className="inline-flex items-center gap-4 min-w-0">
+					<div className="flex flex-col min-w-0">
+						<div className="font-head text-text font-semibold text-lg truncate">
+							{event.name}
+						</div>
 					</div>
-					<div className="font-main text-muted text-sm font-light">
-						{dateString}
-					</div>
+					{Boolean(user.role.permission & PermEnum.HandleEvent) && (
+						<>
+							<EventForm
+								edit
+								roles={roles}
+								files={files}
+								event={event}
+							/>
+							<PiTrash
+								size={26}
+								color="var(--color-text2)"
+								className="shrink-0 hover:cursor-pointer"
+								onClick={() => {
+									setShowConfirmation(true);
+								}}
+							/>
+						</>
+					)}
 				</div>
-				<EventRegisterBtn event={event} className="ml-auto shrink-0" />
+				<div className="flex flex-wrap items-center gap-2 ml-auto">
+					{event.isRegistered && (
+						<RoleChange
+							// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+							registration={event.registrations.find(
+								(reg) => reg.user.id === user.id,
+							)!}
+							event={event}
+						/>
+					)}
+					<EventRegisterBtn event={event} className="shrink-0" />
+				</div>
 			</div>
-			<div className="flex h-full">
-				<div className="flex flex-col gap-1 border-r border-border w-1/3 p-6">
-					<span className="font-bold text-muted text-xs tracking-wider">
-						WHEN
+			<div className="flex flex-col lg:flex-row flex-1 min-h-0">
+				<div className="flex flex-col flex-none gap-1 p-4 sm:p-6 max-h-[40%] overflow-y-auto border-b border-border lg:max-h-none lg:w-80 xl:w-96 lg:border-b-0 lg:border-r">
+					<span className="font-bold text-muted text-xs w-full  ">
+						{t("eventDetails.when")}
 					</span>
-					<span className="text-text">{dateString}</span>
-					<span className="font-bold text-muted text-xs tracking-wider mt-4">
-						WHERE
+					<span className="text-text ">{dateString}</span>
+					<span className="font-bold text-muted text-xs overflow-clip mt-4 w-full">
+						{t("eventDetails.where")}
 					</span>
-					<span className="text-text">{event.location}</span>
+					<span className="wrap-anywhere text-text">
+						{event.location}
+					</span>
 					{(event.description ?? "") && (
 						<>
-							<span className="font-bold text-muted text-xs tracking-wider mt-4">
-								DESCRIPTION
+							<span className="font-bold text-muted text-xs wrap-anywhere mt-4">
+								{t("eventDetails.description")}
 							</span>
-							<span className="text-text">
+							<span className="wrap-anywhere text-text">
 								{event.description}
 							</span>
 						</>
@@ -77,42 +155,130 @@ export default function EventDetails({
 					{event.tags.length > 0 && (
 						<>
 							<span className="font-bold text-muted text-xs tracking-wider mt-4">
-								TAGS
+								{t("eventDetails.tags")}
 							</span>
 							<div className="flex flex-wrap gap-1">
 								{event.tags.map((tag) => (
-									<EventBadge key={tag}>{tag}</EventBadge>
+									<Badge key={tag}>{tag}</Badge>
 								))}
 							</div>
 						</>
 					)}
-					<span className="font-bold text-muted text-xs tracking-wider mt-4">
-						PARTICIPANTS - {event.registrations.length}/{event.size}
+					<span className="font-bold text-muted text-xs tracking-wider mt-4 inline-flex items-center gap-2">
+						{t("eventDetails.participants", {
+							registered: event.registrations.length,
+							size: formatEventSize(event.size),
+						})}
+						<PiDotsThreeVerticalBold
+							size={18}
+							className="hover:text-text hover:cursor-pointer"
+							onClick={() => {
+								setShowRegistrations(true);
+							}}
+						/>
 					</span>
+					{showRegistrations && (
+						<Modal
+							size="lg"
+							title={t("eventDetails.registeredUsers")}
+							subtitle={t("eventDetails.registeredCount", {
+								registered: event.registrations.length,
+								size: formatEventSize(event.size),
+							})}
+							onClose={() => {
+								setShowRegistrations(false);
+							}}
+						>
+							<ModalList
+								className="max-h-96"
+								message={
+									event.registrations.length === 0 &&
+									t("eventDetails.noRegistrations")
+								}
+							>
+								{event.registrations.map((reg) => (
+									<ModalListItem key={reg.user.id}>
+										<UserLine
+											user={reg.user}
+											subtitle={reg.user.role.name}
+										/>
+										{Boolean(
+											user.role.permission &
+											PermEnum.HandleEvent,
+										) && (
+											<div className="inline-flex shrink-0 items-center gap-2">
+												<RoleChange
+													registration={reg}
+													event={event}
+												/>
+												<UnregisterUser
+													registration={reg}
+													event={event}
+												/>
+											</div>
+										)}
+									</ModalListItem>
+								))}
+							</ModalList>
+						</Modal>
+					)}
 					<div className="min-h-10 flex">
 						{event.registrations.map((reg, idx) => (
 							<ProfilePic
 								key={reg.registeredAt}
-								name={reg.user.userName}
+								user={reg.user}
 								idx={idx}
+								status
+								// eslint-disable-next-line no-negated-condition
+								className={idx !== 0 ? "-ml-3" : ""}
 							/>
 						))}
 					</div>
 					<span className="font-bold text-muted text-xs tracking-wider mt-4">
-						ORGANIZED BY
+						{t("eventDetails.organizedBy")}
 					</span>
-					<div className="flex mt-1 items-center gap-2">
-						<ProfilePic name={event.organizer.userName} />
-						<span className="text-lg font-medium text-text">
-							{event.organizer.userName}
-						</span>
-					</div>
+					<ProfileLine user={event.organizer} status />
 					<span className="font-bold text-muted text-xs tracking-wider mt-4">
-						RESOURCES
+						{t("eventDetails.resources")} - {event.files.length}
 					</span>
-					<div className="flex mt-1 items-center gap-3"></div>
+					<div className="flex flex-col mt-1 items-center gap-1 w-full">
+						{event.files.map((file) => (
+							<div
+								key={file.key}
+								className={`w-full rounded p-2 hover:cursor-pointer bg-surface2 hover:bg-surface`}
+							>
+								<Link
+									to={`/knowledge/${file.key}`}
+									className="inline-flex items-center w-full"
+								>
+									<p className="text-sm mr-6 min-w-0 truncate">
+										{file.name.slice(
+											file.name.lastIndexOf("/") + 1,
+										)}
+									</p>
+									<p className="text-xs ml-auto shrink-0">
+										{file.length / 1000000 < 1
+											? t("files.sizeKb", {
+													size: Math.floor(
+														file.length / 1000,
+													),
+												})
+											: t("files.sizeMb", {
+													size: Math.floor(
+														file.length / 1000000,
+													),
+												})}
+									</p>
+									<PiArrowBendUpRight
+										className="ml-2 pb-1"
+										size={18}
+									/>
+								</Link>
+							</div>
+						))}
+					</div>
 				</div>
-				<div className=""></div>
+				{channel && <ChannelChat channel={channel}></ChannelChat>}
 			</div>
 		</div>
 	);
