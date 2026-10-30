@@ -9,10 +9,12 @@ import { Tile } from "./EventExtras";
 
 export default function ExpireTile({
 	value,
+	minExpire,
 	onChange,
 	errors,
 }: {
 	value: string;
+	minExpire: string;
 	onChange: (value: string) => void;
 	errors?: string[];
 }): JSX.Element {
@@ -44,7 +46,7 @@ export default function ExpireTile({
 			<input
 				type="datetime-local"
 				value={value}
-				min={toInputValue(now)}
+				min={minExpire.length > 0 ? minExpire : toInputValue(now)}
 				aria-label={t("events.composer.expireTitle")}
 				className={fieldBox()}
 				onChange={(ev) => {
