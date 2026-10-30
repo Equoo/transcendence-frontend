@@ -141,7 +141,7 @@ export default function Profile({
 								autoFocus
 								password
 								maxLength={255}
-								minLength={8}
+								minLength={1}
 								name="Current password"
 								label={t("changeModal.currentPassword")}
 								required
