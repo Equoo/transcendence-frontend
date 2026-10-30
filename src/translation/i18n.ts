@@ -16,8 +16,6 @@ const supportedLanguages = ["fr", "en", "tc"] as const;
 
 const storageKey = "language";
 
-// Pages outside the dashboard (login, register, legal) have no user to read the
-// language from, so the last language used is kept in the browser instead.
 function readStoredLanguage(): string | null {
 	try {
 		return localStorage.getItem(storageKey);
@@ -27,11 +25,7 @@ function readStoredLanguage(): string | null {
 }
 
 function storeLanguage(lng: string): void {
-	try {
-		localStorage.setItem(storageKey, lng);
-	} catch {
-		// Storage can be unavailable (private mode, blocked cookies).
-	}
+	localStorage.setItem(storageKey, lng);
 }
 
 function detectLanguage(): string {
@@ -60,9 +54,6 @@ function detectLanguage(): string {
 }
 
 void i18n.use(initReactI18next).init({
-	// the translations
-	// (tip move them in a JSON file and import them,
-	// or even better, manage them via a UI: https://react.i18next.com/guides/multiple-translation-files#manage-your-translations-with-a-management-gui)
 	resources,
 
 	lng: detectLanguage(),
