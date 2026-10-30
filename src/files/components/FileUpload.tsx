@@ -11,6 +11,7 @@ import usePogressFetch from "@/hooks/useProgressFetch";
 import {
 	otherErrors,
 	type ProblemDetail,
+	translateProblem,
 	type ValidationErrors,
 } from "../../api/problem_detail";
 import FolderPicker from "./FolderPicker";
@@ -91,7 +92,9 @@ export default function FileUpload({
 				onClose();
 				return;
 			}
-			const problem = (await res.json()) as ProblemDetail;
+			const problem = translateProblem(
+				(await res.json()) as ProblemDetail,
+			);
 			setErrors(
 				problem.errors ?? {
 					"": [problem.detail ?? problem.title],

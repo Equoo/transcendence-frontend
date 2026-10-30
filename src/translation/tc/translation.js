@@ -637,6 +637,265 @@ export default {
 				conversationIdRequiredDelete: "刪除時需要對話 ID",
 				conversationIdRequiredUpdate: "更新時需要對話 ID",
 			},
+			apiErrors: {
+				codes: {
+					ALREADY_REGISTERED: {
+						title: "已報名",
+						detail: "「{{value}}」已報名此活動。",
+					},
+					AVATAR_TOO_LARGE: {
+						title: "頭像太大",
+						detail: "頭像必須小於 {{count}} MB。",
+					},
+					CANNOT_CHANGE_SELF: {
+						title: "無法執行",
+						detail: "您無法對自己執行此操作。",
+					},
+					CATEGORY_NAME_ALREADY_USED: {
+						title: "名稱已被使用",
+						detail: "「{{value}}」已被其他分類使用。",
+					},
+					CATEGORY_NAME_INVALID: {
+						title: "名稱無效",
+						detail: "分類名稱包含不允許的字元。",
+					},
+					CATEGORY_NOT_FOUND: {
+						title: "找不到分類",
+						detail: "此分類不存在或已被刪除。",
+					},
+					CHANNEL_NAME_ALREADY_USED: {
+						title: "名稱已被使用",
+						detail: "「{{value}}」已被其他頻道使用。",
+					},
+					CHANNEL_NAME_INVALID: {
+						title: "名稱無效",
+						detail: "頻道名稱包含不允許的字元。",
+					},
+					CHANNEL_NOT_FOUND: {
+						title: "找不到頻道",
+						detail: "此頻道不存在或已被刪除。",
+					},
+					CHANNEL_ROLE_NOT_FOUND: {
+						title: "未知的角色",
+						detail: "一個或多個白名單角色不存在。",
+					},
+					CONVERSATION_BLOCKED: {
+						title: "對話已封鎖",
+						detail: "您無法與「{{value}}」開始對話。",
+					},
+					CONVERSATION_DIRECT_MESSAGE_LEAVE: {
+						title: "無法離開",
+						detail: "只能離開群組對話。",
+					},
+					CONVERSATION_NOT_FOUND: {
+						title: "找不到對話",
+						detail: "此對話不存在或您已離開。",
+					},
+					CONVERSATION_SELF_RECIPIENT: {
+						title: "收件者無效",
+						detail: "您無法與自己開始對話。",
+					},
+					EMAIL_ALREADY_USED: {
+						title: "電子郵件已被使用",
+						detail: "「{{value}}」已被其他使用者使用。",
+					},
+					EVENTROLE_ALREADY_EXISTS: {
+						title: "角色已存在",
+						detail: "活動角色「{{value}}」已存在。",
+					},
+					EVENTROLE_NOT_FOUND: {
+						title: "找不到角色",
+						detail: "此活動角色不存在或已被刪除。",
+					},
+					EVENTROLE_NOT_OFFERED: {
+						title: "未提供此角色",
+						detail: "此活動未提供此角色。",
+					},
+					EVENTROLE_RESERVED: {
+						title: "保留角色",
+						detail: "「{{value}}」是保留角色，無法建立。",
+					},
+					EVENT_DEFAULT_ROLE_MISSING: {
+						title: "伺服器錯誤",
+						detail: "缺少預設的活動角色，無法建立活動。",
+					},
+					EVENT_FILES_UNKNOWN: {
+						title: "未知的檔案",
+						detail: "一個或多個附加檔案不存在。",
+					},
+					EVENT_FULL: {
+						title: "活動已額滿",
+						detail: "此活動已達 {{count}} 位參加者的上限。",
+					},
+					EVENT_NOT_FOUND: {
+						title: "找不到活動",
+						detail: "此活動不存在或已被刪除。",
+					},
+					EVENT_ROLES_UNKNOWN: {
+						title: "未知的角色",
+						detail: "一個或多個活動角色不存在。",
+					},
+					EVENT_SIZE_TOO_SMALL: {
+						title: "人數上限太小",
+						detail: "此活動已有 {{count}} 位參加者，人數上限不能更低。",
+					},
+					FILE_EMPTY: {
+						title: "檔案是空的",
+						detail: "上傳的檔案沒有內容。",
+					},
+					FILE_NOT_FOUND: {
+						title: "找不到檔案",
+						detail: "此檔案不存在或已被刪除。",
+					},
+					INVALID_AUTH: {
+						title: "登入資訊無效",
+						detail: "帳號或密碼無效。",
+					},
+					INVALID_AVATAR_TYPE: {
+						title: "頭像無效",
+						detail: "頭像必須是圖片檔案。",
+					},
+					INVALID_FOLDER_NAME: {
+						title: "資料夾名稱無效",
+						detail: "資料夾名稱不能包含「.」。",
+					},
+					INVALID_INVITATION: {
+						title: "邀請無效",
+						detail: "您需要一個仍有剩餘使用次數的有效邀請才能註冊。",
+					},
+					INVALID_LANGUAGE: {
+						title: "語言無效",
+						detail: "不支援此語言。",
+					},
+					INVALID_PERMISSION: {
+						title: "權限無效",
+						detail: "此權限不存在。",
+					},
+					INVITATION_NOT_FOUND: {
+						title: "找不到邀請",
+						detail: "此邀請不存在或已被刪除。",
+					},
+					MESSAGE_ACCESS_NOT_AUTHORIZED: {
+						title: "拒絕存取",
+						detail: "您的角色不允許此操作。",
+					},
+					MESSAGE_NOT_FOUND: {
+						title: "找不到訊息",
+						detail: "此訊息不存在或已被刪除。",
+					},
+					MESSAGE_NOT_SENDER: {
+						title: "不允許",
+						detail: "只有此訊息的傳送者可以執行此操作。",
+					},
+					MESSAGE_TOO_LONG: {
+						title: "訊息太長",
+						detail: "訊息不能超過 {{count}} 個字元。",
+					},
+					NAME_ALREADY_USED: {
+						title: "名稱已被使用",
+						detail: "「{{value}}」已被使用。",
+					},
+					NOT_ALLOWED: {
+						title: "不允許",
+						detail: "無法移除成員角色。",
+					},
+					NOT_AUTHENTICATED: {
+						title: "未登入",
+						detail: "您需要登入才能執行此操作。",
+					},
+					NOT_AUTHORIZED: {
+						title: "不允許",
+						detail: "您無權執行此操作。",
+					},
+					NOT_REGISTERED: {
+						title: "未報名",
+						detail: "「{{value}}」未報名此活動。",
+					},
+					PASSWORD_CANNOT_BE_CHANGED: {
+						title: "無法變更密碼",
+						detail: "無法變更此使用者的密碼。",
+					},
+					RANKING_TOO_LOW: {
+						title: "角色等級不足",
+						detail: "您的角色等級太低，無法執行此操作。",
+					},
+					REFRESH_TOKEN_INVALID: {
+						title: "工作階段已過期",
+						detail: "您的工作階段已過期，請重新登入。",
+					},
+					REFRESH_TOKEN_MISSING: {
+						title: "工作階段已過期",
+						detail: "您的工作階段已過期，請重新登入。",
+					},
+					REFRESH_TOKEN_UNKNOWN: {
+						title: "工作階段已過期",
+						detail: "您的工作階段已過期，請重新登入。",
+					},
+					RELATIONSHIP_ALREADY_EXISTS: {
+						title: "關係已存在",
+						detail: "您與「{{value}}」之間已有好友邀請、好友關係或封鎖。",
+					},
+					RELATIONSHIP_BLOCKED: {
+						title: "邀請已被封鎖",
+						detail: "您無法向「{{value}}」送出好友邀請。",
+					},
+					RELATIONSHIP_NOT_FOUND: {
+						title: "找不到關係",
+						detail: "您與此使用者沒有任何關係。",
+					},
+					ROLE_NOT_FOUND: {
+						title: "找不到角色",
+						detail: "此角色不存在或已被刪除。",
+					},
+					SELF_RELATIONSHIP: {
+						title: "邀請無效",
+						detail: "您無法將自己加為好友。",
+					},
+					STORAGE_DELETE_FAILED: {
+						title: "刪除失敗",
+						detail: "檔案儲存空間無法刪除檔案，請稍後再試。",
+					},
+					STORAGE_DOWNLOAD_FAILED: {
+						title: "下載失敗",
+						detail: "檔案儲存空間無法讀取檔案，請稍後再試。",
+					},
+					STORAGE_UPLOAD_FAILED: {
+						title: "上傳失敗",
+						detail: "檔案儲存空間無法儲存檔案，請稍後再試。",
+					},
+					TOKEN_NOT_FOUND: {
+						title: "找不到工作階段",
+						detail: "此使用者沒有使用中的工作階段。",
+					},
+					USERNAME_CANNOT_BE_CHANGED: {
+						title: "無法變更使用者名稱",
+						detail: "無法變更此使用者的名稱。",
+					},
+					USER_CANNOT_BE_DELETED: {
+						title: "無法刪除使用者",
+						detail: "無法刪除此使用者。",
+					},
+					USER_NOT_FOUND: {
+						title: "找不到使用者",
+						detail: "此使用者不存在或已被刪除。",
+					},
+				},
+				invalidInput: {
+					title: "輸入無效",
+					detail: "部分欄位無效。",
+				},
+				fields: {
+					required: "此欄位為必填。",
+					length: "長度必須介於 {{min}} 到 {{max}} 個字元之間。",
+					minLength: "至少需要 {{min}} 個字元。",
+					maxLength: "最多 {{max}} 個字元。",
+					range: "必須介於 {{min}} 到 {{max}} 之間。",
+					email: "電子郵件地址無效。",
+					pattern: "包含不允許的字元。",
+					username: "只能使用字母、數字和底線 (_)。",
+					nul: "不允許使用 NUL 字元。",
+				},
+			},
 		},
 	},
 };

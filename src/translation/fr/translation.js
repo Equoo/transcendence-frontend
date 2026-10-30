@@ -663,6 +663,265 @@ export default {
 				conversationIdRequiredDelete: "L'ID de la conversation est requis pour la suppression",
 				conversationIdRequiredUpdate: "L'ID de la conversation est requis pour la mise à jour",
 			},
+			apiErrors: {
+				codes: {
+					ALREADY_REGISTERED: {
+						title: "Déjà inscrit",
+						detail: "« {{value}} » est déjà inscrit à cet événement.",
+					},
+					AVATAR_TOO_LARGE: {
+						title: "Avatar trop lourd",
+						detail: "L'avatar doit faire moins de {{count}} Mo.",
+					},
+					CANNOT_CHANGE_SELF: {
+						title: "Action impossible",
+						detail: "Vous ne pouvez pas faire cette action sur vous-même.",
+					},
+					CATEGORY_NAME_ALREADY_USED: {
+						title: "Nom déjà utilisé",
+						detail: "« {{value}} » est déjà utilisé par une autre catégorie.",
+					},
+					CATEGORY_NAME_INVALID: {
+						title: "Nom invalide",
+						detail: "Le nom de la catégorie contient des caractères non autorisés.",
+					},
+					CATEGORY_NOT_FOUND: {
+						title: "Catégorie introuvable",
+						detail: "Cette catégorie n'existe pas ou a été supprimée.",
+					},
+					CHANNEL_NAME_ALREADY_USED: {
+						title: "Nom déjà utilisé",
+						detail: "« {{value}} » est déjà utilisé par un autre canal.",
+					},
+					CHANNEL_NAME_INVALID: {
+						title: "Nom invalide",
+						detail: "Le nom du canal contient des caractères non autorisés.",
+					},
+					CHANNEL_NOT_FOUND: {
+						title: "Canal introuvable",
+						detail: "Ce canal n'existe pas ou a été supprimé.",
+					},
+					CHANNEL_ROLE_NOT_FOUND: {
+						title: "Rôle inconnu",
+						detail: "Un ou plusieurs rôles autorisés n'existent pas.",
+					},
+					CONVERSATION_BLOCKED: {
+						title: "Conversation bloquée",
+						detail: "Vous ne pouvez pas démarrer de conversation avec « {{value}} ».",
+					},
+					CONVERSATION_DIRECT_MESSAGE_LEAVE: {
+						title: "Impossible de quitter",
+						detail: "Seules les conversations de groupe peuvent être quittées.",
+					},
+					CONVERSATION_NOT_FOUND: {
+						title: "Conversation introuvable",
+						detail: "Cette conversation n'existe pas ou vous l'avez quittée.",
+					},
+					CONVERSATION_SELF_RECIPIENT: {
+						title: "Destinataire invalide",
+						detail: "Vous ne pouvez pas démarrer de conversation avec vous-même.",
+					},
+					EMAIL_ALREADY_USED: {
+						title: "E-mail déjà utilisé",
+						detail: "« {{value}} » est déjà utilisé par un autre utilisateur.",
+					},
+					EVENTROLE_ALREADY_EXISTS: {
+						title: "Rôle déjà existant",
+						detail: "Le rôle d'événement « {{value}} » existe déjà.",
+					},
+					EVENTROLE_NOT_FOUND: {
+						title: "Rôle introuvable",
+						detail: "Ce rôle d'événement n'existe pas ou a été supprimé.",
+					},
+					EVENTROLE_NOT_OFFERED: {
+						title: "Rôle non proposé",
+						detail: "Cet événement ne propose pas ce rôle.",
+					},
+					EVENTROLE_RESERVED: {
+						title: "Rôle réservé",
+						detail: "« {{value}} » est un rôle réservé et ne peut pas être créé.",
+					},
+					EVENT_DEFAULT_ROLE_MISSING: {
+						title: "Erreur du serveur",
+						detail: "Le rôle par défaut des événements est manquant, impossible de créer un événement.",
+					},
+					EVENT_FILES_UNKNOWN: {
+						title: "Fichiers inconnus",
+						detail: "Un ou plusieurs fichiers joints n'existent pas.",
+					},
+					EVENT_FULL: {
+						title: "Événement complet",
+						detail: "Cet événement a atteint sa capacité de {{count}} participants.",
+					},
+					EVENT_NOT_FOUND: {
+						title: "Événement introuvable",
+						detail: "Cet événement n'existe pas ou a été supprimé.",
+					},
+					EVENT_ROLES_UNKNOWN: {
+						title: "Rôles inconnus",
+						detail: "Un ou plusieurs rôles de l'événement n'existent pas.",
+					},
+					EVENT_SIZE_TOO_SMALL: {
+						title: "Taille trop petite",
+						detail: "L'événement a déjà {{count}} participants, sa taille ne peut pas être inférieure.",
+					},
+					FILE_EMPTY: {
+						title: "Fichier vide",
+						detail: "Le fichier envoyé est vide.",
+					},
+					FILE_NOT_FOUND: {
+						title: "Fichier introuvable",
+						detail: "Ce fichier n'existe pas ou a été supprimé.",
+					},
+					INVALID_AUTH: {
+						title: "Identifiants invalides",
+						detail: "Identifiant ou mot de passe invalide.",
+					},
+					INVALID_AVATAR_TYPE: {
+						title: "Avatar invalide",
+						detail: "L'avatar doit être une image.",
+					},
+					INVALID_FOLDER_NAME: {
+						title: "Nom de dossier invalide",
+						detail: "Un nom de dossier ne peut pas contenir « . ».",
+					},
+					INVALID_INVITATION: {
+						title: "Invitation invalide",
+						detail: "Il faut une invitation valide, avec des utilisations restantes, pour s'inscrire.",
+					},
+					INVALID_LANGUAGE: {
+						title: "Langue invalide",
+						detail: "Cette langue n'est pas prise en charge.",
+					},
+					INVALID_PERMISSION: {
+						title: "Permission invalide",
+						detail: "Cette permission n'existe pas.",
+					},
+					INVITATION_NOT_FOUND: {
+						title: "Invitation introuvable",
+						detail: "Cette invitation n'existe pas ou a été supprimée.",
+					},
+					MESSAGE_ACCESS_NOT_AUTHORIZED: {
+						title: "Accès refusé",
+						detail: "Vos rôles ne permettent pas cette action.",
+					},
+					MESSAGE_NOT_FOUND: {
+						title: "Message introuvable",
+						detail: "Ce message n'existe pas ou a été supprimé.",
+					},
+					MESSAGE_NOT_SENDER: {
+						title: "Action non autorisée",
+						detail: "Seul l'auteur de ce message peut faire cela.",
+					},
+					MESSAGE_TOO_LONG: {
+						title: "Message trop long",
+						detail: "Un message ne peut pas dépasser {{count}} caractères.",
+					},
+					NAME_ALREADY_USED: {
+						title: "Nom déjà utilisé",
+						detail: "« {{value}} » est déjà utilisé.",
+					},
+					NOT_ALLOWED: {
+						title: "Action non autorisée",
+						detail: "Le rôle membre ne peut pas être retiré.",
+					},
+					NOT_AUTHENTICATED: {
+						title: "Non connecté",
+						detail: "Vous devez être connecté pour faire cela.",
+					},
+					NOT_AUTHORIZED: {
+						title: "Action non autorisée",
+						detail: "Vous n'êtes pas autorisé à faire cela.",
+					},
+					NOT_REGISTERED: {
+						title: "Non inscrit",
+						detail: "« {{value}} » n'est pas inscrit à cet événement.",
+					},
+					PASSWORD_CANNOT_BE_CHANGED: {
+						title: "Mot de passe non modifiable",
+						detail: "Le mot de passe de cet utilisateur ne peut pas être modifié.",
+					},
+					RANKING_TOO_LOW: {
+						title: "Rôle insuffisant",
+						detail: "Votre rôle est trop bas dans la hiérarchie pour faire cela.",
+					},
+					REFRESH_TOKEN_INVALID: {
+						title: "Session expirée",
+						detail: "Votre session a expiré, veuillez vous reconnecter.",
+					},
+					REFRESH_TOKEN_MISSING: {
+						title: "Session expirée",
+						detail: "Votre session a expiré, veuillez vous reconnecter.",
+					},
+					REFRESH_TOKEN_UNKNOWN: {
+						title: "Session expirée",
+						detail: "Votre session a expiré, veuillez vous reconnecter.",
+					},
+					RELATIONSHIP_ALREADY_EXISTS: {
+						title: "Relation existante",
+						detail: "Vous avez déjà une demande d'ami, une amitié ou un blocage avec « {{value}} ».",
+					},
+					RELATIONSHIP_BLOCKED: {
+						title: "Demande bloquée",
+						detail: "Vous ne pouvez pas envoyer de demande d'ami à « {{value}} ».",
+					},
+					RELATIONSHIP_NOT_FOUND: {
+						title: "Relation introuvable",
+						detail: "Vous n'avez aucune relation avec cet utilisateur.",
+					},
+					ROLE_NOT_FOUND: {
+						title: "Rôle introuvable",
+						detail: "Ce rôle n'existe pas ou a été supprimé.",
+					},
+					SELF_RELATIONSHIP: {
+						title: "Demande invalide",
+						detail: "Vous ne pouvez pas vous ajouter vous-même en ami.",
+					},
+					STORAGE_DELETE_FAILED: {
+						title: "Échec de la suppression",
+						detail: "Le stockage n'a pas pu supprimer le fichier. Réessayez plus tard.",
+					},
+					STORAGE_DOWNLOAD_FAILED: {
+						title: "Échec du téléchargement",
+						detail: "Le stockage n'a pas pu lire le fichier. Réessayez plus tard.",
+					},
+					STORAGE_UPLOAD_FAILED: {
+						title: "Échec de l'envoi",
+						detail: "Le stockage n'a pas pu enregistrer le fichier. Réessayez plus tard.",
+					},
+					TOKEN_NOT_FOUND: {
+						title: "Session introuvable",
+						detail: "Cet utilisateur n'a aucune session active.",
+					},
+					USERNAME_CANNOT_BE_CHANGED: {
+						title: "Pseudo non modifiable",
+						detail: "Le pseudo de cet utilisateur ne peut pas être modifié.",
+					},
+					USER_CANNOT_BE_DELETED: {
+						title: "Suppression impossible",
+						detail: "Cet utilisateur ne peut pas être supprimé.",
+					},
+					USER_NOT_FOUND: {
+						title: "Utilisateur introuvable",
+						detail: "Cet utilisateur n'existe pas ou a été supprimé.",
+					},
+				},
+				invalidInput: {
+					title: "Saisie invalide",
+					detail: "Certains champs sont invalides.",
+				},
+				fields: {
+					required: "Ce champ est requis.",
+					length: "Doit contenir entre {{min}} et {{max}} caractères.",
+					minLength: "Doit contenir au moins {{min}} caractères.",
+					maxLength: "Doit contenir au plus {{max}} caractères.",
+					range: "Doit être compris entre {{min}} et {{max}}.",
+					email: "Adresse e-mail invalide.",
+					pattern: "Contient des caractères non autorisés.",
+					username: "Seuls les lettres, les chiffres et le tiret bas (_) sont autorisés.",
+					nul: "Le caractère NUL n'est pas autorisé.",
+				},
+			},
 		},
 	},
 };

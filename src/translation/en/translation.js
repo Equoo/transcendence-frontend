@@ -646,6 +646,265 @@ export default {
 				conversationIdRequiredDelete: "Conversation ID is required for deletion",
 				conversationIdRequiredUpdate: "Conversation ID is required for update",
 			},
+			apiErrors: {
+				codes: {
+					ALREADY_REGISTERED: {
+						title: "Already registered",
+						detail: "“{{value}}” is already registered to this event.",
+					},
+					AVATAR_TOO_LARGE: {
+						title: "Avatar too large",
+						detail: "The avatar must be under {{count}} MB.",
+					},
+					CANNOT_CHANGE_SELF: {
+						title: "Action not allowed",
+						detail: "You cannot perform this action on yourself.",
+					},
+					CATEGORY_NAME_ALREADY_USED: {
+						title: "Name already used",
+						detail: "“{{value}}” is already used by another category.",
+					},
+					CATEGORY_NAME_INVALID: {
+						title: "Invalid name",
+						detail: "The category name contains characters that are not allowed.",
+					},
+					CATEGORY_NOT_FOUND: {
+						title: "Category not found",
+						detail: "This category doesn't exist or has been deleted.",
+					},
+					CHANNEL_NAME_ALREADY_USED: {
+						title: "Name already used",
+						detail: "“{{value}}” is already used by another channel.",
+					},
+					CHANNEL_NAME_INVALID: {
+						title: "Invalid name",
+						detail: "The channel name contains characters that are not allowed.",
+					},
+					CHANNEL_NOT_FOUND: {
+						title: "Channel not found",
+						detail: "This channel doesn't exist or has been deleted.",
+					},
+					CHANNEL_ROLE_NOT_FOUND: {
+						title: "Unknown role",
+						detail: "One or more whitelisted roles don't exist.",
+					},
+					CONVERSATION_BLOCKED: {
+						title: "Conversation blocked",
+						detail: "You cannot start a conversation with “{{value}}”.",
+					},
+					CONVERSATION_DIRECT_MESSAGE_LEAVE: {
+						title: "Cannot leave",
+						detail: "Only group conversations can be left.",
+					},
+					CONVERSATION_NOT_FOUND: {
+						title: "Conversation not found",
+						detail: "This conversation doesn't exist or you left it.",
+					},
+					CONVERSATION_SELF_RECIPIENT: {
+						title: "Invalid recipient",
+						detail: "You cannot start a conversation with yourself.",
+					},
+					EMAIL_ALREADY_USED: {
+						title: "Email already used",
+						detail: "“{{value}}” is already used by another user.",
+					},
+					EVENTROLE_ALREADY_EXISTS: {
+						title: "Role already exists",
+						detail: "The event role “{{value}}” already exists.",
+					},
+					EVENTROLE_NOT_FOUND: {
+						title: "Role not found",
+						detail: "This event role doesn't exist or has been deleted.",
+					},
+					EVENTROLE_NOT_OFFERED: {
+						title: "Role not offered",
+						detail: "This event doesn't offer this role.",
+					},
+					EVENTROLE_RESERVED: {
+						title: "Reserved role",
+						detail: "“{{value}}” is a reserved role and cannot be created.",
+					},
+					EVENT_DEFAULT_ROLE_MISSING: {
+						title: "Server error",
+						detail: "The default event role is missing, events cannot be created.",
+					},
+					EVENT_FILES_UNKNOWN: {
+						title: "Unknown files",
+						detail: "One or more attached files don't exist.",
+					},
+					EVENT_FULL: {
+						title: "Event full",
+						detail: "This event has reached its capacity of {{count}} participants.",
+					},
+					EVENT_NOT_FOUND: {
+						title: "Event not found",
+						detail: "This event doesn't exist or has been deleted.",
+					},
+					EVENT_ROLES_UNKNOWN: {
+						title: "Unknown roles",
+						detail: "One or more event roles don't exist.",
+					},
+					EVENT_SIZE_TOO_SMALL: {
+						title: "Size too small",
+						detail: "The event already has {{count}} participants, its size cannot be lower.",
+					},
+					FILE_EMPTY: {
+						title: "Empty file",
+						detail: "The uploaded file is empty.",
+					},
+					FILE_NOT_FOUND: {
+						title: "File not found",
+						detail: "This file doesn't exist or has been deleted.",
+					},
+					INVALID_AUTH: {
+						title: "Invalid credentials",
+						detail: "Invalid login or password.",
+					},
+					INVALID_AVATAR_TYPE: {
+						title: "Invalid avatar",
+						detail: "The avatar must be an image file.",
+					},
+					INVALID_FOLDER_NAME: {
+						title: "Invalid folder name",
+						detail: "A folder name cannot contain “.”.",
+					},
+					INVALID_INVITATION: {
+						title: "Invalid invitation",
+						detail: "You need a valid invitation with remaining uses to register.",
+					},
+					INVALID_LANGUAGE: {
+						title: "Invalid language",
+						detail: "This language is not supported.",
+					},
+					INVALID_PERMISSION: {
+						title: "Invalid permission",
+						detail: "This permission doesn't exist.",
+					},
+					INVITATION_NOT_FOUND: {
+						title: "Invitation not found",
+						detail: "This invitation doesn't exist or has been deleted.",
+					},
+					MESSAGE_ACCESS_NOT_AUTHORIZED: {
+						title: "Access denied",
+						detail: "Your roles don't allow this action.",
+					},
+					MESSAGE_NOT_FOUND: {
+						title: "Message not found",
+						detail: "This message doesn't exist or has been deleted.",
+					},
+					MESSAGE_NOT_SENDER: {
+						title: "Not allowed",
+						detail: "Only the sender of this message can do this.",
+					},
+					MESSAGE_TOO_LONG: {
+						title: "Message too long",
+						detail: "A message cannot exceed {{count}} characters.",
+					},
+					NAME_ALREADY_USED: {
+						title: "Name already used",
+						detail: "“{{value}}” is already used.",
+					},
+					NOT_ALLOWED: {
+						title: "Not allowed",
+						detail: "The member role cannot be removed.",
+					},
+					NOT_AUTHENTICATED: {
+						title: "Not logged in",
+						detail: "You need to be logged in to do this.",
+					},
+					NOT_AUTHORIZED: {
+						title: "Not allowed",
+						detail: "You are not allowed to do this.",
+					},
+					NOT_REGISTERED: {
+						title: "Not registered",
+						detail: "“{{value}}” is not registered to this event.",
+					},
+					PASSWORD_CANNOT_BE_CHANGED: {
+						title: "Password cannot be changed",
+						detail: "This user's password cannot be changed.",
+					},
+					RANKING_TOO_LOW: {
+						title: "Role too low",
+						detail: "Your role is too low in the hierarchy to do this.",
+					},
+					REFRESH_TOKEN_INVALID: {
+						title: "Session expired",
+						detail: "Your session has expired, please log in again.",
+					},
+					REFRESH_TOKEN_MISSING: {
+						title: "Session expired",
+						detail: "Your session has expired, please log in again.",
+					},
+					REFRESH_TOKEN_UNKNOWN: {
+						title: "Session expired",
+						detail: "Your session has expired, please log in again.",
+					},
+					RELATIONSHIP_ALREADY_EXISTS: {
+						title: "Already linked",
+						detail: "You already have a friend request, a friendship or a block with “{{value}}”.",
+					},
+					RELATIONSHIP_BLOCKED: {
+						title: "Request blocked",
+						detail: "You cannot send a friend request to “{{value}}”.",
+					},
+					RELATIONSHIP_NOT_FOUND: {
+						title: "Relationship not found",
+						detail: "You have no relationship with this user.",
+					},
+					ROLE_NOT_FOUND: {
+						title: "Role not found",
+						detail: "This role doesn't exist or has been deleted.",
+					},
+					SELF_RELATIONSHIP: {
+						title: "Invalid request",
+						detail: "You cannot add yourself as a friend.",
+					},
+					STORAGE_DELETE_FAILED: {
+						title: "Delete failed",
+						detail: "The file storage couldn't delete the file. Try again later.",
+					},
+					STORAGE_DOWNLOAD_FAILED: {
+						title: "Download failed",
+						detail: "The file storage couldn't read the file. Try again later.",
+					},
+					STORAGE_UPLOAD_FAILED: {
+						title: "Upload failed",
+						detail: "The file storage couldn't save the file. Try again later.",
+					},
+					TOKEN_NOT_FOUND: {
+						title: "Session not found",
+						detail: "This user has no active session.",
+					},
+					USERNAME_CANNOT_BE_CHANGED: {
+						title: "Username cannot be changed",
+						detail: "This user's name cannot be changed.",
+					},
+					USER_CANNOT_BE_DELETED: {
+						title: "User cannot be deleted",
+						detail: "This user cannot be deleted.",
+					},
+					USER_NOT_FOUND: {
+						title: "User not found",
+						detail: "This user doesn't exist or has been deleted.",
+					},
+				},
+				invalidInput: {
+					title: "Invalid input",
+					detail: "Some fields are invalid.",
+				},
+				fields: {
+					required: "This field is required.",
+					length: "Must be between {{min}} and {{max}} characters.",
+					minLength: "Must be at least {{min}} characters.",
+					maxLength: "Must be at most {{max}} characters.",
+					range: "Must be between {{min}} and {{max}}.",
+					email: "Invalid email address.",
+					pattern: "Contains characters that are not allowed.",
+					username: "Only letters, numbers and underscores (_) are allowed.",
+					nul: "The NUL character is not allowed.",
+				},
+			},
 		},
 	},
 };

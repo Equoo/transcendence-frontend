@@ -1,6 +1,6 @@
 // Interface Api
 
-import type { ProblemDetail } from "@/api/problem_detail";
+import { type ProblemDetail, translateProblem } from "@/api/problem_detail";
 import callApi from "@/tokens/callApi";
 
 export type UserResult =
@@ -39,6 +39,15 @@ function toRegisterInput(formData: FormData): reqRegisterInput {
 
 // Function API
 
+async function readProblem(res: Response): Promise<ProblemDetail | undefined> {
+	try {
+		return translateProblem((await res.json()) as ProblemDetail);
+	} catch {
+		// eslint-disable-next-line no-undefined
+		return undefined;
+	}
+}
+
 export async function loginUser(formData: FormData): Promise<UserResult> {
 	const req = toLoginInput(formData);
 
@@ -52,7 +61,7 @@ export async function loginUser(formData: FormData): Promise<UserResult> {
 	if (!response.ok) {
 		return {
 			ok: false,
-			error: (await response.json()) as ProblemDetail,
+			error: await readProblem(response),
 		};
 	}
 	return { ok: true };
@@ -72,7 +81,7 @@ export async function registerUser(formData: FormData): Promise<UserResult> {
 	if (!res.ok) {
 		return {
 			ok: false,
-			error: (await res.json()) as ProblemDetail,
+			error: await readProblem(res),
 		};
 	}
 	return { ok: true };
