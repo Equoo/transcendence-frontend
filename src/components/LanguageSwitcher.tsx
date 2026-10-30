@@ -10,8 +10,6 @@ const languages = [
 	{ code: "tc", flag: "🇹🇼", label: "汉语" },
 ];
 
-// Language picker for pages shown without a logged-in user. The choice is only
-// kept in the browser, the dashboard then applies the user's own language.
 export default function LanguageSwitcher({
 	className = "relative",
 }: {
