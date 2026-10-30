@@ -141,7 +141,7 @@ export function AuthForm({
 			)}
 			<Input
 				password
-				maxLength={256}
+				maxLength={255}
 				className="h-12"
 				placeholder={t("auth.password")}
 				type="password"
