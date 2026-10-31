@@ -30,7 +30,7 @@ import { type ChatMode, useChatContext } from "./ChatProvider";
 
 await init({ data });
 
-const MAX_CHARS = 8192;
+const MAX_CHARS = 2048;
 const MAX_IMAGES = 10;
 
 export interface ChatDraft {
@@ -532,8 +532,8 @@ function ChatComposer({
 				{charCount >= MAX_CHARS * 0.8 && (
 					<span
 						className={`mr-1 text-xs tabular-nums ${charCount >= MAX_CHARS
-								? "text-red-500"
-								: "text-muted"
+							? "text-red-500"
+							: "text-muted"
 							}`}
 					>
 						{charCount}/{MAX_CHARS}
