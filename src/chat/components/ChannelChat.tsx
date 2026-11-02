@@ -10,14 +10,13 @@ import {
 	type ChannelBase,
 	type Message,
 	normalizeMessage,
-	sendMessage,
-	updateMessage as putMessage,
 } from "../api/chat.api";
 import {
 	addPendingMessage,
 	resolvePendingMessage,
 	updateMessage,
 } from "../cache/chat.cache";
+import { sendMessage } from "../realtime/messages";
 import {
 	formatImage,
 	type MessageImage,
@@ -81,14 +80,16 @@ function ChannelChat({
 				content,
 				editAt: new Date(),
 			});
-			putMessage(channel.id, target.id, content).catch((err: unknown) => {
-				updateMessage(qc, channel.id, {
-					id: target.id,
-					content: target.content,
-					editAt: target.editAt,
-				});
-				toastError(err as Error);
-			});
+			sendMessage(channel.id, target.id, content).catch(
+				(err: unknown) => {
+					updateMessage(qc, channel.id, {
+						id: target.id,
+						content: target.content,
+						editAt: target.editAt,
+					});
+					toastError(err as Error);
+				},
+			);
 
 			return;
 		}

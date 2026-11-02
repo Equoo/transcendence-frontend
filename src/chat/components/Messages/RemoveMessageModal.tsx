@@ -2,10 +2,11 @@ import { useQueryClient } from "@tanstack/react-query";
 import type { JSX } from "react/jsx-runtime";
 import { useTranslation } from "react-i18next";
 
+import { deleteMessage } from "@/chat/realtime/messages";
 import ConfirmModal from "@/components/Modal/ConfirmModal";
 import { toastError } from "@/utils/error.util";
 
-import { deleteMessage, type Message } from "../../api/chat.api";
+import type { Message } from "../../api/chat.api";
 import { removeMessage } from "../../cache/chat.cache";
 import MessageRow from "./MessageRow";
 
