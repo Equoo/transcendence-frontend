@@ -16,7 +16,10 @@ import {
 	resolvePendingMessage,
 	updateMessage,
 } from "../cache/chat.cache";
-import { sendMessage } from "../realtime/messages";
+import {
+	sendMessage,
+	updateMessage as putMessage,
+} from "../realtime/messages.ts";
 import {
 	formatImage,
 	type MessageImage,
@@ -80,16 +83,14 @@ function ChannelChat({
 				content,
 				editAt: new Date(),
 			});
-			sendMessage(channel.id, target.id, content).catch(
-				(err: unknown) => {
-					updateMessage(qc, channel.id, {
-						id: target.id,
-						content: target.content,
-						editAt: target.editAt,
-					});
-					toastError(err as Error);
-				},
-			);
+			putMessage(channel.id, target.id, content).catch((err: unknown) => {
+				updateMessage(qc, channel.id, {
+					id: target.id,
+					content: target.content,
+					editAt: target.editAt,
+				});
+				toastError(err as Error);
+			});
 
 			return;
 		}
