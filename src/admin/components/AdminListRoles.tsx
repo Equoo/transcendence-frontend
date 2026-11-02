@@ -116,6 +116,7 @@ export default function ListRoles({
 									size={20}
 								/>
 							)}
+
 							{role.ranking !== count && (
 								<PiCaretDownBold
 									onClick={() => {
