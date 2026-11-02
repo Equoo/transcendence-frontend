@@ -21,6 +21,7 @@ import Profile from "@/users/components/Profile";
 
 import { PermEnum } from "../../admin/api/roles";
 import InvitationForm from "../../invitations/components/InvitationForm";
+import { LegalLinks } from "../../legal/components/LegalPage";
 import type { User } from "../../users/api/users";
 import IconBtn from "../Button/IconBtn";
 import ProfileLine from "../Profile/ProfileLine";
@@ -259,6 +260,7 @@ function Sidebar({ user }: { user: User }): JSX.Element {
 							{...settingHoverProps}
 						/>
 					</div>
+					<LegalLinks className="justify-center" />
 				</div>
 			</aside>
 		</>
