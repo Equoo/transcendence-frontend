@@ -29,12 +29,18 @@ export interface Role {
 	id: string;
 	name: string;
 	permission: number;
+	ranking: number;
 }
 
 // Interface API
 
 interface reqCreateRole {
 	name: string;
+}
+
+interface reqRanking {
+	direction: string;
+	id: string;
 }
 
 interface reqCheckRole {
@@ -59,6 +65,13 @@ function toChangeRole(formdata: FormData): reqChangeRole {
 	return {
 		Id: formdata.get("id") as string,
 		Name: formdata.get("name") as string,
+	};
+}
+
+function toRanking(formdata: FormData): reqRanking {
+	return {
+		direction: formdata.get("direction") as string,
+		id: formdata.get("id") as string,
 	};
 }
 
@@ -140,15 +153,31 @@ export async function changeRoleName(formdata: FormData): Promise<Response> {
 	return res;
 }
 
+export async function ranking(formdata: FormData): Promise<Response> {
+	const req = toRanking(formdata);
+
+	console;
+
+	const res = await callApi(`/api/roles/${req.id}/rank/${req.direction}`, {
+		method: "POST",
+	});
+
+	if (!res.ok) {
+		throw new APIError((await res.json()) as ProblemDetail);
+	}
+
+	return res;
+}
+
 export async function handleCheckbox(formdata: FormData): Promise<Response> {
 	const req: reqCheckRole = toCheckRole(formdata);
 
 	let finalCode: number;
 
 	if (req.IsChecked === "true") {
-		finalCode = req.RolePerm | req.CheckPerm;
+		finalCode = req.CheckPerm;
 	} else {
-		finalCode = req.RolePerm & ~req.CheckPerm;
+		finalCode = -req.CheckPerm;
 	}
 
 	const res = await callApi(`/api/roles/${req.RoleId}/permission`, {

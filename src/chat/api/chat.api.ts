@@ -139,38 +139,6 @@ export async function deleteCategory(id: string): Promise<void> {
 	await request(`/api/categories/${id}`, "DELETE");
 }
 
-export async function sendMessage(
-	channelId: string,
-	content: string,
-	messageReference: string | undefined,
-): Promise<Message> {
-	return requestJson<Message>(`/api/channels/${channelId}/messages`, "POST", {
-		content,
-		messageReference,
-	});
-}
-
-export async function updateMessage(
-	channelId: string,
-	id: string,
-	content: string,
-): Promise<void> {
-	await request(`/api/channels/${channelId}/messages/${id}`, "PUT", {
-		content,
-	});
-}
-
-export async function deleteMessage(
-	channelId: string,
-	id: string,
-): Promise<string> {
-	const response = await request(
-		`/api/channels/${channelId}/messages/${id}`,
-		"DELETE",
-	);
-	return response.text();
-}
-
 export async function ackMessage(channelId: string, id: string): Promise<void> {
 	await request(`/api/channels/${channelId}/messages/${id}/ack`, "POST", {});
 }

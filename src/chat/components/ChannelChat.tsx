@@ -10,14 +10,16 @@ import {
 	type ChannelBase,
 	type Message,
 	normalizeMessage,
-	sendMessage,
-	updateMessage as putMessage,
 } from "../api/chat.api";
 import {
 	addPendingMessage,
 	resolvePendingMessage,
 	updateMessage,
 } from "../cache/chat.cache";
+import {
+	sendMessage,
+	updateMessage as putMessage,
+} from "../realtime/messages.ts";
 import {
 	formatImage,
 	type MessageImage,

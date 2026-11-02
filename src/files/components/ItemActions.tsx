@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { type JSX, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { PiDotsThreeVerticalBold } from "react-icons/pi";
 import { useFetcher } from "react-router";
 
+import { PermEnum } from "@/admin/api/roles";
 import { otherErrors, validationErrors } from "@/api/problem_detail";
 import CheckButton from "@/components/Button/CheckButton";
 import { Input } from "@/components/Input/Input";
@@ -10,6 +12,7 @@ import { ListActions } from "@/components/List/List";
 import PopupList from "@/components/List/PopupList";
 import ConfirmModal from "@/components/Modal/ConfirmModal";
 import Modal, { ModalFooter } from "@/components/Modal/Modal";
+import { useUser } from "@/users/hooks/users";
 
 import type { clientAction } from "../routes/files.route";
 import FolderPicker from "./FolderPicker";
@@ -49,6 +52,7 @@ export default function ItemActions({
 	const renameReady =
 		newName.trim() !== "" && newName !== name && !newName.includes("/");
 	const errors = validationErrors(fetcher.data);
+	const user = useUser();
 
 	function open(next: Dialog): void {
 		setNewName(name);
@@ -65,51 +69,61 @@ export default function ItemActions({
 
 	return (
 		<>
-			{showSelect && (
-				<PopupList
-					className="right-15 mb-2 shadow-main border bg-surface border-border"
-					onClose={() => {
-						setShowSelect(false);
-					}}
-					rows={[
-						{
-							id: "rename",
-							onClick: (): void => {
-								open("rename");
-							},
-							content: <div>{t("files.rename")}</div>,
-						},
-						{
-							id: "move",
-							onClick: (): void => {
-								open("move");
-							},
-							content: <div>{t("files.move")}</div>,
-						},
-						{
-							id: "delete",
-							onClick: (): void => {
-								open("delete");
-							},
-							content: <div>{t("files.delete")}</div>,
-						},
-					]}
-				/>
+			{Boolean(user!.role.permission & PermEnum.HandleKnowledge) && (
+				<div className="relative">
+					{showSelect && (
+						<PopupList
+							className="left-1  shadow-main border bg-surface border-border"
+							onClose={() => {
+								setShowSelect(false);
+							}}
+							rows={[
+								{
+									id: "rename",
+									onClick: (): void => {
+										open("rename");
+									},
+									content: <div>{t("files.rename")}</div>,
+								},
+								...(destinations.length > 0
+									? [
+											{
+												id: "move",
+												onClick: (): void => {
+													open("move");
+												},
+												content: (
+													<div>{t("files.move")}</div>
+												),
+											},
+										]
+									: []),
+								{
+									id: "delete",
+									onClick: (): void => {
+										open("delete");
+									},
+									content: <div>{t("files.delete")}</div>,
+								},
+							]}
+						/>
+					)}
+					<ListActions className="relative">
+						<PiDotsThreeVerticalBold
+							aria-label={
+								isFolder
+									? t("files.actionsForFolder", { name })
+									: t("files.actionsForFile", { name })
+							}
+							onClick={() => {
+								setShowSelect(true);
+							}}
+							size={18}
+							className="cursor-pointer hover:text-accent focus-visible:outline-2 focus-visible:outline-accent"
+						/>
+					</ListActions>
+				</div>
 			)}
-			<ListActions className="relative">
-				<PiDotsThreeVerticalBold
-					aria-label={
-						isFolder
-							? t("files.actionsForFolder", { name })
-							: t("files.actionsForFile", { name })
-					}
-					onClick={() => {
-						setShowSelect(true);
-					}}
-					size={18}
-					className="cursor-pointer hover:text-accent focus-visible:outline-2 focus-visible:outline-accent"
-				/>
-			</ListActions>
 			{dialog === "rename" && (
 				<Modal
 					title={
